@@ -1,0 +1,38 @@
+const db = require('../../db/knex')
+
+class ServicioRepositoryImpl {
+  constructor() {
+    this.db = db
+  }
+
+  async create(data) {
+    const [id] = await this.db('Servicio').insert(data).returning('id_servicio')
+    return id
+  }
+
+  async findById(id) {
+    return this.db('Servicio').where({ id_servicio: id }).first()
+  }
+
+  async findByNombre(nombre) {
+    return this.db('Servicio').where('nombre_servicio', 'like', `%${nombre}%`).select()
+  }
+
+  async update(id, data) {
+    return this.db('Servicio').where({ id_servicio: id }).update(data)
+  }
+
+  async delete(id) {
+    return this.db('Servicio').where({ id_servicio: id }).del()
+  }
+
+  async findAll() {
+    return this.db('Servicio').select()
+  }
+
+  async findByTienda(id_tienda) {
+    return this.db('Servicio').where({ Tienda_id_tienda: id_tienda }).select()
+  }
+}
+
+module.exports = ServicioRepositoryImpl
