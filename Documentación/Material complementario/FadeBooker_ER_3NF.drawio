@@ -1,0 +1,287 @@
+<mxfile host="app.diagrams.net" modified="2026-04-14T00:00:00.000Z" agent="5.0" version="13.9.7" type="device">
+  <diagram id="R2lEEEUBhBx0_NHQrGZT" name="Page-1">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="980" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- TABLA: Usuario -->
+        <mxCell id="usuario_table" value="Usuario" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="50" y="50" width="200" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="usuario_pk" value="PK id_usuario: INT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" vertex="1" parent="usuario_table">
+          <mxGeometry y="26" width="200" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="usuario_fields" value="email: NVARCHAR(255) UNIQUE&#xa;nombre: NVARCHAR(100)&#xa;apellido: NVARCHAR(100)&#xa;telefono: NVARCHAR(20)&#xa;rol: NVARCHAR(50)&#xa;estado: BIT&#xa;foto_perfil_url: NVARCHAR(MAX)&#xa;fecha_registro: DATETIME2&#xa;ultimo_login: DATETIME2" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="usuario_table">
+          <mxGeometry y="52" width="200" height="168" as="geometry" />
+        </mxCell>
+        
+        <!-- TABLA: Tienda -->
+        <mxCell id="tienda_table" value="Tienda" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="350" y="50" width="220" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="tienda_pk" value="PK id_tienda: INT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" vertex="1" parent="tienda_table">
+          <mxGeometry y="26" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="tienda_fk" value="FK id_dueño: INT → Usuario" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=italic;" vertex="1" parent="tienda_table">
+          <mxGeometry y="52" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="tienda_fields" value="nombre_tienda: NVARCHAR(150)&#xa;direccion: NVARCHAR(MAX)&#xa;ciudad: NVARCHAR(100)&#xa;codigo_postal: NVARCHAR(20)&#xa;telefono_tienda: NVARCHAR(20)&#xa;horario_apertura: TIME&#xa;horario_cierre: TIME&#xa;calificacion_promedio: DECIMAL(3,2)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="tienda_table">
+          <mxGeometry y="78" width="220" height="162" as="geometry" />
+        </mxCell>
+        
+        <!-- TABLA: Barbero -->
+        <mxCell id="barbero_table" value="Barbero" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="700" y="50" width="200" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="barbero_pk" value="PK id_barbero: INT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" vertex="1" parent="barbero_table">
+          <mxGeometry y="26" width="200" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="barbero_fks" value="FK id_usuario: INT → Usuario&#xa;FK id_tienda: INT → Tienda" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=italic;" vertex="1" parent="barbero_table">
+          <mxGeometry y="52" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="barbero_fields" value="especialidad: NVARCHAR(150)&#xa;anos_experiencia: INT&#xa;tarifa_base: DECIMAL(10,2)&#xa;calificacion_promedio: DECIMAL(3,2)&#xa;total_resenas: INT&#xa;activo: BIT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="barbero_table">
+          <mxGeometry y="102" width="200" height="138" as="geometry" />
+        </mxCell>
+        
+        <!-- TABLA: Servicio -->
+        <mxCell id="servicio_table" value="Servicio" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="50" width="200" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="servicio_pk" value="PK id_servicio: INT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" vertex="1" parent="servicio_table">
+          <mxGeometry y="26" width="200" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="servicio_fields" value="nombre_servicio: NVARCHAR(150)&#xa;descripcion: NVARCHAR(MAX)&#xa;duracion_minutos: INT&#xa;precio_base: DECIMAL(10,2)&#xa;activo: BIT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="servicio_table">
+          <mxGeometry y="52" width="200" height="128" as="geometry" />
+        </mxCell>
+        
+        <!-- TABLA: ServicioTienda -->
+        <mxCell id="servicio_tienda_table" value="ServicioTienda" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="1050" y="290" width="220" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="servicio_tienda_pk" value="PK id_servicio_tienda: INT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" vertex="1" parent="servicio_tienda_table">
+          <mxGeometry y="26" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="servicio_tienda_fks" value="FK id_servicio: INT → Servicio&#xa;FK id_tienda: INT → Tienda" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=italic;" vertex="1" parent="servicio_tienda_table">
+          <mxGeometry y="52" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="servicio_tienda_fields" value="precio_tienda: DECIMAL(10,2)&#xa;disponible: BIT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="servicio_tienda_table">
+          <mxGeometry y="102" width="220" height="38" as="geometry" />
+        </mxCell>
+        
+        <!-- TABLA: Cita -->
+        <mxCell id="cita_table" value="Cita" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="350" y="350" width="220" height="260" as="geometry" />
+        </mxCell>
+        <mxCell id="cita_pk" value="PK id_cita: INT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" vertex="1" parent="cita_table">
+          <mxGeometry y="26" width="220" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="cita_fks" value="FK id_cliente: INT → Usuario&#xa;FK id_barbero: INT → Barbero&#xa;FK id_servicio: INT → Servicio&#xa;FK id_tienda: INT → Tienda" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=italic;" vertex="1" parent="cita_table">
+          <mxGeometry y="52" width="220" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="cita_fields" value="fecha_hora_inicio: DATETIME2&#xa;duracion_minutos: INT&#xa;estado: NVARCHAR(50)&#xa;monto_total: DECIMAL(10,2)&#xa;pago_abono: DECIMAL(10,2)&#xa;metodo_pago: NVARCHAR(50)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="cita_table">
+          <mxGeometry y="152" width="220" height="108" as="geometry" />
+        </mxCell>
+        
+        <!-- TABLA: Pago -->
+        <mxCell id="pago_table" value="Pago" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="700" y="350" width="200" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="pago_pk" value="PK id_pago: INT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" vertex="1" parent="pago_table">
+          <mxGeometry y="26" width="200" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pago_fk" value="FK id_cita: INT → Cita" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=italic;" vertex="1" parent="pago_table">
+          <mxGeometry y="52" width="200" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="pago_fields" value="monto_pagado: DECIMAL(10,2)&#xa;metodo_pago: NVARCHAR(50)&#xa;estado_pago: NVARCHAR(50)&#xa;referencia_transaccion: NVARCHAR(100)&#xa;fecha_pago: DATETIME2" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="pago_table">
+          <mxGeometry y="78" width="200" height="102" as="geometry" />
+        </mxCell>
+        
+        <!-- TABLA: Reseña -->
+        <mxCell id="resena_table" value="Reseña" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="50" y="350" width="230" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="resena_pk" value="PK id_resena: INT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" vertex="1" parent="resena_table">
+          <mxGeometry y="26" width="230" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="resena_fks" value="FK id_cita: INT → Cita (UNIQUE)&#xa;FK id_cliente: INT → Usuario&#xa;FK id_barbero: INT → Barbero&#xa;FK id_tienda: INT → Tienda" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=italic;" vertex="1" parent="resena_table">
+          <mxGeometry y="52" width="230" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="resena_fields" value="puntuacion: INT (1-5)&#xa;comentario: NVARCHAR(MAX)&#xa;fecha_resena: DATETIME2" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="resena_table">
+          <mxGeometry y="152" width="230" height="68" as="geometry" />
+        </mxCell>
+        
+        <!-- TABLA: AuditoriaPreciosServicio -->
+        <mxCell id="audit_precio_table" value="AuditoriaPreciosServicio" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="700" y="600" width="240" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="audit_precio_pk" value="PK id_auditoria: INT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" vertex="1" parent="audit_precio_table">
+          <mxGeometry y="26" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="audit_precio_fks" value="FK id_servicio: INT → Servicio&#xa;FK id_tienda: INT → Tienda&#xa;FK cambio_por_usuario: INT → Usuario" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=italic;" vertex="1" parent="audit_precio_table">
+          <mxGeometry y="52" width="240" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="audit_precio_fields" value="precio_anterior: DECIMAL(10,2)&#xa;precio_nuevo: DECIMAL(10,2)&#xa;fecha_cambio: DATETIME2&#xa;razon_cambio: NVARCHAR(MAX)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="audit_precio_table">
+          <mxGeometry y="128" width="240" height="72" as="geometry" />
+        </mxCell>
+        
+        <!-- TABLA: AuditoriaCancelacion -->
+        <mxCell id="audit_cancel_table" value="AuditoriaCancelacion" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="350" y="680" width="240" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="audit_cancel_pk" value="PK id_auditoria: INT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=bold;" vertex="1" parent="audit_cancel_table">
+          <mxGeometry y="26" width="240" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="audit_cancel_fks" value="FK id_cita: INT → Cita&#xa;FK cancelada_por: INT → Usuario" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontStyle=italic;" vertex="1" parent="audit_cancel_table">
+          <mxGeometry y="52" width="240" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="audit_cancel_fields" value="motivo_cancelacion: NVARCHAR(MAX)&#xa;ofrecer_reembolso: BIT&#xa;porcentaje_reembolso: INT&#xa;fecha_cancelacion: DATETIME2" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" vertex="1" parent="audit_cancel_table">
+          <mxGeometry y="102" width="240" height="98" as="geometry" />
+        </mxCell>
+        
+        <!-- RELACIONES / RELATIONSHIPS -->
+        
+        <!-- Usuario 1:N Tienda (id_dueño) -->
+        <mxCell id="rel_usuario_tienda" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=0;" edge="1" parent="1" source="usuario_table" target="tienda_table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="250" y="150" as="sourcePoint" />
+            <mxPoint x="350" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Usuario 1:N Barbero (via id_usuario) -->
+        <mxCell id="rel_usuario_barbero" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=0;" edge="1" parent="1" source="usuario_table" target="barbero_table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="250" y="150" as="sourcePoint" />
+            <mxPoint x="700" y="150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Tienda 1:N Barbero -->
+        <mxCell id="rel_tienda_barbero" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=0;" edge="1" parent="1" source="tienda_table" target="barbero_table">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Servicio N:N Tienda via ServicioTienda -->
+        <mxCell id="rel_servicio_serviciotiera" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=0;" edge="1" parent="1" source="servicio_table" target="servicio_tienda_table">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="rel_tienda_serviciotiera" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=0;" edge="1" parent="1" source="tienda_table" target="servicio_tienda_table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="570" y="170" as="sourcePoint" />
+            <mxPoint x="1050" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Usuario (Cliente) 1:N Cita -->
+        <mxCell id="rel_usuario_cita" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=0;" edge="1" parent="1" source="usuario_table" target="cita_table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="250" y="250" as="sourcePoint" />
+            <mxPoint x="350" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Barbero 1:N Cita -->
+        <mxCell id="rel_barbero_cita" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=0;" edge="1" parent="1" source="barbero_table" target="cita_table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="250" as="sourcePoint" />
+            <mxPoint x="480" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Servicio 1:N Cita -->
+        <mxCell id="rel_servicio_cita" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=0;" edge="1" parent="1" source="servicio_table" target="cita_table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1050" y="130" as="sourcePoint" />
+            <mxPoint x="570" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Tienda 1:N Cita -->
+        <mxCell id="rel_tienda_cita" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=0;" edge="1" parent="1" source="tienda_table" target="cita_table">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Cita 1:N Pago -->
+        <mxCell id="rel_cita_pago" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=0;" edge="1" parent="1" source="cita_table" target="pago_table">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Cita 1:1 Reseña -->
+        <mxCell id="rel_cita_resena" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=0;" edge="1" parent="1" source="cita_table" target="resena_table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="350" y="480" as="sourcePoint" />
+            <mxPoint x="280" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Usuario (Cliente) en Reseña -->
+        <mxCell id="rel_usuario_resena" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=0;" edge="1" parent="1" source="usuario_table" target="resena_table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="150" y="270" as="sourcePoint" />
+            <mxPoint x="150" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Barbero en Reseña -->
+        <mxCell id="rel_barbero_resena" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=0;" edge="1" parent="1" source="barbero_table" target="resena_table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="350" as="sourcePoint" />
+            <mxPoint x="280" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Tienda en Reseña -->
+        <mxCell id="rel_tienda_resena" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=0;" edge="1" parent="1" source="tienda_table" target="resena_table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="350" y="290" as="sourcePoint" />
+            <mxPoint x="150" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Auditoría Precios -->
+        <mxCell id="rel_servicio_audit_precio" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=1;" edge="1" parent="1" source="servicio_table" target="audit_precio_table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1150" y="230" as="sourcePoint" />
+            <mxPoint x="820" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="rel_tienda_audit_precio" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=1;" edge="1" parent="1" source="tienda_table" target="audit_precio_table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="570" y="170" as="sourcePoint" />
+            <mxPoint x="820" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="rel_usuario_audit_precio" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=1;" edge="1" parent="1" source="usuario_table" target="audit_precio_table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="250" y="150" as="sourcePoint" />
+            <mxPoint x="820" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Auditoría Cancelación -->
+        <mxCell id="rel_cita_audit_cancel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=1;" edge="1" parent="1" source="cita_table" target="audit_cancel_table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="480" y="610" as="sourcePoint" />
+            <mxPoint x="480" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="rel_usuario_audit_cancel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;dashed=1;" edge="1" parent="1" source="usuario_table" target="audit_cancel_table">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="150" y="270" as="sourcePoint" />
+            <mxPoint x="480" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- LEYENDA -->
+        <mxCell id="legend" value="LEYENDA:&#xa;━━━━━━━━━━━━━━━━━━&#xa;— Relación Activa (Negrita)&#xa;┈ Relación de Auditoría (Punteada)&#xa;&#xa;NORMALIZACIÓN: 3NF&#xa;✓ 1NF: Atributos atómicos&#xa;✓ 2NF: Sin dependencias parciales&#xa;✓ 3NF: Sin dependencias transitivas&#xa;&#xa;CARDINALIDADES:&#xa;1:N - Un usuario → N tiendas&#xa;N:N - Servicios ⟷ Tiendas&#xa;1:1 - Una cita → una reseña" style="text;html=1;strokeColor=#9673a6;fillColor=#e1d5e7;align=left;verticalAlign=top;fontStyle=1;fontSize=10;spacingLeft=5;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="50" y="680" width="280" height="200" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

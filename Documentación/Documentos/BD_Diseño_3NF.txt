@@ -1,0 +1,808 @@
+================================================================================
+FADEBOOKER - ESPECIFICACIÓN DE BASE DE DATOS
+Sistema de Gestión de Citas para Barberías
+
+Creado: 14 de abril de 2026
+Versión: 1.0.0
+Normalización: TERCERA FORMA NORMAL (3NF)
+================================================================================
+
+📋 TABLA DE CONTENIDOS
+================================================================================
+1. Resumen Ejecutivo
+2. Principios de Normalización 3NF
+3. Estructura de Tablas
+4. Relaciones y Cardinalidades
+5. Índices y Performance
+6. Objetos de Base de Datos (SPs, Funciones, Triggers)
+7. Diagrama ER
+8. Pasos de Implementación
+
+
+1. RESUMEN EJECUTIVO
+================================================================================
+
+FadeBooker es una plataforma de gestión de citas para barberías, similar a 
+Uber Eats pero para servicios de barbería.
+
+ENTIDADES PRINCIPALES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Usuario
+├─ Roles: Cliente, Barbero, Dueño, Administrador
+├─ Es cliente que agenda citas
+├─ Es barbero que atiende citas
+├─ Es dueño de una o más tiendas
+└─ Hay un log de auditoría de sus acciones
+
+Tienda
+├─ Sucursal física de una barbería
+├─ Pertenece a un Usuario (Dueño)
+├─ Tiene N Barberos
+├─ Ofrece N Servicios (con precios específicos)
+└─ Horarios de atención
+
+Barbero
+├─ Es un Usuario con rol 'Barbero'
+├─ Pertenece a una Tienda
+├─ Tiene especialidad (Corte, Barba, Coloración, etc.)
+├─ Tiene calificación promedio
+└─ Puede atender múltiples Citas
+
+Servicio
+├─ Catálogo de servicios disponibles
+├─ Duración estándar
+├─ Precio base
+└─ Puede variar precio por Tienda (tabla ServicioTienda)
+
+ServicioTienda (Tabla N:N)
+├─ Relaciona Servicios con Tiendas
+├─ Permite precios específicos por tienda
+└─ Permite servicios diferentes por tienda
+
+Cita
+├─ Reserva de un cliente con un barbero
+├─ Fecha, hora, duración
+├─ Estado (confirmada, cancelada, completada, no_presentado)
+├─ Monto total y pagos
+└─ Genera auditoría si se cancela
+
+Pago
+├─ Histórico de pagos de una Cita
+├─ Permite pagos parciales (abono + saldo)
+├─ Método y estado de pago
+└─ Referencia para auditoría
+
+Reseña
+├─ Calificación (1-5) de una Cita
+├─ Comentario del cliente
+├─ Relación 1:1 con Cita
+└─ Actualiza calificación de Barbero/Tienda
+
+Auditoría
+├─ AuditoriaPreciosServicio (historial de cambios)
+├─ AuditoriaCancelacion (historial de cancelaciones)
+└─ Trazabilidad completa
+
+
+2. PRINCIPIOS DE NORMALIZACIÓN 3NF
+================================================================================
+
+PRIMERA FORMA NORMAL (1NF)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Requisito: Todos los atributos son ATÓMICOS (indivisibles)
+Violación: Tablas con campos multivalor o repetidos
+
+Cumplimiento en FadeBooker:
+✓ No hay arrays o listas en campos
+✓ Cada campo contiene un solo valor
+✓ Si necesitamos multivalor (ej: especialidades), tabla separada
+
+Ejemplo CORRECTO:
+┌─ Barbero ─────────────────────────┐
+│ id_barbero: INT (PK)              │
+│ especialidad: NVARCHAR(150)       │  ← Un solo valor
+│ anos_experiencia: INT             │
+└───────────────────────────────────┘
+
+Ejemplo INCORRECTO (multivalor):
+┌─ Barbero ─────────────────────────┐
+│ especialidades: "Corte, Barba, ..." │ ← VIOLACIÓN 1NF
+└───────────────────────────────────┘
+
+
+SEGUNDA FORMA NORMAL (2NF)
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Requisito: Toda columna depende de la CLAVE COMPLETA
+Violación: Dependencias parciales (columna solo depende de parte de clave)
+
+Aplicable SOLO a tablas con clave compuesta (N campos)
+
+Cumplimiento en FadeBooker:
+✓ Mayoría de tablas tienen clave simple (id_xxxx INT PK)
+✓ ServicioTienda tiene clave compuesta: (id_servicio, id_tienda)
+  - precio_tienda depende de AMBAS claves ✓
+  - No hay campo que dependa solo de id_servicio ✓
+
+Ejemplo CORRECTO:
+┌─ ServicioTienda ──────────────────────┐
+│ id_servicio: INT (PK)                 │
+│ id_tienda: INT (PK)                   │
+│ precio_tienda: DECIMAL  ← Depende     │
+│                          de ambas PK  │
+└───────────────────────────────────────┘
+
+Ejemplo INCORRECTO (dependencia parcial):
+│ nombre_servicio ← Solo depende de id_servicio, NO de id_tienda
+← VIOLACIÓN 2NF
+
+
+TERCERA FORMA NORMAL (3NF)
+━━━━━━━━━━━━━━━━━━━━━━
+Requisito: No hay DEPENDENCIAS TRANSITIVAS
+Violación: Columna depende de otra columna, no de clave primaria
+
+Cumplimiento en FadeBooker:
+✓ Cada tabla almacena solo datos relacionados a su entidad
+✓ No hay "cadenas de dependencias"
+
+Ejemplo CORRECTO:
+┌─ Cita ────────────────────────────────┐
+│ id_cita: INT (PK)                     │
+│ id_cliente: INT (FK)                  │
+│ id_barbero: INT (FK)                  │
+│ fecha_hora_inicio: DATETIME2          │  ← Depende SOLO de id_cita
+│ monto_total: DECIMAL(10,2)            │  ← Depende SOLO de id_cita
+└───────────────────────────────────────┘
+
+Ejemplo INCORRECTO (dependencia transitiva):
+│ nombre_cliente ← Depende de id_cliente ← Depende de id_cita
+                  ↓ Es transitivo ← VIOLACIÓN 3NF
+                  Solución: Guardar en tabla Usuario, no en Cita
+
+EXCEPCIÓN DELIBERADA:
+┌─ Cita ────────────────────────────────┐
+│ id_tienda: INT (FK)  ← DESNORMALIZADO │
+└───────────────────────────────────────┘
+
+Razón: id_tienda se puede derivar de id_barbero.id_tienda,
+pero mantenerlo directamente reduce JOINs en queries frecuentes.
+Es una optimización aceptada en OLTP (Online Transaction Processing).
+
+
+3. ESTRUCTURA DE TABLAS
+================================================================================
+
+TABLAS BASE (sin dependencias)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Usuario (Tabla raíz - usuarios del sistema)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PK: id_usuario INT IDENTITY
+Campos:
+  - email: NVARCHAR(255) UNIQUE (login)
+  - nombre, apellido: NVARCHAR(100)
+  - telefono: NVARCHAR(20)
+  - rol: NVARCHAR(50) IN ('Cliente', 'Barbero', 'Dueño', 'Administrador')
+  - estado: BIT (1=activo, 0=inactivo)
+  - foto_perfil_url: NVARCHAR(MAX)
+  - fecha_registro, ultimo_login: DATETIME2
+  - createdAt, updatedAt: DATETIME2 (estándares)
+
+Índices:
+  IX_Usuario_Email - Para login rápido
+
+Constraints:
+  CHK_Rol - Valida roles válidos
+  CHK_Estado - Valida estado booleano
+
+
+Tienda (Barbería física)
+━━━━━━━━━━━━━━━━━━━━━━━
+PK: id_tienda INT IDENTITY
+FK: id_dueño INT → Usuario(id_usuario)
+Campos:
+  - nombre_tienda: NVARCHAR(150)
+  - direccion: NVARCHAR(MAX)
+  - ciudad, codigo_postal: NVARCHAR(100) / NVARCHAR(20)
+  - telefono_tienda: NVARCHAR(20)
+  - email_tienda: NVARCHAR(255)
+  - horario_apertura, horario_cierre: TIME
+  - dias_laborales: NVARCHAR(50)  (Ej: "Lunes-Sabado")
+  - calificacion_promedio: DECIMAL(3,2) DEFAULT 0 
+    (Calculada por trigger desde Reseña)
+  - este_activa: BIT DEFAULT 1
+  - createdAt, updatedAt: DATETIME2
+
+Índices:
+  FK_Tienda_Dueño - Automático
+  IX_Tienda_Activa - Para filtros de panel
+
+Constraints:
+  FK → Usuario (id_dueño)
+  CHK_Horario - apertura < cierre
+
+
+Servicio (Catálogo de servicios)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PK: id_servicio INT IDENTITY
+Campos:
+  - nombre_servicio: NVARCHAR(150)
+  - descripcion: NVARCHAR(MAX)
+  - duracion_minutos: INT (tiempo estándar)
+  - precio_base: DECIMAL(10,2) (catálogo base)
+  - activo: BIT DEFAULT 1
+  - createdAt, updatedAt: DATETIME2
+
+Notas:
+  - Precios específicos por tienda en tabla ServicioTienda
+  - Trigger AuditoriaPreciosServicio registra cambios
+
+Constraints:
+  CHK_Duracion - duracion > 0
+  CHK_PrecioServicio - precio >= 0
+
+
+Barbero (Profesionales en barberías)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PK: id_barbero INT IDENTITY
+FK: id_usuario INT → Usuario(id_usuario) UNIQUE
+FK: id_tienda INT → Tienda(id_tienda)
+Campos:
+  - especialidad: NVARCHAR(150) (Corte, Barba, Coloración, etc.)
+  - anos_experiencia: INT
+  - tarifa_base: DECIMAL(10,2) (por defecto)
+  - foto_perfil_url: NVARCHAR(MAX)
+  - calificacion_promedio: DECIMAL(3,2) DEFAULT 0
+    (Actualizado por trigger desde Reseña)
+  - total_resenas: INT DEFAULT 0
+  - activo: BIT DEFAULT 1
+  - createdAt, updatedAt: DATETIME2
+
+Notas:
+  - Es especialización de Usuario (herencia de datos)
+  - Calificación se actualiza con triggers
+
+Índices:
+  IX_Barbero_Tienda - Búsqueda de barberos por tienda
+
+
+TABLA DE RELACIÓN N:N
+━━━━━━━━━━━━━━━━━━━━
+
+ServicioTienda (Servicios ofrecidos por Tienda)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PK: id_servicio_tienda INT IDENTITY
+FK: id_servicio INT → Servicio(id_servicio)
+FK: id_tienda INT → Tienda(id_tienda)
+Campos:
+  - precio_tienda: DECIMAL(10,2) (puede diferir del precio base)
+  - disponible: BIT DEFAULT 1
+  - createdAt: DATETIME2
+
+Propósito:
+  - Permite que:
+    * Tienda A ofrezca "Corte" a $10 (Tienda B a $15)
+    * Tienda C NO ofrezca "Coloración"
+    * Diferentes servicios por tienda
+
+Constraints:
+  UK_ServicioTienda (id_servicio, id_tienda) - Evita duplicados
+
+
+TABLAS DE TRANSACCIONES
+━━━━━━━━━━━━━━━━━━━━━
+
+Cita (Reservas de clientes)
+━━━━━━━━━━━━━━━━━━━━━━━━
+PK: id_cita INT IDENTITY
+FK: id_cliente INT → Usuario(id_usuario) [El que agenda]
+FK: id_barbero INT → Barbero(id_barbero) [Quien atiende]
+FK: id_servicio INT → Servicio(id_servicio) [Qué servicio]
+FK: id_tienda INT → Tienda(id_tienda) [Dónde se hace]
+Campos:
+  - fecha_hora_inicio: DATETIME2
+  - duracion_minutos: INT (del servicio)
+  - estado: NVARCHAR(50) IN ('confirmada', 'cancelada', 'completada', 'no_presentado')
+  - monto_total: DECIMAL(10,2) (precio del servicio)
+  - pago_abono: DECIMAL(10,2) (abono inicial)
+  - metodo_pago: NVARCHAR(50) (efectivo, tarjeta, transferencia)
+  - notas: NVARCHAR(MAX)
+  - createdAt, updatedAt: DATETIME2
+
+Trigger crítico: trg_ValidarHorariosCita
+  - INSTEAD OF INSERT
+  - Previene citas solapadas del mismo barbero
+  - Verifica disponibilidad automáticamente
+
+Índices:
+  IX_Cita_Cliente - Listar mis citas
+  IX_Cita_Barbero - Citas del barbero
+  IX_Cita_BarberoDiaHora - Disponibilidad
+  IX_Cita_Estado - Filtrar por estado
+
+Constraints:
+  CHK_Estado - Estados válidos
+  CHK_Monto - Montos positivos
+
+
+Pago (Histórico de transacciones)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PK: id_pago INT IDENTITY
+FK: id_cita INT → Cita(id_cita)
+Campos:
+  - monto_pagado: DECIMAL(10,2)
+  - metodo_pago: NVARCHAR(50)
+  - estado_pago: NVARCHAR(50) IN ('completado', 'pendiente', 'fallido')
+  - referencia_transaccion: NVARCHAR(100) [Para pasarela de pagos]
+  - fecha_pago: DATETIME2 DEFAULT GETUTCDATE()
+  - createdAt: DATETIME2
+
+Notas:
+  - Separada de Cita para:
+    * Auditoría de pagos
+    * Permite pagos parciales (abono + saldo)
+    * No mezclar data transaccional con reserva
+
+Constraints:
+  CHK_MontoPago - monto > 0
+  CHK_EstadoPago - estados válidos
+
+
+Reseña (Calificaciones)
+━━━━━━━━━━━━━━━━━━━━━
+PK: id_resena INT IDENTITY
+FK: id_cita INT → Cita(id_cita) UNIQUE [1:1 relationship]
+FK: id_cliente INT → Usuario(id_usuario)
+FK: id_barbero INT → Barbero(id_barbero)
+FK: id_tienda INT → Tienda(id_tienda)
+Campos:
+  - puntuacion: INT (1-5)
+  - comentario: NVARCHAR(MAX)
+  - fecha_resena: DATETIME2 DEFAULT GETUTCDATE()
+  - createdAt: DATETIME2
+
+Triggers:
+  trg_ActualizarCalificacionBarbero - Calcula promedio de puntuaciones
+  trg_ActualizarCalificacionTienda - Calcula promedio de tienda
+
+Índices:
+  IX_Resena_Barbero - Para actualizar calificación
+  IX_Resena_Tienda
+
+
+TABLAS DE AUDITORÍA
+━━━━━━━━━━━━━━━━━━
+
+AuditoriaPreciosServicio (Historial de cambios de precio)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PK: id_auditoria INT IDENTITY
+FK: id_servicio INT → Servicio(id_servicio)
+FK: id_tienda INT → Tienda(id_tienda)
+FK: cambio_por_usuario INT → Usuario(id_usuario)
+Campos:
+  - precio_anterior: DECIMAL(10,2)
+  - precio_nuevo: DECIMAL(10,2)
+  - fecha_cambio: DATETIME2 DEFAULT GETUTCDATE()
+  - razon_cambio: NVARCHAR(MAX)
+
+Trigger: trg_AuditarPrecioServicio
+  - AFTER UPDATE en tabla Servicio
+  - Registra automáticamente cada cambio
+
+Propósito:
+  - Trazabilidad de cambios
+  - Análisis de ajustes de precios
+  - Compliance
+
+
+AuditoriaCancelacion (Historial de cancelaciones)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PK: id_auditoria INT IDENTITY
+FK: id_cita INT → Cita(id_cita)
+FK: cancelada_por INT → Usuario(id_usuario)
+Campos:
+  - motivo_cancelacion: NVARCHAR(MAX)
+  - ofrecer_reembolso: BIT
+  - porcentaje_reembolso: INT (0-100)
+  - fecha_cancelacion: DATETIME2 DEFAULT GETUTCDATE()
+
+Propósito:
+  - Trazabilidad de cancelaciones
+  - Análisis de patrones de cancelación
+  - Gestión de reembolsos
+
+
+4. RELACIONES Y CARDINALIDADES
+================================================================================
+
+RELACIONES PRIMARIAS (Negrita en diagrama)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Usuario → Tienda (1:N)
+  - 1 Usuario (Dueño) → N Tiendas
+  - Relación: id_dueño FK en Tienda
+
+Usuario → Barbero (1:N)
+  - 1 Usuario → N Barberos (puede ser barbero en múltiples tiendas)
+  - Relación: id_usuario FK en Barbero
+
+Tienda → Barbero (1:N)
+  - 1 Tienda → N Barberos
+  - Relación: id_tienda FK en Barbero
+
+Servicio ⟷ Tienda (N:N)
+  - N Servicios ⟷ N Tiendas
+  - Relación: tabla ServicioTienda (unión)
+
+Usuario (Cliente) → Cita (1:N)
+  - 1 Usuario → N Citas (como cliente)
+  - Relación: id_cliente FK en Cita
+
+Barbero → Cita (1:N)
+  - 1 Barbero → N Citas
+  - Relación: id_barbero FK en Cita
+
+Servicio → Cita (1:N)
+  - 1 Servicio → N Citas
+  - Relación: id_servicio FK en Cita
+
+Tienda → Cita (1:N)
+  - 1 Tienda → N Citas
+  - Relación: id_tienda FK en Cita
+
+Cita → Pago (1:N)
+  - 1 Cita → N Pagos (permite abono + saldo)
+  - Relación: id_cita FK en Pago
+
+Cita → Reseña (1:1)
+  - 1 Cita → 0 o 1 Reseña (UNIQUE en id_cita)
+  - Relación: id_cita FK UNIQUE en Reseña
+
+Usuario (Cliente) → Reseña (1:N)
+  - (Cliente) escriba N reseñas
+  - Relación: id_cliente FK en Reseña
+
+Barbero → Reseña (1:N)
+  - 1 Barbero recibe N reseñas
+  - Relación: id_barbero FK en Reseña
+
+Tienda → Reseña (1:N)
+  - 1 Tienda recibe N reseñas
+  - Relación: id_tienda FK en Reseña
+
+
+RELACIONES DE AUDITORÍA (Punteada en diagrama)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Servicio → AuditoriaPreciosServicio (1:N)
+Tienda → AuditoriaPreciosServicio (1:N)
+Usuario → AuditoriaPreciosServicio (1:N)
+
+Cita → AuditoriaCancelacion (1:N)
+Usuario → AuditoriaCancelacion (1:N)
+
+
+5. ÍNDICES Y PERFORMANCE
+================================================================================
+
+STRATÉGÍA DE INDIZACIÓN
+━━━━━━━━━━━━━━━━━━━━
+
+1. Índices en Foreign Keys (Automáticos)
+   SQL Server crea automáticamente índices en todas las FK
+   para eficiencia de JOINs
+
+2. Índices en Columnas de Búsqueda Frecuente
+   ✓ Usuario.email - LOGIN (búsqueda por email)
+   ✓ Barbero.id_tienda - LISTAR barberos de tienda
+   ✓ Tienda.este_activa - FILTRAR tiendas activas
+
+3. Índices Compuestos (Multi-columna)
+   ✓ Cita(id_barbero, fecha_hora_inicio DESC)
+     - Para: "Dame citas del barbero X ordenadas por fecha"
+   ✓ Cita(id_cliente, fecha_hora_inicio DESC)
+     - Para: "Dame mis citas ordenadas por fecha"
+
+4. Índices Filtrados
+   ✓ Cita(id_barbero, fecha_hora_inicio) WHERE estado = 'confirmada'
+     - SOLO citas activas, más rápido que incluir todas
+
+5. Índices de Auditoría
+   ✓ AuditoriaPreciosServicio(fecha_cambio DESC)
+   ✓ AuditoriaCancelacion(fecha_cancelacion DESC)
+     - Para: Reportes ordenados por fecha
+
+
+QUERIES OPTIMIZADAS POR ÍNDICES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Obtener disponibilidad de barbero
+   SELECT * FROM Cita
+   WHERE id_barbero = @id 
+   AND CAST(fecha_hora_inicio AS DATE) = @fecha
+   AND estado IN ('confirmada', 'completada')
+   INDEX: IX_Cita_BarberoDiaHora
+
+2. Listar mis citas
+   SELECT * FROM Cita c
+   WHERE id_cliente = @id
+   ORDER BY fecha_hora_inicio DESC
+   INDEX: IX_Cita_Cliente
+
+3. Buscar barbero por email (login)
+   SELECT * FROM Usuario WHERE email = @email
+   INDEX: IX_Usuario_Email
+
+4. Listar tiendas activas
+   SELECT * FROM Tienda WHERE este_activa = 1
+   INDEX: IX_Tienda_Activa
+
+
+6. OBJETOS DE BASE DE DATOS (SQL Server)
+================================================================================
+
+FUNCIONES (UDF - User Defined Functions)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ufn_CalcularVentasBarbero(@idBarbero, @fechaInicio, @fechaFin)
+  Retorna: DECIMAL(10,2)
+  Lógica: SUM(monto_total) WHERE id_barbero = @id AND estado = 'completada'
+         AND fecha_hora_inicio BETWEEN @inicio AND @fin
+  Uso: SELECT dbo.ufn_CalcularVentasBarbero(5, '2026-01-01', '2026-01-31')
+
+ufn_HorariosDisponibles(@idBarbero, @fecha)
+  Retorna: TABLE
+    ├─ id_barbero
+    ├─ horario_apertura
+    ├─ horario_cierre
+    └─ citas_programadas
+  Lógica: Obtiene horarios de tienda y cuenta citas en la fecha
+  Uso: SELECT * FROM dbo.ufn_HorariosDisponibles(5, '2026-04-15')
+
+ufn_VerificarDisponibilidad(@idBarbero, @fechaHora, @duracionMinutos)
+  Retorna: BIT (1=disponible, 0=no disponible)
+  Lógica: Verifica si hay solapamiento con otras citas
+  Condición: Dos citas solapan si:
+             - Nueva comienza ANTES que existente termina
+             - Y nueva termina DESPUÉS de existente comienza
+  Uso: IF dbo.ufn_VerificarDisponibilidad(5, '2026-04-15 10:00', 30) = 1
+
+
+STORED PROCEDURES (SP)
+━━━━━━━━━━━━━━━━━━━━
+
+usp_AgendarCita
+  @idCliente INT
+  @idBarbero INT
+  @idServicio INT
+  @fechaHoraInicio DATETIME2
+  @pagoAbono DECIMAL(10,2)
+  @metodoPago NVARCHAR(50)
+  @idCitaGenerada INT OUTPUT
+
+  Validaciones:
+    ✓ Cliente existe y está activo
+    ✓ Barbero existe y está activo
+    ✓ Servicio existe y está activo
+    ✓ Fecha en futuro
+    ✓ Barbero disponible (sin solapamiento)
+    ✓ Abono >= 20% del monto total
+
+  Transacción:
+    1. INSERT en Cita
+    2. INSERT en Pago (abono)
+    3. COMMIT o ROLLBACK
+
+  Retorna: @idCitaGenerada (id de cita creada)
+
+usp_CancelarCita
+  @idCita INT
+  @idUsuarioCancelacion INT
+  @motivoCancelacion NVARCHAR(MAX)
+  @ofrecerReembolso BIT = 0
+  @porcentajeReembolso INT = 0
+
+  Validaciones:
+    ✓ Cita existe
+    ✓ No está ya cancelada
+
+  Transacción:
+    1. UPDATE Cita SET estado = 'cancelada'
+    2. INSERT en AuditoriaCancelacion
+    3. COMMIT o ROLLBACK
+
+usp_ReporteVentasTienda
+  @idTienda INT
+  @fechaInicio DATETIME2
+  @fechaFin DATETIME2
+
+  Retorna: Tabla con:
+    ├─ total_citas
+    ├─ citas_completadas
+    ├─ citas_canceladas
+    ├─ total_ingresos
+    ├─ ingresos_completados
+    ├─ clientes_unicos
+    └─ calificacion_promedio
+
+
+TRIGGERS
+━━━━━━
+
+trg_ActualizarCalificacionBarbero
+  AFTER INSERT en Reseña
+  Actualiza:
+    - Barbero.calificacion_promedio (AVG de puntuaciones)
+    - Barbero.total_resenas (COUNT)
+    - Barbero.updatedAt
+
+trg_ActualizarCalificacionTienda
+  AFTER INSERT en Reseña
+  Actualiza:
+    - Tienda.calificacion_promedio (AVG de puntuaciones)
+    - Tienda.updatedAt
+
+trg_ValidarHorariosCita
+  INSTEAD OF INSERT en Cita
+  Valida: No hay solapamiento con otras citas del barbero
+  Si hay conflicto: RAISERROR y no inserta
+  Si está OK: Inserta normalmente
+
+trg_AuditarPrecioServicio
+  AFTER UPDATE en Servicio
+  Si precio_base cambió:
+    INSERT en AuditoriaPreciosServicio con valores antes/después
+
+
+VISTAS (Views)
+━━━━━━━━━━━━
+
+vw_CitasProximas
+  SELECT Citas confirmadas en próximos 30 días
+  Columnas: id_cita, fecha, cliente, barbero, servicio, tienda, monto, estado
+
+vw_CalificacionesBarbero
+  SELECT Resumen de calificaciones por barbero
+  Columnas: id_barbero, nombre, tienda, calificacion_promedio, total_resenas
+
+vw_VentasPorTienda
+  SELECT Resumen de ventas por tienda
+  Columnas: id_tienda, nombre, total_citas, completadas, canceladas, ingresos
+
+
+7. DIAGRAMA ER
+================================================================================
+
+Archivo: FadeBooker_ER_3NF.drawio
+Ubicación: Documentación/Material complementario/
+
+El diagrama muestra:
+✓ Todas las 10 tablas
+✓ Todas las FK y relaciones
+✓ Color por tipo: Base, Transacciones, Auditoría
+✓ Cardinalidades (1:1, 1:N, N:N)
+✓ UNIQUE constraints (líneas gruesas)
+
+CONVENCIONES DE COLOR:
+━━━━━━━━━━━━━━━━━━
+
+🟣 Púrpura - Tablas Base (Usuario, ServicioTienda, Auditoría)
+🟢 Verde   - Transacciones (Tienda, Cita, Pago)
+🟡 Amarillo- Maestros (Barbero, Servicio)
+🔴 Rojo    - Evaluación (Reseña)
+
+RELACIONES:
+━━━━━━━━━
+
+— Línea negrita = Relación funcional (activa)
+┈ Línea punteada = Relación de auditoría
+
+Cardinalidades:
+  "1" en un lado = máximo 1 registro
+  "N" en un lado = múltiples registros
+  "∞" en un lado = también significa N
+
+
+8. PASOS DE IMPLEMENTACIÓN
+================================================================================
+
+FASE 1: Crear Base de Datos y Tablas
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Ejecutar script: FadeBooker_ScriptBD.sql
+   - Crea todas las tablas con constraints
+   - Crea índices
+   - Crea vistas, funciones, SPs, triggers
+
+2. Verificar creación:
+   SELECT * FROM sys.tables;
+   SELECT * FROM sys.foreign_keys;
+   SELECT * FROM sys.indexes;
+
+FASE 2: Validar Integridad
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Verificar constraints:
+   DBCC CHECKDB (FadeBooker_DB);
+
+2. Verificar relaciones:
+   SELECT OBJECT_NAME(parent_object_id) AS tabla_padre,
+          OBJECT_NAME(referenced_object_id) AS tabla_hijo
+   FROM sys.foreign_keys;
+
+FASE 3: Población de Datos de Prueba
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Crear archivo: FadeBooker_DatosTest.sql
+2. Insertar:
+   - 3 Usuarios (Cliente, Barbero, Dueño)
+   - 2 Tiendas
+   - 2 Barberos
+   - 5 Servicios
+   - ServicioTienda (relaciones)
+   - 5 Citas de prueba
+   - Pagos y reseñas
+
+3. Verificar:
+   SELECT COUNT(*) FROM Usuario;    (3 registros)
+   SELECT COUNT(*) FROM Tienda;     (2 registros)
+   SELECT COUNT(*) FROM Cita;       (5 registros)
+
+FASE 4: Pruebas de Funcionalidad
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Test usp_AgendarCita:
+   EXEC usp_AgendarCita
+     @idCliente = 1,
+     @idBarbero = 1,
+     @idServicio = 1,
+     @fechaHoraInicio = '2026-04-15 10:00',
+     @pagoAbono = 5.00,
+     @metodoPago = 'efectivo',
+     @idCitaGenerada = @id OUTPUT;
+   SELECT @id AS CitaCreada;
+
+2. Test ufn_VerificarDisponibilidad:
+   SELECT dbo.ufn_VerificarDisponibilidad(1, '2026-04-15 10:30', 30);
+
+3. Test usp_CancelarCita:
+   EXEC usp_CancelarCita
+     @idCita = 1,
+     @idUsuarioCancelacion = 2,
+     @motivoCancelacion = 'Cliente solicitó',
+     @ofrecerReembolso = 1,
+     @porcentajeReembolso = 100;
+
+4. Test triggers:
+   - INSERT Reseña → verificar Barbero.calificacion_promedio actualizada
+   - UPDATE Servicio.precio → verificar AuditoriaPreciosServicio
+
+FASE 5: Optimización
+━━━━━━━━━━━━━━━━━
+
+1. Ejecutar Query Analyzer:
+   DBCC SHOW_STATISTICS ('dbo.Cita', 'IX_Cita_Barbero');
+
+2. Evaluar si se necesitan más índices
+
+3. Considerar vistas materializadas si queries lentas
+
+
+REFERENCES
+================================================================================
+
+SQL Server Documentation:
+- https://learn.microsoft.com/en-us/sql/
+- Normalization: https://learn.microsoft.com/en-us/office/access/...
+
+FadeBooker Resources:
+- Script SQL: FadeBooker_ScriptBD.sql
+- Diagrama ER: FadeBooker_ER_3NF.drawio
+- Datos de test: FadeBooker_DatosTest.sql (por crear)
+
+================================================================================
+Fin de documento
+Creado: 14 de abril de 2026
+Versión: 1.0.0
+================================================================================
