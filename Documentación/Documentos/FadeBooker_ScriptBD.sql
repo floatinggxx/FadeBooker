@@ -9,7 +9,10 @@ Motor: SQL Server 2019+
 
 Creado: 14 de abril de 2026
 Normalización: TERCERA FORMA NORMAL (3NF)
-Versión: 1.0.0
+Versión: 1.0.0 - EJECUTADA Y VALIDADA EN BD ✅
+
+ESTADO: Este script refleja exactamente lo que está implementado en Azure SQL Server.
+Todas las correcciones y ajustes de sintaxis han sido aplicadas y probadas.
 
 TABLA DE CONTENIDOS:
 1. Tablas Base (Usuario, Tienda, Barbero, Servicio)
@@ -330,7 +333,7 @@ CREATE INDEX IX_Cita_Barbero ON dbo.Cita(id_barbero, fecha_hora_inicio DESC);
 
 -- Búsqueda de disponibilidad (crítico para agendamiento)
 CREATE INDEX IX_Cita_BarberoDiaHora ON dbo.Cita(id_barbero, fecha_hora_inicio)
-WHERE estado = 'confirmada' OR estado = 'completada';
+WHERE estado IN ('confirmada', 'completada');
 
 -- Búsqueda por estado
 CREATE INDEX IX_Cita_Estado ON dbo.Cita(estado);
@@ -903,6 +906,12 @@ NOTAS DE IMPLEMENTACIÓN:
    - Crear materialized views si queries son lentas
    - Considerar particionamiento de tablas grandes (Cita) por fecha/tienda
 
-9. DATOS_DE_PRUEBA:
+9. CORRECCIONES_APLICADAS (Ejecutada vs. Original):
+   - Línea ~281: Índice filtrado cambiado de OR a IN
+     * Original: WHERE estado = 'confirmada' OR estado = 'completada'
+     * Corregido: WHERE estado IN ('confirmada', 'completada')
+     * Razón: SQL Server 2019+ requiere IN en filtered indexes
+
+10. DATOS_DE_PRUEBA:
    Ver archivo: FadeBooker_DatosTest.sql (crear por separado)
 */

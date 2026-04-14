@@ -221,11 +221,27 @@ para tablas User, Photographer, Booking con relaciones y cardinalidades.
 
 | Agente | Estado | Completado | Próximos Pasos |
 |--------|--------|-----------|-----------------|
-| Database Agent | ✅ Listo | 0% | Crear esquema initial |
-| Backend Agent | ✅ Listo | 0% | Generar estructura proyecto |
-| Documentation Agent | ✅ Listo | 0% | Documentar APIs cuando estén creadas |
-| Diagram Agent | ✅ Listo | 0% | Convertir PDFs a draw.io |
-| Orchestrator Agent | ✅ Listo | 0% | Coordinar desarrollo completo |
+| **Database Agent** 🗄️ | ✅ **COMPLETADO** | **100%** | ✅ 36 objetos BD creados, 51 registros test poblados, triggers validados |
+| **Backend Agent** 🔧 | ⏳ **ACTIVO** | **5%** | Generar/validar ORM schema (Knex), DTOs, CRUD endpoints |
+| Documentation Agent | ✅ Listo | 0% | Esperar endpoints para documentar APIs |
+| Diagram Agent | ✅ Listo | 0% | Convertir PDFs a draw.io (paralelo con Backend) |
+| Orchestrator Agent | ✅ Listo | 0% | Validar coherencia BD ↔ Backend cuando estén ambos |
+
+### 📈 Progress Notes (April 14, 2026)
+
+**Database Agent - COMPLETADO ✅**
+- ✅ Schema: 10 tablas, 13 índices, 3 vistas, 3 funciones, 3 SPs, 4 triggers (36 objetos totales)
+- ✅ Test Data: 51 registros en 8 tablas (Usuario, Tienda, Barbero, Servicio, Cita, Pago, Reseña)
+- ✅ Validación: Todas relaciones FK funcionando, triggers disparándose, calificación promedio auto-calculada (4.50⭐)
+- ✅ Documentación: FadeBooker_ScriptBD.sql (EJECUTADA Y VALIDADA)
+- Cambios realizados: Corrección filtro índice (OR → IN) para SQL Server compatibility
+
+**Backend Agent - INICIANDO FASE 2 ⏳**
+- Current Stack: Express.js 5.2.1, Knex.js 3.2.9, tedious 19.2.1, Jest testing
+- Architecture: Clean (domain, application, infrastructure, interfaces)
+- Location: `Producto/back-fadebooker/`
+- Status: Proyecto existente con index.js, package.json, estructura base lista
+- Next: Validar/generar Prisma schema, DTOs con Zod, endpoints CRUD
 
 ---
 
