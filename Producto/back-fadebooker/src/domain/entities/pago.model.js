@@ -1,10 +1,13 @@
 class Pago {
-    constructor(id_pago, monto, pago_abono, fecha, metodoPago) {
+    constructor({ id_pago, id_cita, monto_pagado, metodo_pago, estado_pago, referencia_transaccion, fecha_pago, createdAt }) {
         this.id_pago = id_pago;
-        this.monto = monto;
-        this.pago_abono = pago_abono;
-        this.fecha = fecha;
-        this.metodoPago = metodoPago;
+        this.id_cita = id_cita;
+        this.monto_pagado = monto_pagado;
+        this.metodo_pago = metodo_pago;
+        this.estado_pago = estado_pago;
+        this.referencia_transaccion = referencia_transaccion;
+        this.fecha_pago = fecha_pago;
+        this.createdAt = createdAt;
     }   
 }
 

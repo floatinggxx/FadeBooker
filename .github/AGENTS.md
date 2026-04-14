@@ -80,7 +80,7 @@ Incluir constraints de integridad referencial y índices por campos de búsqueda
 
 **Instrucciones:** [`.github/agents/backend-agent.md`](.github/agents/backend-agent.md)
 
-**Stack (inferido):** Node.js/TypeScript o C#/.NET (a confirmar)
+**Stack:** Node.js/JavaScript (backend actual en `Producto/back-fadebooker`)
 
 **Ejemplo de uso:**
 ```
@@ -178,83 +178,6 @@ para tablas User, Photographer, Booking con relaciones y cardinalidades.
 - Reporte de estado
 
 **Instrucciones:** [`.github/agents/orchestrator-agent.md`](.github/agents/orchestrator-agent.md)
-
-**Ejemplo de uso:**
-```
-@orchestrator-agent: [COMPLETE] Implementar Historia Usuario "Crear Reserva":
-1. Database Agent: tablas necesarias
-2. Backend Agent: endpoints y servicios
-3. Documentation Agent: APIs y guías
-4. Diagram Agent: actualizar diagrama de flujo
-```
-
----
-
-### 4️⃣ **Diagram Agent** 📐
-**Propósito:** Crear y mantener diagramas visuales usando draw.io
-
-**Responsabilidades:**
-- Convertir diagramas PDF a draw.io (ER, UML, Arquitectura)
-- Mantener diagramas actualizados con cambios de código/BD
-- Crear nuevos diagramas (flujos, componentes, secuencias)
-- Exportar diagramas a PNG/SVG para documentación
-- Versionear archivos `.drawio` en Git
-
-**Inputs:**
-- Diagramas existentes PDF (Documentación/Material complementario/)
-- Cambios en esquema de BD o arquitectura
-- Solicitudes de nuevos diagramas
-
-**Outputs:**
-- Archivos `.drawio` (carpeta `Documentación/diagramas/`)
-- Versiones PNG/SVG para documentación
-- Diagramas actualizados
-
-**Instrucciones:** [`.github/agents/diagram-agent.md`](.github/agents/diagram-agent.md)
-
-**Herramienta:** draw.io Integration extension en VS Code
-
-**Ejemplo de uso:**
-```
-@diagram-agent: Convertir FadeBooker_Diagrama_ER.pdf a draw.io. Crear archivos .drawio 
-para tablas User, Photographer, Booking con relaciones y cardinalidades.
-```
-
----
-
-### 5️⃣ **Orchestrator Agent** 🎛️ (Fase 2)
-**Propósito:** Coordinar el flujo completo de desarrollo entre agentes
-
-**Responsabilidades:**
-- Dirigir ejecución secuencial de agentes
-- Validar coherencia entre dominios (BD ↔ Backend ↔ Docs)
-- Integrar cambios de múltiples agentes
-- Reportar estado general del proyecto
-- Resolver conflictos o inconsistencias
-
-**Inputs:**
-- Solicitudes de desarrollo completo
-- Estado de cada agente
-- Cambios en múltiples dominios
-
-**Outputs:**
-- Flujo de ejecución coordinado
-- Validación de integridad
-- Resumen de cambios integrados
-- Reporte de estado
-
-**Instrucciones:** [`.github/agents/orchestrator-agent.md`](.github/agents/orchestrator-agent.md) (crear en Fase 2)
-
-**Ejemplo de uso:**
-```
-@orchestrator-agent: Implementar Historia Usuario "Crear Reserva" completa:
-1. Database Agent: tablas necesarias
-2. Backend Agent: endpoints y servicios
-3. Documentation Agent: APIs y guías
-4. Diagram Agent: actualizar diagrama de flujo
-```
-
----
 
 ## 📞 Coordinación Entre Agentes
 

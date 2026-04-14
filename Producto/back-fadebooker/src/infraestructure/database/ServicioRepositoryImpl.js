@@ -31,7 +31,12 @@ class ServicioRepositoryImpl {
   }
 
   async findByTienda(id_tienda) {
-    return this.db('Servicio').where({ Tienda_id_tienda: id_tienda }).select()
+    // Obtener servicios disponibles para una tienda usando ServicioTienda
+    return this.db('ServicioTienda')
+      .join('Servicio', 'ServicioTienda.id_servicio', '=', 'Servicio.id_servicio')
+      .where('ServicioTienda.id_tienda', id_tienda)
+      .where('ServicioTienda.disponible', true)
+      .select('Servicio.*', 'ServicioTienda.precio_tienda as precio')
   }
 }
 

@@ -6,7 +6,7 @@ const CitaService = {
     const existente = await db('Cita')
       .where({
         fecha_hora_inicio: data.fecha_hora_inicio,
-        Cliente_id_cliente: data.Cliente_id_cliente
+        id_cliente: data.id_cliente
       })
       .first()
 

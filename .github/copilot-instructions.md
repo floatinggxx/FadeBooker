@@ -62,9 +62,9 @@ FadeBooker/
 - **Variables código:** `camelCase`
 - **Constantes código:** `UPPER_SNAKE_CASE`
 
-### Lenguajes & Stack (Inferido)
+### Lenguajes & Stack
 - **BD:** SQL Server T-SQL
-- **Backend:** (Detectar de documentación - asumir Node.js/TypeScript o C#/.NET)
+- **Backend:** Node.js/JavaScript (actual backend en `Producto/back-fadebooker`)
 - **Documentación:** Markdown
 - **Diagramas:** draw.io
 

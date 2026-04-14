@@ -15,11 +15,34 @@ class CitaRepositoryImpl {
   }
 
   async findByClienteId(id_cliente) {
-    return this.db('Cita').where({ Cliente_id_cliente: id_cliente }).select()
+    return this.db('Cita').where({ id_cliente }).orderBy('fecha_hora_inicio', 'desc').select()
   }
 
   async findByBarberoId(id_barbero) {
-    return this.db('Cita').where({ Barbero_id_barbero: id_barbero }).select()
+    return this.db('Cita').where({ id_barbero }).orderBy('fecha_hora_inicio', 'desc').select()
+  }
+
+  async findByCliente(id_cliente) {
+    return this.db('Cita').where({ id_cliente }).orderBy('fecha_hora_inicio', 'desc').select()
+  }
+
+  async findByBarbero(id_barbero) {
+    return this.db('Cita').where({ id_barbero }).orderBy('fecha_hora_inicio', 'desc').select()
+  }
+
+  async verificarDisponibilidad(id_barbero, fecha_hora_inicio, duracion_minutos) {
+    const fecha_hora_fin = new Date(new Date(fecha_hora_inicio).getTime() + duracion_minutos * 60000)
+    return this.db('Cita')
+      .where({ id_barbero })
+      .whereIn('estado', ['confirmada', 'en_progreso'])
+      .where(kb => {
+        kb.whereBetween('fecha_hora_inicio', [fecha_hora_inicio, fecha_hora_fin])
+      })
+      .select()
+  }
+
+  async findAll() {
+    return this.db('Cita').orderBy('fecha_hora_inicio', 'desc').select()
   }
 
   async update(id, data) {
