@@ -33,7 +33,7 @@ module.exports = {
   moduleFileExtensions: ['js', 'json'],
 
   // Configuración de timeout
-  testTimeout: 10000,
+  testTimeout: 5000,
 
   // Mostrar avisos
   collectCoverage: true,

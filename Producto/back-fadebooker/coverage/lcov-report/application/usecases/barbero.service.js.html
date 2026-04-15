@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">76.92% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/13</span>
+                <span class='fraction'>10/13</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">66.66% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/9</span>
+                <span class='fraction'>6/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">76.92% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/13</span>
+                <span class='fraction'>10/13</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -105,20 +105,16 @@
 <a name='L40'></a><a href='#L40'>40</a>
 <a name='L41'></a><a href='#L41'>41</a>
 <a name='L42'></a><a href='#L42'>42</a>
-<a name='L43'></a><a href='#L43'>43</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L43'></a><a href='#L43'>43</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -126,19 +122,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -147,36 +143,40 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const BarberoRepository = <span class="cstat-no" title="statement not covered" >require('../../infraestructure/database/BarberoRepositoryImpl')</span>
-const barberoRepository = <span class="cstat-no" title="statement not covered" >new BarberoRepository()</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const BarberoRepository = require('../../infraestructure/database/BarberoRepositoryImpl')
+const barberoRepository = new BarberoRepository()
 &nbsp;
-const BarberoService = <span class="cstat-no" title="statement not covered" >{</span>
-<span class="fstat-no" title="function not covered" >  as</span>ync crearBarbero(data) {
-<span class="cstat-no" title="statement not covered" >    return barberoRepository.create(data)</span>
+const BarberoService = {
+  async crearBarbero(data) {
+    return barberoRepository.create(data)
   },
 &nbsp;
-<span class="fstat-no" title="function not covered" >  as</span>ync obtenerBarberoPorId(id) {
-<span class="cstat-no" title="statement not covered" >    return barberoRepository.findById(id)</span>
+  async obtenerBarberoPorId(id) {
+    return barberoRepository.findById(id)
   },
 &nbsp;
 <span class="fstat-no" title="function not covered" >  as</span>ync obtenerBarberoPorEmail(email) {
 <span class="cstat-no" title="statement not covered" >    return barberoRepository.findByEmail(email)</span>
   },
 &nbsp;
-<span class="fstat-no" title="function not covered" >  as</span>ync buscarBarberosPorEspecialidad(especialidad) {
-<span class="cstat-no" title="statement not covered" >    return barberoRepository.findByEspecialidad(especialidad)</span>
+  async buscarBarberosPorEspecialidad(especialidad) {
+    return barberoRepository.findByEspecialidad(especialidad)
   },
 &nbsp;
-<span class="fstat-no" title="function not covered" >  as</span>ync obtenerTodosLosBarberos() {
-<span class="cstat-no" title="statement not covered" >    return barberoRepository.findAll()</span>
+  async obtenerTodosLosBarberos() {
+    return barberoRepository.findAll()
   },
 &nbsp;
-<span class="fstat-no" title="function not covered" >  as</span>ync actualizarBarbero(id, data) {
-<span class="cstat-no" title="statement not covered" >    return barberoRepository.update(id, data)</span>
+  async actualizarBarbero(id, data) {
+    return barberoRepository.update(id, data)
   },
 &nbsp;
-<span class="fstat-no" title="function not covered" >  as</span>ync eliminarBarbero(id) {
-<span class="cstat-no" title="statement not covered" >    return barberoRepository.delete(id)</span>
+  async eliminarBarbero(id) {
+    return barberoRepository.delete(id)
   },
 &nbsp;
 <span class="fstat-no" title="function not covered" >  as</span>ync actualizarHorarioBarbero(id_barbero, horario) {
@@ -188,7 +188,7 @@ const BarberoService = <span class="cstat-no" title="statement not covered" >{</
   }
 }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >module.exports = BarberoService</span>
+module.exports = BarberoService
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -196,7 +196,7 @@ const BarberoService = <span class="cstat-no" title="statement not covered" >{</
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-14T21:46:28.968Z
+                at 2026-04-15T18:21:36.824Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

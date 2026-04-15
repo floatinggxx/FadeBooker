@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">81.81% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/11</span>
+                <span class='fraction'>9/11</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">71.42% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>5/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">81.81% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/11</span>
+                <span class='fraction'>9/11</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -97,20 +97,16 @@
 <a name='L32'></a><a href='#L32'>32</a>
 <a name='L33'></a><a href='#L33'>33</a>
 <a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L35'></a><a href='#L35'>35</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -118,7 +114,15 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -126,37 +130,33 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const ServicioRepository = <span class="cstat-no" title="statement not covered" >require('../../infraestructure/database/ServicioRepositoryImpl')</span>
-const servicioRepository = <span class="cstat-no" title="statement not covered" >new ServicioRepository()</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const ServicioRepository = require('../../infraestructure/database/ServicioRepositoryImpl')
+const servicioRepository = new ServicioRepository()
 &nbsp;
-const ServicioService = <span class="cstat-no" title="statement not covered" >{</span>
-<span class="fstat-no" title="function not covered" >  as</span>ync crearServicio(data) {
-<span class="cstat-no" title="statement not covered" >    return servicioRepository.create(data)</span>
+const ServicioService = {
+  async crearServicio(data) {
+    return servicioRepository.create(data)
   },
 &nbsp;
-<span class="fstat-no" title="function not covered" >  as</span>ync obtenerServicioPorId(id) {
-<span class="cstat-no" title="statement not covered" >    return servicioRepository.findById(id)</span>
+  async obtenerServicioPorId(id) {
+    return servicioRepository.findById(id)
   },
 &nbsp;
 <span class="fstat-no" title="function not covered" >  as</span>ync buscarServicioPorNombre(nombre) {
 <span class="cstat-no" title="statement not covered" >    return servicioRepository.findByNombre(nombre)</span>
   },
 &nbsp;
-<span class="fstat-no" title="function not covered" >  as</span>ync obtenerTodosLosServicios() {
-<span class="cstat-no" title="statement not covered" >    return servicioRepository.findAll()</span>
+  async obtenerTodosLosServicios() {
+    return servicioRepository.findAll()
   },
 &nbsp;
-<span class="fstat-no" title="function not covered" >  as</span>ync actualizarServicio(id, data) {
-<span class="cstat-no" title="statement not covered" >    return servicioRepository.update(id, data)</span>
+  async actualizarServicio(id, data) {
+    return servicioRepository.update(id, data)
   },
 &nbsp;
-<span class="fstat-no" title="function not covered" >  as</span>ync eliminarServicio(id) {
-<span class="cstat-no" title="statement not covered" >    return servicioRepository.delete(id)</span>
+  async eliminarServicio(id) {
+    return servicioRepository.delete(id)
   },
 &nbsp;
 <span class="fstat-no" title="function not covered" >  as</span>ync obtenerServiciosPorTienda(id_tienda) {
@@ -164,7 +164,7 @@ const ServicioService = <span class="cstat-no" title="statement not covered" >{<
   }
 }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >module.exports = ServicioService</span>
+module.exports = ServicioService
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -172,7 +172,7 @@ const ServicioService = <span class="cstat-no" title="statement not covered" >{<
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-14T21:46:28.968Z
+                at 2026-04-15T18:21:36.824Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
