@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>0/13</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/13</span>
+                <span class='fraction'>0/13</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -77,42 +77,42 @@
 <a name='L12'></a><a href='#L12'>12</a>
 <a name='L13'></a><a href='#L13'>13</a>
 <a name='L14'></a><a href='#L14'>14</a>
-<a name='L15'></a><a href='#L15'>15</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L15'></a><a href='#L15'>15</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">const express = require('express')
-const router = express.Router()
-const ClienteController = require('../controllers/cliente.controller')
+<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const express = <span class="cstat-no" title="statement not covered" >require('express')</span>
+const router = <span class="cstat-no" title="statement not covered" >express.Router()</span>
+const ClienteController = <span class="cstat-no" title="statement not covered" >require('../controllers/cliente.controller')</span>
 &nbsp;
-router.post('/', ClienteController.crear)
-router.get('/', ClienteController.obtenerTodos)
-router.get('/buscar', ClienteController.buscarPorNombre)
-router.get('/telefono/:telefono', ClienteController.buscarPorTelefono)
-router.get('/email/:email', ClienteController.obtenerPorEmail)
-router.get('/:id', ClienteController.obtenerPorId)
-router.put('/:id', ClienteController.actualizar)
-router.put('/:id/puntos', ClienteController.actualizarPuntos)
-router.delete('/:id', ClienteController.eliminar)
+<span class="cstat-no" title="statement not covered" >router.post('/', ClienteController.crear)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/', ClienteController.obtenerTodos)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/buscar', ClienteController.buscarPorNombre)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/telefono/:telefono', ClienteController.buscarPorTelefono)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/email/:email', ClienteController.obtenerPorEmail)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/:id', ClienteController.obtenerPorId)</span>
+<span class="cstat-no" title="statement not covered" >router.put('/:id', ClienteController.actualizar)</span>
+<span class="cstat-no" title="statement not covered" >router.put('/:id/puntos', ClienteController.actualizarPuntos)</span>
+<span class="cstat-no" title="statement not covered" >router.delete('/:id', ClienteController.eliminar)</span>
 &nbsp;
-module.exports = router</pre></td></tr></table></pre>
+<span class="cstat-no" title="statement not covered" >module.exports = router</span></pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-16T20:33:43.689Z
+                at 2026-04-21T19:07:19.436Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

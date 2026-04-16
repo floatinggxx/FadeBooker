@@ -10,22 +10,22 @@ Motor: Azure SQL Server 2019+
 Status: ✅ ACTIVA
 ```
 
-## Tablas Principales
+## Tablas Principales (v1.1.0)
 
-| Tabla | Registros | Propósito |
-|-------|-----------|----------|
-| **Usuario** | 6 | Base para authentication |
-| **Cliente** | 2 | Clientes que reservan citas |
-| **Barbero** | 2 | Barberos que atienden |
-| **Tienda** | 2 | Ubicaciones de barberías |
-| **Servicio** | 7 | Catálogo de servicios |
-| **ServicioTienda** | N | Servicios por tienda (con precios) |
-| **Cita** | 10 | Reservas de clientes |
-| **Pago** | 9 | Registros de pagos |
-| **Reseña** | 2 | Calificaciones de clientes |
-| **AuditLog** | N | Registro de cambios |
+| Tabla | Registros | Propósito | Estado |
+|-------|-----------|----------|--------|
+| **Usuario** | 6 | Base para authentication | ✅ |
+| **Tienda** | 2 | Ubicaciones de barberías | ✅ |
+| **Barbero** | 2 | Barberos que atienden | ✅ |
+| **Servicio** | 7 | Catálogo de servicios | ✅ |
+| **ServicioTienda** | N | ❌ ELIMINADA en v1.1.0 | 🔴 |
+| **ServicioBarbero** | N | ✅ NUEVA en v1.1.0 - Servicios por barbero | ✅ |
+| **Cita** | 10 | Reservas de clientes | ✅ |
+| **Pago** | 9 | Registros de pagos | ✅ |
+| **Reseña** | 2 | Calificaciones de clientes | ✅ |
+| **AuditLog** | N | Registro de cambios | ✅ |
 
-## Relaciones Principales
+## Relaciones Principales (v1.1.0)
 
 ```
 Usuario
@@ -35,7 +35,10 @@ Usuario
 
 Tienda
 ├─ Barbero (1:N)
-├─ ServicioTienda (1:N)
+└─ Cita (1:N)
+
+Barbero (ACTUALIZADO v1.1.0)
+├─ ServicioBarbero (1:N) ← NUEVO
 └─ Cita (1:N)
 
 Cita
@@ -92,6 +95,17 @@ Documentación/Documentos/FadeBooker_DatosTest.sql
 
 ## Últimos Cambios
 
+### v1.1.0 (16 de abril 2026) - ✅ COMPLETADA
+- ✅ Refactorización: ServicioTienda → ServicioBarbero
+- ✅ Servicios ahora vinculados directamente con Barberos (no Tiendas)
+- ✅ Evita problema: agendar servicio que barbero no puede hacer
+- ✅ Soporte para precios y duraciones personalizadas por barbero
+- ✅ Nuevos índices optimizados
+- ✅ Validación en usp_AgendarCita para ServicioBarbero
+- ✅ Backend actualizado con repositorios y servicios
+- ✅ Documentación actualizada
+
+### v1.0.0 (14 de abril 2026)
 - ✅ Schema completamente normalizado (3NF)
 - ✅ Triggers validando integridad
 - ✅ Índices optimizando queries

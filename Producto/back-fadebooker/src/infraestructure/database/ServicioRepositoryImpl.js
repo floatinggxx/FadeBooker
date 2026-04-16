@@ -30,13 +30,24 @@ class ServicioRepositoryImpl {
     return this.db('Servicio').select()
   }
 
-  async findByTienda(id_tienda) {
-    // Obtener servicios disponibles para una tienda usando ServicioTienda
-    return this.db('ServicioTienda')
-      .join('Servicio', 'ServicioTienda.id_servicio', '=', 'Servicio.id_servicio')
-      .where('ServicioTienda.id_tienda', id_tienda)
-      .where('ServicioTienda.disponible', true)
-      .select('Servicio.*', 'ServicioTienda.precio_tienda as precio')
+  /**
+   * ACTUALIZADO (v1.1.0): Obtener servicios disponibles para un barbero específico
+   * Reemplaza findByTienda() con lógica de ServicioBarbero
+   * 
+   * @param {number} id_barbero - ID del barbero
+   * @returns {Promise<Array>} Servicios que puede ofrecer el barbero
+   */
+  async findByBarbero(id_barbero) {
+    // Obtener servicios disponibles para un barbero usando ServicioBarbero
+    return this.db('ServicioBarbero')
+      .join('Servicio', 'ServicioBarbero.id_servicio', '=', 'Servicio.id_servicio')
+      .where('ServicioBarbero.id_barbero', id_barbero)
+      .where('ServicioBarbero.disponible', true)
+      .select(
+        'Servicio.*',
+        this.db.raw('ISNULL(ServicioBarbero.precio_barbero, Servicio.precio_base) as precio'),
+        this.db.raw('ISNULL(ServicioBarbero.tiempo_servicio_minutos, Servicio.duracion_minutos) as duracion')
+      )
   }
 }
 

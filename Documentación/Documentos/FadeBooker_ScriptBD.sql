@@ -8,11 +8,18 @@ Base de Datos: FadeBooker_DB
 Motor: SQL Server 2019+
 
 Creado: 14 de abril de 2026
+Actualizado: 16 de abril de 2026
 Normalización: TERCERA FORMA NORMAL (3NF)
-Versión: 1.0.0 - EJECUTADA Y VALIDADA EN BD ✅
+Versión: 1.1.0 - REFACTORIZACIÓN: ServicioTienda → ServicioBarbero ✅
 
-ESTADO: Este script refleja exactamente lo que está implementado en Azure SQL Server.
-Todas las correcciones y ajustes de sintaxis han sido aplicadas y probadas.
+CAMBIOS PRINCIPALES (v1.1.0):
+- ELIMINADA tabla ServicioTienda (relación Servicio ↔ Tienda)
+- CREADA tabla ServicioBarbero (relación Servicio ↔ Barbero)
+- ACTUALIZADA validación en usp_AgendarCita
+- ACTUALIZADO schema de auditoría para nuevas relaciones
+- RAZÓN: Evitar problema donde barbero no pueda hacer servicio disponible en tienda
+
+ESTADO: Script refactorizado y listo para aplicar en BD.
 
 TABLA DE CONTENIDOS:
 1. Tablas Base (Usuario, Tienda, Barbero, Servicio)
@@ -35,7 +42,7 @@ DROP TABLE IF EXISTS dbo.AuditoriaPreciosServicio;
 DROP TABLE IF EXISTS dbo.Reseña;
 DROP TABLE IF EXISTS dbo.Pago;
 DROP TABLE IF EXISTS dbo.Cita;
-DROP TABLE IF EXISTS dbo.ServicioTienda;
+DROP TABLE IF EXISTS dbo.ServicioBarbero;
 DROP TABLE IF EXISTS dbo.Servicio;
 DROP TABLE IF EXISTS dbo.Barbero;
 DROP TABLE IF EXISTS dbo.Tienda;
@@ -154,28 +161,35 @@ CREATE TABLE dbo.Servicio (
 );
 
 /**
-  TABLA: ServicioTienda (TABLA DE UNIÓN - N:N optimizada)
-  DESCRIPCIÓN: Permite que cada tienda ofrezca servicios con precios específicos
+  TABLA: ServicioBarbero (TABLA DE UNIÓN - N:N optimizada)
+  DESCRIPCIÓN: Relaciona Servicios que puede ofrecer cada Barbero
   NORMALIZACIÓN: 2NF (Tabla de relación sin atributos dinámicos)
   
+  CAMBIO (v1.1.0): Se cambió de ServicioTienda (Servicio ↔ Tienda)
+                   a ServicioBarbero (Servicio ↔ Barbero)
+  RAZÓN: Evita que se agenden citas para servicios que el barbero no puede hacer
+  
   Permite:
-  - Servicios diferentes por tienda
-  - Precios diferentes por tienda
-  - Barberos que ofrecen servicios específicos
+  - Cada barbero tiene servicios específicos que puede ofrecer
+  - Precios específicos por barbero para cada servicio
+  - Duración personalizada si es diferente a la estándar
 */
-CREATE TABLE dbo.ServicioTienda (
-    id_servicio_tienda INT IDENTITY(1,1) PRIMARY KEY,
+CREATE TABLE dbo.ServicioBarbero (
+    id_servicio_barbero INT IDENTITY(1,1) PRIMARY KEY,
     id_servicio INT NOT NULL,
-    id_tienda INT NOT NULL,
-    precio_tienda DECIMAL(10,2) NOT NULL,
+    id_barbero INT NOT NULL,
+    precio_barbero DECIMAL(10,2),           -- NULL = usar precio_base del servicio
+    tiempo_servicio_minutos INT,            -- NULL = usar duracion_minutos del servicio
     disponible BIT NOT NULL DEFAULT 1,
     createdAt DATETIME2 DEFAULT GETUTCDATE(),
+    updatedAt DATETIME2 DEFAULT GETUTCDATE(),
     
     -- Constraints
-    CONSTRAINT FK_ServicioTienda_Servicio FOREIGN KEY (id_servicio) REFERENCES dbo.Servicio(id_servicio),
-    CONSTRAINT FK_ServicioTienda_Tienda FOREIGN KEY (id_tienda) REFERENCES dbo.Tienda(id_tienda),
-    CONSTRAINT UK_ServicioTienda UNIQUE(id_servicio, id_tienda),
-    CONSTRAINT CHK_PrecioTienda CHECK (precio_tienda >= 0)
+    CONSTRAINT FK_ServicioBarbero_Servicio FOREIGN KEY (id_servicio) REFERENCES dbo.Servicio(id_servicio) ON DELETE CASCADE,
+    CONSTRAINT FK_ServicioBarbero_Barbero FOREIGN KEY (id_barbero) REFERENCES dbo.Barbero(id_barbero) ON DELETE CASCADE,
+    CONSTRAINT UK_ServicioBarbero UNIQUE(id_servicio, id_barbero),
+    CONSTRAINT CHK_PrecioBarbero CHECK (precio_barbero IS NULL OR precio_barbero >= 0),
+    CONSTRAINT CHK_TiempoServicio CHECK (tiempo_servicio_minutos IS NULL OR tiempo_servicio_minutos > 0)
 );
 
 -- ============================================================================
@@ -280,14 +294,17 @@ CREATE TABLE dbo.Reseña (
 
 /**
   TABLA: AuditoriaPreciosServicio
-  DESCRIPCIÓN: Histórico de cambios en precios de servicios
+  DESCRIPCIÓN: Histórico de cambios en precios de servicios (por barbero o global)
   NORMALIZACIÓN: 1NF (Tabla de auditoría, solo lectura después de insert)
   PROPÓSITO: Trazabilidad completa de cambios de precios
+  
+  ACTUALIZACIÓN (v1.1.0): Agregada columna id_barbero para auditar cambios de precio
+                          específicos por barbero en tabla ServicioBarbero
 */
 CREATE TABLE dbo.AuditoriaPreciosServicio (
     id_auditoria INT IDENTITY(1,1) PRIMARY KEY,
     id_servicio INT NOT NULL,
-    id_tienda INT,
+    id_barbero INT,                    -- NULL = cambio global en Servicio.precio_base
     precio_anterior DECIMAL(10,2),
     precio_nuevo DECIMAL(10,2),
     cambio_por_usuario INT,
@@ -296,7 +313,7 @@ CREATE TABLE dbo.AuditoriaPreciosServicio (
     
     -- Constraints
     CONSTRAINT FK_AuditPrecio_Servicio FOREIGN KEY (id_servicio) REFERENCES dbo.Servicio(id_servicio),
-    CONSTRAINT FK_AuditPrecio_Tienda FOREIGN KEY (id_tienda) REFERENCES dbo.Tienda(id_tienda),
+    CONSTRAINT FK_AuditPrecio_Barbero FOREIGN KEY (id_barbero) REFERENCES dbo.Barbero(id_barbero),
     CONSTRAINT FK_AuditPrecio_Usuario FOREIGN KEY (cambio_por_usuario) REFERENCES dbo.Usuario(id_usuario)
 );
 
@@ -341,8 +358,15 @@ CREATE INDEX IX_Cita_Estado ON dbo.Cita(estado);
 -- Búsqueda de barberos por tienda
 CREATE INDEX IX_Barbero_Tienda ON dbo.Barbero(id_tienda);
 
--- Búsqueda de servicios por tienda
-CREATE INDEX IX_ServicioTienda_Tienda ON dbo.ServicioTienda(id_tienda);
+-- Búsqueda de servicios por barbero (NUEVO - v1.1.0)
+CREATE INDEX IX_ServicioBarbero_Barbero ON dbo.ServicioBarbero(id_barbero);
+
+-- Búsqueda de barberos por servicio (NUEVO - v1.1.0)
+CREATE INDEX IX_ServicioBarbero_Servicio ON dbo.ServicioBarbero(id_servicio);
+
+-- Búsqueda de servicios disponibles (NUEVO - v1.1.0)
+CREATE INDEX IX_ServicioBarbero_Disponible ON dbo.ServicioBarbero(disponible)
+WHERE disponible = 1;
 
 -- Búsqueda de reseñas por barbero para calificación promedio
 CREATE INDEX IX_Resena_Barbero ON dbo.Reseña(id_barbero);
@@ -530,6 +554,7 @@ GO
 /**
   STORED PROCEDURE: usp_AgendarCita
   DESCRIPCIÓN: Crea una nueva cita con validaciones completas
+  ACTUALIZACIÓN (v1.1.0): Valida que barbero pueda hacer el servicio (existe en ServicioBarbero)
   PARÁMETROS: cliente, barbero, servicio, tienda, fecha/hora, abono, método pago
   RETORNA: @resultado (tabla con estado y id_cita)
 */
@@ -565,15 +590,24 @@ BEGIN
             RAISERROR('Servicio no disponible', 16, 1);
         END
         
-        -- Validación 4: Fecha en futuro
+        -- Validación 4: NUEVO (v1.1.0) - Barbero puede hacer el servicio
+        IF NOT EXISTS (SELECT 1 FROM dbo.ServicioBarbero WHERE id_barbero = @idBarbero AND id_servicio = @idServicio AND disponible = 1)
+        BEGIN
+            RAISERROR('El barbero no ofrece este servicio', 16, 1);
+        END
+        
+        -- Validación 5: Fecha en futuro
         IF @fechaHoraInicio <= GETUTCDATE()
         BEGIN
             RAISERROR('La fecha debe ser en el futuro', 16, 1);
         END
         
-        -- Validación 5: Disponibilidad de barbero
+        -- Validación 6: Disponibilidad de barbero
         DECLARE @duracion INT;
-        SELECT @duracion = duracion_minutos FROM dbo.Servicio WHERE id_servicio = @idServicio;
+        SELECT @duracion = ISNULL(sb.tiempo_servicio_minutos, s.duracion_minutos)
+        FROM dbo.Servicio s
+        LEFT JOIN dbo.ServicioBarbero sb ON s.id_servicio = sb.id_servicio AND sb.id_barbero = @idBarbero
+        WHERE s.id_servicio = @idServicio;
         
         IF dbo.ufn_VerificarDisponibilidad(@idBarbero, @fechaHoraInicio, @duracion) = 0
         BEGIN
@@ -585,9 +619,14 @@ BEGIN
         DECLARE @montoTotal DECIMAL(10,2);
         
         SELECT @idTienda = id_tienda FROM dbo.Barbero WHERE id_barbero = @idBarbero;
-        SELECT @montoTotal = precio_base FROM dbo.Servicio WHERE id_servicio = @idServicio;
         
-        -- Validación 6: Abono válido
+        -- ACTUALIZADO (v1.1.0): Obtener precio del barbero o usar precio_base del servicio
+        SELECT @montoTotal = ISNULL(sb.precio_barbero, s.precio_base)
+        FROM dbo.Servicio s
+        LEFT JOIN dbo.ServicioBarbero sb ON s.id_servicio = sb.id_servicio AND sb.id_barbero = @idBarbero
+        WHERE s.id_servicio = @idServicio;
+        
+        -- Validación 7: Abono válido
         IF @pagoAbono < (@montoTotal * 0.2)  -- Mínimo 20% de abono
         BEGIN
             RAISERROR('El abono mínimo es el 20% del monto total', 16, 1);
@@ -858,60 +897,164 @@ GO
 /*
 NOTAS DE IMPLEMENTACIÓN:
 
-1. NORMALIZACIÓN A 3NF:
-   ✓ 1NF: Todos los atributos son atómicos (no arrays, no valores multivalor)
-   ✓ 2NF: Todas las columnas dependen de la clave completa (no dependencias parciales)
-   ✓ 3NF: No hay dependencias transitivas (cada columna depende SOLO de la clave primaria)
+CAMBIOS EN VERSIÓN 1.1.0 (16 de abril de 2026):
+================================================================================
+
+1. REFACTORIZACIÓN PRINCIPAL: ServicioTienda → ServicioBarbero
+   ✓ ELIMINADA: Tabla ServicioTienda (relación Servicio ↔ Tienda)
+   ✓ CREADA: Tabla ServicioBarbero (relación Servicio ↔ Barbero)
+   ✓ RAZÓN: Evitar problema donde se agenda servicio que barbero no sabe hacer
    
-   Excepción deliberada: id_tienda en tabla Cita (desnormalizado por performance)
-   Justificación: Reduce JOINs frecuentes sin sacrificar integridad
+2. NUEVAS COLUMNAS EN ServicioBarbero:
+   ✓ precio_barbero: NULLABLE - Permite override de precio por barbero
+   ✓ tiempo_servicio_minutos: NULLABLE - Permite override de duración por barbero
+   ✓ disponible: BIT - Control granular de disponibilidad por barbero/servicio
+   
+3. ACTUALIZACIONES A TABLAS:
+   ✓ AuditoriaPreciosServicio: Agregada columna id_barbero (nullable)
+     - NULL = cambio global en precio base del servicio
+     - NOT NULL = cambio específico de barbero en ServicioBarbero
+   
+4. ACTUALIZACIONES A ÍNDICES:
+   ✓ ELIMINADO: IX_ServicioTienda_Tienda
+   ✓ AGREGADOS:
+     - IX_ServicioBarbero_Barbero (búsqueda servicios de un barbero)
+     - IX_ServicioBarbero_Servicio (búsqueda barberos que hacen servicio)
+     - IX_ServicioBarbero_Disponible (filtro disponibilidad)
+   
+5. ACTUALIZACIONES A STORED PROCEDURE usp_AgendarCita:
+   ✓ Validación 4 (NUEVA): Verifica que barbero puede hacer el servicio
+   ✓ Duracion: Obtiene tiempo_servicio_minutos de ServicioBarbero o duracion_minutos de Servicio
+   ✓ Precio: Obtiene precio_barbero de ServicioBarbero o precio_base de Servicio
+   
+LÓGICA DE HERENCIA DE VALORES:
+================================================================================
+Para cada cita se calcula:
 
-2. ÍNDICES:
-   - Creados en columnas frecuentemente buscadas
-   - FK automáticamente indexadas por SQL Server
-   - Índices compuestos para queries comunes (Barbero + Fecha)
-   - Índices filtrados para performance (WHERE estado = 'confirmada')
+DURACIÓN:
+  IF ServicioBarbero.tiempo_servicio_minutos IS NOT NULL
+    THEN usar ServicioBarbero.tiempo_servicio_minutos
+  ELSE
+    usar Servicio.duracion_minutos
 
-3. CONSTRAINTS:
-   - CHECK: Validaciones de rango (puntuación 1-5, estado válido, etc.)
-   - FK: Integridad referencial con cascada ON DELETE
-   - UNIQUE: Prevención de duplicados (email, ServicioTienda)
-   - PRIMARY KEY: Identificación única
+PRECIO:
+  IF ServicioBarbero.precio_barbero IS NOT NULL
+    THEN usar ServicioBarbero.precio_barbero
+  ELSE
+    usar Servicio.precio_base
 
-4. VISTAS:
-   - Mejoran legibilidad de queries complejas
-   - Pueden tener índices materializados si necesario (SQL 2012+)
+DISPONIBILIDAD:
+  Requiere: ServicioBarbero.disponible = 1 AND Barbero.activo = 1
 
-5. FUNCIONES E ÍNDICES:
-   - Encapsulan lógica reutilizable
-   - Mejoran performance con precálculos
-   - TDV (Table-Valued Functions) para queries dinámicas
+NORMALIZACIÓN A 3NF (CONFORME):
+================================================================================
+✓ 1NF: Todos los atributos son atómicos (no arrays, no valores multivalor)
+✓ 2NF: Todas las columnas dependen de la clave completa (no dependencias parciales)
+✓ 3NF: No hay dependencias transitivas (cada columna depende SOLO de la clave primaria)
 
-6. STORED PROCEDURES:
-   - Control transaccional explícito (BEGIN TRANSACTION)
-   - Validaciones completas antes de insertar
-   - Manejo robusto de errores (TRY/CATCH)
-   - OUTPUT parameters para retornar IDs
+Excepciones deliberadas:
+✓ id_tienda en tabla Cita (desnormalizado por performance)
+  - Se puede derivar de Cita.id_barbero → Barbero.id_tienda
+  - Se mantiene para reducir JOINs frecuentes
 
-7. TRIGGERS:
-   - Mantienen integridad de datos (actualizaciones en cascada)
-   - Previenen inserciones inválidas (INSTEAD OF)
-   - Auditoría automática de cambios
-   - **NOTA**: En producción, considerar performance vs. funcionalidad
+ÍNDICES OPTIMIZADOS (CONFORME):
+================================================================================
+- Creados en columnas frecuentemente buscadas y filtradas
+- Foreign Keys automáticamente indexadas por SQL Server
+- Índices compuestos para queries comunes (Barbero + Fecha)
+- Índices filtrados para performance (WHERE estado = 'confirmada')
 
-8. PASOS_SIGUIENTES:
-   - Crear ROLES y permisos (Database Role para lectura, escritura)
-   - Definir BACKUP strategy
-   - Monitorear índices con query analyzer
-   - Crear materialized views si queries son lentas
-   - Considerar particionamiento de tablas grandes (Cita) por fecha/tienda
+CONSTRAINTS Y VALIDACIONES (CONFORME):
+================================================================================
+- CHECK: Validaciones de rango (puntuación 1-5, estado válido, precios >= 0, etc.)
+- FK: Integridad referencial con ON DELETE CASCADE para mantener consistencia
+- UNIQUE: Prevención de duplicados (email, ServicioBarbero(id_barbero, id_servicio))
+- PRIMARY KEY: Identificación única de cada registro
+- Triggers: Validaciones automáticas y actualizaciones en cascada
 
-9. CORRECCIONES_APLICADAS (Ejecutada vs. Original):
-   - Línea ~281: Índice filtrado cambiado de OR a IN
-     * Original: WHERE estado = 'confirmada' OR estado = 'completada'
-     * Corregido: WHERE estado IN ('confirmada', 'completada')
-     * Razón: SQL Server 2019+ requiere IN en filtered indexes
+VISTAS PARA QUERIES COMUNES:
+================================================================================
+✓ vw_CitasProximas: Citas confirmadas próximas (próximos 30 días)
+✓ vw_CalificacionesBarbero: Resumen de calificaciones por barbero
+✓ vw_VentasPorTienda: Resumen de ventas y citas por tienda
 
-10. DATOS_DE_PRUEBA:
-   Ver archivo: FadeBooker_DatosTest.sql (crear por separado)
+FUNCIONES UDF REUTILIZABLES:
+================================================================================
+✓ ufn_CalcularVentasBarbero: Calcula ventas totales en período
+✓ ufn_HorariosDisponibles: Obtiene horarios disponibles para barbero/fecha
+✓ ufn_VerificarDisponibilidad: Verifica si barbero disponible (previene solapamiento)
+
+PASOS PARA APLICAR ESTA ACTUALIZACIÓN:
+================================================================================
+1. BACKUP de BD actual:
+   - BACKUP DATABASE FadeBooker_DB TO DISK = 'C:\backups\FadeBooker_DB_pre_v1.1.bak'
+
+2. EJECUTAR SCRIPT DE LIMPIEZA (si existe BD anterior):
+   - Uncomment la sección "LIMPIAR OBJETOS PREVIOS" al inicio del script
+
+3. EJECUTAR TODO EL SCRIPT:
+   - En Azure SQL o SSMS, ejecutar FadeBooker_ScriptBD_v1.1.sql completo
+
+4. VERIFICAR INTEGRIDAD:
+   - SELECT OBJECT_NAME(object_id) FROM sys.indexes WHERE name LIKE 'IX_ServicioBarbero%'
+   - SELECT * FROM sys.foreign_keys WHERE referenced_table_name = 'ServicioBarbero'
+
+5. POBLAR DATOS DE PRUEBA:
+   - Ejecutar FadeBooker_DatosTest_v1.1.sql
+
+6. VALIDAR:
+   - Verificar que no hay citas sin relación en ServicioBarbero
+   - Verificar triggers funcionan (insertar reseña, verificar calificación se actualiza)
+   - Verificar SPs funcionan (agendar cita con validación de barbero/servicio)
+
+DATOS A MIGRAR (SI ES NECESARIO):
+================================================================================
+Si había datos en ServicioTienda y se quiere migrar:
+
+-- Migración de ServicioTienda → ServicioBarbero
+-- Supuesto: Cada tienda tiene 1 barbero, o todos los barberos pueden hacer todos los servicios
+INSERT INTO dbo.ServicioBarbero (id_servicio, id_barbero, precio_barbero, disponible)
+SELECT DISTINCT 
+    st.id_servicio,
+    b.id_barbero,
+    st.precio_tienda,  -- Usar precio_tienda como precio_barbero inicial
+    st.disponible
+FROM dbo.ServicioTienda st
+INNER JOIN dbo.Barbero b ON st.id_tienda = b.id_tienda
+WHERE NOT EXISTS (SELECT 1 FROM dbo.ServicioBarbero WHERE id_servicio = st.id_servicio AND id_barbero = b.id_barbero);
+
+-- DESPUÉS de esta migración, verificar integridad y tomar decisiones para barberos que quizá no deben hacer ciertos servicios
+
+ROLLBACK EN CASO DE ERROR:
+================================================================================
+Si hay problema durante ejecución:
+1. ROLLBACK TRANSACTION; (automático en TRY/CATCH)
+2. Restaurar del backup
+3. Revisar errores en SQL Server Event Viewer
+4. Contactar @database-agent para debugging
+
+MÉTRICAS DE VALIDACIÓN POST-ACTUALIZACIÓN:
+================================================================================
+✓ Tablas creadas: 10 (sin ServicioTienda, con ServicioBarbero)
+✓ Índices creados: 13 (actualizado con ServicioBarbero indices)
+✓ Vistas creadas: 3 (sin cambios)
+✓ Funciones UDF: 3 (sin cambios)
+✓ Stored Procedures: 3 (actualizado usp_AgendarCita)
+✓ Triggers: 4 (sin cambios directos, pero funcionan con nueva tabla)
+✓ Foreign Keys: 19+ (actualizado con nuevas FK a ServicioBarbero)
+
+PRÓXIMOS PASOS:
+================================================================================
+1. @backend-agent: Actualizar RepositoryImpl para usar ServicioBarbero
+   - Crear ServicioBarberoRepositoryImpl
+   - Actualizar ServicioRepositoryImpl.findByBarbero()
+   - Actualizar BarberoRepositoryImpl.getServicios()
+
+2. @documentation-agent: Actualizar documentación
+   - Actualizar DATABASE.md
+   - Actualizar diagrama ER
+
+3. @orchestrator-agent: Validar coherencia
+   - Verificar endpoints retornan servicios del barbero
+   - Verificar agendamiento valida ServicioBarbero
 */

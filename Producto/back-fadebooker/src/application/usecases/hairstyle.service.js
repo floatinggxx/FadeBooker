@@ -19,6 +19,11 @@ const HairstyleService = {
    */
   generateUploadSignature(params = {}) {
     try {
+      // Verificar que Cloudinary esté configurado
+      if (!cloudinaryConfig.isConfigured) {
+        throw new Error('Cloudinary no está configurado. Por favor, configura las variables de entorno CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, y CLOUDINARY_API_SECRET en el archivo .env');
+      }
+
       const folder = params.folder || 'user_photos';
       const timestamp = Math.floor(Date.now() / 1000);
       
@@ -73,6 +78,11 @@ const HairstyleService = {
    */
   generateHairstyleSimulation(params = {}) {
     try {
+      // Verificar que Cloudinary esté configurado
+      if (!cloudinaryConfig.isConfigured) {
+        throw new Error('Cloudinary no está configurado. Por favor, configura las variables de entorno CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, y CLOUDINARY_API_SECRET en el archivo .env');
+      }
+
       const { publicId, styleId } = params;
       
       // Validar parámetros

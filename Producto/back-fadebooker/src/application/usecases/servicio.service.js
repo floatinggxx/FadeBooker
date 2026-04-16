@@ -1,6 +1,13 @@
 const ServicioRepository = require('../../infraestructure/database/ServicioRepositoryImpl')
 const servicioRepository = new ServicioRepository()
 
+/**
+ * ServicioService
+ * 
+ * ACTUALIZADO (v1.1.0):
+ * - Método findByTienda() reemplazado con findByBarbero()
+ * - Servicios ahora se obtienen a nivel de barbero, no de tienda
+ */
 const ServicioService = {
   async crearServicio(data) {
     return servicioRepository.create(data)
@@ -26,8 +33,15 @@ const ServicioService = {
     return servicioRepository.delete(id)
   },
 
-  async obtenerServiciosPorTienda(id_tienda) {
-    return servicioRepository.findByTienda(id_tienda)
+  /**
+   * ACTUALIZADO (v1.1.0): Obtiene servicios disponibles para un barbero específico
+   * Reemplaza obtenerServiciosPorTienda()
+   * 
+   * @param {number} id_barbero - ID del barbero
+   * @returns {Promise<Array>} Servicios que puede ofrecer el barbero
+   */
+  async obtenerServiciosPorBarbero(id_barbero) {
+    return servicioRepository.findByBarbero(id_barbero)
   }
 }
 

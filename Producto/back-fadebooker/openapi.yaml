@@ -1,0 +1,737 @@
+openapi: 3.0.0
+info:
+  title: FadeBooker API
+  description: |
+    Sistema de gestión de citas para barberías - Marketplace de barbería
+    
+    **Versión:** 1.10.0 (con ServicioBarbero refactor)
+    
+    **Base URL:** `http://localhost:3000/api`
+    
+    **Cambios principales (v1.10.0):**
+    - Servicios ahora vinculados directamente con Barberos
+    - Nuevos endpoints para gestión de servicios por barbero
+    - Validación en agendamiento para evitar servicios que barbero no puede hacer
+  version: 1.10.0
+  contact:
+    name: FadeBooker Team
+    email: team@fadebooker.com
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:3000/api
+    description: Development server
+  - url: https://fadebooker-api.azurewebsites.net/api
+    description: Production server
+
+paths:
+  /barberos/{id}/servicios:
+    get:
+      summary: Obtener servicios de un barbero
+      description: |
+        Retorna todos los servicios que puede ofrecer un barbero específico.
+        
+        **Nuevo en v1.10.0:** Reemplaza la búsqueda por tienda con búsqueda por barbero
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del barbero
+      responses:
+        '200':
+          description: Lista de servicios del barbero
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServicioBarbero'
+        '404':
+          description: Barbero no encontrado
+      tags:
+        - ServicioBarbero
+
+    post:
+      summary: Agregar servicio a un barbero
+      description: |
+        Asigna un servicio específico a un barbero con opción de override de precio y duración.
+        
+        **Nuevo en v1.10.0:** Permite que dueños de tiendas/admins asignen servicios a barberos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del barbero
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServicioBarberoCreate'
+      responses:
+        '201':
+          description: Servicio agregado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id_servicio_barbero:
+                    type: integer
+                  mensaje:
+                    type: string
+        '400':
+          description: Datos inválidos
+        '409':
+          description: Barbero ya tiene este servicio
+      tags:
+        - ServicioBarbero
+
+  /barberos/{id}/servicios/{id_servicio}:
+    delete:
+      summary: Remover servicio de un barbero
+      description: |
+        Elimina la relación entre un servicio y un barbero específico.
+        
+        **Nuevo en v1.10.0:** Permite que dueños/admins remuevan servicios de barberos
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del barbero
+        - name: id_servicio
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del servicio
+      responses:
+        '200':
+          description: Servicio removido exitosamente
+        '404':
+          description: Relación no encontrada
+      tags:
+        - ServicioBarbero
+
+  /servicios/{id}/barberos:
+    get:
+      summary: Obtener barberos que hacen un servicio
+      description: |
+        Retorna todos los barberos que pueden ofrecer un servicio específico.
+        
+        **Nuevo en v1.10.0:** Útil para listar barberos disponibles para un servicio
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del servicio
+      responses:
+        '200':
+          description: Lista de barberos que ofrecen el servicio
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BarberoServicio'
+        '404':
+          description: Servicio no encontrado
+      tags:
+        - ServicioBarbero
+
+  /servicios/{id_barbero}/{id_servicio}/precio:
+    get:
+      summary: Obtener precio efectivo del servicio para un barbero
+      description: |
+        Retorna el precio a cobrar considerando overrides de precio por barbero.
+        
+        **Lógica (v1.10.0):**
+        ```
+        IF ServicioBarbero.precio_barbero IS NOT NULL
+          THEN precio_efectivo = ServicioBarbero.precio_barbero
+        ELSE
+          precio_efectivo = Servicio.precio_base
+        ```
+      parameters:
+        - name: id_barbero
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del barbero
+        - name: id_servicio
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del servicio
+      responses:
+        '200':
+          description: Precio efectivo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id_barbero:
+                    type: integer
+                  id_servicio:
+                    type: integer
+                  precio_base:
+                    type: number
+                    format: decimal
+                  precio_barbero:
+                    type: number
+                    format: decimal
+                    nullable: true
+                  precio_efectivo:
+                    type: number
+                    format: decimal
+        '404':
+          description: Relación no encontrada
+      tags:
+        - ServicioBarbero
+
+  /servicios/{id_barbero}/{id_servicio}/duracion:
+    get:
+      summary: Obtener duración efectiva del servicio para un barbero
+      description: |
+        Retorna la duración a usar considerando overrides de duración por barbero.
+        
+        **Lógica (v1.10.0):**
+        ```
+        IF ServicioBarbero.tiempo_servicio_minutos IS NOT NULL
+          THEN duracion_efectiva = ServicioBarbero.tiempo_servicio_minutos
+        ELSE
+          duracion_efectiva = Servicio.duracion_minutos
+        ```
+      parameters:
+        - name: id_barbero
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del barbero
+        - name: id_servicio
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del servicio
+      responses:
+        '200':
+          description: Duración efectiva
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id_barbero:
+                    type: integer
+                  id_servicio:
+                    type: integer
+                  duracion_base:
+                    type: integer
+                    description: duracion_minutos
+                  tiempo_servicio_minutos:
+                    type: integer
+                    nullable: true
+                  duracion_efectiva:
+                    type: integer
+        '404':
+          description: Relación no encontrada
+      tags:
+        - ServicioBarbero
+
+  # ============================================================================
+  # CITAS ENDPOINTS (ACTUALIZADOS v1.10.0)
+  # ============================================================================
+
+  /citas:
+    post:
+      summary: Agendar cita
+      description: |
+        Crea una nueva cita con validaciones completas.
+        
+        **Validaciones (v1.10.0):**
+        1. Cliente existe y activo
+        2. Barbero existe y activo
+        3. Servicio existe y activo
+        4. **NUEVO:** Barbero PUEDE HACER el servicio (existe en ServicioBarbero)
+        5. Fecha es en futuro
+        6. Barbero disponible (sin solapamientos)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id_cliente
+                - id_barbero
+                - id_servicio
+                - fecha_hora_inicio
+                - pago_abono
+                - metodo_pago
+              properties:
+                id_cliente:
+                  type: integer
+                  description: ID del cliente
+                id_barbero:
+                  type: integer
+                  description: ID del barbero
+                id_servicio:
+                  type: integer
+                  description: ID del servicio
+                fecha_hora_inicio:
+                  type: string
+                  format: date-time
+                  description: Fecha y hora de inicio
+                pago_abono:
+                  type: number
+                  format: decimal
+                  description: Monto de abono (mínimo 20% del total)
+                metodo_pago:
+                  type: string
+                  enum: [efectivo, tarjeta, transferencia]
+                notas:
+                  type: string
+                  description: Notas adicionales (opcional)
+      responses:
+        '201':
+          description: Cita agendada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id_cita:
+                    type: integer
+                  id_cliente:
+                    type: integer
+                  id_barbero:
+                    type: integer
+                  id_servicio:
+                    type: integer
+                  fecha_hora_inicio:
+                    type: string
+                    format: date-time
+                  duracion_minutos:
+                    type: integer
+                    description: "Heredada de ServicioBarbero o Servicio"
+                  monto_total:
+                    type: number
+                    format: decimal
+                    description: "Heredado de ServicioBarbero o Servicio"
+                  pago_abono:
+                    type: number
+                    format: decimal
+                  estado:
+                    type: string
+                    default: confirmada
+        '400':
+          description: Validación fallida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+        - Citas
+
+  /citas/{id}:
+    get:
+      summary: Obtener detalles de una cita
+      description: |
+        Retorna información completa de una cita incluyendo:
+        - Datos del cliente y barbero
+        - Información del servicio
+        - Detalles de la tienda
+        
+        **Nuevo en v1.10.0:** Incluye información de precios/duraciones efectivas
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la cita
+      responses:
+        '200':
+          description: Detalles de la cita
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CitaDetallada'
+        '404':
+          description: Cita no encontrada
+      tags:
+        - Citas
+
+  # ============================================================================
+  # SERVICIOS ENDPOINTS (ACTUALIZADOS v1.10.0)
+  # ============================================================================
+
+  /servicios:
+    get:
+      summary: Obtener todos los servicios
+      description: Retorna lista completa de servicios disponibles
+      responses:
+        '200':
+          description: Lista de servicios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Servicio'
+      tags:
+        - Servicios
+
+    post:
+      summary: Crear nuevo servicio
+      description: Solo para administradores
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServicioCreate'
+      responses:
+        '201':
+          description: Servicio creado
+        '400':
+          description: Datos inválidos
+      tags:
+        - Servicios
+
+  /servicios/{id}:
+    get:
+      summary: Obtener servicio específico
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalles del servicio
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Servicio'
+      tags:
+        - Servicios
+
+  # ============================================================================
+  # BARBEROS ENDPOINTS (ACTUALIZADOS v1.10.0)
+  # ============================================================================
+
+  /barberos:
+    get:
+      summary: Obtener todos los barberos
+      description: Retorna lista de barberos activos
+      responses:
+        '200':
+          description: Lista de barberos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Barbero'
+      tags:
+        - Barberos
+
+  /barberos/{id}:
+    get:
+      summary: Obtener detalles de un barbero
+      description: |
+        Retorna información del barbero incluyendo:
+        - Datos personales
+        - Especialidad
+        - Calificación promedio
+        - Total de reseñas
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalles del barbero
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Barbero'
+      tags:
+        - Barberos
+
+components:
+  schemas:
+    # ========================================================================
+    # SCHEMAS - ServicioBarbero (NUEVOS v1.10.0)
+    # ========================================================================
+
+    ServicioBarbero:
+      type: object
+      properties:
+        id_servicio_barbero:
+          type: integer
+          description: ID de la relación
+        id_servicio:
+          type: integer
+        id_barbero:
+          type: integer
+        nombre_servicio:
+          type: string
+        descripcion:
+          type: string
+        duracion_minutos:
+          type: integer
+          description: Duración estándar del servicio
+        precio_base:
+          type: number
+          format: decimal
+        precio_barbero:
+          type: number
+          format: decimal
+          nullable: true
+          description: Override de precio para este barbero
+        tiempo_servicio_minutos:
+          type: integer
+          nullable: true
+          description: Override de duración para este barbero
+        precio:
+          type: number
+          format: decimal
+          description: "Precio efectivo (heredado)"
+        duracion:
+          type: integer
+          description: "Duración efectiva (heredada)"
+
+    ServicioBarberoCreate:
+      type: object
+      required:
+        - id_servicio
+      properties:
+        id_servicio:
+          type: integer
+          description: ID del servicio a asignar
+        precio_barbero:
+          type: number
+          format: decimal
+          nullable: true
+          description: Precio override (opcional, usa precio_base si no se proporciona)
+        tiempo_servicio_minutos:
+          type: integer
+          nullable: true
+          description: Duración override en minutos (opcional)
+
+    BarberoServicio:
+      type: object
+      properties:
+        id_barbero:
+          type: integer
+        nombre:
+          type: string
+        apellido:
+          type: string
+        email:
+          type: string
+        especialidad:
+          type: string
+        calificacion_promedio:
+          type: number
+          format: decimal
+        precio_barbero:
+          type: number
+          format: decimal
+          nullable: true
+        tiempo_servicio_minutos:
+          type: integer
+          nullable: true
+
+    # ========================================================================
+    # SCHEMAS - Cita (ACTUALIZADO v1.10.0)
+    # ========================================================================
+
+    CitaDetallada:
+      type: object
+      properties:
+        id_cita:
+          type: integer
+        id_cliente:
+          type: integer
+        cliente_nombre:
+          type: string
+        cliente_email:
+          type: string
+        id_barbero:
+          type: integer
+        barbero_nombre:
+          type: string
+        barbero_email:
+          type: string
+        id_servicio:
+          type: integer
+        nombre_servicio:
+          type: string
+        fecha_hora_inicio:
+          type: string
+          format: date-time
+        duracion_minutos:
+          type: integer
+          description: "Obtenida de ServicioBarbero o Servicio"
+        estado:
+          type: string
+          enum: [confirmada, cancelada, completada, no_presentado]
+        monto_total:
+          type: number
+          format: decimal
+          description: "Obtenido de ServicioBarbero o Servicio"
+        pago_abono:
+          type: number
+          format: decimal
+        id_tienda:
+          type: integer
+        nombre_tienda:
+          type: string
+
+    # ========================================================================
+    # SCHEMAS - Entidades Principales
+    # ========================================================================
+
+    Servicio:
+      type: object
+      properties:
+        id_servicio:
+          type: integer
+        nombre_servicio:
+          type: string
+        descripcion:
+          type: string
+        duracion_minutos:
+          type: integer
+        precio_base:
+          type: number
+          format: decimal
+        activo:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ServicioCreate:
+      type: object
+      required:
+        - nombre_servicio
+        - duracion_minutos
+        - precio_base
+      properties:
+        nombre_servicio:
+          type: string
+        descripcion:
+          type: string
+        duracion_minutos:
+          type: integer
+          minimum: 1
+        precio_base:
+          type: number
+          format: decimal
+          minimum: 0
+
+    Barbero:
+      type: object
+      properties:
+        id_barbero:
+          type: integer
+        id_usuario:
+          type: integer
+        id_tienda:
+          type: integer
+        nombre:
+          type: string
+        apellido:
+          type: string
+        email:
+          type: string
+        telefono:
+          type: string
+        especialidad:
+          type: string
+        anos_experiencia:
+          type: integer
+        tarifa_base:
+          type: number
+          format: decimal
+        calificacion_promedio:
+          type: number
+          format: decimal
+          minimum: 0
+          maximum: 5
+        total_resenas:
+          type: integer
+        activo:
+          type: boolean
+
+    Usuario:
+      type: object
+      properties:
+        id_usuario:
+          type: integer
+        email:
+          type: string
+          format: email
+        nombre:
+          type: string
+        apellido:
+          type: string
+        telefono:
+          type: string
+        rol:
+          type: string
+          enum: [Cliente, Barbero, Dueño, Administrador]
+        estado:
+          type: boolean
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Mensaje de error descriptivo
+          example: "Validación fallida"
+
+tags:
+  - name: ServicioBarbero
+    description: "NUEVO (v1.10.0) - Gestión de servicios por barbero. Reemplaza la búsqueda por tienda."
+  - name: Citas
+    description: "Agendamiento de citas. ACTUALIZADO (v1.10.0): Validación de ServicioBarbero incluida."
+  - name: Servicios
+    description: "Catálogo de servicios"
+  - name: Barberos
+    description: "Gestión de barberos"
+
+x-info:
+  version: "1.10.0"
+  lastUpdated: "2026-04-16"
+  changes:
+    - name: "ServicioBarbero Refactor"
+      description: "Relación Servicio ↔ Barbero en lugar de Servicio ↔ Tienda"
+      endpoints: [6, "GET /api/barberos/:id/servicios", "POST /api/barberos/:id/servicios", "DELETE /api/barberos/:id/servicios/:id_servicio", "GET /api/servicios/:id/barberos", "GET /api/servicios/:id_barbero/:id_servicio/precio", "GET /api/servicios/:id_barbero/:id_servicio/duracion"]
