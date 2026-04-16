@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">42.85% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/14</span>
+                <span class='fraction'>6/14</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">28.57% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>2/7</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">42.85% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/14</span>
+                <span class='fraction'>6/14</span>
             </div>
         
             
@@ -108,31 +108,27 @@
 <a name='L43'></a><a href='#L43'>43</a>
 <a name='L44'></a><a href='#L44'>44</a>
 <a name='L45'></a><a href='#L45'>45</a>
-<a name='L46'></a><a href='#L46'>46</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L46'></a><a href='#L46'>46</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -153,13 +149,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const CitaRepository = <span class="cstat-no" title="statement not covered" >require('../../infraestructure/database/CitaRepositoryImpl')</span>
-const citaRepository = <span class="cstat-no" title="statement not covered" >new CitaRepository()</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const CitaRepository = require('../../infraestructure/database/CitaRepositoryImpl')
+const citaRepository = new CitaRepository()
 &nbsp;
-const CitaService = <span class="cstat-no" title="statement not covered" >{</span>
-<span class="fstat-no" title="function not covered" >  as</span>ync crearCita(data) {
+const CitaService = {
+  async crearCita(data) {
     // validar disponibilidad
-    const existente = <span class="cstat-no" title="statement not covered" >await citaRepository.findByFecha(data.fecha_hora_inicio)</span>
+    const existente = await citaRepository.findByFecha(data.fecha_hora_inicio)
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    if (existente &amp;&amp; existente.length &gt; 0) {</span>
 <span class="cstat-no" title="statement not covered" >      throw new Error('Horario no disponible')</span>
@@ -172,8 +172,8 @@ const CitaService = <span class="cstat-no" title="statement not covered" >{</spa
     })
   },
 &nbsp;
-<span class="fstat-no" title="function not covered" >  as</span>ync actualizarEstado(id, estado) {
-<span class="cstat-no" title="statement not covered" >    return citaRepository.update(id, { estado })</span>
+  async actualizarEstado(id, estado) {
+    return citaRepository.update(id, { estado })
   },
 &nbsp;
 <span class="fstat-no" title="function not covered" >  as</span>ync obtenerCitaPorId(id) {
@@ -197,7 +197,7 @@ const CitaService = <span class="cstat-no" title="statement not covered" >{</spa
   }
 }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >module.exports = CitaService</span>
+module.exports = CitaService
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -205,7 +205,7 @@ const CitaService = <span class="cstat-no" title="statement not covered" >{</spa
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-14T21:46:28.968Z
+                at 2026-04-15T18:21:36.824Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

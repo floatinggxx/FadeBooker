@@ -39,64 +39,99 @@ npm run test:unit
 
 ## Archivos de Test
 
-### Unit Tests
+### Integration Tests (6 archivos - IMPLEMENTADOS)
 
 | Archivo | Tests | Cubre |
 |---------|-------|-------|
-| `hairstyle.service.test.js` | 20+ | Firma SHA-1, simulación, estilos, errores |
-| `usuario.model.test.js` | 5+ | Validación de usuario |
+| `app.test.js` | 4 | Health check, rutas principales, 404 handling |
+| `usuario.routes.test.js` | 2 | POST /register, POST /login |
+| `barbero.routes.test.js` | 6 | CRUD + especialidad + disponibilidad |
+| `cliente.routes.test.js` | 3 | GET, POST, GET/:id |
+| `cita.routes.test.js` | 3 | POST, PUT estado, validaciones |
+| `servicio.routes.test.js` | 5 | CRUD + búsqueda + tienda |
+
+**Total:** 23 tests de integración (validación de rutas y endpoints)
+
+### Unit Tests (5 archivos)
+
+| Archivo | Tests | Cubre |
+|---------|-------|-------|
+| `hairstyle.service.test.js` | 3 | Firma SHA-1, estilos (5), errores |
+| `usuario.model.test.js` | 2+ | Validación de usuario |
 | `barbero.model.test.js` | 5+ | Validación de barbero |
-| `barberoRepository.test.js` | 5+ | CRUD de barbero |
-| `resena.model.test.js` | 5+ | Validación de reseña |
+| `barberoRepository.test.js` | 2+ | Sincronización BD |
+| `resena.model.test.js` | 2+ | Validación de reseña |
 
-**Total:** 40+ tests de unidad
+**Total:** 14+ tests unitarios
 
-### Integration Tests
-
-Estructura preparada en `tests/integration/` (a desarrollar)
+**TOTAL GENERAL:** ~37+ tests (23 integración + 14 unidad)
 
 ## Cobertura Actual
 
 ```
-Statements:        95% (450/475)
-Branches:          90% (180/200)
-Functions:         95% (95/100)
-Lines:             95% (440/463)
+⚠️ Coverage Status: Partial
+├─ Integration Routes:   ✅ 6/7 route files tested
+├─ Models:              ⚠️ 3/10 models have tests
+├─ Repositories:        ⚠️ 1/5 repositories have tests
+├─ Controllers:         ❌ 0/6 controllers tested
+└─ Services:            ⚠️ 2/7 services tested
 ```
 
-## Tests Implementados - Hairstyle Service
-
-### generateUploadSignature()
-```javascript
-✅ Genera firma válida sin parámetros
-✅ Genera firma con carpeta personalizada
-✅ Firma es consistente para mismos parámetros
-✅ Incluye timestamp
-✅ Incluye cloudName y apiKey
+**Estimado por módulo:**
+```
+Hairstyle Module:      95%+ (Cloudinary: 3 tests)
+User Module:           70%+ (Models: 2 tests)
+Barbero Module:        75%+ (Model+Repo: 7 tests)
+Cita Module:           40%+ (Integration only: 3 tests)
+Servicio Module:       50%+ (Integration only: 5 tests)
+Cliente Module:        60%+ (Integration only: 3 tests)
 ```
 
-### generateHairstyleSimulation()
+## Tests Implementados - Por Módulo
+
+### 🔐 Hairstyle Service (3 tests)
 ```javascript
-✅ Genera URL para degradado
-✅ Genera URL para clasico
-✅ Genera URL para moderno
-✅ Genera URL para mohicano
-✅ Genera URL para buzzcut
-✅ URL incluye transformaciones correctas
-✅ URL incluye gravity faces
-✅ Lanza error sin publicId
-✅ Lanza error sin styleId
-✅ Lanza error para styleId inválido
-✅ Mensajes de error incluyen estilos válidos
-✅ URL incluye formato correcto (.jpg)
+✅ generateUploadSignature() - Genera firma válida
+✅ generateHairstyleSimulation() - Simula cortes (degradado, clasico, moderno, mohicano, buzzcut)
+✅ Error handling - Validaciones y edge cases
 ```
 
-### Edge Cases
+### 👤 Usuario Module (2 tests)
 ```javascript
-✅ Maneja publicId con caracteres especiales
-✅ Maneja publicId con múltiples niveles de carpeta
-✅ Valida case-sensitive en styleId
-✅ Maneja errores en API Secret missing
+✅ usuario.model.test.js - Constructor, validaciones
+✅ usuario.routes.test.js - POST /register, POST /login
+```
+
+### 💈 Barbero Module (7 tests)
+```javascript
+✅ barbero.model.test.js - Entity validation (5 tests)
+✅ barberoRepository.test.js - BD sync (2 tests)
+✅ barbero.routes.test.js - 9 endpoints (6 tests)
+```
+
+### 📅 Cita Module (3 tests)
+```javascript
+✅ cita.routes.test.js - POST, PUT/:id/estado, validaciones (3 tests)
+⚠️ Missing: cita.service.js tests
+⚠️ Missing: cita.model.js tests
+```
+
+### 👥 Cliente Module (3 tests)
+```javascript
+✅ cliente.routes.test.js - GET, POST, GET/:id (3 tests)
+⚠️ Missing: cliente.model.js, cliente.service.js tests
+```
+
+### 💇 Servicio Module (5 tests)
+```javascript
+✅ servicio.routes.test.js - CRUD + búsqueda (5 tests)
+⚠️ Missing: servicio.model.js, servicio.service.js tests
+```
+
+### ⭐ Reseña Module (2 tests)
+```javascript
+✅ resena.model.test.js - Entity validation (2 tests)
+⚠️ Missing: routes, service tests
 ```
 
 ## Mejores Prácticas Seguidas

@@ -2,24 +2,24 @@
 
 ## [1.2.0] - 16 de Abril de 2026
 
-### 🎨 Cloudinary Integration ✅
-- **Agregado:** Integración completa con Cloudinary para simular cortes de pelo
-- **Endpoints:** 
-  - `POST /api/hairstyle/signature` - Firma SHA-1 para subidas seguras
-  - `POST /api/hairstyle/simulate` - Simular corte con overlay
-- **Archivos:** 5 nuevos archivos de código
-- **Tests:** 20+ tests unitarios (>95% coverage)
-- **Estilos:** 5 cortes disponibles (degradado, clasico, moderno, mohicano, buzzcut)
-- **Seguridad:** API Secret protegido, validaciones, error handling
+### ✅ Cloudinary Integration ✅
+- **Integración** completa con Cloudinary para simular cortes de pelo
+- **Endpoints:** 2 nuevos (/api/hairstyle/signature, /api/hairstyle/simulate)
+- **Archivos:** 5 nuevos de código
+- **Tests:** 3 unit tests + 23 integration tests (26 total)
+- **Estilos:** 5 cortes disponibles
+- **Seguridad:** SHA-1 signing, timestamp validation, API Secret protected
 
 ### 📚 Documentación Consolidada ✅
-- **Cambio:** Unificados 10+ archivos MD en 5 documentos principales
-  - `DATABASE.md` - Esquema y tablas
-  - `BACKEND.md` - Estructura y servicios
-  - `CLOUDINARY.md` - Endpoints y uso
-  - `TESTING.md` - Guía de tests
-  - `CHANGELOG.md` - Este archivo
-- **Beneficio:** Documentación más concisa y navegable
+- **Consolidados:** 10+ archivos MD → 6 documentos limpios
+- **Added:** ALIGNMENT_REPORT_20260416.md (audit findings)
+- **Clarificaciones:** 33 endpoints (not 15), 10 models (not 4)
+
+### 🚨 CRITICAL ISSUE FOUND
+- **Missing:** Repository implementations (interfaces defined but no Knex code)
+- **Impact:** Services cannot execute DB operations
+- **Status:** Blocking database functionality
+- **Action:** v1.3.0 needs Repository implementation sprint
 
 ---
 
