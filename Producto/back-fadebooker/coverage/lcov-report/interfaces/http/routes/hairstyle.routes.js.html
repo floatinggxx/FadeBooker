@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for interfaces/http/controllers/cita.controller.js</title>
+    <title>Code coverage report for interfaces/http/routes/hairstyle.routes.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">interfaces/http/controllers</a> cita.controller.js</h1>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">interfaces/http/routes</a> hairstyle.routes.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.61% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>11/13</span>
+                <span class='fraction'>0/6</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.61% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/13</span>
+                <span class='fraction'>0/6</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -87,55 +87,55 @@
 <a name='L22'></a><a href='#L22'>22</a>
 <a name='L23'></a><a href='#L23'>23</a>
 <a name='L24'></a><a href='#L24'>24</a>
-<a name='L25'></a><a href='#L25'>25</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<a name='L25'></a><a href='#L25'>25</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span></td><td class="text"><pre class="prettyprint lang-js">const CitaService = require('../../../application/usecases/cita.service')
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
+ * Hairstyle Routes
+ * 
+ * Define los endpoints relacionados con simulación de cortes de pelo
+ * e integración con Cloudinary.
+ */
 &nbsp;
-const CitaController = {
-  async crear(req, res) {
-    try {
-      const cita = await CitaService.crearCita(req.body)
-<span class="cstat-no" title="statement not covered" >      res.json(cita)</span>
-    } catch (error) {
-      res.status(400).json({ error: error.message })
-    }
-  },
+const express = <span class="cstat-no" title="statement not covered" >require('express');</span>
+const router = <span class="cstat-no" title="statement not covered" >express.Router();</span>
+const HairstyleController = <span class="cstat-no" title="statement not covered" >require('../controllers/hairstyle.controller');</span>
 &nbsp;
-  async cambiarEstado(req, res) {
-    try {
-      const { id } = req.params
-      const { estado } = req.body
-      await CitaService.actualizarEstado(id, estado)
-<span class="cstat-no" title="statement not covered" >      res.json({ mensaje: 'Estado actualizado' })</span>
-    } catch (error) {
-      res.status(400).json({ error: error.message })
-    }
-  }
-}
+/**
+ * POST /api/hairstyle/signature
+ * Genera firma para subidas seguras a Cloudinary
+ */
+<span class="cstat-no" title="statement not covered" >router.post('/signature', HairstyleController.generateUploadSignature);</span>
 &nbsp;
-module.exports = CitaController</pre></td></tr></table></pre>
+/**
+ * POST /api/hairstyle/simulate
+ * Genera simulación de corte de pelo sobre una imagen
+ */
+<span class="cstat-no" title="statement not covered" >router.post('/simulate', HairstyleController.generateHairstyleSimulation);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >module.exports = router;</span>
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
