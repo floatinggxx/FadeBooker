@@ -3,11 +3,11 @@ adx_enabletracking: false
 adx_excludefromsearch: false
 adx_hiddenfromsitemap: true
 adx_isroot: true
-adx_name: Búsqueda
-adx_pagetemplateid: 357cd567-b6c7-4c2f-ad70-a795d9eef088
+adx_name: Perfil
+adx_pagetemplateid: 1e145a47-e233-4e52-bbb8-ab81b1d304cc
 adx_parentpageid: 9e16fdb5-c6c5-4c99-8a71-579589390876
-adx_partialurl: search
+adx_partialurl: profile
 adx_publishingstateid: 7f3502a7-45a9-4f69-926b-0dcacbb46152
 adx_sharedpageconfiguration: false
-adx_title: ''
-adx_webpageid: 734a6ee2-6366-426d-bf83-fbd039d93262
+adx_title: Perfil
+adx_webpageid: dad9700c-c5ce-4c41-b5c5-a986728d0279
