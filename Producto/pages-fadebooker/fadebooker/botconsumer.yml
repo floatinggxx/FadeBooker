@@ -1,0 +1,5 @@
+- adx_botconsumer_adx_webrole: []
+  adx_botconsumerid: 74205d82-3231-f111-88b4-6045bd012783
+  adx_botschemaname: creeb_74edf6d6-58d8-48b2-b939-706aa885fade
+  adx_configjson: '{"skillConfigViewName":"FadeBooker bot Answers","botSchemaName":"creeb_74edf6d6-58d8-48b2-b939-706aa885fade","version":"v2","isVisible":true}'
+  adx_name: Bot Consumer
