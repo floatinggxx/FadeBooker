@@ -1,0 +1,50 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+:root {
+  /* Marca FadeBooker */
+  --color-primary-900: #1a1a2e;
+  --color-primary-700: #16213e;
+  --color-primary-500: #0f3460;
+  --color-primary-300: #533483;
+  --color-accent: #e94560;
+  --color-accent-soft: #ff6b6b;
+  
+  /* Sobrescribir variables de Bootstrap con colores de la marca si es necesario */
+  --bs-primary: var(--color-primary-500);
+  --bs-primary-rgb: 15, 52, 96;
+  --bs-secondary: var(--color-accent);
+  --bs-secondary-rgb: 233, 69, 96;
+}
+
+body {
+  background-color: #f8f9fa; /* neutral-100 */
+  color: #212529; /* neutral-900 */
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+}
+
+/* Clases de utilidad personalizadas para mantener compatibilidad con la marca */
+.bg-primary-fade { background-color: var(--color-primary-500) !important; color: white !important; }
+.btn-primary-fade { 
+  background-color: var(--color-primary-500) !important; 
+  border-color: var(--color-primary-500) !important;
+  color: white !important;
+}
+.btn-primary-fade:hover {
+  background-color: var(--color-primary-700) !important;
+  border-color: var(--color-primary-700) !important;
+}
+
+.btn-accent-fade {
+  background-color: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
+  color: white !important;
+}
+.btn-accent-fade:hover {
+  background-color: var(--color-accent-soft) !important;
+  border-color: var(--color-accent-soft) !important;
+}

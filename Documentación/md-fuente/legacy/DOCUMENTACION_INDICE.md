@@ -19,28 +19,24 @@
 
 ### 📍 Root (`FadeBooker/`)
 ```
-QUICK_START_REACT.md ⭐
+README.md ⭐ (Principal)
+QUICK_START_REACT.md 
 RESUMEN_EJECUTIVO_REACT.md
 CONFIGURACION_ENTORNOS.md
 DOCUMENTACION_INDICE.md ← Este archivo
+```
+
+### 📍 Gestión (`Gestión/`)
+```
+- Ver carpeta para documentos de planificación (EDT, Riesgos)
 ```
 
 ### 📍 Frontend (`Producto/pages-fadebooker/`)
 ```
 README.md
 REACT_INTEGRATION_GUIDE.md
-│
-└── fadebooker/
-    ├── web-files/
-    │   ├── api-service.js
-    │   └── react/components/
-    │       └── SearchBarbers.js
-    └── web-pages/
-        ├── búsqueda/
-        ├── reserva-cita/
-        ├── mi-cuenta/
-        ├── perfil-barbero/
-        └── reseñas/
+CAMBIOS_REALIZADOS.md
+...
 ```
 
 ### 📍 Backend (`Producto/back-fadebooker/`)
@@ -50,18 +46,31 @@ README_DOCS.md
 BACKEND.md
 DATABASE.md
 openapi.yaml
+CHANGELOG.md
+INFORME_PROGRESO_BACKEND.md
 ```
 
-### 📍 Database (`Documentación/`)
+### 📍 Database & Documentos (`Documentación/`)
 ```
 ESPECIFICACION_BD.md
 ├── Documentos/
+│   ├── ACTUALIZACION_ESPECIFICACIONES_v1.1.0.md ⭐ (Novedades)
 │   ├── FadeBooker_ScriptBD.sql
+│   ├── Diccionario de Datos-fadebooker.xlsx
+│   ├── Requerimientos.xlsx
 │   └── ...
 └── Material complementario/
     ├── FadeBooker_ER_3NF.drawio
     └── ...
 ```
+
+---
+
+## 🤖 Roles y Agentes
+
+Para entender cómo interactúan los agentes de IA en el proyecto, consulta:
+- **[.github/copilot-instructions.md](.github/copilot-instructions.md)**: Instrucciones globales.
+- **[.github/agents/](.github/agents/)**: Roadmap y responsabilidades específicas por agente.
 
 ---
 
@@ -72,7 +81,12 @@ ESPECIFICACION_BD.md
 #### 👨‍💼 **Product Manager / Ejecutivo**
 1. [RESUMEN_EJECUTIVO_REACT.md](./RESUMEN_EJECUTIVO_REACT.md) - Overview
 2. [QUICK_START_REACT.md](./QUICK_START_REACT.md) - Timeline
-3. [Producto/pages-fadebooker/README.md](./Producto/pages-fadebooker/README.md) - Estructura
+3. [Documentación/Documentos/ACTUALIZACION_ESPECIFICACIONES_v1.1.0.md](./Documentación/Documentos/ACTUALIZACION_ESPECIFICACIONES_v1.1.0.md) - Requerimientos actualizados
+
+#### 🛡️ **Security / QA**
+1. [.github/agents/security-agent.md](.github/agents/security-agent.md) - Protocolos
+2. [Documentación/Documentos/ACTUALIZACION_ESPECIFICACIONES_v1.1.0.md](./Documentación/Documentos/ACTUALIZACION_ESPECIFICACIONES_v1.1.0.md) - Auditoría
+
 
 #### 👨‍💻 **Frontend Developer**
 1. [QUICK_START_REACT.md](./QUICK_START_REACT.md) - Setup

@@ -1,183 +1,96 @@
 # 🤖 AGENTS.md - Registro Central de Agentes FadeBooker
 
-**Última actualización:** 14 de abril de 2026  
-**Versión:** 1.0.0  
-**Estado:** En desarrollo
+**Última actualización:** 28 de abril de 2026  
+**Versión:** 1.1.0  
+**Estado:** Fase Implementación
 
 ---
 
 ## 📋 Descripción General
 
-Este archivo es la **fuente única de verdad** para todos los agentes de FadeBooker. 
-
-Cada agente tiene:
-- ✅ Propósito claro
-- ✅ Responsabilidades específicas
-- ✅ Inputs/Outputs definidos
-- ✅ Archivo de instrucciones personalizado en `.github/agents/`
-- ✅ Ejemplos de uso
+Este archivo es la **fuente única de verdad** para el registro y estado de los agentes en el ecosistema FadeBooker. Para guías de implementación detalladas, consulte los archivos individuales en `.github/agents/`.
 
 ---
 
-## 🎯 Agentes Activos
+## 🎯 Registro de Agentes
 
-### 1️⃣ **Database Agent** 🗄️
-**Propósito:** Crear, actualizar y mantener el esquema de la base de datos FadeBooker
+| Agente | Propósito Principal | Estado | Instrucciones |
+| :--- | :--- | :--- | :--- |
+| **Database Agent** | Gestión de esquema SQL Server y migraciones. | ✅ Activo | [Instrucciones](agents/database-agent.md) |
+| **Backend Agent** | Desarrollo de API Node.js y lógica de negocio. | ✅ Activo | [Instrucciones](agents/backend-agent.md) |
+| **Documentation Agent** | Creación de manuales, READMEs y docs de API. | ✅ Activo | [Instrucciones](agents/documentation-agent.md) |
+| **Diagram Agent** | Visualización de arquitectura y flujos (draw.io). | ✅ Activo | [Instrucciones](agents/diagram-agent.md) |
+| **Orchestrator Agent** | Coordinación de flujos multi-agente complejos. | ✅ Activo | [Instrucciones](agents/orchestrator-agent.md) |
+| **Security Agent** | Auditoría de código y estándares de seguridad. | ✅ Activo | [Instrucciones](agents/security-agent.md) |
 
-**Responsabilidades:**
-- Crear tablas, índices, constraints basados en el Diccionario de Datos
-- Generar scripts de migración versionados (timestamp)
-- Validar relaciones y integridad referencial
-- Optimizar indexes y queries
-- Mantener documentación de esquema
+---
 
-**Inputs:**
-- Diccionario de Datos (Documentación/Documentos/)
-- Diagrama ER (Documentación/Material complementario/)
-- Requerimientos y Historias de Usuario
-- Cambios/evoluciones del esquema
+## 🚀 Estado del Proyecto
 
-**Outputs:**
-- Scripts SQL (carpeta `database/` en repositorio)
-- Migraciones versionadas (`database/migrations/`)
-- Validación de esquema
-- Documentación de tablas y relaciones
+- **Fase Actual:** Implementación de Base de Datos y Estructura Backend.
+- **Próximo Hito:** Generación de CRUDs base para usuarios y entidades principales.
 
-**Instrucciones:** [`.github/agents/database-agent.md`](.github/agents/database-agent.md)
+---
 
-**Conexión BD:** `8db9ecf2-0e44-49d4-aaf3-8b00fe86a57b`
+## 🛠️ Responsabilidades de Alto Nivel
+
+Los agentes operan bajo el principio de **Single Responsibility**. Mientras que `copilot-instructions.md` define el "Cómo" (estándares), `AGENTS.md` define el "Quién" y "Qué".
+
+- **Database:** El guardián del esquema. Único autorizado para modificar scripts SQL en `/database`.
+- **Backend:** El constructor de servicios. Transforma el esquema en endpoints funcionales en `/backend`.
+- **Security:** El auditor. Revisa cada PR y cambio sugerido para garantizar la integridad de los datos.
+- **Documentation:** El cronista. Asegura que cada cambio técnico sea reflejado en la documentación del usuario y técnica.
+- **Diagram:** El arquitecto visual. Mantiene la representación gráfica del sistema sincronizada.
+- **Orchestrator:** El director. Asegura que las piezas encajen perfectamente en tareas complejas.
+
+- Recomendaciones de remediación con código de ejemplo
+- Checklists de seguridad por funcionalidad
+- Estándares de autenticación y CORS para el proyecto
+
+**Instrucciones:** [`.github/agents/security-agent.md`](.github/agents/security-agent.md)
 
 **Ejemplo de uso:**
 ```
-@database-agent: Crear las tablas User, Photographer, Booking, Session basadas en el Diccionario de Datos. 
-Incluir constraints de integridad referencial y índices por campos de búsqueda frecuente.
+@security-agent: Audita el backend buscando vulnerabilidades OWASP Top 10.
+Revisa autenticación, validaciones de input y manejo de datos sensibles.
 ```
 
 ---
 
-### 2️⃣ **Backend Agent** 🔧
-**Propósito:** Generar código del backend, APIs y lógica de negocio
+### 7️⃣ **Frontend Agent** 🎨
+**Propósito:** Diseñar e implementar el frontend React de FadeBooker con foco en UX/UI
 
 **Responsabilidades:**
-- Crear estructura de carpetas (src/, controllers/, services/, models/)
-- Generar endpoints RESTful basados en Historias Usuario
-- Implementar servicios y lógica de negocio
-- Crear modelos de datos (ORM/DTO)
-- Documentar APIs con comentarios
-- Seguir patrones de arquitectura limpia
+- Arquitectura del proyecto React (Vite + TypeScript + Tailwind)
+- Componentes reutilizables y sistema de diseño
+- Integración con APIs del backend
+- Flujos de usuario y UX para la plataforma de barbería
+- Routing, manejo de estado, formularios y accesibilidad
+- Migración de Power Pages → React
 
 **Inputs:**
-- Histor ias de Usuario (Documentación/Documentos/)
-- Requerimientos funcionales
-- Esquema de BD (creado por Database Agent)
-- Especificaciones de APIs
+- APIs documentadas del backend
+- Requerimientos e Historias de Usuario (`Documentación/Documentos/`)
+- Diseños o wireframes existentes
+- Power Pages actual (`Producto/pages-fadebooker/`)
 
 **Outputs:**
-- Código del backend (carpeta `backend/` en repositorio)
-- Modelos, servicios, controladores
-- Comentarios y documentación inline
-- Ejemplos de uso
+- Proyecto React en `Producto/front-fadebooker/`
+- Componentes UI, páginas y hooks
+- Sistema de diseño (tokens, paleta, tipografía)
+- Configuración de integración con backend
 
-**Instrucciones:** [`.github/agents/backend-agent.md`](.github/agents/backend-agent.md)
+**Instrucciones:** [`.github/agents/frontend-agent.md`](.github/agents/frontend-agent.md)
 
-**Stack:** Node.js/JavaScript (backend actual en `Producto/back-fadebooker`)
+**Stack:** React 18 + TypeScript + Vite + Tailwind CSS + React Query
 
 **Ejemplo de uso:**
 ```
-@backend-agent: Crear el servicio de BookingService que maneje la creación y gestión de reservas.
-Incluir validaciones, transacciones y logs. Usar el esquema BD creado por Database Agent.
+@frontend-agent: Crea la estructura base del proyecto React con Vite + TypeScript + Tailwind.
+Implementa la página de lista de barberos con filtros y BarberoCard components.
 ```
 
 ---
-
-### 3️⃣ **Documentation Agent** 📋
-**Propósito:** Crear y mantener documentación técnica y especificaciones
-
-**Responsabilidades:**
-- Crear README.md y guías de instalación
-- Documentar APIs generadas (formato OpenAPI cuando corresponda)
-- Mantener especificaciones de negocio
-- Crear manuales de usuario
-- Documentar procesos de deploy y testing
-- Mantener CHANGELOG
-
-**Inputs:**
-- Código generado (Backend, BD)
-- Especificaciones del producto
-- Documentación existente
-- Cambios en el proyecto
-
-**Outputs:**
-- README.md actualizado
-- Guías de instalación y setup
-- Documentación de APIs
-- Manuales de usuario
-- CHANGELOG.md
-
-**Instrucciones:** [`.github/agents/documentation-agent.md`](.github/agents/documentation-agent.md)
-
-**Ejemplo de uso:**
-```
-@documentation-agent: Crear README.md con instrucciones de instalación, estructura de proyecto 
-y cómo ejecutar tests. Incluir links a Documentación/ existente.
-```
-
----
-
-### 4️⃣ **Diagram Agent** 📐
-**Propósito:** Crear y mantener diagramas visuales usando draw.io
-
-**Responsabilidades:**
-- Convertir diagramas PDF a draw.io (ER, UML, Arquitectura)
-- Mantener diagramas actualizados con cambios de código/BD
-- Crear nuevos diagramas (flujos, componentes, secuencias)
-- Exportar diagramas a PNG/SVG para documentación
-- Versionear archivos `.drawio` en Git
-
-**Inputs:**
-- Diagramas existentes PDF (Documentación/Material complementario/)
-- Cambios en esquema de BD o arquitectura
-- Solicitudes de nuevos diagramas
-
-**Outputs:**
-- Archivos `.drawio` (carpeta `Documentación/diagramas/`)
-- Versiones PNG/SVG para documentación
-- Diagramas actualizados
-
-**Instrucciones:** [`.github/agents/diagram-agent.md`](.github/agents/diagram-agent.md)
-
-**Herramienta:** draw.io Integration extension en VS Code
-
-**Ejemplo de uso:**
-```
-@diagram-agent: Convertir FadeBooker_Diagrama_ER.pdf a draw.io. Crear archivos .drawio 
-para tablas User, Photographer, Booking con relaciones y cardinalidades.
-```
-
----
-
-### 5️⃣ **Orchestrator Agent** 🎛️
-**Propósito:** Coordinar el flujo completo de desarrollo entre agentes
-
-**Responsabilidades:**
-- Dirigir ejecución secuencial de agentes
-- Validar coherencia entre dominios (BD ↔ Backend ↔ Docs)
-- Integrar cambios de múltiples agentes
-- Reportar estado general del proyecto
-- Resolver conflictos o inconsistencias
-
-**Inputs:**
-- Solicitudes de desarrollo completo
-- Estado de cada agente
-- Cambios en múltiples dominios
-
-**Outputs:**
-- Flujo de ejecución coordinado
-- Validación de integridad
-- Resumen de cambios integrados
-- Reporte de estado
-
-**Instrucciones:** [`.github/agents/orchestrator-agent.md`](.github/agents/orchestrator-agent.md)
 
 ## 📞 Coordinación Entre Agentes
 
@@ -189,6 +102,14 @@ para tablas User, Photographer, Booking con relaciones y cardinalidades.
 
 ### Any Agent → Diagram Agent
 - Cualquier cambio → Diagram Agent actualiza diagramas correspondientes
+
+### Security Agent → Backend Agent / Frontend Agent
+- Security Agent define estándares de auth y CORS → Backend y Frontend los implementan
+- Security Agent audita código antes de hacer merge a producción
+
+### Frontend Agent → Backend Agent
+- Frontend Agent consulta endpoints disponibles → Backend Agent los implementa/ajusta
+- Frontend Agent coordina con Security Agent antes de implementar auth
 
 ### Orchestrator Agent
 - Coordina todo el flujo anterior
@@ -222,10 +143,12 @@ para tablas User, Photographer, Booking con relaciones y cardinalidades.
 | Agente | Estado | Completado | Próximos Pasos |
 |--------|--------|-----------|-----------------|
 | **Database Agent** 🗄️ | ✅ **COMPLETADO** | **100%** | ✅ 36 objetos BD creados, 51 registros test poblados, triggers validados |
-| **Backend Agent** 🔧 | ⏳ **ACTIVO** | **5%** | Generar/validar ORM schema (Knex), DTOs, CRUD endpoints |
-| Documentation Agent | ✅ Listo | 0% | Esperar endpoints para documentar APIs |
-| Diagram Agent | ✅ Listo | 0% | Convertir PDFs a draw.io (paralelo con Backend) |
-| Orchestrator Agent | ✅ Listo | 0% | Validar coherencia BD ↔ Backend cuando estén ambos |
+| **Backend Agent** 🔧 | ✅ **COMPLETADO** | **92%** | Deploy/CI-CD, E2E testing, monitoreo |
+| Documentation Agent 📋 | ✅ Listo | 100% | Documentación base completa |
+| Diagram Agent 📐 | ✅ Listo | 100% | ER en draw.io disponible |
+| Orchestrator Agent 🎛️ | ✅ Activo | — | Coordinación general del proyecto |
+| **Security Agent** 🔐 | ✅ **NUEVO** | 0% | Auditar backend, definir estándares JWT/CORS para React |
+| **Frontend Agent** 🎨 | ✅ **NUEVO** | 0% | Crear proyecto React, migrar Power Pages → React |
 
 ### 📈 Progress Notes (April 14, 2026)
 
