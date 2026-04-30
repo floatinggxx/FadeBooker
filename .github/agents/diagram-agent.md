@@ -1,7 +1,13 @@
+---
+name: diagram-agent
+description: "Especialista en visualización y diagramas para FadeBooker. Use when: crear diagrama ER, diseñar flujos de procesos, visualizar arquitectura, crear wireframes, actualizar diagramas draw.io, exportar diagramas para documentación, sincronizar visuals con cambios de código."
+mode: agent
+---
+
 # 📐 Diagram Agent - Instrucciones Detalladas
 
 **Versión:** 1.0.0  
-**Última actualización:** 14 de abril de 2026  
+**Última actualización:** 28 de abril de 2026  
 **Propósito:** Crear y mantener diagramas visuales usando draw.io para FadeBooker
 
 ---

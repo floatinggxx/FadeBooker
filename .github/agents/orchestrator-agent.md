@@ -1,7 +1,13 @@
+---
+name: orchestrator-agent
+description: "Coordinador multi-agente para FadeBooker. Use when: implementar feature completa (DB→Backend→Docs→Diagramas), coordinar múltiples agentes, validar coherencia entre dominios, reportar estado del proyecto, resolver inconsistencias entre agentes."
+mode: agent
+---
+
 # 🎛️ Orchestrator Agent - Instrucciones Detalladas
 
 **Versión:** 1.0.0  
-**Última actualización:** 14 de abril de 2026  
+**Última actualización:** 28 de abril de 2026  
 **Propósito:** Coordinar el flujo completo de desarrollo integrando todos los agentes
 
 ---

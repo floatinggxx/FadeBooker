@@ -1,11 +1,15 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/features/auth/hooks/useAuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import HomePage from '@/pages/HomePage';
+import BarberDetailPage from '@/pages/BarberDetailPage';
+import MyBookingsPage from '@/pages/MyBookingsPage';
+import BookingPage from '@/pages/BookingPage';
+import ProfilePage from '@/pages/ProfilePage';
+import LoginPage from '@/features/auth/ui/LoginPage';
+import RegisterPage from '@/features/auth/ui/RegisterPage';
 
-// Mock components para routing inicial
-const LoginPage = () => <div className="p-10"><h1>Login Page</h1><p>Próximamente formulario de login...</p></div>;
-const RegisterPage = () => <div className="p-10"><h1>Registro</h1><p>Próximamente formulario de registro...</p></div>;
 const Dashboard = () => {
   const { logout, user } = useAuth();
   return (
@@ -28,18 +32,23 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <BrowserRouter>
+          <header className="p-4 border-b">
+            <nav className="container mx-auto flex gap-4">
+              <Link to="/" className="text-lg font-bold">FadeBooker</Link>
+              <Link to="/" className="text-sm">Home</Link>
+              <Link to="/bookings" className="text-sm">Mis Citas</Link>
+            </nav>
+          </header>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route 
-              path="/dashboard" 
-              element={
-                <PrivateRoute>
-                  <Dashboard />
-                </PrivateRoute>
-              } 
-            />
-            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+            <Route path="/barbero/:id" element={<BarberDetailPage />} />
+            <Route path="/booking/new" element={<PrivateRoute><BookingPage /></PrivateRoute>} />
+            <Route path="/bookings" element={<PrivateRoute><MyBookingsPage /></PrivateRoute>} />
+            <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

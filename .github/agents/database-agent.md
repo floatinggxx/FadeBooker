@@ -1,7 +1,13 @@
+---
+name: database-agent
+description: "Especialista en SQL Server para FadeBooker. Use when: crear/actualizar esquema BD, generar migraciones, diseñar tablas, crear índices, validar integridad referencial, optimizar queries, documentar esquema, troubleshoot conexión a Azure SQL."
+mode: agent
+---
+
 # 🗄️ Database Agent - Instrucciones Detalladas
 
 **Versión:** 1.0.0  
-**Última actualización:** 14 de abril de 2026  
+**Última actualización:** 28 de abril de 2026  
 **Propósito:** Crear, actualizar y mantener el esquema de base de datos FadeBooker
 
 ---

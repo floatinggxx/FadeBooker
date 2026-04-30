@@ -1,6 +1,7 @@
 ---
+name: frontend-agent
 description: "Desarrollador frontend React con experiencia en UX/UI para FadeBooker. Use when: migración Power Pages a React, crear componentes UI, diseño de interfaces, sistema de diseño, accesibilidad, routing, manejo de estado, llamadas API desde frontend, responsive design, prototipado, wireframes, experiencia de usuario para barbería."
-tools: [read, search, edit]
+mode: agent
 ---
 
 # 🎨 Frontend Agent - Desarrollador React & UX/UI FadeBooker

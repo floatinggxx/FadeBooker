@@ -1,7 +1,13 @@
+---
+name: backend-agent
+description: "Desarrollador backend Node.js para FadeBooker. Use when: crear/actualizar endpoints REST, implementar servicios y lógica de negocio, diseñar DTOs y modelos, validaciones, error handling, integración con BD, testing, JWT y autenticación."
+mode: agent
+---
+
 # 🔧 Backend Agent - Instrucciones Detalladas
 
 **Versión:** 1.0.0  
-**Última actualización:** 14 de abril de 2026  
+**Última actualización:** 28 de abril de 2026  
 **Propósito:** Generar código del backend, APIs y lógica de negocio FadeBooker
 
 ---

@@ -1,6 +1,7 @@
 ---
+name: security-agent
 description: "Analista de seguridad para FadeBooker. Use when: revisión de seguridad, auditoría de código, OWASP Top 10, validación de autenticación, análisis de vulnerabilidades, threat modeling, seguridad de APIs REST, revisión de dependencias, hardening, migración segura frontend, seguridad en React."
-tools: [read, search, edit]
+mode: agent
 ---
 
 # 🔐 Security Agent - Analista de Seguridad FadeBooker

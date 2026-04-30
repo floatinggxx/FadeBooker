@@ -1,75 +1,204 @@
 # 🎭 FadeBooker - Instrucciones Globales para Copilot Agents
 
+**Versión:** 1.2.0  
+**Última actualización:** 28 de abril de 2026  
+**Estado:** Fase Implementación (Consolidación de esquema, backend y seguridad)
+
 ## 📌 Visión General del Proyecto
 
 **FadeBooker** es una plataforma de gestión de citas para servicios de barbería y fotografía relacional.
 
 - **Stack:** Node.js (Backend), React (Frontend), Azure SQL Server (BD).
 - **BD:** `fadebooker-server.database.windows.net` / `FadeBooker_DB`
-- **Estado:** Fase Implementación (Consolidación de esquema y lógica central).
+- **Repositorio Local:** `c:\Users\SanNi\OneDrive\Escritorio\Barberia\FadeBooker`
+- **Estado:** Backend 92% completo, Frontend iniciando, Security audit pendiente
+
+---
+
+## 🤖 Coordinación de Agentes
+
+**IMPORTANTE:** Para invocaciones de agentes, ver [`.github/AGENTS.md`](.github/AGENTS.md) - la **fuente única de verdad** para registro y estado de agentes.
+
+**Estructura:**
+- `.github/AGENTS.md` - Registry central con status actual
+- `.github/agents/*.md` - Instrucciones detalladas por agente
+- `.github/README.md` - Arquitectura del sistema de agentes
+
+**Agents disponibles:**
+```
+@database-agent      # SQL Server y migraciones
+@backend-agent       # APIs Node.js y lógica de negocio
+@frontend-agent      # React y UX/UI
+@documentation-agent # READMEs y API docs
+@diagram-agent       # Visualización draw.io
+@security-agent      # Auditoría y estándares
+@orchestrator-agent  # Coordinación multi-agente
+```
 
 ---
 
 ## 🎯 Convenciones Globales
 
 ### Nomenclatura
-- **Carpetas:** `lowercase-with-hyphens`
-- **Archivos:** `PascalCase.sql`, `camelCase.ts`, `snake_case.json`
-- **Tablas BD:** `PascalCase` (plural)
-- **Columnas BD:** `camelCase`
-- **Variables código:** `camelCase`
-- **Constantes código:** `UPPER_SNAKE_CASE`
+- **Carpetas:** `lowercase-with-hyphens` (ej: `src/application/usecases/`)
+- **Archivos SQL:** `PascalCase.sql` (ej: `Users_Migration_001.sql`)
+- **Archivos código:** `camelCase.ts` (ej: `getUserById.ts`)
+- **Archivos config:** `snake_case.json` (ej: `database_config.json`)
+- **Tablas BD:** `PascalCase` plural (ej: `Usuarios`, `Barberos`)
+- **Columnas BD:** `camelCase` (ej: `id_usuario`, `nombreBarbero`)
+- **Variables código:** `camelCase` (ej: `userCount`)
+- **Constantes código:** `UPPER_SNAKE_CASE` (ej: `MAX_LOGIN_ATTEMPTS`)
+
+### Directorios Clave
+```
+Producto/
+├── back-fadebooker/          # Backend (Entry: src/index.js, Puerto 3000)
+│   ├── src/
+│   │   ├── domain/           # Entities & repositories
+│   │   ├── application/      # UseCases & services
+│   │   ├── infrastructure/   # DB, adapters
+│   │   └── interfaces/       # Controllers & routes
+│   └── tests/
+│
+├── front-fadebooker/         # Frontend React (Vite, Puerto 5173)
+│   ├── src/
+│   │   ├── components/
+│   │   ├── features/
+│   │   ├── lib/
+│   │   └── styles/
+│   └── package.json
+│
+└── pages-fadebooker/         # Legacy Power Pages (deprecado)
+
+Documentación/
+├── Documentos/               # Fuentes: SQL scripts, diseño
+└── md-fuente/                # Documentación en Markdown
+```
 
 ### Git & Flujo Trabajo
-- **Branches:** `main` (prod), `develop` (int), `feature/*`.
-- **Commits:** Mensajes claros, imperativos (ej: "Fix email validation").
-- **Versionado:** SemVer `MAJOR.MINOR.PATCH`.
-- **Integración:** Cada cambio debe documentarse en `CHANGELOG.md`.
+- **Branches:** `main` (prod), `develop` (int), `feature/*` (features)
+- **Commits:** Imperativos, claros (ej: "Add JWT authentication", "Fix user validation")
+- **Versionado:** SemVer `MAJOR.MINOR.PATCH`
+- **Integración:** Cambios documentados en `CHANGELOG.md`
 
----
+### Stack Technology
 
-## 🤖 Estrategia de Coordinación
+**Backend:**
+- Framework: Express.js 5.2.1
+- Query Builder: Knex.js 3.2.9
+- Driver: tedious 19.2.1 (MSSQL)
+- Auth: JWT (jsonwebtoken)
+- Validation: Zod
+- Testing: Jest + Supertest
+- Architecture: Hexagonal (Clean)
 
-Los agentes funcionan de forma **independiente pero coordinada** mediante el registro en `AGENTS.md`.
+**Frontend:**
+- Framework: React 18
+- Build: Vite
+- Language: TypeScript
+- Styling: Tailwind CSS
+- HTTP: Axios
+- Router: React Router v6
+- State: Context API + React Query
+- Testing: Vitest
 
-1. **Database Agent:** Define el contrato de datos.
-2. **Backend Agent:** Implementa el contrato en lógica de negocio.
-3. **Security Agent:** Valida la integridad y blindaje del código.
-4. **Frontend Agent:** Materializa la experiencia de usuario.
-5. **Documentation Agent:** Asegura que el conocimiento sea persistente y claro.
-6. **Diagram Agent:** Sincroniza la arquitectura visual.
+**Database:**
+- Server: Azure SQL Server
+- Design: 3NF Relational
+- Tables: 10 core entities
+- Indexes: 13 optimizados
+- Procedures/Triggers: 4 triggers para auditoría
 
 ---
 
 ## 🛡️ Principios de Desarrollo
 
-- ✅ **DRY (Don't Repeat Yourself):** No duplicar lógica en backend ni en documentación.
-- ✅ **Single Responsibility:** Cada agente y cada módulo de código tiene un único propósito.
-- ✅ **Infrastructure as Code (Scripts):** Toda modificación de BD debe ser vía script (migraciones).
-- ✅ **Documentation First:** Documentar los contratos de API y esquema antes de la implementación extensiva.
+✅ **DRY (Don't Repeat Yourself)**
+- No duplicar lógica entre backend y documentación
+- Usar servicios/utilities compartidas
+
+✅ **Single Responsibility**
+- Cada agente tiene un único propósito
+- Cada módulo de código es independiente y testeable
+
+✅ **Infrastructure as Code**
+- Toda modificación de BD vía scripts SQL versionados
+- Migraciones ejecutables y reversibles
+
+✅ **Documentation First**
+- Documentar APIs antes de implementación extensiva
+- Mantener docs sincronizadas con código
+
+✅ **Security by Design**
+- Validación de inputs en todas las capas
+- Autenticación y autorización obligatorias
+- Auditoría de cambios sensibles
 
 ---
 
-## 📝 Canales de Comunicación
+## 📞 Canales de Comunicación
 
-- **Instrucciones por Agente:** Localizadas en `.github/agents/`.
-- **Fuente de Verdad:** `AGENTS.md` para el registro de agentes y estado de hitos.
-- **Prompts:** Deben referenciar específicamente al agente (ej: `@database-agent`).
+### Entre Agentes
+- **Source of Truth:** [`.github/AGENTS.md`](.github/AGENTS.md)
+- **Instrucciones:** [`.github/agents/`](./agents/)
+- **Codebase Structure:** [`CODEBASE_STRUCTURE.md`](../CODEBASE_STRUCTURE.md)
+
+### Con Desarrolladores
+- **Issues:** GitHub Issues para features/bugs
+- **Documentation:** Markdown en `Documentación/md-fuente/`
+- **Comments:** Código comentado en lugares críticos
 
 ---
 
 ## 🚀 Próximos Pasos Prioritarios
 
-1. **Esquema Final:** Validar tablas core (Usuarios, Servicios, Citas).
-2. **Lógica de Autenticación:** Implementar JWT y roles en backend.
-3. **Documentación Base:** Completar README global y Guía de Inicio.
-
-
-- **Repositorio:** `c:\Users\Mauricio\Documents\GitHub\FadeBooker`
-- **Conexión BD:** ID `8db9ecf2-0e44-49d4-aaf3-8b00fe86a57b` (MSSQL)
-- **Documento Base:** Este archivo (`copilot-instructions.md`)
+1. **✅ Schema & Backend:** Completado y validado (92%)
+2. **Frontend Migration:** Power Pages → React (iniciando)
+3. **Security Audit:** OWASP + JWT standards (iniciando)
+4. **E2E Testing & CI/CD:** Falta backend completo
+5. **Production Deployment:** Azure + monitoring
 
 ---
 
-**Última actualización:** 14 de abril de 2026
-**Versión:** 1.0.0
+## 📚 Documentación Relacionada
+
+- **Estado Agentes:** [`.github/AGENTS.md`](.github/AGENTS.md)
+- **Arquitectura Agentes:** [`.github/README.md`](.github/README.md)
+- **Codebase Structure:** [`CODEBASE_STRUCTURE.md`](../CODEBASE_STRUCTURE.md)
+- **BD Design:** [`Documentación/Documentos/BD_Diseño_3NF.txt`](../Documentación/Documentos/BD_Diseño_3NF.txt)
+- **Scripts BD:** [`Documentación/Documentos/FadeBooter_ScriptBD.sql`](../Documentación/Documentos/FadeBooker_ScriptBD.sql)
+
+---
+
+## 🔧 Primeros Pasos para Agentes Nuevos
+
+### Database Agent
+1. Lee [`.github/agents/database-agent.md`](./agents/database-agent.md)
+2. Consulta [`BD_Diseño_3NF.txt`](../Documentación/Documentos/BD_Diseño_3NF.txt)
+3. Ejecuta [`FadeBooter_ScriptBD.sql`](../Documentación/Documentos/FadeBooker_ScriptBD.sql) en Azure SQL
+
+### Backend Agent
+1. Lee [`.github/agents/backend-agent.md`](./agents/backend-agent.md)
+2. Navega a `Producto/back-fadebooker/`
+3. `npm install && npm start` (Puerto 3000)
+4. Ver endpoints en `src/interfaces/http/routes/`
+
+### Frontend Agent
+1. Lee [`.github/agents/frontend-agent.md`](./agents/frontend-agent.md)
+2. Navega a `Producto/front-fadebooker/`
+3. `npm install && npm run dev` (Puerto 5173)
+4. Consulta componentes existentes en `src/components/`
+
+### Security Agent
+1. Lee [`.github/agents/security-agent.md`](./agents/security-agent.md)
+2. Revisa endpoints backend en `Producto/back-fadebooker/src/`
+3. Audita autenticación JWT y validaciones
+
+### Documentation Agent
+1. Lee [`.github/agents/documentation-agent.md`](./agents/documentation-agent.md)
+2. Consulta archivos en `Documentación/md-fuente/`
+3. Sincroniza con cambios de código y BD
+
+---
+
+**Para detalles de coordinación multi-agente:** Ver [`.github/AGENTS.md`](.github/AGENTS.md)

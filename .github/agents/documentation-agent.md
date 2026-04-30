@@ -1,3 +1,9 @@
+---
+name: documentation-agent
+description: "Especialista en documentación técnica para FadeBooker. Use when: crear/actualizar READMEs, documentar APIs, escribir guías de instalación y uso, mantener CHANGELOG, documentar procesos de testing y deployment, crear manuales de usuario, sincronizar documentación con código."
+mode: agent
+---
+
 # 📋 Documentation Agent - Instrucciones Detalladas
 
 **Versión:** 1.1.0  
