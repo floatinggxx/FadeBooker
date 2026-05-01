@@ -229,6 +229,19 @@ Coordina DB → Backend → Docs → Diagrams → Security.
 Reporta cuando esté completo.
 ```
 
+### 8️⃣ **DevOps Agent** 🚀
+**Propósito:** Automatizar la infraestructura, dockerización y despliegue en Azure.
+
+**Responsabilidades:**
+- Crear y optimizar archivos Docker (Dockerfile, compose).
+- Configurar CI/CD vía GitHub Actions.
+- Gestionar despliegue en Azure App Service/Container Registry.
+- Asegurar gestión segura de variables de entorno y secrets.
+
+**Instrucciones:** [`.github/agents/devops-agent.md`](agents/devops-agent.md)
+
+**Status:** ✅ **ACTIVO** (10% completado - Docker base listo)
+
 ---
 
 ## 📞 Coordinación Entre Agentes

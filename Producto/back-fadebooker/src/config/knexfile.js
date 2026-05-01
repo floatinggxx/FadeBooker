@@ -14,6 +14,25 @@ module.exports = {
       }
     }
   },
+  production: {
+    client: 'mssql',
+    connection: {
+      server: process.env.DB_SERVER,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      options: {
+        encrypt: true,
+        trustServerCertificate: false,
+        connectionTimeout: 30000,
+        requestTimeout: 30000
+      }
+    },
+    pool: {
+      min: 2,
+      max: 10
+    }
+  },
   local: {
     client: 'mssql',
     connection: {

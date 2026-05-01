@@ -6,6 +6,20 @@
 
 ---
 
+## ☁️ Estado de Despliegue (Azure)
+
+| Recurso | Tipo | Estado | URL / Destino |
+| :--- | :--- | :--- | :--- |
+| **Base de Datos** | SQL Server (Híbrido) | ✅ Operativo | `fadebooker-server.database.windows.net` |
+| **Backend API** | App Service (Docker) | ✅ Desplegado | `https://fadebooker-api.azurewebsites.net/api` |
+| **Health Check** | Monitoreo | ✅ Activo | `/api/health` |
+
+### Notas de Migración:
+- El esquema de la base de datos se migró utilizando archivos **.pac** para preservar la integridad de triggers y procedimientos.
+- El backend utiliza **Node.js 24** dentro de un contenedor Linux para asegurar escalabilidad y soporte a largo plazo.
+
+---
+
 ## 🚀 Guía de Configuración (Setup)
 
 ### Backend

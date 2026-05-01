@@ -94,6 +94,16 @@ const BarberoController = {
     } catch (error) {
       res.status(400).json({ error: error.message })
     }
+  },
+
+  async obtenerServicios(req, res) {
+    try {
+      const { id } = req.params
+      const servicios = await BarberoService.obtenerServiciosBarbero(id)
+      res.json(servicios)
+    } catch (error) {
+      res.status(400).json({ error: error.message })
+    }
   }
 }
 

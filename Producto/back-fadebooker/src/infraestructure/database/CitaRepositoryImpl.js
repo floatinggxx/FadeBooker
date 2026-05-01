@@ -65,9 +65,10 @@ class CitaRepositoryImpl {
   }
 
   async findByFecha(fecha) {
+    // Asegurarse de quitar la 'Z' o cualquier formato que confunda a MSSQL
+    const fechaLimpia = fecha.split('T')[0] 
     return this.db('Cita')
-      .where('fecha_hora_inicio', '>=', fecha)
-      .andWhere('fecha_hora_inicio', '<', fecha + ' 23:59:59')
+      .whereRaw('CAST(fecha_hora_inicio AS DATE) = ?', [fechaLimpia])
       .select()
   }
 

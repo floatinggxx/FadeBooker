@@ -8,6 +8,15 @@ const barberoRoutes = require('./barbero.routes')
 const servicioRoutes = require('./servicio.routes')
 const hairstyleRoutes = require('./hairstyle.routes')
 
+router.get('/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    message: 'FadeBooker API is running'
+  })
+})
+
 router.use('/usuarios', usuarioRoutes)
 router.use('/citas', citaRoutes)
 router.use('/clientes', clienteRoutes)

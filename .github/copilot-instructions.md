@@ -153,10 +153,16 @@ Documentación/
 ## 🚀 Próximos Pasos Prioritarios
 
 1. **✅ Schema & Backend:** Completado y validado (92%)
-2. **Frontend Migration:** Power Pages → React (iniciando)
-3. **Security Audit:** OWASP + JWT standards (iniciando)
-4. **E2E Testing & CI/CD:** Falta backend completo
-5. **Production Deployment:** Azure + monitoring
+2. **✅ Cloud Deployment:** Backend desplegado en Azure Functions/App Service (Node 24 + Docker)
+3. **Frontend Migration:** Power Pages → React (iniciando)
+4. **Security Audit:** OWASP + JWT standards (iniciando)
+5. **E2E Testing & CI/CD:** Falta backend completo
+6. **Production Deployment:** Azure + monitoring
+
+## 🌐 Endpoints de Verificación
+- **Health Check:** `/api/health` (Útil para validar despliegue en Azure)
+- **Base API:** `/api`
+- **Auth:** `/api/usuarios/login`, `/api/usuarios/register`
 
 ---
 

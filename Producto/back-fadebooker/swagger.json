@@ -1,0 +1,130 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "FadeBooker API",
+    "description": "Sistema de gestión de citas para barberías - Marketplace de barbería. \n\n**Autenticación:** Use el header Authorization con el valor Bearer <token>.",
+    "version": "1.10.1"
+  },
+  "servers": [
+    {
+      "url": "https://fadebooker-backend-ok.azurewebsites.net/api",
+      "description": "Production server (Azure)"
+    }
+  ],
+  "paths": {
+    "/barberos": {
+      "get": {
+        "summary": "Obtener todos los barberos",
+        "operationId": "GetBarberos",
+        "responses": {
+          "200": {
+            "description": "Lista de barberos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Barbero" }
+                }
+              }
+            }
+          }
+        },
+        "tags": [ "Barberos" ]
+      }
+    },
+    "/barberos/{id}/servicios": {
+      "get": {
+        "summary": "Obtener servicios de un barbero",
+        "operationId": "GetBarberoSv",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de servicios",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/ServicioBarbero" }
+                }
+              }
+            }
+          }
+        },
+        "tags": [ "ServicioBarbero" ]
+      }
+    },
+    "/barberos/{id}/disponibilidad/{fecha}": {
+      "get": {
+        "summary": "Obtener disponibilidad de un barbero",
+        "operationId": "GetDisponibilidad",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" } },
+          { "name": "fecha", "in": "path", "required": true, "schema": { "type": "string", "format": "date" } }
+        ],
+        "responses": {
+          "200": { "description": "Horarios disponibles" }
+        },
+        "tags": [ "Barberos" ]
+      }
+    },
+    "/citas": {
+      "post": {
+        "summary": "Agendar cita",
+        "operationId": "CreateCita",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["id_cliente", "id_barbero", "id_servicio", "fecha_hora_inicio", "pago_abono", "metodo_pago"],
+                "properties": {
+                  "id_cliente": { "type": "integer" },
+                  "id_barbero": { "type": "integer" },
+                  "id_servicio": { "type": "integer" },
+                  "fecha_hora_inicio": { "type": "string", "format": "date-time" },
+                  "pago_abono": { "type": "number" },
+                  "metodo_pago": { "type": "string", "enum": ["efectivo", "tarjeta", "transferencia"] },
+                  "notas": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Cita creada" }
+        },
+        "tags": [ "Citas" ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": { "type": "apiKey", "in": "header", "name": "Authorization" }
+    },
+    "schemas": {
+      "Barbero": {
+        "type": "object",
+        "properties": {
+          "id_barbero": { "type": "integer" },
+          "nombre": { "type": "string" },
+          "apellido": { "type": "string" },
+          "especialidad": { "type": "string" }
+        }
+      },
+      "ServicioBarbero": {
+        "type": "object",
+        "properties": {
+          "id_servicio": { "type": "integer" },
+          "nombre_servicio": { "type": "string" },
+          "precio_barbero": { "type": "number" },
+          "tiempo_servicio_minutos": { "type": "integer" },
+          "precio_base": { "type": "number" }
+        }
+      }
+    }
+  },
+  "security": [ { "ApiKeyAuth": [] } ]
+}
