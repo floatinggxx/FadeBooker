@@ -1,23 +1,3 @@
-import api from './axios';
-
-export interface UserProfile {
-  id: string;
-  nombre: string;
-  email: string;
-  rol?: string;
-}
-
-export const getMyProfile = async (): Promise<UserProfile> => {
-  const resp = await api.get('/usuarios/me');
-  return resp.data;
-};
-
-export const updateMyProfile = async (payload: Partial<UserProfile>) => {
-  const resp = await api.put('/usuarios/me', payload);
-  return resp.data;
-};
-
-export default { getMyProfile, updateMyProfile };
 import api from '../api';
 import { Usuario } from '@/types';
 

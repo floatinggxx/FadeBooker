@@ -1,25 +1,3 @@
-import api from './axios';
-
-export interface Booking {
-  id: string;
-  clienteId: string;
-  barberoId: string;
-  servicioId: string;
-  fechaHora: string;
-  estado: string;
-}
-
-export const createBooking = async (payload: any) => {
-  const resp = await api.post('/citas', payload);
-  return resp.data;
-};
-
-export const listMyBookings = async (): Promise<Booking[]> => {
-  const resp = await api.get('/citas/mis');
-  return resp.data;
-};
-
-export default { createBooking, listMyBookings };
 import api from '../api';
 import { Cita, CreateCitaRequest } from '@/types';
 

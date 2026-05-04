@@ -1,29 +1,3 @@
-import api from './axios';
-
-export interface Barber {
-  id: string;
-  nombre: string;
-  descripcion?: string;
-  especialidad?: string;
-  fotoUrl?: string;
-}
-
-export const listBarbers = async (): Promise<Barber[]> => {
-  const resp = await api.get('/barberos');
-  return resp.data;
-};
-
-export const getBarberById = async (id: string): Promise<Barber> => {
-  const resp = await api.get(`/barberos/${id}`);
-  return resp.data;
-};
-
-export const getBarberServices = async (id: string): Promise<any[]> => {
-  const resp = await api.get(`/barberos/${id}/servicios`);
-  return resp.data;
-};
-
-export default { listBarbers, getBarberById, getBarberServices };
 import api from '../api';
 import { Barbero, BarberoWithServices, Disponibilidad, ServicioBarbero, Horario } from '@/types';
 

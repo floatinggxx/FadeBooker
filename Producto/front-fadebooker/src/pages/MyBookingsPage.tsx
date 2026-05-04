@@ -1,9 +1,9 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { listMyBookings } from '@/lib/api/bookingService';
+import { bookingService } from '@/lib/api/bookingService';
 
 const MyBookingsPage: React.FC = () => {
-  const { data, isLoading, error } = useQuery(['my-bookings'], listMyBookings);
+  const { data, isLoading, error } = useQuery(['my-bookings'], bookingService.listCitas);
 
   if (isLoading) return <div className="p-6">Cargando tus citas...</div>;
   if (error) return <div className="p-6 text-red-600">Error al cargar citas.</div>;

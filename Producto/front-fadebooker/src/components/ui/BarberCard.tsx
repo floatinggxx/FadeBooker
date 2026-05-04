@@ -1,8 +1,8 @@
 import React from 'react';
-import { Barber } from '@/lib/api/barberService';
+import { Barbero } from '@/types';
 import { Link } from 'react-router-dom';
 
-const BarberCard: React.FC<{ barber: Barber }> = ({ barber }) => {
+const BarberCard: React.FC<{ barber: Barbero }> = ({ barber }) => {
   return (
     <div className="border rounded p-4 shadow-sm flex items-center gap-4">
       <img src={barber.fotoUrl || '/placeholder-avatar.png'} alt={barber.nombre} className="w-20 h-20 rounded-full object-cover" />

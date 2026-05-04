@@ -166,6 +166,28 @@ Documentación/
 
 ---
 
+## ⚡ Consejos de Productividad Inmediata
+
+1. **Backend routing:** Todas las rutas agregadas en `src/interfaces/http/routes/index.js`
+2. **Configuración BD:** Verificar `src/config/knexfile.js` (requiere variable DB_PASSWORD)
+3. **Estado frontend:** React Query (estado servidor) + Zustand (estado cliente)
+4. **Autenticación frontend:** Hook `useAuthContext` provee user, login, logout, isAuthenticated
+5. **Tests ejecutan:** `npm test` incluye reporte de cobertura
+6. **Conflictos de puerto:** Asegurar puertos 3000 (backend) y 5173 (frontend) libres
+
+---
+
+## 🚨 Posibles Problemas Comunes
+
+- ⚠️ Variable `DB_PASSWORD` faltante = falla de conexión silenciosa
+- ⚠️ Lógica de precios ServicioBarbero v1.1.0 requiere verificar overrides
+- ⚠️ Modo estricto TypeScript + ESLint estricto (TODAS las advertencias = errores)
+- ⚠️ Timeout de tests en 5000ms (incrementar para tests pesados de BD)
+- ⚠️ CORS no configurado (agregar middleware si frontend desplegado separado)
+- ⚠️ Solo clases Bootstrap 5 (no utilidades Tailwind)
+
+---
+
 ## 📚 Documentación Relacionada
 
 - **Estado Agentes:** [`.github/AGENTS.md`](.github/AGENTS.md)

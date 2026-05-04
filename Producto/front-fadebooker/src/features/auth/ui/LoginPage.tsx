@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import authService from '@/lib/api/authService';
+import { authService } from '@/lib/api/authService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
 
 type FormData = { email: string; password: string };
@@ -11,7 +11,7 @@ const LoginPage: React.FC = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const resp = await authService.login(data);
+      const resp = await authService.login(data.email, data.password);
       // resp expected: { user, token }
       if (resp?.token && resp?.user) {
         login(resp.user, resp.token);

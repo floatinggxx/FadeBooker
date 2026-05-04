@@ -1,27 +1,3 @@
-import api from './axios';
-
-export interface LoginPayload {
-  email: string;
-  password: string;
-}
-
-export interface RegisterPayload {
-  nombre: string;
-  email: string;
-  password: string;
-}
-
-export const login = async (payload: LoginPayload) => {
-  const resp = await api.post('/usuarios/login', payload);
-  return resp.data; // { user, token }
-};
-
-export const register = async (payload: RegisterPayload) => {
-  const resp = await api.post('/usuarios/register', payload);
-  return resp.data;
-};
-
-export default { login, register };
 import api from '../api';
 import { LoginRequest, LoginResponse, RegisterRequest, Usuario } from '@/types';
 

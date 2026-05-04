@@ -1,14 +1,14 @@
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import userService from '@/lib/api/userService';
+import { userService } from '@/lib/api/userService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
 
 const ProfilePage: React.FC = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery(['my-profile'], userService.getMyProfile, { enabled: !!user });
+  const { data, isLoading } = useQuery(['my-profile'], userService.getPerfil, { enabled: !!user });
 
-  const mutation = useMutation(userService.updateMyProfile, {
+  const mutation = useMutation(userService.updatePerfil, {
     onSuccess: () => queryClient.invalidateQueries(['my-profile']),
   });
 

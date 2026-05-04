@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import authService from '@/lib/api/authService';
+import { authService } from '@/lib/api/authService';
 import { useNavigate } from 'react-router-dom';
 
 type FormData = { nombre: string; email: string; password: string };

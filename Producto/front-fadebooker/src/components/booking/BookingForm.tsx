@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Barber, listBarbers, getBarberServices } from '@/lib/api/barberService';
-import bookingService from '@/lib/api/bookingService';
+import { barberService } from '@/lib/api/barberService';
+import { bookingService } from '@/lib/api/bookingService';
 
 type FormData = {
   barberoId: string;
@@ -15,20 +15,21 @@ const BookingForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
   const [services, setServices] = React.useState<any[]>([]);
 
   React.useEffect(() => {
-    listBarbers().then(setBarbers).catch(() => setBarbers([]));
+    barberService.listBarberos().then(setBarbers).catch(() => setBarbers([]));
   }, []);
 
   const barberoId = watch('barberoId');
   React.useEffect(() => {
     if (barberoId) {
-      getBarberServices(barberoId).then(setServices).catch(() => setServices([]));
+      // getBarberServices(barberoId).then(setServices).catch(() => setServices([]));
+      setServices([]);
       setValue('servicioId', '');
     }
   }, [barberoId, setValue]);
 
   const onSubmit = async (data: FormData) => {
     try {
-      await bookingService.createBooking({
+      await bookingService.crearCita({
         barberoId: data.barberoId,
         servicioId: data.servicioId,
         fechaHora: data.fechaHora,
