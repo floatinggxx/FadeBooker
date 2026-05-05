@@ -2,11 +2,13 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/features/auth/hooks/useAuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 import HomePage from '@/pages/HomePage';
 import BarberDetailPage from '@/pages/BarberDetailPage';
 import MyBookingsPage from '@/pages/MyBookingsPage';
 import BookingPage from '@/pages/BookingPage';
 import ProfilePage from '@/pages/ProfilePage';
+import HelpPage from '@/pages/HelpPage';
 import LoginPage from '@/features/auth/ui/LoginPage';
 import RegisterPage from '@/features/auth/ui/RegisterPage';
 
@@ -42,21 +44,12 @@ const AppHeader = () => {
           )}
           <nav className="header-links">
             <Link to="/" className="link-button link-alt">Inicio</Link>
-            <Link to="/#servicios" className="link-button">Servicios</Link>
-            <Link to="/#como-funciona" className="link-button link-alt">Cómo funciona</Link>
-            <Link to="/#testimonios" className="link-button link-alt">Testimonios</Link>
-            <Link to="/booking/new" className="link-button">Agendar</Link>
-            {isAuthenticated ? (
-              <>
-                <Link to="/bookings" className="link-button link-alt">Mis Citas</Link>
-                <Link to="/dashboard" className="link-button link-outline">Dashboard</Link>
-                <button onClick={logout} className="link-button link-outline">Cerrar sesión</button>
-              </>
-            ) : (
-              <>
-                <Link to="/login" className="link-button link-outline">Entrar</Link>
-                <Link to="/register" className="link-button link-alt">Registro</Link>
-              </>
+            <Link to="/barberias" className="link-button">Barberías</Link>
+            <Link to="/bookings" className="link-button link-alt">Mis Citas</Link>
+            <Link to="/profile" className="link-button link-alt">Mi Perfil</Link>
+            <Link to="/ayuda" className="link-button link-alt">Ayuda</Link>
+            {isAuthenticated && (
+              <button onClick={logout} className="link-button link-outline ml-2">Cerrar sesión</button>
             )}
           </nav>
         </div>
@@ -82,6 +75,7 @@ function App() {
               <Route path="/booking/new" element={<PrivateRoute><BookingPage /></PrivateRoute>} />
               <Route path="/bookings" element={<PrivateRoute><MyBookingsPage /></PrivateRoute>} />
               <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+              <Route path="/ayuda" element={<HelpPage />} />
               <Route path="/" element={<HomePage />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
