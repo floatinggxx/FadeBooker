@@ -1,4 +1,4 @@
-const GenerarReporteCitas = require('../../application/usecases/GenerarReporteCitas');
+const GenerarReporteCitas = require('../../../application/usecases/generarReporteCitas');
 
 class ReporteController {
     async getReporteCitas(req, res) {
@@ -6,8 +6,8 @@ class ReporteController {
             const { fechaInicio, fechaFin } = req.query;
             
             // Instanciamos el caso de uso (aquí se inyectaría el repo real)
-            const generarReporteCitas = new GenerarReporteCitas();
-            const buffer = await generarReporteCitas.execute(fechaInicio, fechaFin);
+            const useCase = new GenerarReporteCitas();
+            const buffer = await useCase.execute(fechaInicio, fechaFin);
 
             res.setHeader(
                 'Content-Type',
