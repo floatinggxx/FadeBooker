@@ -16,6 +16,16 @@
 
 ---
 
+## 🏗️ Arquitectura del Sistema
+
+El backend sigue los principios de la **Arquitectura Hexagonal**, dividiéndose en:
+- **Domain:** Modelos y lógica de negocio.
+- **Application:** Orquestación de casos de uso a través de servicios.
+- **Infrastructure:** Conectabilidad con DB (SQL Server via Knex), Storage (Cloudinary) y otros servicios externos.
+- **Interfaces:** Controladores HTTP (REST) y rutas.
+
+---
+
 ## 🚀 Setup Inicial
 
 ### Requisitos Globales
@@ -71,6 +81,7 @@ PORT=3000
 NODE_ENV=development
 
 # ☁️  CLOUDINARY (OPCIONAL para desarrollo)
+CLOUDINARY_URL=cloudinary://267983583352493:yy5bfkweC0cJ9Gas8wX_5ItOPPI@Fadebooker
 CLOUDINARY_CLOUD_NAME=Fadebooker
 CLOUDINARY_API_KEY=267983583352493
 CLOUDINARY_API_SECRET=yy5bfkweC0cJ9Gas8wX_5ItOPPI
@@ -86,7 +97,13 @@ npm start
 # ✅ Servidor corriendo en http://localhost:3000
 ```
 
-### 5. Verificar Endpoints
+### 5. Procesamiento de Documentos
+El backend incluye soporte para:
+- **exceljs**: Generación de reportes Excel profesionales y seguros.
+- **docx / mammoth**: Generación y extracción de texto de documentos Word.
+- **pdf-parse**: Extracción de texto de archivos PDF.
+
+### 6. Verificar Endpoints
 ```bash
 # Health check
 curl http://localhost:3000/api

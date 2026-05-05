@@ -6,9 +6,17 @@ mode: agent
 
 # 🗄️ Database Agent - Instrucciones Detalladas
 
-**Versión:** 1.0.0  
-**Última actualización:** 28 de abril de 2026  
-**Propósito:** Crear, actualizar y mantener el esquema de base de datos FadeBooker
+**Stack:** Azure SQL Server (MSSQL), Knex.js.
+**Diseño:** 3NF (Tercera Forma Normal) obligatorio.
+
+## 📂 Ubicación de Recursos
+- **Scripts SQL:** [Documentación/Documentos/](Documentación/Documentos/).
+- **Esquema Maestro:** [BD_Diseño_3NF.txt](Documentación/Documentos/BD_Diseño_3NF.txt).
+- **Datos de Test:** [FadeBooker_DatosTest.sql](Documentación/Documentos/FadeBooker_DatosTest.sql).
+
+## 🛠️ Herramientas
+- Uso de **Knex.js** para migraciones dinámicas.
+- Validar siempre los scripts contra el esquema maestro antes de proponer cambios.
 
 ---
 
@@ -67,21 +75,10 @@ SELECT DB_NAME() AS 'Database Name';
 ## 📂 Estructura de Carpetas para Scripts
 
 ```
-database/
-├── scripts/                    (Scripts generales)
-│   ├── 001_initial_schema.sql
-│   ├── 002_add_indexes.sql
-│   └── 003_add_constraints.sql
-├── migrations/                 (Migraciones versionadas)
-│   ├── V001_20260414_CreateUsers.sql
-│   ├── V002_20260414_CreatePhotographer.sql
-│   ├── V003_20260414_CreateBooking.sql
-│   └── V004_YYYYMMDD_Description.sql
-├── seeds/                      (Datos iniciales)
-│   └── seed-data.sql
-├── schemas/                    (Documentación de esquema)
-│   └── SCHEMA.md
-└── README.md
+Documentación/Documentos/
+├── FadeBooker_ScriptBD.sql     (Esquema maestro)
+├── FadeBooker_DatosTest.sql    (Seeds iniciales)
+├── BD_Diseño_3NF.txt           (Diccionario de datos)
 ```
 
 ---
@@ -89,7 +86,7 @@ database/
 ## 📋 Convenciones SQL Server FadeBooker
 
 ### Nombres de Tablas
-- **Formato:** `PascalCase` (singular o plural según contexto de dominio)
+- **Formato:** `PascalCase` (plural, ej: Usuarios, Citas)
 - **Ejemplos válidos:**
   - `Users` (entidad usuario)
   - `Photographers` (fotógrafos)

@@ -22,12 +22,20 @@
 ## 🔐 Autenticación y Seguridad
 
 ### Estado Actual
-⚠️ **IMPORTANTE:** La autenticación JWT no está implementada aún en los endpoints. Todos los endpoints son públicos.
+✅ **IMPLEMENTADO:** La autenticación JWT está activa. Los endpoints protegidos requieren el header: `Authorization: Bearer <token>`.
 
-### Planeado (Próximas versiones)
-- JWT Token obligatorio en header: `Authorization: Bearer <token>`
-- Validación de roles: Cliente, Barbero, Dueño, Administrador
-- Middleware de autenticación global
+### Algoritmo y Secretos
+- **JWT:** Uso de `jsonwebtoken` para firma y validación.
+- **Bcrypt:** Uso de `bcryptjs` para hashing de contraseñas.
+- **Configuración:** `JWT_SECRET` debe estar definido en el archivo `.env`.
+- **Estructura del Payload:**
+```json
+{
+  "id_usuario": "integer",
+  "rol": "string",
+  "email": "string"
+}
+```
 
 ---
 
@@ -1580,20 +1588,65 @@ POST /api/hairstyle/simulate (generar simulación)
 - ✅ **Validación mejorada**: Se verifica que barbero pueda hacer el servicio al agendar cita
 - ✅ **Precio/Duración efectiva**: Support para overrides por barbero
 
-### Seguridad (⚠️ Pendiente)
-- ⚠️ Autenticación JWT no implementada aún
-- ⚠️ Todos los endpoints son públicos
-- ⚠️ Sin validación de roles
+---
 
-### Próximas Implementaciones
-- [ ] Middleware de autenticación JWT
-- [ ] Validación de roles en endpoints
-- [ ] Rate limiting
-- [ ] Paginación en listados
-- [ ] Filtros avanzados
-- [ ] Auditoría de cambios
+### 📊 Reportes Administrativos
+
+Esta sección detalla los endpoints encargados de la generación de informes detallados para la gestión administrativa del negocio.
+
+#### **Generar Reporte de Citas**
+Genera y descarga un archivo Excel con el listado de citas filtradas por un rango de fechas.
+
+- **Endpoint:** `GET /api/reportes/citas`
+- **Seguridad:** Requiere validación mediante Token JWT en el Header.
+- **Parámetros de consulta (Query Params):**
+    - `fechaInicio` (opcional): Fecha inicial en formato `YYYY-MM-DD`.
+    - `fechaFin` (opcional): Fecha final en formato `YYYY-MM-DD`.
+- **Respuesta:**
+    - **200 OK:** Retorna un flujo de datos (Buffer) correspondiente a un archivo `.xlsx`.
+    - **Header Content-Type:** `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`
+    - **Header Content-Disposition:** `attachment; filename=ReporteCitas.xlsx`
 
 ---
 
-**Generado:** 29 de Abril de 2026  
-**Versión API:** 1.10.0
+### 📸 Fotografía Relacional & IA
+
+Integración con **CloudinaryService** para la gestión de activos visuales y generación dinámica de previsualizaciones estilizadas para cortes de cabello y sesiones fotográficas.
+
+#### **Capacidades de CloudinaryService**
+El servicio permite la subida, eliminación y transformación de imágenes en la nube de forma segura.
+
+#### **Previsualizaciones con Estilos (IA Transformations)**
+Utilizando los parámetros de transformación de Cloudinary, el backend permite generar URLs dinámicas que aplican filtros artísticos a las imágenes originales:
+
+| Estilo | Descripción Técnica | Uso Sugerido |
+| :--- | :--- | :--- |
+| `sepia` | Efecto sepia (80%) y ajuste de brillo. | Estética clásica/vintage. |
+| `grayscale` | Conversión a escala de grises optimizada. | Enfoque en texturas y formas. |
+| `vibrant` | Mejora de saturación (+30%) y máscara de enfoque. | Publicaciones en redes sociales. |
+| `portrait` | Recorte inteligente (Face Gravity) con viñeteado. | Portafolio de clientes. |
+| `modern_cut` | Zoom facial (0.75) con efecto artístico *incognito*. | Resaltar detalles del degradado/fade. |
+
+---
+
+### 🚀 Ejemplos de cURL
+
+#### **1. Descargar Reporte de Citas (Excel)**
+```bash
+curl -X GET "http://localhost:3000/api/reportes/citas?fechaInicio=2026-05-01&fechaFin=2026-05-31" \
+     -H "Authorization: Bearer <TU_TOKEN_JWT>" \
+     --output Reporte_Citas_Mayo.xlsx
+```
+
+#### **2. Autenticación (Login)**
+```bash
+curl -X POST "http://localhost:3000/api/usuarios/login" \
+     -H "Content-Type: application/json" \
+     -d '{"email": "admin@fadebooker.com", "contrasena": "password123"}'
+```
+
+---
+
+**Generado:** 05 de Mayo de 2026  
+**Versión API:** 1.11.0
+

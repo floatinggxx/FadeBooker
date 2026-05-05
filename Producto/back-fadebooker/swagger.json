@@ -96,13 +96,47 @@
         "responses": {
           "201": { "description": "Cita creada" }
         },
-        "tags": [ "Citas" ]
+        "tags": [ "Citas" ],
+        "security": [ { "ApiKeyAuth": [] } ]
+      }
+    },
+    "/reportes/citas": {
+      "get": {
+        "summary": "Generar reporte de citas en Excel",
+        "operationId": "GetReporteCitas",
+        "parameters": [
+          {
+            "name": "fechaInicio",
+            "in": "query",
+            "description": "Fecha de inicio del reporte (YYYY-MM-DD)",
+            "schema": { "type": "string", "format": "date" }
+          },
+          {
+            "name": "fechaFin",
+            "in": "query",
+            "description": "Fecha de fin del reporte (YYYY-MM-DD)",
+            "schema": { "type": "string", "format": "date" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Archivo Excel generado",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": { "type": "string", "format": "binary" }
+              }
+            }
+          },
+          "401": { "description": "No autorizado - JWT faltante o inválido" }
+        },
+        "tags": [ "Reportes" ],
+        "security": [ { "ApiKeyAuth": [] } ]
       }
     }
   },
   "components": {
     "securitySchemes": {
-      "ApiKeyAuth": { "type": "apiKey", "in": "header", "name": "Authorization" }
+      "ApiKeyAuth": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" }
     },
     "schemas": {
       "Barbero": {

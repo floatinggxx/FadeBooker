@@ -52,22 +52,37 @@ Eres el **DevOps Agent**, responsable de la "autopista" por donde viaja el códi
 ### 💾 Base de Datos (SQL Server)
 - **Método:** Migración vía archivos `.pac` (DACPAC) y scripts SQL incrementales.
 - **Firewall:** Habilitar "Allow Azure services". Para fallos persistentes, agregar IP de salida de la Web App explícitamente.
+- **Fix Crítico (Fechas):** Asegurar que las consultas SQL usen `CAST(campo AS DATE)` en lugar de concatenación de strings para evitar errores de conversión en MSSQL.
 
 ### ⚙️ Backend (App Service for Containers)
-- **Runtime:** Node.js 24 / Node.js 20 (Container Alpine 64-bit).
-- **Configuración Crítica:**
-  - `WEBSITES_PORT`: Debe coincidir con el puerto del `EXPOSE` del Dockerfile (ej: `3000`).
-  - `PORT`: Debe ser igual a `WEBSITES_PORT`.
-  - `use32BitWorkerProcess`: Siempre `false` para apps containerizadas.
-  - `Startup File`: `"node src/index.js"` (o comando equivalente en Docker).
-- **Región:** Preferencia por `brazilsouth` (Chile Central tiene limitaciones de SKU para planes de estudiante).
+- **Infraestructura Real:**
+  - **Registry:** `fadebookerregistry.azurecr.io`
+  - **App Service:** `fadebooker-backend-ok`
+  - **Resource Group:** `FadeBooker`
+- **Flujo de Despliegue Manual (Workflow de Emergencia):**
+  1. `cd Producto/back-fadebooker`
+  2. `docker build -t fadebookerregistry.azurecr.io/fadebooker-backend:latest .`
+  3. `az acr login --name fadebookerregistry`
+  4. `docker push fadebookerregistry.azurecr.io/fadebooker-backend:latest`
+  5. `az webapp restart --name fadebooker-backend-ok --resource-group FadeBooker`
 
-### 🚀 Troubleshooting & Mantenimiento:
+- **Configuración Crítica:**
+  - `WEBSITES_PORT`: `3000` (Debe coincidir con `EXPOSE` en Dockerfile).
+  - `PORT`: `3000`.
+  - `use32BitWorkerProcess`: Siempre `false`.
+  - **Arquitectura:** Web App for Containers (Linux B1 Plan).
+  - **Región:** `brazilsouth` (Validada para evitar restricciones de SKU).
+
+### 🚀 Integración con Power Apps
+- **Swagger:** Mantener `swagger.json` actualizado en la raíz del backend.
+- **Seguridad:** Configurar "API Key" en Power Apps apuntando al Header `Authorization` (valor: `Bearer <token>`).
+
+### 🛠️ Troubleshooting & Mantenimiento:
 - **Error 503:** Generalmente es un fallo de binding del puerto o la arquitectura de 32-bit.
-- **Logs:** `az webapp log tail --name <app_name> --resource-group <rg>`
+- **DNS (no such host):** Si el push falla, verificar el nombre del login server con `az acr list --query "[].loginServer" -o table`.
+- **Logs:** `az webapp log tail --name fadebooker-backend-ok --resource-group FadeBooker`
 - **Restart Forzado:** `az webapp restart --name fadebooker-backend-ok`
-- **ACR Bind:** Si el pulling falla con 401, usar:
-  `az webapp config container set --name <app> --resource-group <rg> --docker-custom-image-name <registry>/<image>:<tag> --docker-registry-server-url https://<registry> --docker-registry-server-user <user> --docker-registry-server-password <pass>`
+- **ACR Bind:** Si el pulling falla con 401, usar credenciales explícitas del ACR.
 
 ---
 

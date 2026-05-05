@@ -21,10 +21,9 @@ Para entender la estructura completa del proyecto, ver: [CODEBASE_STRUCTURE.md](
 | **Database Agent** | Gestión de esquema SQL Server y migraciones | ✅ Activo | [Instrucciones](agents/database-agent.md) |
 | **Backend Agent** | Desarrollo de API Node.js y lógica de negocio | ✅ Activo | [Instrucciones](agents/backend-agent.md) |
 | **Frontend Agent** | Migración Power Pages a React y UX/UI | 🆕 Iniciando | [Instrucciones](agents/frontend-agent.md) |
-| **Documentation Agent** | Creación de manuales, READMEs y docs de API | ✅ Activo | [Instrucciones](agents/documentation-agent.md) |
+| **Documentation Agent** | Creación de manuales, READMEs y reporte Office | ✅ Activo | [Instrucciones](agents/documentation-agent.md) |
 | **Diagram Agent** | Visualización de arquitectura y flujos (draw.io) | ✅ Activo | [Instrucciones](agents/diagram-agent.md) |
-| **Security Agent** | Auditoría de código y estándares de seguridad | 🆕 Iniciando | [Instrucciones](agents/security-agent.md) |
-| **Orchestrator Agent** | Coordinación de flujos multi-agente complejos | ✅ Activo | [Instrucciones](agents/orchestrator-agent.md) |
+| **Security Agent** | Auditoría de código y estándares de seguridad | 🆕 Iniciando | [Instrucciones](agents/security-agent.md) || **Photographer-AI Agent** | Lógica de simulación y procesamiento de imagen | 🆕 Planificado | [Instrucciones](agents/photographer-ai-agent.md) || **Orchestrator Agent** | Coordinación de flujos multi-agente complejos | ✅ Activo | [Instrucciones](agents/orchestrator-agent.md) |
 
 ---
 
@@ -44,60 +43,31 @@ Para entender la estructura completa del proyecto, ver: [CODEBASE_STRUCTURE.md](
 
 ---
 
-## 🛠️ Responsabilidades Principales de Cada Agente
+## 🛠️ Responsabilidades y Skills
 
 ### 1️⃣ **Database Agent** 🗄️
 **Status:** ✅ **COMPLETADO**
-
-**Logros:**
-- ✅ 10 tablas creadas: Usuario, Tienda, Barbero, Servicio, ServicioBarbero, Cita, Pago, Reseña, AuditoriaSeguridad, etc.
-- ✅ 13 índices optimizados para búsquedas frecuentes
-- ✅ 3 vistas para consultas complejas
-- ✅ 3 funciones SQL (cálculo de ratings, disponibilidad)
-- ✅ 3 stored procedures (reportes)
-- ✅ 4 triggers para auditoría y validaciones
-- ✅ 51 registros de test poblados y validados
-
-**Responsabilidades:**
-- Define y mantiene el esquema de BD
-- Crea migraciones versionadas
-- Optimiza con índices y constraints
-- Documenta el diseño 3NF
-
-**Stack:** Azure SQL Server, Knex.js (ORM)  
-**Conexión:** `fadebooker-server.database.windows.net / FadeBooker_DB`  
-**Scripts:** [`FadeBooker_ScriptBD.sql`](../Documentación/Documentos/FadeBooker_ScriptBD.sql) (EJECUTADO Y VALIDADO)
-
-**Instrucciones completas:** [`.github/agents/database-agent.md`](agents/database-agent.md)
-
----
+**Skill Principal:** [sql-migration](skills/sql-migration.md)
 
 ### 2️⃣ **Backend Agent** 🔧
 **Status:** ✅ **COMPLETADO (92%)**
+**Skill Principal:** [backend-service-gen](skills/backend-service-gen.md)
 
-**Logros:**
-- ✅ Estructura hexagonal (domain, application, infrastructure, interfaces)
-- ✅ Controllers y routes para CRUD base
-- ✅ Services con lógica de negocio
-- ✅ DTOs y validaciones con Zod
-- ✅ Manejo de errores centralizado
-- ✅ Logging y auditoría
-- ✅ JWT autenticación integrada
-- ✅ Tests unitarios e integración
+### 3️⃣ **Frontend Agent** 🎨
+**Status:** 🆕 **INICIANDO**
+**Skill Principal:** [frontend-component-bridge](skills/frontend-component-bridge.md)
 
-**Por completar:**
-- E2E tests (30% del código)
-- CI/CD pipeline
-- Documentación de deployment
+### 4️⃣ **Security Agent** 🛡️
+**Status:** 🆕 **INICIANDO**
+**Skill Principal:** [security-audit](skills/security-audit.md)
 
-**Responsabilidades:**
-- Implementa endpoints REST basado en Historia Usuario
-- Crea servicios con lógica de negocio
-- Validaciones de input y seguridad
-- Integración con BD y externos (pagos, etc.)
+### 5️⃣ **Orchestrator Agent** ⚖️
+**Status:** ✅ **ACTIVO**
+**Skill Principal:** [orchestrator-sync](skills/orchestrator-sync.md)
 
-**Stack:** Express.js 5.2.1, Knex.js 3.2.9, tedious 19.2.1, Jest, Supertest  
-**Ubicación:** [`Producto/back-fadebooker/`](../Producto/back-fadebooker/)  
+---
+
+## 🚀 Estado Actual del Proyecto  
 **Puerto:** 3000
 
 **Instrucciones completas:** [`.github/agents/backend-agent.md`](agents/backend-agent.md)

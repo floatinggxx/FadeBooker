@@ -12,15 +12,15 @@ El sistema implementa **Clean Architecture** para asegurar la separación de res
 
 - **Domain Layer:** Entidades de negocio (9 modelos) e interfaces de repositorios.
 - **Application Layer:** Casos de uso y servicios de aplicación.
-- **Infrastructure Layer:** Implementaciones de bases de datos (Knex), almacenamiento (Cloudinary) y pagos (Stripe - placeholder).
+- **Infrastructure Layer:** Implementaciones de bases de datos (Knex Repositories), almacenamiento (Cloudinary), pagos (Stripe) y reportes (exceljs).
 - **Interface Layer:** Controladores HTTP y rutas (33+ endpoints).
 
 ### 📁 Estructura de Carpetas (src/)
-- `application/usecases/`: Lógica de aplicación.
+- `application/usecases/`: Lógica de aplicación (Servicios y Casos de Uso).
 - `config/`: Configuraciones (Knex, Cloudinary).
-- `db/`: Conectores y migraciones.
-- `domain/`: Entidades y reglas de negocio.
-- `infraestructure/`: Implementaciones externas (Database, Storage).
+- `db/`: Conectores, migraciones y seeds.
+- `domain/`: Entidades y definiciones de interfaz de repositorio.
+- `infraestructure/`: Implementaciones externas (Database, Storage, Payment).
 - `interfaces/http/`: Controllers, Routes y Middlewares.
 
 ---

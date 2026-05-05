@@ -1,7 +1,13 @@
-# 🚀 Guía de Configuración y Ejecución - FadeBooker Backend
+## 🏗️ Arquitectura del Sistema (Hexagonal / Clean Architecture)
 
-**Versión:** 1.10.0  
-**Última actualización:** 16 de Abril de 2026
+FadeBooker utiliza una arquitectura hexagonal para separar la lógica de negocio de las implementaciones tecnológicas.
+
+- **`/src/domain`**: Entidades y reglas de negocio puras.
+- **`/src/application/usecases`**: Servicios que coordinan la lógica de la aplicación (Casos de Uso).
+- **`/src/infraestructure`**: Adaptadores para herramientas externas.
+  - `/database`: Implementación de repositorios con Knex.js.
+  - `/storage`: Integración con Cloudinary.
+- **`/src/interfaces/http`**: Controladores y rutas Express.js para la comunicación externa.
 
 ---
 
@@ -57,6 +63,7 @@ PORT=3000
 NODE_ENV=development
 
 # Cloudinary Configuration (OPCIONAL en desarrollo)
+CLOUDINARY_URL=cloudinary://267983583352493:yy5bfkweC0cJ9Gas8wX_5ItOPPI@Fadebooker
 CLOUDINARY_CLOUD_NAME=Fadebooker
 CLOUDINARY_API_KEY=267983583352493
 CLOUDINARY_API_SECRET=yy5bfkweC0cJ9Gas8wX_5ItOPPI
@@ -84,11 +91,23 @@ NODE_ENV       - Ambiente: development | production
 
 #### Cloudinary
 ```
+CLOUDINARY_URL           - URL completa de conexión (Formato: cloudinary://API_KEY:API_SECRET@CLOUD_NAME)
 CLOUDINARY_CLOUD_NAME    - Nombre de tu cloud en Cloudinary
 CLOUDINARY_API_KEY       - API Key de tu cuenta
 CLOUDINARY_API_SECRET    - API Secret (CONFIDENCIAL)
 CLOUDINARY_UPLOAD_PRESET - Preset para uploads sin firma
 ```
+
+---
+
+## 🛠️ Procesamiento de Documentos
+
+El backend ahora soporta procesamiento de diversos formatos de documentos:
+- **Excel (.xlsx):** vía `exceljs` (Alternativa segura a SheetJS)
+- **Word (.docx):** vía `docx` y `mammoth` (extracción de texto)
+- **PDF (.pdf):** vía `pdf-parse`
+
+Asegúrate de tener estas dependencias instaladas (incluidas en `npm install`).
 
 ---
 

@@ -53,12 +53,13 @@ El desarrollo de FadeBooker está coordinado por un equipo de agentes especializ
 
 ## 🛠️ Tecnologías Principales
 
-- **Runtime:** Node.js 18+
+- **Runtime:** Node.js 18+ (Express 5.2.1)
 - **Frontend:** React 18, Tailwind CSS, Lucide React
-- **ORM/Query Builder:** Knex.js
+- **ORM/Query Builder:** Knex.js (SQL Server via `tedious`)
+- **Document Processing:** xlsx, docx, mammoth, pdf-parse
 - **API:** RESTful (OpenAPI 3.0)
-- **Seguridad:** JWT, Bcrypt, Role-Based Access Control (RBAC)
-- **Almacenamiento:** Cloudinary (Imágenes)
+- **Seguridad:** JWT, Bcrypt, RBAC
+- **Almacenamiento:** Cloudinary (Imágenes y simulación)
 
 ---
 
