@@ -2,18 +2,22 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { barberService } from '@/lib/api/barberService';
 import { bookingService } from '@/lib/api/bookingService';
-import { Barbero } from '@/types';
+import { useAuth } from '@/features/auth/hooks/useAuthContext';
+import { Barbero, ServicioBarbero } from '@/types';
 
 type FormData = {
   barberoId: string;
-  servicioId: string;
+  servicioBarberoId: string;
   fechaHora: string;
 };
 
 const BookingForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
   const { register, handleSubmit, watch, setValue } = useForm<FormData>();
+  const { user } = useAuth();
   const [barbers, setBarbers] = React.useState<Barbero[]>([]);
-  const [services, setServices] = React.useState<any[]>([]);
+  const [services, setServices] = React.useState<ServicioBarbero[]>([]);
+  const [serviceLoading, setServiceLoading] = React.useState(false);
+  const [serviceError, setServiceError] = React.useState('');
 
   React.useEffect(() => {
     barberService.listBarberos().then(setBarbers).catch(() => setBarbers([]));
@@ -22,18 +26,37 @@ const BookingForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
   const barberoId = watch('barberoId');
   React.useEffect(() => {
     if (barberoId) {
-      // getBarberServices(barberoId).then(setServices).catch(() => setServices([]));
+      setServiceLoading(true);
+      setServiceError('');
+      barberService.getServicios(Number(barberoId))
+        .then((loadedServices) => setServices(loadedServices))
+        .catch(() => {
+          setServices([]);
+          setServiceError('No se pudieron cargar los servicios de este barbero. Intenta de nuevo más tarde.');
+        })
+        .finally(() => setServiceLoading(false));
+      setValue('servicioBarberoId', '');
+    } else {
       setServices([]);
-      setValue('servicioId', '');
+      setServiceError('');
+      setValue('servicioBarberoId', '');
     }
   }, [barberoId, setValue]);
 
   const onSubmit = async (data: FormData) => {
+    if (!user) {
+      alert('Debes iniciar sesión para agendar una reserva.');
+      return;
+    }
+
     try {
+      const [fecha, hora] = data.fechaHora.split('T');
       await bookingService.crearCita({
-        barberoId: data.barberoId,
-        servicioId: data.servicioId,
-        fechaHora: data.fechaHora,
+        clienteId: Number(user.id),
+        barberoId: Number(data.barberoId),
+        servicioBarberoId: Number(data.servicioBarberoId),
+        fecha,
+        hora,
       });
       alert('Reserva creada correctamente');
       onSuccess && onSuccess();
@@ -54,10 +77,16 @@ const BookingForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
 
       <div>
         <label className="block">Servicio</label>
-        <select {...register('servicioId', { required: true })} className="w-full border p-2 rounded">
+        <select {...register('servicioBarberoId', { required: true })} className="w-full border p-2 rounded">
           <option value="">Seleccione</option>
-          {services.map(s => <option key={s.id} value={s.id}>{s.nombre} — {s.duracionMinutos} min</option>)}
+          {serviceLoading && <option disabled>Cargando servicios...</option>}
+          {services.map(s => (
+            <option key={s.id} value={s.id}>
+              {s.servicio?.nombre || `Servicio ${s.servicioId || s.id}`} — {(s.duracion ?? s.servicio?.duracion) || 'N/A'} min
+            </option>
+          ))}
         </select>
+        {serviceError && <p className="text-sm text-red-600 mt-2">{serviceError}</p>}
       </div>
 
       <div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { authService } from '@/lib/api/authService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
@@ -8,14 +8,21 @@ type FormData = { email: string; password: string };
 
 const LoginPage: React.FC = () => {
   const { register, handleSubmit } = useForm<FormData>();
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from?: { pathname?: string } })?.from?.pathname || '/dashboard';
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const onSubmit = async (data: FormData) => {
     try {
       const resp = await authService.login(data.email, data.password);
-      // resp expected: { user, token }
-      if (resp?.token && resp?.user) {
-        login(resp.user, resp.token);
+      if (resp?.token) {
+        login({ id: resp.id, nombre: resp.nombre, email: resp.email, rol: resp.rol }, resp.token);
+        navigate(from, { replace: true });
       } else {
         alert('Respuesta inválida del servidor');
       }
