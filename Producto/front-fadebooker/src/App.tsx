@@ -27,7 +27,7 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const AppHeader = () => {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
 
   return (
     <header className="site-header">
@@ -36,25 +36,30 @@ const AppHeader = () => {
           <Link to="/" className="brand-title">FadeBooker</Link>
           <p className="brand-subtitle">Agendá tu corte con el mejor barbero.</p>
         </div>
-        <nav className="header-links">
-          <Link to="/" className="link-button link-alt">Inicio</Link>
-          <Link to="/#servicios" className="link-button">Servicios</Link>
-          <Link to="/#como-funciona" className="link-button link-alt">Cómo funciona</Link>
-          <Link to="/#testimonios" className="link-button link-alt">Testimonios</Link>
-          <Link to="/booking/new" className="link-button">Agendar</Link>
-          {isAuthenticated ? (
-            <>
-              <Link to="/bookings" className="link-button link-alt">Mis Citas</Link>
-              <Link to="/dashboard" className="link-button link-outline">Dashboard</Link>
-              <button onClick={logout} className="link-button link-outline">Cerrar sesión</button>
-            </>
-          ) : (
-            <>
-              <Link to="/login" className="link-button link-outline">Entrar</Link>
-              <Link to="/register" className="link-button link-alt">Registro</Link>
-            </>
+        <div className="header-right">
+          {isAuthenticated && (
+            <p className="header-greeting">Hola, {user?.nombre}</p>
           )}
-        </nav>
+          <nav className="header-links">
+            <Link to="/" className="link-button link-alt">Inicio</Link>
+            <Link to="/#servicios" className="link-button">Servicios</Link>
+            <Link to="/#como-funciona" className="link-button link-alt">Cómo funciona</Link>
+            <Link to="/#testimonios" className="link-button link-alt">Testimonios</Link>
+            <Link to="/booking/new" className="link-button">Agendar</Link>
+            {isAuthenticated ? (
+              <>
+                <Link to="/bookings" className="link-button link-alt">Mis Citas</Link>
+                <Link to="/dashboard" className="link-button link-outline">Dashboard</Link>
+                <button onClick={logout} className="link-button link-outline">Cerrar sesión</button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="link-button link-outline">Entrar</Link>
+                <Link to="/register" className="link-button link-alt">Registro</Link>
+              </>
+            )}
+          </nav>
+        </div>
       </div>
     </header>
   );

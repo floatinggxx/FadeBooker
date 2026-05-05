@@ -1,38 +1,51 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
 :root {
-  /* Marca FadeBooker */
-  --color-primary-900: #1a1a2e;
-  --color-primary-700: #16213e;
-  --color-primary-500: #0f3460;
-  --color-primary-300: #533483;
-  --color-accent: #e94560;
-  --color-accent-soft: #ff6b6b;
-  
-  /* Sobrescribir variables de Bootstrap con colores de la marca si es necesario */
-  --bs-primary: var(--color-primary-500);
-  --bs-primary-rgb: 15, 52, 96;
-  --bs-secondary: var(--color-accent);
-  --bs-secondary-rgb: 233, 69, 96;
+  --color-bg: #E5E7EB;
+  --color-card: #F9FAFB;
+  --color-text: #000000;
+  --color-muted: #6B7280;
+  --color-input-bg: #EAEAEA;
+  --color-input-border: #D1D5DB;
+  --color-border: #E5E7EB;
+  --color-primary: #2563EB;
+  --color-primary-hover: #1D4ED8;
+  --color-primary-disabled: #93C5FD;
+  --color-danger: #EF4444;
+  --color-danger-hover: #DC2626;
+  --color-danger-disabled: #FCA5A5;
+  --color-success: #44BC48;
+  --color-success-hover: #3B9F3E;
+  --color-success-disabled: #A3E0A3;
+  --color-link: #2563EB;
+  --color-link-hover: #1E3A8A;
+  --color-surface: #F9FAFB;
+  --bs-primary: var(--color-primary);
+  --bs-primary-rgb: 37, 99, 235;
+  --bs-secondary: var(--color-danger);
+  --bs-secondary-rgb: 239, 68, 68;
 }
 
 body {
   min-height: 100vh;
-  background-color: #f4f6fb;
-  color: #1a1a2e;
-  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat', 'Inter', sans-serif;
   font-weight: 700;
 }
 
 .site-header {
-  background: linear-gradient(90deg, rgba(15,52,96,1) 0%, rgba(83,52,131,1) 100%);
-  color: white;
+  background: #FFFFFF;
+  color: var(--color-text);
   padding: 1rem 0;
-  box-shadow: 0 4px 18px rgba(15,52,96,0.12);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 20;
 }
 
 .header-container {
@@ -71,39 +84,58 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 999px;
   font-weight: 600;
   text-decoration: none;
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
 }
 
 .link-button {
-  color: white;
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid transparent;
 }
 
 .link-button:hover,
 .button:hover {
-  filter: brightness(1.05);
+  filter: brightness(0.95);
 }
 
 .link-outline {
-  color: white;
+  color: var(--color-link);
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.9);
+  border: 1px solid var(--color-link);
 }
 
 .link-alt {
-  color: rgba(255,255,255,0.9);
+  color: var(--color-link);
 }
 
 .button-primary {
   color: white;
-  background-color: var(--color-primary-500);
+  background-color: var(--color-primary);
   border: none;
 }
 
+.button-primary:hover {
+  background-color: var(--color-primary-hover);
+}
+
 .button-secondary {
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.button-secondary:hover {
+  background-color: #edf2ff;
+}
+
+.button-danger {
   color: white;
-  background-color: var(--color-accent);
+  background-color: var(--color-danger);
   border: none;
+}
+
+.button-danger:hover {
+  background-color: var(--color-danger-hover);
 }
 
 .page-content {
@@ -120,8 +152,8 @@ h1, h2, h3, h4, h5, h6 {
   gap: 1.5rem;
   padding: 2rem;
   border-radius: 24px;
-  background: white;
-  box-shadow: 0 16px 40px rgba(15, 52, 96, 0.08);
+  background: var(--color-card);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
   margin-bottom: 2rem;
 }
 
@@ -130,8 +162,8 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1rem;
   padding: 0.5rem 1rem;
   border-radius: 999px;
-  background: rgba(14, 78, 158, 0.1);
-  color: var(--color-primary-700);
+  background: rgba(37, 99, 235, 0.12);
+  color: var(--color-primary);
   font-weight: 700;
   font-size: 0.9rem;
 }
@@ -145,7 +177,7 @@ h1, h2, h3, h4, h5, h6 {
 .hero-text {
   max-width: 680px;
   margin-bottom: 1.75rem;
-  color: #4f5d7c;
+  color: var(--color-muted);
   font-size: 1.05rem;
 }
 
@@ -166,13 +198,112 @@ h1, h2, h3, h4, h5, h6 {
 
 .section-heading p {
   margin: 0;
-  color: #5f6f8a;
+  color: var(--color-muted);
 }
 
 .page-message {
   padding: 4rem 2rem;
   text-align: center;
-  color: var(--color-primary-700);
+  color: var(--color-primary);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.header-greeting {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.register-panel {
+  margin: 2rem 0;
+}
+
+.register-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: var(--color-card);
+  padding: 1.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+.register-card h2 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.register-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.feature-card,
+.step-card,
+.value-card,
+.testimonial-card,
+.info-box,
+.auth-card,
+.booking-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+}
+
+.feature-card,
+.step-card,
+.value-card,
+.testimonial-card {
+  border-radius: 20px;
+  padding: 1.5rem;
+}
+
+.feature-card h3,
+.step-card h3,
+.value-card h3 {
+  margin-top: 1rem;
+}
+
+.step-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.step-card strong {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+}
+
+.cta-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem;
+  border-radius: 24px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  align-items: flex-start;
+}
+
+.cta-content h2 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.cta-content p {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.bg-surface {
+  background: var(--color-surface);
 }
 
 .page-message-error {
@@ -271,44 +402,44 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Clases de utilidad personalizadas para mantener compatibilidad con la marca */
-.bg-primary-fade { background-color: var(--color-primary-500) !important; color: white !important; }
-.btn-primary-fade { 
-  background-color: var(--color-primary-500) !important; 
-  border-color: var(--color-primary-500) !important;
+.bg-primary-fade { background-color: var(--color-primary) !important; color: white !important; }
+.btn-primary-fade {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
   color: white !important;
 }
 .btn-primary-fade:hover {
-  background-color: var(--color-primary-700) !important;
-  border-color: var(--color-primary-700) !important;
+  background-color: var(--color-primary-hover) !important;
+  border-color: var(--color-primary-hover) !important;
 }
 
 .btn-accent-fade {
-  background-color: var(--color-accent) !important;
-  border-color: var(--color-accent) !important;
+  background-color: var(--color-danger) !important;
+  border-color: var(--color-danger) !important;
   color: white !important;
 }
 .btn-accent-fade:hover {
-  background-color: var(--color-accent-soft) !important;
-  border-color: var(--color-accent-soft) !important;
+  background-color: var(--color-danger-hover) !important;
+  border-color: var(--color-danger-hover) !important;
 }
 
-.bg-primary-fade { background-color: var(--color-primary-500) !important; color: white !important; }
-.btn-primary-fade { 
-  background-color: var(--color-primary-500) !important; 
-  border-color: var(--color-primary-500) !important;
+.bg-primary-fade { background-color: var(--color-primary) !important; color: white !important; }
+.btn-primary-fade {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
   color: white !important;
 }
 .btn-primary-fade:hover {
-  background-color: var(--color-primary-700) !important;
-  border-color: var(--color-primary-700) !important;
+  background-color: var(--color-primary-hover) !important;
+  border-color: var(--color-primary-hover) !important;
 }
 
 .btn-accent-fade {
-  background-color: var(--color-accent) !important;
-  border-color: var(--color-accent) !important;
+  background-color: var(--color-danger) !important;
+  border-color: var(--color-danger) !important;
   color: white !important;
 }
 .btn-accent-fade:hover {
-  background-color: var(--color-accent-soft) !important;
-  border-color: var(--color-accent-soft) !important;
+  background-color: var(--color-danger-hover) !important;
+  border-color: var(--color-danger-hover) !important;
 }

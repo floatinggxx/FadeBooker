@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { barberService } from '@/lib/api/barberService';
+import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import BarberCard from '@/components/ui/BarberCard';
 
 const HomePage: React.FC = () => {
@@ -9,6 +10,7 @@ const HomePage: React.FC = () => {
     queryKey: ['barbers'],
     queryFn: barberService.listBarberos,
   });
+  const { isAuthenticated } = useAuth();
 
   if (isLoading) return <div className="page-message">Cargando barberos...</div>;
   if (error) return <div className="page-message page-message-error">Error al cargar barberos.</div>;
@@ -26,6 +28,21 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {!isAuthenticated && (
+        <section className="section-block register-panel">
+          <div className="register-card">
+            <div>
+              <h2>Regístrate y empieza a agendar</h2>
+              <p>Accede a todas las funciones de FadeBooker: mis citas, historial y tus barberos favoritos.</p>
+            </div>
+            <div className="register-actions">
+              <Link to="/register" className="button button-primary">Crear cuenta</Link>
+              <Link to="/login" className="button button-secondary">Ya tengo cuenta</Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       <section id="servicios" className="section-block">
         <div className="section-heading">
