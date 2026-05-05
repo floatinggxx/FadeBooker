@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { authService } from '@/lib/api/authService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
@@ -24,14 +25,21 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Iniciar sesión</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-        <input {...register('email')} placeholder="Correo" className="w-full border p-2 rounded" />
-        <input {...register('password')} type="password" placeholder="Contraseña" className="w-full border p-2 rounded" />
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">Entrar</button>
-      </form>
-    </div>
+    <section className="page-content container auth-page">
+      <div className="auth-card">
+        <h1>Iniciar sesión</h1>
+        <p className="auth-subtitle">Accede a tu cuenta para gestionar tus citas y barberos favoritos.</p>
+        <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
+          <input {...register('email')} placeholder="Correo electrónico" className="input-field" />
+          <input {...register('password')} type="password" placeholder="Contraseña" className="input-field" />
+          <button type="submit" className="button button-primary">Entrar</button>
+          <div className="form-footnote">
+            <span>No tienes cuenta?</span>
+            <Link to="/register" className="link-alt">Regístrate</Link>
+          </div>
+        </form>
+      </div>
+    </section>
   );
 };
 

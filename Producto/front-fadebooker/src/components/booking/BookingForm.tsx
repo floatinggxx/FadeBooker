@@ -2,6 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { barberService } from '@/lib/api/barberService';
 import { bookingService } from '@/lib/api/bookingService';
+import { Barbero } from '@/types';
 
 type FormData = {
   barberoId: string;
@@ -11,7 +12,7 @@ type FormData = {
 
 const BookingForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
   const { register, handleSubmit, watch, setValue } = useForm<FormData>();
-  const [barbers, setBarbers] = React.useState<Barber[]>([]);
+  const [barbers, setBarbers] = React.useState<Barbero[]>([]);
   const [services, setServices] = React.useState<any[]>([]);
 
   React.useEffect(() => {

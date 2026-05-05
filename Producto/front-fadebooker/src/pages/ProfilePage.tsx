@@ -6,10 +6,15 @@ import { useAuth } from '@/features/auth/hooks/useAuthContext';
 const ProfilePage: React.FC = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const { data, isLoading } = useQuery(['my-profile'], userService.getPerfil, { enabled: !!user });
+  const { data, isLoading } = useQuery({
+    queryKey: ['my-profile'],
+    queryFn: userService.getPerfil,
+    enabled: !!user,
+  });
 
-  const mutation = useMutation(userService.updatePerfil, {
-    onSuccess: () => queryClient.invalidateQueries(['my-profile']),
+  const mutation = useMutation({
+    mutationFn: userService.updatePerfil,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['my-profile'] }),
   });
 
   if (isLoading) return <div className="p-6">Cargando perfil...</div>;

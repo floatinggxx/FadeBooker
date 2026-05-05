@@ -3,7 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import { bookingService } from '@/lib/api/bookingService';
 
 const MyBookingsPage: React.FC = () => {
-  const { data, isLoading, error } = useQuery(['my-bookings'], bookingService.listCitas);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['my-bookings'],
+    queryFn: bookingService.listCitas,
+  });
 
   if (isLoading) return <div className="p-6">Cargando tus citas...</div>;
   if (error) return <div className="p-6 text-red-600">Error al cargar citas.</div>;

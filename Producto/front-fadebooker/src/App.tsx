@@ -32,24 +32,33 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <BrowserRouter>
-          <header className="p-4 border-b">
-            <nav className="container mx-auto flex gap-4">
-              <Link to="/" className="text-lg font-bold">FadeBooker</Link>
-              <Link to="/" className="text-sm">Home</Link>
-              <Link to="/bookings" className="text-sm">Mis Citas</Link>
-            </nav>
+          <header className="site-header">
+            <div className="container header-container">
+              <div className="brand">
+                <Link to="/" className="brand-title">FadeBooker</Link>
+                <p className="brand-subtitle">Agendá tu corte con el mejor barbero.</p>
+              </div>
+              <nav className="header-links">
+                <Link to="/" className="link-button link-alt">Inicio</Link>
+                <Link to="/booking/new" className="link-button">Agendar</Link>
+                <Link to="/bookings" className="link-button link-alt">Mis Citas</Link>
+                <Link to="/login" className="link-button link-outline">Entrar</Link>
+              </nav>
+            </div>
           </header>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-            <Route path="/barbero/:id" element={<BarberDetailPage />} />
-            <Route path="/booking/new" element={<PrivateRoute><BookingPage /></PrivateRoute>} />
-            <Route path="/bookings" element={<PrivateRoute><MyBookingsPage /></PrivateRoute>} />
-            <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
-            <Route path="/" element={<HomePage />} />
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
+          <main className="app-main">
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+              <Route path="/barbero/:id" element={<BarberDetailPage />} />
+              <Route path="/booking/new" element={<PrivateRoute><BookingPage /></PrivateRoute>} />
+              <Route path="/bookings" element={<PrivateRoute><MyBookingsPage /></PrivateRoute>} />
+              <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+              <Route path="/" element={<HomePage />} />
+              <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+          </main>
         </BrowserRouter>
       </AuthProvider>
     </QueryClientProvider>
