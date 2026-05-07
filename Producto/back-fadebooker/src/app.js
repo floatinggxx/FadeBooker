@@ -7,11 +7,9 @@ const routes = require('./interfaces/http/routes')
 
 const app = express()
 
+// Permitir solicitudes de Power Automate y otros servicios externos
 const corsOptions = {
-  origin: [
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-  ],
+  origin: '*', // Permitir todos los orígenes para la integración con Power Platform
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }

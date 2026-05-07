@@ -59,6 +59,12 @@ Eres el **DevOps Agent**, responsable de la "autopista" por donde viaja el códi
   - **Registry:** `fadebookerregistry.azurecr.io`
   - **App Service:** `fadebooker-backend-ok`
   - **Resource Group:** `FadeBooker`
+
+- **🚀 Script de Despliegue Automatizado (PREFERIDO por encima de comandos manuales):**
+  - **Ubicación:** `Producto/back-fadebooker/deploy_azure.sh`
+  - **Uso:** Siempre que el usuario solicite un despliegue o cuando se confirmen cambios críticos en el código que necesiten ser reflejados en Azure.
+  - **Instrucción:** Ejecuta el comando `./deploy_azure.sh` dentro de `Producto/back-fadebooker/`. Este script ya maneja la autenticación, construcción y reinicio del servicio con validación de errores.
+
 - **Flujo de Despliegue Manual (Workflow de Emergencia):**
   1. `cd Producto/back-fadebooker`
   2. `docker build -t fadebookerregistry.azurecr.io/fadebooker-backend:latest .`
@@ -66,19 +72,11 @@ Eres el **DevOps Agent**, responsable de la "autopista" por donde viaja el códi
   4. `docker push fadebookerregistry.azurecr.io/fadebooker-backend:latest`
   5. `az webapp restart --name fadebooker-backend-ok --resource-group FadeBooker`
 
-- **Configuración Crítica:**
-  - `WEBSITES_PORT`: `3000` (Debe coincidir con `EXPOSE` en Dockerfile).
-  - `PORT`: `3000`.
-  - `use32BitWorkerProcess`: Siempre `false`.
-  - **Arquitectura:** Web App for Containers (Linux B1 Plan).
-  - **Región:** `brazilsouth` (Validada para evitar restricciones de SKU).
-
-### 🚀 Integración con Power Apps
-- **Swagger:** Mantener `swagger.json` actualizado en la raíz del backend.
-- **Seguridad:** Configurar "API Key" en Power Apps apuntando al Header `Authorization` (valor: `Bearer <token>`).
-
 ### 🛠️ Troubleshooting & Mantenimiento:
-- **Error 503:** Generalmente es un fallo de binding del puerto o la arquitectura de 32-bit.
+- **Error 503 / Crash en Arranque (Express 5):** 
+  - Verificar que **"Startup Command"** en Azure esté **VACÍO** (Azure usará `npm start` por defecto).
+  - Validar que no haya asteriscos `*` en las rutas de `app.js` (Incompatibles con Express 5).
+- **Error 501 / 503 (Puerto):** Generalmente es un fallo de binding del puerto o la arquitectura de 32-bit.
 - **DNS (no such host):** Si el push falla, verificar el nombre del login server con `az acr list --query "[].loginServer" -o table`.
 - **Logs:** `az webapp log tail --name fadebooker-backend-ok --resource-group FadeBooker`
 - **Restart Forzado:** `az webapp restart --name fadebooker-backend-ok`
