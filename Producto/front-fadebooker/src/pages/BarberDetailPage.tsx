@@ -10,7 +10,11 @@ const BarberDetailPage: React.FC = () => {
     queryFn: () => barberService.getBarberoById(Number(id)),
     enabled: !!id,
   });
-  // const { data: services } = useQuery(['barber-services', id], () => getBarberServices(id as string), { enabled: !!id });
+  const { data: services } = useQuery({
+    queryKey: ['barber-services', id],
+    queryFn: () => barberService.getBarberServices(Number(id)),
+    enabled: !!id,
+  });
 
   if (isLoading) return <div className="p-10">Cargando...</div>;
   if (error || !barber) return <div className="p-10 text-red-600">No se encontró el barbero.</div>;

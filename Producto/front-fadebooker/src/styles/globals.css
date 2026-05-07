@@ -1,5 +1,9 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --color-bg: #E5E7EB;
   --color-card: #F9FAFB;
@@ -58,7 +62,7 @@ h1, h2, h3, h4, h5, h6 {
 .brand-title {
   font-size: 1.5rem;
   font-weight: 800;
-  color: white;
+  color: var(--color-text);
   text-decoration: none;
 }
 
