@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from '@/features/auth/hooks/useAuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import HomePage from '@/pages/HomePage';
+import BarberiasPage from '@/pages/BarberiasPage';
 import BarberDetailPage from '@/pages/BarberDetailPage';
 import MyBookingsPage from '@/pages/MyBookingsPage';
 import BookingPage from '@/pages/BookingPage';
@@ -75,6 +76,7 @@ function App() {
               <Route path="/booking/new" element={<PrivateRoute><BookingPage /></PrivateRoute>} />
               <Route path="/bookings" element={<PrivateRoute><MyBookingsPage /></PrivateRoute>} />
               <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+              <Route path="/barberias" element={<BarberiasPage />} />
               <Route path="/ayuda" element={<HelpPage />} />
               <Route path="/" element={<HomePage />} />
               <Route path="*" element={<Navigate to="/" />} />
