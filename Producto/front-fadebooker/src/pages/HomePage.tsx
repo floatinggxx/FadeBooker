@@ -45,19 +45,19 @@ const HomePage: React.FC = () => {
         <h2 className="text-xl font-bold mb-4">Testimonios</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white rounded shadow p-4 flex flex-col items-center">
-            <img src="/placeholder-avatar.png" alt="Testimonio 1" className="w-16 h-16 rounded-full mb-2" />
+            <div className="w-16 h-16 rounded-full mb-2 bg-gray-300 flex items-center justify-center text-gray-600 font-bold">C</div>
             <p className="text-sm text-gray-700 mb-1">"Excelente atención, fácil de reservar y el barbero muy profesional."</p>
             <span className="text-yellow-500">★★★★★</span>
             <span className="text-xs text-gray-500 mt-1">Carlos M.</span>
           </div>
           <div className="bg-white rounded shadow p-4 flex flex-col items-center">
-            <img src="/placeholder-avatar.png" alt="Testimonio 2" className="w-16 h-16 rounded-full mb-2" />
+            <div className="w-16 h-16 rounded-full mb-2 bg-gray-300 flex items-center justify-center text-gray-600 font-bold">L</div>
             <p className="text-sm text-gray-700 mb-1">"Reservé en minutos y la experiencia fue top. ¡Repetiré!"</p>
             <span className="text-yellow-500">★★★★★</span>
             <span className="text-xs text-gray-500 mt-1">Lorena G.</span>
           </div>
           <div className="bg-white rounded shadow p-4 flex flex-col items-center">
-            <img src="/placeholder-avatar.png" alt="Testimonio 3" className="w-16 h-16 rounded-full mb-2" />
+            <div className="w-16 h-16 rounded-full mb-2 bg-gray-300 flex items-center justify-center text-gray-600 font-bold">S</div>
             <p className="text-sm text-gray-700 mb-1">"Me recomendaron el corte ideal, ¡quedé feliz!"</p>
             <span className="text-yellow-500">★★★★★</span>
             <span className="text-xs text-gray-500 mt-1">Sofía P.</span>
@@ -69,7 +69,7 @@ const HomePage: React.FC = () => {
       <section className="max-w-4xl mx-auto mb-8 px-4">
         <h2 className="text-lg font-semibold mb-2">Barbería destacada</h2>
         <div className="bg-white rounded shadow p-4 flex items-center gap-4">
-          <img src="/barbershop-placeholder.jpg" alt="Barbería" className="w-24 h-24 rounded object-cover" />
+          <div className="w-24 h-24 rounded bg-gray-300 flex items-center justify-center text-gray-600 font-bold text-xl">TB</div>
           <div>
             <div className="font-bold">TuttiBarber</div>
             <div className="text-sm text-gray-600">Maestría verificada</div>

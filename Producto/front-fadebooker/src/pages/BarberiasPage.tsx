@@ -1,10 +1,13 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { barberService } from '@/lib/api/barberService';
-import BarberCard from '@/components/BarberCard';
+import BarberCard from '@/components/ui/BarberCard';
 
 const BarberiasPage: React.FC = () => {
-  const { data, isLoading, error } = useQuery(['barbers'], barberService.listBarberos);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['barbers'],
+    queryFn: barberService.listBarberos,
+  });
 
   if (isLoading) return <div className="p-10">Cargando barberías...</div>;
   if (error) return <div className="p-10 text-red-600">Error al cargar barberías.</div>;
