@@ -17,12 +17,22 @@ const corsOptions = {
 }
 
 app.use(cors(corsOptions))
-app.options('(.*)', cors(corsOptions))
 
 app.use(express.json())
+
+// Rutas de documentación ANTES del catch-all
+const path = require('path');
+const docsPath = path.resolve(__dirname, '..');
+app.get('/docs/swagger.json', (req, res) => {
+  res.sendFile(path.join(docsPath, 'swagger.json'));
+});
+app.get('/docs/openapi.yaml', (req, res) => {
+  res.sendFile(path.join(docsPath, 'openapi.yaml'));
+});
+
 app.use('/api', routes)
 // Manejo de rutas no encontradas (Fix para Express 5)
-app.use('(.*)', (req, res) => {
+app.use((req, res) => {
     res.status(404).json({ message: 'Ruta no encontrada' });
 });
 module.exports = app

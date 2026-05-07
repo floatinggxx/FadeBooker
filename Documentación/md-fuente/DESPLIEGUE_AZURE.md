@@ -83,4 +83,30 @@ Para el uso de Conectores Personalizados, se generó un `swagger.json` (v1.10.1)
 - **Autenticación:** Soporte para Bearer Token (Authorization Header).
 
 ---
-**Última actualización:** 01 de mayo de 2026 (Fix: ACR Registry Name & SQL Date casting)
+
+## 🚨 5. Guía de Solución de Problemas (Troubleshooting)
+
+### Error 503 / Crash en el Arranque (Exit Code 1)
+Si el contenedor falla y los logs muestran errores de rutas o `PathError`, verifica lo siguiente:
+
+1.  **Compatibilidad Express 5:**
+    *   **Prohibido:** No usar comodines de asterisco `*` o `(.*)` en `app.use` o `app.options` si usas Express 5.
+    *   **Solución:** Deja que el middleware de `cors` maneje las opciones automáticamente (`app.use(cors())`) y usa manejadores de función anónima para el catch-all de 404: `app.use((req, res) => { ... })`.
+
+2.  **Comando de Inicio de Azure (Startup Command):**
+    *   **Problema:** Un comando manual como `node src/index.js` en el Portal de Azure puede causar fallos de contexto.
+    *   **Lección:** En **Configuración -> Configuración de la pila -> Comando de Inicio**, deja el cuadro **VACÍO**. Azure utilizará automáticamente el comando `"start"` definido en tu `package.json`.
+
+3.  **Sensibilidad a Mayúsculas (Case Sensitivity):**
+    *   Azure Linux es sensible a mayúsculas. Asegúrate de que los `require` en el código coincidan exactamente con el nombre del archivo en disco (preferiblemente usar todo en minúsculas).
+    *   **Error común:** `ReporteController` buscando `GenerarReporteCitas.js` cuando el archivo es `generarReporteCitas.js`.
+
+4.  **Rutas Absolutas:**
+    *   Asegúrate de no tener rutas de carpetas locales (ej: `/home/mauricio/...`) hardcodeadas en los logs o configuraciones. Usa siempre `path.join(__dirname, ...)` o rutas relativas.
+
+### Error de Conexión a Base de Datos
+*   **Login Failed:** Verifica `DB_PASSWORD` en las variables de entorno de Azure.
+*   **Timeout:** Asegúrate de que el Firewall de SQL Server tenga activada la opción "Permitir que los servicios y recursos de Azure accedan a este servidor".
+
+---
+**Última actualización:** 07 de mayo de 2026 (Fix: Express 5 Path Rules & Azure Startup Commands)
