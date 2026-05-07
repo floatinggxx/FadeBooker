@@ -17,9 +17,12 @@ const corsOptions = {
 }
 
 app.use(cors(corsOptions))
-app.options('*', cors(corsOptions))
+app.options('(.*)', cors(corsOptions))
 
 app.use(express.json())
 app.use('/api', routes)
-
+// Manejo de rutas no encontradas (Fix para Express 5)
+app.use('(.*)', (req, res) => {
+    res.status(404).json({ message: 'Ruta no encontrada' });
+});
 module.exports = app
