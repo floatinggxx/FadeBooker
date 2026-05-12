@@ -4,6 +4,7 @@ require('dotenv').config();
 const express = require('express')
 const cors = require('cors')
 const routes = require('./interfaces/http/routes')
+const errorHandler = require('./interfaces/http/middlewares/errorHandler')
 
 const app = express()
 
@@ -56,6 +57,10 @@ app.get('/api-docs', (req, res) => {
 });
 
 app.use('/api', routes)
+
+// Middleware de manejo de errores global
+app.use(errorHandler)
+
 // Manejo de rutas no encontradas (Fix para Express 5)
 app.use((req, res) => {
     res.status(404).json({ message: 'Ruta no encontrada' });
