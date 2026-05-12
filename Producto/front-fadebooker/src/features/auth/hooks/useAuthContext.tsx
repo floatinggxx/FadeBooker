@@ -16,10 +16,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
 
   useEffect(() => {
-    // Aquí se podría validar el token con el backend al cargar la app
     const storedUser = localStorage.getItem('user');
+    const storedToken = localStorage.getItem('token');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
+    }
+    if (storedToken) {
+      setToken(storedToken);
     }
   }, []);
 

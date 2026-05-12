@@ -178,6 +178,35 @@ xs:  4px   sm: 8px   md: 16px
 lg: 24px   xl: 32px  2xl: 48px   3xl: 64px
 ```
 
+### Diseño de Interacciones y microanimaciones
+- Usa transiciones suaves en botones, tarjetas y enlaces: `transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease`.
+- Para los botones principales, aplica un hover con **ligero escalado** y **sombra difusa**, no efectos bruscos.
+- El `header` debe sentirse premium: barra fija con fondo semitransparente, bordes suaves y un hover dinámico en los elementos de navegación.
+- Añade un efecto de destello sutil en los botones y CTAs usando pseudo-elementos o gradientes radiales para dar brillo en hover.
+- Prioriza la legibilidad: el contraste del texto en botones y tarjetas debe ser accesible (`AA` mínimo), especialmente en fondos oscuros.
+
+### Aplicación de la paleta de color
+- Implementa los colores como variables CSS en `src/styles/globals.css` o como tokens en `tailwind.config.ts`.
+- Usa `--color-primary-500` para botones CTA principales, y `--color-accent` para acentos vibrantes.
+- Los fondos oscuros (`--color-primary-900`, `--color-primary-700`) funcionan bien en secciones hero y footer.
+- Reserva `--color-neutral-100` y `--color-neutral-200` para superficies claras y tarjetas de contenido.
+- Usa `--color-accent-soft` para estados hover y en glow alrededor de botones.
+
+### Recomendaciones para el header
+- Crea un `Header` sticky con fondo blur y bordes inferiores suaves.
+- Añade hover states en los botones del header: color de fondo más claro, sombra y un pequeño desplazamiento hacia arriba.
+- Usa iconos delicados y espaciado consistente para que el header se vea elegante y no recargado.
+- Si hay elementos de navegación, hazlos `focus-visible` accesibles para teclado.
+
+### Pautas de estilo visual al implementar mejoras
+- Cuando se te pida mejorar el aspecto de una página, céntrate en:
+  - héroes con CTA claros y botones atractivos
+  - tarjetas con elevación suave y márgenes consistentes
+  - secciones bien diferenciadas con bloques de color
+  - un lenguaje visual coherente y moderno
+- Evita cambios de estilo demasiado agresivos; busca una apariencia limpia con toques de personalidad urbana.
+- Integra la paleta del proyecto con énfasis en botones y elementos interactivos.
+
 ---
 
 ## 📱 Flujos de Usuario Clave (UX)

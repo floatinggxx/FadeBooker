@@ -3,10 +3,10 @@ import { useForm } from 'react-hook-form';
 import { authService } from '@/lib/api/authService';
 import { useNavigate } from 'react-router-dom';
 
-type FormData = { nombre: string; email: string; password: string };
+type FormData = { nombre: string; email: string; contrasena: string; rol: 'cliente' | 'barbero' };
 
 const RegisterPage: React.FC = () => {
-  const { register, handleSubmit } = useForm<FormData>();
+  const { register, handleSubmit } = useForm<FormData>({ defaultValues: { rol: 'cliente' } });
   const navigate = useNavigate();
 
   const onSubmit = async (data: FormData) => {
@@ -15,20 +15,31 @@ const RegisterPage: React.FC = () => {
       alert('Registro exitoso. Por favor inicia sesión.');
       navigate('/login');
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Error en registro');
+      alert(err?.response?.data?.message || err?.response?.data?.error || 'Error en registro');
     }
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Registro</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-        <input {...register('nombre')} placeholder="Nombre" className="w-full border p-2 rounded" />
-        <input {...register('email')} placeholder="Correo" className="w-full border p-2 rounded" />
-        <input {...register('password')} type="password" placeholder="Contraseña" className="w-full border p-2 rounded" />
-        <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">Registrar</button>
-      </form>
-    </div>
+    <section className="page-content container auth-page">
+      <div className="auth-card">
+        <h1>Crear cuenta</h1>
+        <p className="auth-subtitle">Regístrate como cliente para ver barberías cercanas, agendar citas y gestionar tu perfil.</p>
+        <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
+          <input {...register('nombre', { required: true })} placeholder="Nombre completo" className="input-field" />
+          <input {...register('email', { required: true })} placeholder="Correo electrónico" className="input-field" />
+          <input {...register('contrasena', { required: true, minLength: 6 })} type="password" placeholder="Contraseña" className="input-field" />
+          <div className="radio-group">
+            <label className="radio-option">
+              <input type="radio" value="cliente" {...register('rol')} defaultChecked /> Cliente
+            </label>
+            <label className="radio-option">
+              <input type="radio" value="barbero" {...register('rol')} /> Barbero
+            </label>
+          </div>
+          <button type="submit" className="button button-primary button-glow">Registrar</button>
+        </form>
+      </div>
+    </section>
   );
 };
 

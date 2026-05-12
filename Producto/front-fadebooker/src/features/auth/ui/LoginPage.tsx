@@ -27,7 +27,7 @@ const LoginPage: React.FC = () => {
         alert('Respuesta inválida del servidor');
       }
     } catch (err: any) {
-      alert(err?.response?.data?.message || 'Error en login');
+      alert(err?.response?.data?.message || err?.response?.data?.error || 'Error en login');
     }
   };
 
@@ -35,13 +35,13 @@ const LoginPage: React.FC = () => {
     <section className="page-content container auth-page">
       <div className="auth-card">
         <h1>Iniciar sesión</h1>
-        <p className="auth-subtitle">Accede a tu cuenta para gestionar tus citas y barberos favoritos.</p>
+        <p className="auth-subtitle">Accede a tu cuenta para gestionar tus citas, tu perfil y ver barberías cercanas.</p>
         <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
-          <input {...register('email')} placeholder="Correo electrónico" className="input-field" />
-          <input {...register('password')} type="password" placeholder="Contraseña" className="input-field" />
-          <button type="submit" className="button button-primary">Entrar</button>
+          <input {...register('email', { required: true })} placeholder="Correo electrónico" className="input-field" />
+          <input {...register('password', { required: true })} type="password" placeholder="Contraseña" className="input-field" />
+          <button type="submit" className="button button-primary button-glow">Entrar</button>
           <div className="form-footnote">
-            <span>No tienes cuenta?</span>
+            <span>¿Aún no tienes cuenta?</span>
             <Link to="/register" className="link-alt">Regístrate</Link>
           </div>
         </form>

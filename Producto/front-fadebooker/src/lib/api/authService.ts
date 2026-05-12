@@ -3,11 +3,18 @@ import { LoginRequest, LoginResponse, RegisterRequest, Usuario } from '@/types';
 
 export const authService = {
   async login(email: string, contrasena: string): Promise<LoginResponse> {
-    const response = await api.post<LoginResponse>('/usuarios/login', {
+    const response = await api.post<{ usuario: any; token: string }>('/usuarios/login', {
       email,
       contrasena
     });
-    return response.data;
+    const { usuario, token } = response.data;
+    return {
+      id: usuario.id_usuario?.toString() || '',
+      nombre: usuario.nombre,
+      email: usuario.email,
+      rol: usuario.rol,
+      token
+    };
   },
 
   async register(data: RegisterRequest): Promise<Usuario> {

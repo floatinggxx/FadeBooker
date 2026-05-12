@@ -37,20 +37,24 @@ const AppHeader = () => {
       <div className="container header-container">
         <div className="brand">
           <Link to="/" className="brand-title">FadeBooker</Link>
-          <p className="brand-subtitle">Agendá tu corte con el mejor barbero.</p>
+          <p className="brand-subtitle">Reserva cortes, accede a tu perfil y encuentra barberías cercanas.</p>
         </div>
         <div className="header-right">
-          {isAuthenticated && (
-            <p className="header-greeting">Hola, {user?.nombre}</p>
-          )}
           <nav className="header-links">
-            <Link to="/" className="link-button link-alt">Inicio</Link>
+            <Link to="/" className="link-button">Inicio</Link>
             <Link to="/barberias" className="link-button">Barberías</Link>
-            <Link to="/bookings" className="link-button link-alt">Mis Citas</Link>
-            <Link to="/profile" className="link-button link-alt">Mi Perfil</Link>
             <Link to="/ayuda" className="link-button link-alt">Ayuda</Link>
-            {isAuthenticated && (
-              <button onClick={logout} className="link-button link-outline ml-2">Cerrar sesión</button>
+            {isAuthenticated ? (
+              <>
+                <Link to="/bookings" className="link-button">Mis Citas</Link>
+                <Link to="/profile" className="link-button">Mi Perfil</Link>
+                <button onClick={logout} className="button button-secondary">Cerrar sesión</button>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="button button-primary">Ingresar</Link>
+                <Link to="/register" className="button button-secondary">Registrarme</Link>
+              </>
             )}
           </nav>
         </div>

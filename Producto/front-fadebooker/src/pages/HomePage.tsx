@@ -1,94 +1,114 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const HomePage: React.FC = () => {
   return (
-    <div className="bg-gray-50 min-h-screen">
-      {/* Carrusel de imágenes/promociones */}
-      <section className="w-full bg-white shadow mb-8">
-        <div className="max-w-4xl mx-auto py-10 px-4 flex flex-col items-center text-center">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">Agenda en segundos cerca de ti</h1>
-          <p className="mb-6 text-lg text-gray-700">Vía FadeBooker puedes reservar tu corte en barberías verificadas, con reseñas reales y atención garantizada.</p>
-          <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold shadow hover:bg-blue-700 transition">Agendar ahora</button>
-        </div>
-        {/* Aquí iría un carrusel de imágenes si se implementa */}
-      </section>
-
-      {/* Buscador de barberías */}
-      <section className="max-w-3xl mx-auto mb-8 px-4">
-        <h2 className="text-xl font-semibold mb-2">Busca una barbería en la comuna que tú quieras</h2>
-        <div className="flex gap-2">
-          <input type="text" placeholder="Selecciona comuna o barrio..." className="border rounded px-3 py-2 w-full" disabled />
-          <button className="bg-blue-500 text-white px-4 py-2 rounded" disabled>Buscar</button>
-        </div>
-        <p className="text-xs text-gray-400 mt-1">(Próximamente: buscador interactivo)</p>
-      </section>
-
-      {/* ¿Por qué elegir FadeBooker? */}
-      <section className="max-w-4xl mx-auto mb-8 px-4 grid md:grid-cols-2 gap-6 items-center">
-        <div>
-          <h2 className="text-xl font-bold mb-2">¿Por qué elegir FadeBooker?</h2>
-          <ul className="list-disc ml-6 text-gray-700 space-y-1">
-            <li><b>Agenda rápida:</b> Elige tu barbero y horario en segundos.</li>
-            <li><b>Cerca de ti:</b> Recomendación por distancia y ubicación.</li>
-            <li><b>Reseñas reales:</b> Opiniones verificadas de otros clientes.</li>
-            <li><b>Recomendación con IA:</b> Te sugerimos el corte ideal según tu estilo.</li>
-          </ul>
-        </div>
-        <div className="flex justify-center">
-          <img src="/logo192.png" alt="FadeBooker" className="w-40 h-40 object-contain" />
-        </div>
-      </section>
-
-      {/* Testimonios */}
-      <section className="max-w-4xl mx-auto mb-8 px-4">
-        <h2 className="text-xl font-bold mb-4">Testimonios</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white rounded shadow p-4 flex flex-col items-center">
-            <div className="w-16 h-16 rounded-full mb-2 bg-gray-300 flex items-center justify-center text-gray-600 font-bold">C</div>
-            <p className="text-sm text-gray-700 mb-1">"Excelente atención, fácil de reservar y el barbero muy profesional."</p>
-            <span className="text-yellow-500">★★★★★</span>
-            <span className="text-xs text-gray-500 mt-1">Carlos M.</span>
+    <div className="page-content">
+      <section className="container hero-section">
+        <div className="hero-copy">
+          <span className="hero-eyebrow">Barberías + Citas + Perfil</span>
+          <h1 className="hero-title">Tu estilo, tu agenda y tus barberías favoritas en un solo lugar.</h1>
+          <p className="hero-text">Regístrate, inicia sesión y descubre barberías cercanas con reseñas reales, atención premium y reservas en segundos.</p>
+          <div className="hero-actions">
+            <Link to="/register" className="button button-primary button-glow">Crear cuenta</Link>
+            <Link to="/barberias" className="button button-blue">Ver barberías</Link>
           </div>
-          <div className="bg-white rounded shadow p-4 flex flex-col items-center">
-            <div className="w-16 h-16 rounded-full mb-2 bg-gray-300 flex items-center justify-center text-gray-600 font-bold">L</div>
-            <p className="text-sm text-gray-700 mb-1">"Reservé en minutos y la experiencia fue top. ¡Repetiré!"</p>
-            <span className="text-yellow-500">★★★★★</span>
-            <span className="text-xs text-gray-500 mt-1">Lorena G.</span>
+          <div className="card-surface mt-8">
+            <p className="text-sm">Coloca tus imágenes en <code className="text-slate-700">Producto/front-fadebooker/public/images/</code> con estos nombres: <strong>hero-1.svg</strong>, <strong>hero-2.svg</strong> y <strong>hero-3.svg</strong>. También puedes usar fotos reales de barberías.</p>
           </div>
-          <div className="bg-white rounded shadow p-4 flex flex-col items-center">
-            <div className="w-16 h-16 rounded-full mb-2 bg-gray-300 flex items-center justify-center text-gray-600 font-bold">S</div>
-            <p className="text-sm text-gray-700 mb-1">"Me recomendaron el corte ideal, ¡quedé feliz!"</p>
-            <span className="text-yellow-500">★★★★★</span>
-            <span className="text-xs text-gray-500 mt-1">Sofía P.</span>
+        </div>
+        <div className="hero-visual">
+          <div className="hero-images">
+            <img src="/images/hero-1.svg" alt="Barbería moderna" />
+            <img src="/images/hero-2.svg" alt="Cliente en barbería" />
+            <div className="hero-card">
+              <h3>Reserva rápido y sin complicaciones</h3>
+              <p>Conecta con barberías cercanas, elige tu hora y mantén tus citas bajo control.</p>
+            </div>
+            <img src="/images/hero-3.svg" alt="Corte premium" />
           </div>
         </div>
       </section>
 
-      {/* Barbería destacada (placeholder) */}
-      <section className="max-w-4xl mx-auto mb-8 px-4">
-        <h2 className="text-lg font-semibold mb-2">Barbería destacada</h2>
-        <div className="bg-white rounded shadow p-4 flex items-center gap-4">
-          <div className="w-24 h-24 rounded bg-gray-300 flex items-center justify-center text-gray-600 font-bold text-xl">TB</div>
+      <section className="container">
+        <div className="section-heading">
+          <h2>Todo listo para comenzar</h2>
+          <p>Tu panel de usuario te permite ver perfil, citas y barberías recomendadas desde el primer acceso.</p>
+        </div>
+
+        <div className="feature-grid mb-8">
+          <article className="card-surface">
+            <h3>Barberías cercanas</h3>
+            <p>Encuentra lugares verificados cerca de tu comuna y reserva en segundos desde cualquier dispositivo.</p>
+          </article>
+          <article className="card-surface">
+            <h3>Gestión de citas</h3>
+            <p>Revisa tus próximas citas, historial y cambia tu reserva cuando lo necesites.</p>
+          </article>
+          <article className="card-surface">
+            <h3>Perfil personalizado</h3>
+            <p>Mantén tus datos al día y recibe recomendaciones basadas en tus preferencias.</p>
+          </article>
+        </div>
+
+        <div className="section-heading">
+          <h2>¿Cómo funciona?</h2>
+          <p>Una experiencia creada para que tus reservas de barbería sean rápidas, seguras y con estilo.</p>
+        </div>
+
+        <div className="step-grid mb-8">
+          <article className="card-surface">
+            <strong>1</strong>
+            <h3>Regístrate e inicia sesión</h3>
+            <p>Crea tu usuario con correo y contraseña, luego accede a todo el contenido exclusivo.</p>
+          </article>
+          <article className="card-surface">
+            <strong>2</strong>
+            <h3>Explora barberías</h3>
+            <p>Busca por nombre, especialidad o barrio y conoce la valoración de cada lugar.</p>
+          </article>
+          <article className="card-surface">
+            <strong>3</strong>
+            <h3>Agenda tu cita</h3>
+            <p>Elige el barbero, selecciona la fecha y confirma tu reserva con un solo clic.</p>
+          </article>
+        </div>
+      </section>
+
+      <section className="container mb-8">
+        <div className="section-heading">
+          <h2>Testimonios</h2>
+          <p>Lo que dicen nuestros usuarios sobre una experiencia de reserva rápida y confiable.</p>
+        </div>
+        <div className="testimonial-grid feature-grid">
+          <article className="card-surface">
+            <h3>Fernando R.</h3>
+            <p>"Reservar fue facilísimo y el barbero supo exactamente lo que quería. La app está muy bien diseñada."</p>
+          </article>
+          <article className="card-surface">
+            <h3>María S.</h3>
+            <p>"Me encanta que puedo ver mis citas y contactar al barbero desde el perfil. Súper práctico."</p>
+          </article>
+          <article className="card-surface">
+            <h3>Diego P.</h3>
+            <p>"Las barberías tienen buena información y es fácil comparar horarios. Muy recomendable."</p>
+          </article>
+        </div>
+      </section>
+
+      <section className="container mb-10">
+        <div className="card-surface cta-panel">
           <div>
-            <div className="font-bold">TuttiBarber</div>
-            <div className="text-sm text-gray-600">Maestría verificada</div>
-            <div className="text-xs text-gray-500">Reservas: 47</div>
+            <h2 className="section-highlight">¿Listo para tu primer corte?</h2>
+            <p>Regístrate ahora y descubre barberías, perfiles y reservas con una experiencia visual moderna.</p>
+          </div>
+          <div className="hero-actions">
+            <Link to="/register" className="button button-primary">Crear cuenta</Link>
+            <Link to="/barberias" className="button button-blue">Ir a barberías</Link>
           </div>
         </div>
       </section>
-
-      {/* Recomendación de corte */}
-      <section className="max-w-3xl mx-auto mb-8 px-4 text-center">
-        <h2 className="text-lg font-semibold mb-2">¿No sabes qué corte elegir?</h2>
-        <p className="mb-3 text-gray-700">Déjanos ayudarte a encontrar el mejor estilo según tu rostro y preferencias.</p>
-        <button className="bg-green-600 text-white px-5 py-2 rounded font-semibold hover:bg-green-700 transition">Probar recomendación IA</button>
-      </section>
-
-      {/* Footer simple */}
-      <footer className="w-full py-4 bg-gray-200 text-center text-sm text-gray-600 mt-8">
-        ¿Tienes alguna duda? <a href="/ayuda" className="text-blue-600 underline">Contáctanos</a>
-      </footer>
     </div>
   );
 };

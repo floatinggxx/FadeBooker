@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { bookingService } from '@/lib/api/bookingService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
@@ -13,32 +13,42 @@ const MyBookingsPage: React.FC = () => {
     enabled: !!userId,
   });
 
+  const sortedAppointments = useMemo(() => {
+    if (!data) return [];
+    return [...data].sort((a: any, b: any) => new Date(`${a.fecha} ${a.hora}`).getTime() - new Date(`${b.fecha} ${b.hora}`).getTime());
+  }, [data]);
+
   if (!userId) {
-    return <div className="p-6">Inicia sesión para ver tus citas y gestionar tus reservas.</div>;
+    return <div className="page-content container page-message">Inicia sesión para ver tus citas y gestionar tus reservas.</div>;
   }
 
-  if (isLoading) return <div className="p-6">Cargando tus citas...</div>;
-  if (error) return <div className="p-6 text-red-600">Error al cargar citas.</div>;
+  if (isLoading) return <div className="page-content container page-message">Cargando tus citas...</div>;
+  if (error) return <div className="page-content container page-message">Error al cargar tus citas.</div>;
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Mis Citas</h1>
-      {data && data.length ? (
-        <ul className="space-y-3">
-          {data.map((c: any) => {
-            const fechaHora = c.fechaHora || `${c.fecha}T${c.hora}`;
+    <div className="page-content container">
+      <div className="section-heading">
+        <h1>Mis Citas</h1>
+        <p>Revisa tus próximas reservas y accede a la información de cada barbero.</p>
+      </div>
+      {sortedAppointments && sortedAppointments.length ? (
+        <div className="grid gap-4">
+          {sortedAppointments.map((c: any) => {
+            const fechaHora = `${c.fecha} ${c.hora}`;
             return (
-              <li key={c.id} className="border p-3 rounded">
-                <strong>{new Date(fechaHora).toLocaleString()}</strong>
-                <div>Barbero: {c.barbero?.nombre || 'No especificado'}</div>
-                <div>Servicio: {c.servicio?.servicio?.nombre || c.servicio?.nombre || 'Sin datos'}</div>
-                <div>Estado: {c.estado}</div>
-                {c.notas && <div>Notas: {c.notas}</div>}
-              </li>
+              <article key={c.id} className="booking-card card-surface">
+                <h3>{new Date(fechaHora).toLocaleString()}</h3>
+                <p><strong>Barbero:</strong> {c.barbero?.nombre || 'No especificado'}</p>
+                <p><strong>Servicio:</strong> {c.servicio?.servicio?.nombre || c.servicio?.nombre || 'Sin datos'}</p>
+                <p><strong>Estado:</strong> {c.estado}</p>
+                {c.notas && <p><strong>Notas:</strong> {c.notas}</p>}
+              </article>
             );
           })}
-        </ul>
-      ) : <p>No tienes citas registradas.</p>}
+        </div>
+      ) : (
+        <div className="card-surface page-message">No tienes citas registradas. Explora barberías y reserva tu próximo corte.</div>
+      )}
     </div>
   );
 };

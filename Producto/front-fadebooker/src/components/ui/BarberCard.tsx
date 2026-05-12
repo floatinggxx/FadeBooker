@@ -3,17 +3,20 @@ import { Barbero } from '@/types';
 import { Link } from 'react-router-dom';
 
 const BarberCard: React.FC<{ barber: Barbero }> = ({ barber }) => {
-  const fotoUrl = (barber as Barbero & { fotoUrl?: string }).fotoUrl || '/nicocos.png';
+  const fotoUrl = (barber as Barbero & { fotoUrl?: string }).fotoUrl || '/images/barber-1.svg';
+  const rating = barber.calificacion || 4.8;
 
   return (
-    <div className="border rounded p-4 shadow-sm flex items-center gap-4">
-      <img src={fotoUrl} alt={barber.nombre} className="w-20 h-20 rounded-full object-cover" />
-      <div>
-        <h3 className="text-lg font-semibold">{barber.nombre}</h3>
-        <p className="text-sm text-gray-600">{barber.especialidad || 'Barbero'}</p>
-        <Link to={`/barbero/${barber.id}`} className="mt-2 inline-block text-blue-600">Ver perfil</Link>
+    <article className="barber-card">
+      <img src={fotoUrl} alt={barber.nombre} />
+      <div className="barber-card-content">
+        <h3>{barber.nombre}</h3>
+        <p>{barber.especialidad || 'Barbero profesional'}</p>
+        <p className="text-sm text-slate-300">{barber.email}</p>
+        <p className="text-sm text-slate-400">Valoración: {rating} ★</p>
+        <Link to={`/barbero/${barber.id}`} className="barber-card-link">Ver perfil</Link>
       </div>
-    </div>
+    </article>
   );
 };
 
