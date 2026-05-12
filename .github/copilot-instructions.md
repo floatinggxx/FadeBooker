@@ -11,7 +11,28 @@
 - **Stack:** Node.js (Backend), React (Frontend), Azure SQL Server (BD).
 - **BD:** `fadebooker-server.database.windows.net` / `FadeBooker_DB`
 - **Repositorio Local:** `c:\Users\SanNi\OneDrive\Escritorio\Barberia\FadeBooker`
-- **Estado:** Backend 92% completo, Frontend iniciando, Security audit pendiente
+- **Estado:** Backend 95% completo, Frontend iniciando, Security audit pendiente
+
+---
+
+## 🔗 Endpoints de Producción
+- **Swagger UI:** [https://fadebooker-backend-ok.azurewebsites.net/api-docs](https://fadebooker-backend-ok.azurewebsites.net/api-docs)
+- **Swagger JSON:** [https://fadebooker-backend-ok.azurewebsites.net/docs/swagger.json](https://fadebooker-backend-ok.azurewebsites.net/docs/swagger.json)
+- **Health Check:** [https://fadebooker-backend-ok.azurewebsites.net/api/health](https://fadebooker-backend-ok.azurewebsites.net/api/health)
+
+---
+
+## 🤝 Protocolos de Negocio Críticos
+
+### 1. Registro en dos pasos (Onboarding Barbero)
+Para registrar un barbero, se debe seguir este flujo:
+1. **Paso 1:** `POST /api/usuarios/register` con `rol: "Barbero"`. Esto crea la entidad base `Usuario`.
+2. **Paso 2:** `POST /api/barberos` usando el `id_usuario` retornado en el paso anterior. Esto crea la entidad `Barbero` vinculada.
+*Nota:* El sistema no permite crear un barbero sin un usuario previo por integridad de autenticación.
+
+### 2. Gestión de Perfil
+- Los usuarios pueden gestionar sus datos (nombre, apellido, teléfono) vía `GET/PUT /api/usuarios/perfil`.
+- Estos endpoints requieren el header `Authorization: Bearer <token>`.
 
 ---
 

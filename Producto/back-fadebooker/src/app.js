@@ -28,6 +28,33 @@ app.get('/docs/openapi.yaml', (req, res) => {
   res.sendFile(path.join(docsPath, 'openapi.yaml'));
 });
 
+// Interfaz visual de Swagger
+app.get('/api-docs', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>FadeBooker API Docs</title>
+      <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css" />
+    </head>
+    <body>
+      <div id="swagger-ui"></div>
+      <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js" charset="UTF-8"></script>
+      <script>
+        window.onload = () => {
+          window.ui = SwaggerUIBundle({
+            url: "/docs/swagger.json",
+            dom_id: '#swagger-ui',
+          });
+        };
+      </script>
+    </body>
+    </html>
+  `);
+});
+
 app.use('/api', routes)
 // Manejo de rutas no encontradas (Fix para Express 5)
 app.use((req, res) => {

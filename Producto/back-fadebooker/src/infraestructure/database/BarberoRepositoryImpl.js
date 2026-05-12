@@ -10,6 +10,57 @@ const db = require('../../db/knex')
  * - Métodos para verificar disponibilidad de servicios
  */
 class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
+  async create(data) {
+    const trx = await db.transaction()
+    try {
+      let id_usuario = data.id_usuario
+
+      // Si no viene id_usuario o si queremos asegurar que el usuario existe/se cree
+      if (!id_usuario) {
+        // Extraer campos de usuario
+        const usuarioData = {
+          email: data.email,
+          nombre: data.nombre,
+          apellido: data.apellido,
+          telefono: data.telefono,
+          rol: 'Barbero',
+          foto_perfil_url: data.foto_perfil_url,
+          estado: 1
+        }
+
+        // Verificar si el usuario ya existe por email
+        const existingUser = await trx('Usuario').where({ email: data.email }).first()
+        if (existingUser) {
+          id_usuario = existingUser.id_usuario
+          // Opcionalmente actualizar el rol si era cliente
+          await trx('Usuario').where({ id_usuario }).update({ rol: 'Barbero' })
+        } else {
+          const [newUserId] = await trx('Usuario').insert(usuarioData).returning('id_usuario')
+          id_usuario = typeof newUserId === 'object' ? newUserId.id_usuario : newUserId
+        }
+      }
+
+      // Preparar datos del barbero
+      const barberoData = {
+        id_usuario,
+        id_tienda: data.id_tienda || 1, // Default a 1 si no viene
+        especialidad: data.especialidad,
+        anos_experiencia: data.anos_experiencia,
+        tarifa_base: data.tarifa_base,
+        foto_perfil_url: data.foto_perfil_url,
+        activo: 1
+      }
+
+      const [id_barbero] = await trx('Barbero').insert(barberoData).returning('id_barbero')
+      
+      await trx.commit()
+      return typeof id_barbero === 'object' ? id_barbero.id_barbero : id_barbero
+    } catch (error) {
+      await trx.rollback()
+      throw error
+    }
+  }
+
   async findByEspecialidad(especialidad) {
     // La especialidad está en el campo especialidad del Barbero
     return db('Barbero')

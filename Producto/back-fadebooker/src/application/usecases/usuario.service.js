@@ -30,6 +30,18 @@ const UsuarioService = {
     )
 
     return { usuario, token }
+  },
+
+  async obtenerPerfil(id) {
+    return usuarioRepository.findById(id)
+  },
+
+  async actualizarPerfil(id, data) {
+    if (data.contrasena) {
+      const salt = await bcrypt.genSalt(10)
+      data.contrasena = await bcrypt.hash(data.contrasena, salt)
+    }
+    return usuarioRepository.update(id, data)
   }
 }
 

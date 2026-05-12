@@ -50,20 +50,13 @@ Para entender la estructura completa del proyecto, ver: [CODEBASE_STRUCTURE.md](
 **Skill Principal:** [sql-migration](skills/sql-migration.md)
 
 ### 2️⃣ **Backend Agent** 🔧
-**Status:** ✅ **COMPLETADO (92%)**
-**Skill Principal:** [backend-service-gen](skills/backend-service-gen.md)
-
-### 3️⃣ **Frontend Agent** 🎨
-**Status:** 🆕 **INICIANDO**
-**Skill Principal:** [frontend-component-bridge](skills/frontend-component-bridge.md)
-
-### 4️⃣ **Security Agent** 🛡️
-**Status:** 🆕 **INICIANDO**
-**Skill Principal:** [security-audit](skills/security-audit.md)
+**Status:** ✅ **COMPLETADO (95%)**
+**Contexto:** Protocolo de Onboarding (User -> Barbero) consolidado. Endpoints de perfil `/usuarios/perfil` (GET/PUT) funcionales.
 
 ### 5️⃣ **Orchestrator Agent** ⚖️
 **Status:** ✅ **ACTIVO**
-**Skill Principal:** [orchestrator-sync](skills/orchestrator-sync.md)
+**Acción Reciente:** Verificación final de flujos críticos y sincronización de Swagger 2.0 completada.
+
 
 ---
 

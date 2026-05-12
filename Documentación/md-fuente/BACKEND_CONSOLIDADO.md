@@ -1,7 +1,7 @@
 # 🚀 Backend Consolidado - FadeBooker
 
-**Versión Actual:** 2.1 (Producción Lista - 92% Completado)
-**Estado:** ✅ Estable
+**Versión Actual:** 2.2 (Producción Lista - 95% Completado)
+**Estado:** ✅ Estable - Sincronizado con PowerApps (Swagger 2.0)
 **Tecnologías:** Node.js (Express 5.2.1), Knex.js 3.2.9, Azure SQL Server (T-SQL), Jest 29.7.0.
 
 ---

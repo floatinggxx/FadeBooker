@@ -18,6 +18,24 @@ const UsuarioController = {
     } catch (error) {
       res.status(401).json({ error: error.message })
     }
+  },
+
+  async obtenerPerfil(req, res) {
+    try {
+      const user = await UsuarioService.obtenerPerfil(req.user.id)
+      res.json(user)
+    } catch (error) {
+      res.status(400).json({ error: error.message })
+    }
+  },
+
+  async actualizarPerfil(req, res) {
+    try {
+      const user = await UsuarioService.actualizarPerfil(req.user.id, req.body)
+      res.json(user)
+    } catch (error) {
+      res.status(400).json({ error: error.message })
+    }
   }
 }
 
