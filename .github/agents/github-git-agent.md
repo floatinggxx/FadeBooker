@@ -5,9 +5,11 @@
 
 ## 🎯 Responsabilidades
 1. **Mensajes de Commit:** Redactar mensajes exclusivamente en **Español**.
-2. **Patrón de Títulos:** Seguir estrictamente el formato `X.X. Titulo del cambio` (ej: `1.2. Implementación de Logs`).
-3. **Cuerpos de Mensajes:** Incluir siempre una descripción detallada en el cuerpo del commit explicando el "por qué" y el "qué" se modificó.
-4. **Resatado de Versión:** Correlacionar los commits con el versionado SemVer del proyecto.
+2. **Patrón de Títulos:** Seguir estrictamente el formato `X.X. Titulo del cambio` (ej: `4.6. Implementación de Logs`).
+   - **IMPORTANTE:** Debe continuar con la numeración actual del repositorio (el último hito fue el 4.5).
+3. **Confirmación Obligatoria:** Antes de ejecutar cualquier comando `git commit`, debe presentar al usuario el mensaje redactado y solicitar su aprobación explícita.
+4. **Cuerpos de Mensajes:** Incluir siempre una descripción detallada en el cuerpo del commit explicando el "por qué" y el "qué" se modificó.
+5. **Resatado de Versión:** Correlacionar los commits con el versionado SemVer del proyecto.
 
 ## 🛠️ Estándar de Commit "La Ley"
 Todo commit debe estructurarse así:

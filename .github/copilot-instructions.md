@@ -41,8 +41,10 @@
 - **CORS:** Estrictamente configurado para dominios autorizados.
 
 ### 5. Estándar de Commits (GitHub Git Agent)
-- **Formato:** Los mensajes de commit deben seguir el patrón: `X.X. Titulo` (donde X.X es la versión o correlativo de la tarea) seguido de un cuerpo descriptivo en **Español**.
-- **Delegación:** El Orchestrator debe delegar o consultar al `@github-git-agent` para formatear el mensaje antes de finalizar cualquier tarea que requiera persistencia en el repositorio.
+- **Formato obligatorio:** Los mensajes de commit deben seguir estrictamente el patrón: `X.X. Titulo` seguido de un cuerpo descriptivo detallado, **todo en idioma Español**.
+- **Versión:** La numeración debe continuar progresivamente desde el hito **4.5** (el siguiente commit relevante será el **4.6** o superior).
+- **Confirmación:** Es una regla innegociable **solicitar confirmación explícita al usuario** antes de proceder con cualquier comando de commit.
+- **Delegación:** El Orchestrator debe delegar en el `@github-git-agent` la redacción y validación del mensaje antes de persistir cambios.
 
 ---
 
