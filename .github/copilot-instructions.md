@@ -40,6 +40,10 @@
 - **Auditoría:** Todos los errores críticos deben registrarse en la tabla `LogErrores` de la BD (Migración 20260512).
 - **CORS:** Estrictamente configurado para dominios autorizados.
 
+### 5. Estándar de Commits (GitHub Git Agent)
+- **Formato:** Los mensajes de commit deben seguir el patrón: `X.X. Titulo` (donde X.X es la versión o correlativo de la tarea) seguido de un cuerpo descriptivo en **Español**.
+- **Delegación:** El Orchestrator debe delegar o consultar al `@github-git-agent` para formatear el mensaje antes de finalizar cualquier tarea que requiera persistencia en el repositorio.
+
 ---
 
 ## 🔗 Endpoints de Producción
@@ -82,6 +86,7 @@ Para registrar un barbero, se debe seguir este flujo:
 @powerapps-agent      # Low-code Apps
 @power-automate-agent # Automatización flujos
 @security-agent       # Auditoría y estándares
+@github-git-agent     # Gestión de commits y flujo Git
 @orchestrator-agent   # Coordinación multi-agente
 ```
 

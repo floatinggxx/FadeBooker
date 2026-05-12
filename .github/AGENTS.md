@@ -37,6 +37,7 @@ Para entender la estructura completa del proyecto, ver: [CODEBASE_STRUCTURE.md](
 | **PowerApps Agent** | Desarrollo de Low-Code Apps e integración | ✅ Activo | [Instrucciones](agents/powerapps-agent.md) |
 | **Power-Automate Agent**| Automatización de flujos y conectores | ✅ Activo | [Instrucciones](agents/power-automate-agent.md) |
 | **Security Agent** | Auditoría de código y estándares de seguridad | 🆕 Iniciando | [Instrucciones](agents/security-agent.md) |
+| **Github Git Agent** | Gestión de commits y flujo de trabajo Git | ✅ Activo | [Instrucciones](agents/github-git-agent.md) |
 | **Photographer-AI Agent**| Lógica de simulación y procesamiento de imagen | 🆕 Planificado | [Instrucciones](agents/photographer-ai-agent.md) |
 | **Orchestrator Agent** | Coordinación de flujos multi-agente complejos | ✅ Activo | [Instrucciones](agents/orchestrator-agent.md) |
 
@@ -70,7 +71,11 @@ Para entender la estructura completa del proyecto, ver: [CODEBASE_STRUCTURE.md](
 
 ### 5️⃣ **Orchestrator Agent** ⚖️
 **Status:** ✅ **ACTIVO**
-**Acción Reciente:** Verificación final de flujos críticos y sincronización de Swagger 2.0 completada.
+**Acción Reciente:** Verificación final de flujos críticos y sincronización de Swagger 2.0 completada. Delegación activa al `@github-git-agent` para estandarización de commits.
+
+### 6️⃣ **Github Git Agent** 🐙
+**Status:** ✅ **ACTIVO**
+**Responsabilidad:** Asegurar que cada commit siga el patrón `X.X. Titulo` + Cuerpo descriptivo en Español. Automatizar la generación de mensajes de commit coherentes con el progreso del proyecto.
 
 
 ---
