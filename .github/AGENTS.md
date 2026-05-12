@@ -1,8 +1,19 @@
 # 🤖 AGENTS.md - Registro Central de Agentes FadeBooker
 
-**Última actualización:** 28 de abril de 2026  
-**Versión:** 1.2.0  
-**Estado:** Fase Implementación - Seguridad y Frontend iniciando
+**Última actualización:** 12 de mayo de 2026  
+**Versión:** 1.3.0  
+**Estado:** Fase Implementación (Arquitectura Consolidada)
+
+---
+
+## 🏛️ Directrices Innegociables (La Ley)
+
+Todos los agentes deben adherirse estrictamente a estas reglas:
+- **Arquitectura Hexagonal:** Obligatoria en backend con inyección de dependencias.
+- **Self-healing Aware:** Lógica resiliente ante fallos de infraestructura.
+- **Feature-Based Frontend:** Desarrollo por slices funcionales (No Atomic Design).
+- **Power Platform Sync:** Mantener `swagger_powerapps.json` bajo estándar **Swagger 2.0**.
+- **Log de Errores:** Auditoría obligatoria en `LogErrores`.
 
 ---
 
@@ -19,11 +30,15 @@ Para entender la estructura completa del proyecto, ver: [CODEBASE_STRUCTURE.md](
 | Agente | Propósito Principal | Estado | Instrucciones |
 | :--- | :--- | :--- | :--- |
 | **Database Agent** | Gestión de esquema SQL Server y migraciones | ✅ Activo | [Instrucciones](agents/database-agent.md) |
-| **Backend Agent** | Desarrollo de API Node.js y lógica de negocio | ✅ Activo | [Instrucciones](agents/backend-agent.md) |
-| **Frontend Agent** | Migración Power Pages a React y UX/UI | 🆕 Iniciando | [Instrucciones](agents/frontend-agent.md) |
+| **Backend Agent** | Desarrollo de API Node.js (Ark. Hexagonal) | ✅ Activo | [Instrucciones](agents/backend-agent.md) |
+| **Frontend Agent** | Migración React a Feature-Based Architecture | 🆕 Iniciando | [Instrucciones](agents/frontend-agent.md) |
 | **Documentation Agent** | Creación de manuales, READMEs y reporte Office | ✅ Activo | [Instrucciones](agents/documentation-agent.md) |
 | **Diagram Agent** | Visualización de arquitectura y flujos (draw.io) | ✅ Activo | [Instrucciones](agents/diagram-agent.md) |
-| **Security Agent** | Auditoría de código y estándares de seguridad | 🆕 Iniciando | [Instrucciones](agents/security-agent.md) || **Photographer-AI Agent** | Lógica de simulación y procesamiento de imagen | 🆕 Planificado | [Instrucciones](agents/photographer-ai-agent.md) || **Orchestrator Agent** | Coordinación de flujos multi-agente complejos | ✅ Activo | [Instrucciones](agents/orchestrator-agent.md) |
+| **PowerApps Agent** | Desarrollo de Low-Code Apps e integración | ✅ Activo | [Instrucciones](agents/powerapps-agent.md) |
+| **Power-Automate Agent**| Automatización de flujos y conectores | ✅ Activo | [Instrucciones](agents/power-automate-agent.md) |
+| **Security Agent** | Auditoría de código y estándares de seguridad | 🆕 Iniciando | [Instrucciones](agents/security-agent.md) |
+| **Photographer-AI Agent**| Lógica de simulación y procesamiento de imagen | 🆕 Planificado | [Instrucciones](agents/photographer-ai-agent.md) |
+| **Orchestrator Agent** | Coordinación de flujos multi-agente complejos | ✅ Activo | [Instrucciones](agents/orchestrator-agent.md) |
 
 ---
 
@@ -51,7 +66,7 @@ Para entender la estructura completa del proyecto, ver: [CODEBASE_STRUCTURE.md](
 
 ### 2️⃣ **Backend Agent** 🔧
 **Status:** ✅ **COMPLETADO (95%)**
-**Contexto:** Protocolo de Onboarding (User -> Barbero) consolidado. Endpoints de perfil `/usuarios/perfil` (GET/PUT) funcionales.
+**Contexto:** Arquitectura Hexagonal (Clean Architecture). Protocolo de Onboarding (User -> Barbero) consolidado. Endpoints de perfil `/usuarios/perfil` (GET/PUT) funcionales.
 
 ### 5️⃣ **Orchestrator Agent** ⚖️
 **Status:** ✅ **ACTIVO**
@@ -63,15 +78,13 @@ Para entender la estructura completa del proyecto, ver: [CODEBASE_STRUCTURE.md](
 ## 🚀 Estado Actual del Proyecto  
 **Puerto:** 3000
 
-**Instrucciones completas:** [`.github/agents/backend-agent.md`](agents/backend-agent.md)
-
 ---
 
 ### 3️⃣ **Frontend Agent** 🎨
 **Status:** 🆕 **INICIANDO**
 
 **Responsabilidades:**
-- Migrar de Power Pages a React
+- Migrar de Power Pages a React (Feature-Based Architecture)
 - Diseñar componentes reutilizables
 - Implementar routing y autenticación
 - Crear sistema de diseño con Tailwind CSS
@@ -163,7 +176,31 @@ Genera reporte con recomendaciones.
 
 ---
 
-### 7️⃣ **Orchestrator Agent** 🎛️
+### 7️⃣ **PowerApps Agent** 📱
+**Status:** ✅ **ACTIVO**
+
+**Responsabilidades:**
+- Desarrollar aplicaciones Low-Code sobre Azure SQL
+- Integrar formularios complejos y dashboards
+- Configurar autenticación y roles en Power Platform
+
+**Instrucciones completas:** [`.github/agents/powerapps-agent.md`](agents/powerapps-agent.md)
+
+---
+
+### 8️⃣ **Power-Automate Agent** ⚡
+**Status:** ✅ **ACTIVO**
+
+**Responsabilidades:**
+- Crear flujos automatizados (aprobaciones, notificaciones)
+- Implementar conectores personalizados para las APIs Node.js
+- Sincronizar datos entre SQL Server y servicios externos
+
+**Instrucciones completas:** [`.github/agents/power-automate-agent.md`](agents/power-automate-agent.md)
+
+---
+
+### 9️⃣ **Orchestrator Agent** 🎛️
 **Status:** ✅ **ACTIVO**
 
 **Responsabilidades:**
@@ -192,7 +229,7 @@ Coordina DB → Backend → Docs → Diagrams → Security.
 Reporta cuando esté completo.
 ```
 
-### 8️⃣ **DevOps Agent** 🚀
+### 🔟 **DevOps Agent** 🚀
 **Propósito:** Automatizar la infraestructura, dockerización y despliegue en Azure.
 
 **Responsabilidades:**

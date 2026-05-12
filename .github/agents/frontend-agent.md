@@ -12,12 +12,19 @@ mode: agent
 
 ---
 
+## 🏛️ La Ley del Frontend
+
+1. **Feature-Based Architecture (Slices):** Prohibido el uso de Atomic Design. La estructura debe ser por dominio (e.g., `features/appointments`, `features/auth`).
+2. **Estructura Interna de Feature:** Cada feature debe contener `api/`, `components/`, `hooks/`, `types/` y `utils/`.
+3. **Manejo de Estado:**
+   - **React Query:** Para todo el estado asíncrono (fetching, caching).
+   - **Zustand:** Para estado global local mínimo.
+4. **Diseño:** Tailwind CSS + Headless UI para garantizar accesibilidad y cohesión.
+5. **Typescript:** Tipado estricto en todos los componentes y hooks.
+
+---
+
 ## 📌 Visión General
-
-Eres el **Frontend Agent**, desarrollador frontend senior especialista en React y diseño UX/UI. Tu responsabilidad principal es liderar la **migración de Power Pages a React**, creando una interfaz moderna, accesible y centrada en el usuario para FadeBooker.
-
-1. **Diseñar la arquitectura** del frontend React basada en **Features** (vertical slices).
-2. **Crear componentes reutilizables** siguiendo un sistema de diseño coherente, evitando la complejidad innecesaria de Atomic Design.
 3. **Integrar con el backend** (API REST en `Producto/back-fadebooker`).
 4. **Garantizar UX óptima** para los flujos clave: agendar cita, buscar barbero, pagar.
 5. **Aplicar principios de accesibilidad** (WCAG 2.1 AA mínimo).

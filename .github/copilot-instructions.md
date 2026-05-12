@@ -1,7 +1,7 @@
 # 🎭 FadeBooker - Instrucciones Globales para Copilot Agents
 
-**Versión:** 1.2.0  
-**Última actualización:** 28 de abril de 2026  
+**Versión:** 1.3.0  
+**Última actualización:** 12 de mayo de 2026  
 **Estado:** Fase Implementación (Consolidación de esquema, backend y seguridad)
 
 ## 📌 Visión General del Proyecto
@@ -12,6 +12,33 @@
 - **BD:** `fadebooker-server.database.windows.net` / `FadeBooker_DB`
 - **Repositorio Local:** `c:\Users\SanNi\OneDrive\Escritorio\Barberia\FadeBooker`
 - **Estado:** Backend 95% completo, Frontend iniciando, Security audit pendiente
+
+---
+
+## 🏛️ La Ley del Proyecto (Estándares Innegociables)
+
+### 1. Backend (Arquitectura Hexagonal)
+- **Patrón:** Hexagonal (Ports & Adapters) + Repository Pattern.
+- **Inyección de Dependencias:** Obligatoria en Use Cases y Controladores.
+- **Validación:** Zod para esquemas de entrada.
+- **Self-healing Aware:** El backend debe detectar fallos en servicios externos y manejar reintentos o fallbacks elegantes.
+
+### 2. Frontend React (Feature-Based Architecture)
+- **Arquitectura:** Feature Slices (Prohibido Atomic Design).
+- **Estructura:** Cada feature contiene su propio `api/`, `components/`, `hooks/`, `types/` y `utils/`.
+- **Estado:** React Query para datos asíncronos (servidor) y Zustand para estado local global.
+- **Componentes:** Tailwind CSS para estilos, headless UI para accesibilidad.
+
+### 3. Integración Power Platform
+- **Conectores:** Custom Connectors basados exclusivamente en **Swagger 2.0**.
+- **Sincronización:** El archivo `swagger_powerapps.json` debe reflejar siempre la última versión estable del API.
+- **Compatibilidad:** Evitar tipos de datos complejos no soportados por Power Automate.
+
+### 4. Seguridad y Resiliencia
+- **Auth:** JWT con expiración de 24 horas (`EXPIRES_IN=24h`).
+- **Manejo de Errores:** Sistema global de captura de excepciones.
+- **Auditoría:** Todos los errores críticos deben registrarse en la tabla `LogErrores` de la BD (Migración 20260512).
+- **CORS:** Estrictamente configurado para dominios autorizados.
 
 ---
 
@@ -47,13 +74,15 @@ Para registrar un barbero, se debe seguir este flujo:
 
 **Agents disponibles:**
 ```
-@database-agent      # SQL Server y migraciones
-@backend-agent       # APIs Node.js y lógica de negocio
-@frontend-agent      # React y UX/UI
-@documentation-agent # READMEs y API docs
-@diagram-agent       # Visualización draw.io
-@security-agent      # Auditoría y estándares
-@orchestrator-agent  # Coordinación multi-agente
+@database-agent       # SQL Server y migraciones
+@backend-agent        # APIs Node.js (Ark. Hexagonal)
+@frontend-agent       # React (Feature-Based Architecture)
+@documentation-agent  # READMEs y API docs
+@diagram-agent        # Visualización draw.io
+@powerapps-agent      # Low-code Apps
+@power-automate-agent # Automatización flujos
+@security-agent       # Auditoría y estándares
+@orchestrator-agent   # Coordinación multi-agente
 ```
 
 ---

@@ -1,8 +1,31 @@
 # 🎭 FadeBooker - Plataforma de Gestión de Citas para Barberías
 
-**Versión:** 1.0.0  
-**Fecha:** 28 de abril de 2026  
-**Estado:** 🚀 Desarrollo (Integración React + Backend Node.js)
+**Versión:** 1.3.0  
+**Última actualización:** 12 de mayo de 2026  
+**Estado:** 🚀 Desarrollo (Consolidación Backend + Feature-Based React)
+
+---
+
+## 🏛️ La Ley del Proyecto (Estándares Innegociables)
+
+### 1. Backend (Arquitectura Hexagonal)
+- **Patrón:** Hexagonal (Ports & Adapters) + Repository Pattern.
+- **Inyección de Dependencias:** Obligatoria en Use Cases y Controladores.
+- **Validación:** Zod para esquemas de entrada.
+- **Self-healing Aware:** Detección de fallos en servicios externos y manejo de reintentos elegantes.
+
+### 2. Frontend React (Feature-Based Architecture)
+- **Arquitectura:** Feature Slices (Prohibido Atomic Design).
+- **Estructura:** Cada feature contiene su propio `api/`, `components/`, `hooks/`, `types/` y `utils/`.
+- **Estado:** React Query (asíncrono) + Zustand (global local).
+
+### 3. Integración Power Platform
+- **Conectores:** Custom Connectors basados en **Swagger 2.0**.
+- **Sincronización:** `swagger_powerapps.json` como referencia única para Power Apps.
+
+### 4. Seguridad y Resiliencia
+- **Auth:** JWT (24h) obligatorio.
+- **Auditoría:** Registro de errores críticos en tabla `LogErrores`.
 
 ---
 

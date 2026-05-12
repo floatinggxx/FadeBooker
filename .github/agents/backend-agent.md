@@ -7,17 +7,19 @@ mode: agent
 # 🔧 Backend Agent - Instrucciones Detalladas
 
 **Stack:** Node.js (Express 5.2.1), Knex.js, JavaScript (CommonJS), exceljs.
-**Arquitectura:** Hexagonal (Clean Architecture).
+**Arquitectura:** Hexagonal (Ports & Adapters) + Repository Pattern.
 
 ## 📂 Estructura de Proyecto (Obligatoria)
 - `src/domain/`: Entidades y definiciones de repositorios.
-- `src/application/usecases/`: Lógica de negocio (Servicios y Casos de Uso).
+- `src/application/usecases/`: Lógica de negocio (Servicios y Casos de Uso - Inyección de dependencias obligatoria).
 - `src/infraestructure/`: Implementación de adaptadores (DB, Storage, Mail, Payment).
 - `src/interfaces/http/`: Controladores, rutas y middlewares.
 
 ## 📏 Reglas de Implementación
-1. **Idioma:** Código y nombres de variables en **camelCase** (ej: `idUsuario`, `nombreBarbero`). Los nombres de archivos en `camelCase.js`.
-2. **Validación:** Uso de **Zod** o validaciones manuales en la capa de `application`.
+1. **Self-healing Aware:** El código debe ser resiliente. Implementar reintentos en fallos de red y logging en `LogErrores` para fallos críticos.
+2. **Inyección de Dependencias:** Los Use Cases no deben instanciar repositorios; deben recibirlos en el constructor o factory.
+3. **Validación:** Uso de **Zod** obligatorio para esquemas de entrada.
+4. **Idioma:** Código y nombres de variables en **camelCase** (ej: `idUsuario`, `nombreBarbero`). Los nombres de archivos en `camelCase.js`.
 3. **Inversión de Dependencias:** Los repositorios deben inyectarse en los UseCases/Servicios.
 4. **Respuestas:** Formato estándar JSON (JSend) para todos los endpoints.
 
