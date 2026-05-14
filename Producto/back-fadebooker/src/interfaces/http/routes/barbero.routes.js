@@ -8,6 +8,8 @@ router.get('/especialidad/:especialidad', BarberoController.buscarPorEspecialida
 router.get('/email/:email', BarberoController.obtenerPorEmail)
 router.get('/:id', BarberoController.obtenerPorId)
 router.get('/:id/servicios', BarberoController.obtenerServicios)
+router.post('/:id/servicios', BarberoController.agregarServicio)
+router.delete('/:id/servicios/:id_servicio', BarberoController.eliminarServicio)
 router.get('/:id/disponibilidad/:fecha', BarberoController.obtenerDisponibilidad)
 router.put('/:id', BarberoController.actualizar)
 router.put('/:id/horario', BarberoController.actualizarHorario)

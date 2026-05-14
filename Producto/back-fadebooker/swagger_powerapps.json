@@ -425,6 +425,32 @@
             "schema": { "type": "array", "items": { "$ref": "#/definitions/ServicioBarbero" } }
           }
         }
+      },
+      "post": {
+        "summary": "Asociar servicio a un barbero",
+        "operationId": "addBarberoServicio",
+        "tags": [ "Barberos" ],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "integer" },
+          { "name": "body", "in": "body", "required": true, "schema": { "$ref": "#/definitions/ServicioBarberoInput" } }
+        ],
+        "responses": {
+          "201": { "description": "Servicio asociado" }
+        }
+      }
+    },
+    "/barberos/{id}/servicios/{id_servicio}": {
+      "delete": {
+        "summary": "Desasociar servicio de un barbero",
+        "operationId": "removeBarberoServicio",
+        "tags": [ "Barberos" ],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "type": "integer" },
+          { "name": "id_servicio", "in": "path", "required": true, "type": "integer" }
+        ],
+        "responses": {
+          "200": { "description": "Servicio desasociado" }
+        }
       }
     },
     "/barberos/{id}/horario": {
@@ -954,6 +980,15 @@
         "precio_barbero": { "type": "number" },
         "tiempo_servicio_minutos": { "type": "integer" },
         "precio_base": { "type": "number" }
+      }
+    },
+    "ServicioBarberoInput": {
+      "type": "object",
+      "required": [ "id_servicio" ],
+      "properties": {
+        "id_servicio": { "type": "integer" },
+        "precio_barbero": { "type": "number" },
+        "tiempo_servicio_minutos": { "type": "integer" }
       }
     },
     "CitaInput": {

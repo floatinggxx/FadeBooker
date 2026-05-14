@@ -376,7 +376,7 @@ paths:
       tags:
         - Citas
 
-  # ============================================================================
+    # ============================================================================
   # SERVICIOS ENDPOINTS (ACTUALIZADOS v1.10.0)
   # ============================================================================
 
@@ -413,6 +413,42 @@ paths:
       tags:
         - Servicios
 
+  /servicios/buscar:
+    get:
+      summary: Buscar servicios por nombre
+      parameters:
+        - name: nombre
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Resultados de búsqueda
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Servicio'
+      tags:
+        - Servicios
+
+  /servicios/barbero/{id_barbero}:
+    get:
+      summary: Obtener servicios de un barbero (vía servicios)
+      parameters:
+        - name: id_barbero
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de servicios
+      tags:
+        - Servicios
+
   /servicios/{id}:
     get:
       summary: Obtener servicio específico
@@ -429,6 +465,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Servicio'
+      tags:
+        - Servicios
+    put:
+      summary: Actualizar servicio
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServicioUpdate'
+      responses:
+        '200':
+          description: Servicio actualizado
+      tags:
+        - Servicios
+    delete:
+      summary: Eliminar servicio
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Servicio eliminado
       tags:
         - Servicios
 
@@ -449,6 +516,19 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Barbero'
+      tags:
+        - Barberos
+    post:
+      summary: Crear nuevo barbero
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BarberoCreate'
+      responses:
+        '201':
+          description: Barbero creado
       tags:
         - Barberos
 
@@ -474,6 +554,37 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Barbero'
+      tags:
+        - Barberos
+    put:
+      summary: Actualizar barbero
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BarberoUpdate'
+      responses:
+        '200':
+          description: Barbero actualizado
+      tags:
+        - Barberos
+    delete:
+      summary: Eliminar barbero
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Barbero eliminado
       tags:
         - Barberos
 

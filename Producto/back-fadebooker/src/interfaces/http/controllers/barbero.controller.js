@@ -1,11 +1,16 @@
 const BarberoService = require('../../../application/usecases/barbero.service')
+const { BarberoSchema, ServicioBarberoSchema } = require('../validations/servicioBarbero.validation')
 
 const BarberoController = {
   async crear(req, res) {
     try {
-      const barbero = await BarberoService.crearBarbero(req.body)
+      const validatedData = BarberoSchema.parse(req.body)
+      const barbero = await BarberoService.crearBarbero(validatedData)
       res.status(201).json(barbero)
     } catch (error) {
+      if (error.name === 'ZodError') {
+        return res.status(400).json({ error: 'Error de validación', detalles: error.errors })
+      }
       res.status(400).json({ error: error.message })
     }
   },
@@ -58,9 +63,13 @@ const BarberoController = {
   async actualizar(req, res) {
     try {
       const { id } = req.params
-      const barbero = await BarberoService.actualizarBarbero(id, req.body)
+      const validatedData = BarberoSchema.partial().parse(req.body)
+      const barbero = await BarberoService.actualizarBarbero(id, validatedData)
       res.json(barbero)
     } catch (error) {
+      if (error.name === 'ZodError') {
+        return res.status(400).json({ error: 'Error de validación', detalles: error.errors })
+      }
       res.status(400).json({ error: error.message })
     }
   },
@@ -101,6 +110,35 @@ const BarberoController = {
       const { id } = req.params
       const servicios = await BarberoService.obtenerServiciosBarbero(id)
       res.json(servicios)
+    } catch (error) {
+      res.status(400).json({ error: error.message })
+    }
+  },
+
+  async agregarServicio(req, res) {
+    try {
+      const { id } = req.params
+      const validatedData = ServicioBarberoSchema.parse({ ...req.body, id_barbero: parseInt(id) })
+      await BarberoService.agregarServicioBarbero(
+        validatedData.id_barbero,
+        validatedData.id_servicio,
+        validatedData.precio_barbero,
+        validatedData.tiempo_servicio_minutos
+      )
+      res.status(201).json({ mensaje: 'Servicio agregado al barbero' })
+    } catch (error) {
+      if (error.name === 'ZodError') {
+        return res.status(400).json({ error: 'Error de validación', detalles: error.errors })
+      }
+      res.status(400).json({ error: error.message })
+    }
+  },
+
+  async eliminarServicio(req, res) {
+    try {
+      const { id, id_servicio } = req.params
+      await BarberoService.eliminarServicioBarbero(id, id_servicio)
+      res.json({ mensaje: 'Servicio eliminado del barbero' })
     } catch (error) {
       res.status(400).json({ error: error.message })
     }

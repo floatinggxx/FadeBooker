@@ -1,11 +1,16 @@
 const ServicioService = require('../../../application/usecases/servicio.service')
+const { ServicioSchema } = require('../validations/servicioBarbero.validation')
 
 const ServicioController = {
   async crear(req, res) {
     try {
-      const servicio = await ServicioService.crearServicio(req.body)
+      const validatedData = ServicioSchema.parse(req.body)
+      const servicio = await ServicioService.crearServicio(validatedData)
       res.status(201).json(servicio)
     } catch (error) {
+      if (error.name === 'ZodError') {
+        return res.status(400).json({ error: 'Error de validación', detalles: error.errors })
+      }
       res.status(400).json({ error: error.message })
     }
   },
@@ -45,9 +50,14 @@ const ServicioController = {
   async actualizar(req, res) {
     try {
       const { id } = req.params
-      const servicio = await ServicioService.actualizarServicio(id, req.body)
+      // Usar partial() para actualizaciones parciales
+      const validatedData = ServicioSchema.partial().parse(req.body)
+      const servicio = await ServicioService.actualizarServicio(id, validatedData)
       res.json(servicio)
     } catch (error) {
+      if (error.name === 'ZodError') {
+        return res.status(400).json({ error: 'Error de validación', detalles: error.errors })
+      }
       res.status(400).json({ error: error.message })
     }
   },
@@ -62,10 +72,10 @@ const ServicioController = {
     }
   },
 
-  async obtenerPorTienda(req, res) {
+  async obtenerPorBarbero(req, res) {
     try {
-      const { id_tienda } = req.params
-      const servicios = await ServicioService.obtenerServiciosPorTienda(id_tienda)
+      const { id_barbero } = req.params
+      const servicios = await ServicioService.obtenerServiciosPorBarbero(id_barbero)
       res.json(servicios)
     } catch (error) {
       res.status(400).json({ error: error.message })
