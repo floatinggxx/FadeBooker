@@ -1,8 +1,8 @@
 # 🤖 AGENTS.md - Registro Central de Agentes FadeBooker
 
-**Última actualización:** 12 de mayo de 2026  
-**Versión:** 1.3.0  
-**Estado:** Fase Implementación (Arquitectura Consolidada)
+**Última actualización:** 14 de mayo de 2026  
+**Versión:** 1.4.0  
+**Estado:** Fase Implementación (Consolidación Docker & Pagos)
 
 ---
 
@@ -14,6 +14,9 @@ Todos los agentes deben adherirse estrictamente a estas reglas:
 - **Feature-Based Frontend:** Desarrollo por slices funcionales (No Atomic Design).
 - **Power Platform Sync:** Mantener `swagger_powerapps.json` bajo estándar **Swagger 2.0**.
 - **Log de Errores:** Auditoría obligatoria en `LogErrores`.
+- **Docker First:** El backend debe ejecutarse sobre `node:20-alpine` para garantizar consistencia.
+- **Mercado Pago v2:** Migración obligatoria a SDK v2 para toda lógica de pagos.
+- **Anti-Duplicación:** Estricta vigilancia contra SyntaxErrors por duplicación de bloques.
 
 ---
 
@@ -34,6 +37,7 @@ Para entender la estructura completa del proyecto, ver: [CODEBASE_STRUCTURE.md](
 | **Frontend Agent** | Migración React a Feature-Based Architecture | 🆕 Iniciando | [Instrucciones](agents/frontend-agent.md) |
 | **Documentation Agent** | Creación de manuales, READMEs y reporte Office | ✅ Activo | [Instrucciones](agents/documentation-agent.md) |
 | **Diagram Agent** | Visualización de arquitectura y flujos (draw.io) | ✅ Activo | [Instrucciones](agents/diagram-agent.md) |
+| **Testing Agent** | Pruebas (unit, integracion, estres) y diagnóstico Azure | ✅ Activo | [Instrucciones](agents/testing-agent.md) |
 | **PowerApps Agent** | Desarrollo de Low-Code Apps e integración | ✅ Activo | [Instrucciones](agents/powerapps-agent.md) |
 | **Power-Automate Agent**| Automatización de flujos y conectores | ✅ Activo | [Instrucciones](agents/power-automate-agent.md) |
 | **Security Agent** | Auditoría de código y estándares de seguridad | 🆕 Iniciando | [Instrucciones](agents/security-agent.md) |
