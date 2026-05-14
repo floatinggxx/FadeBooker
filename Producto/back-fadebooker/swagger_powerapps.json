@@ -776,14 +776,19 @@
       "x-ms-summary": "Respuesta de Login",
       "description": "Token JWT y datos básicos del usuario autenticado",
       "properties": {
-        "id_usuario": { "type": "integer" },
-        "token": { "type": "string" },
-        "rol": { "type": "string" }
+        "usuario": { "$ref": "#/definitions/Usuario" },
+        "token": { "type": "string" }
       },
       "example": {
-        "id_usuario": 1,
-        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-        "rol": "Administrador"
+        "usuario": {
+          "id_usuario": 1,
+          "email": "admin@fadebooker.com",
+          "nombre": "Admin",
+          "apellido": "Sistema",
+          "rol": "Administrador",
+          "estado": true
+        },
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
       }
     },
     "Cliente": {

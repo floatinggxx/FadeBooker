@@ -1,17 +1,25 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const { usuarioSchema, loginSchema, updateUsuarioSchema } = require('../../infraestructure/schemas/usuario.schema')
 const UsuarioRepository = require('../../infraestructure/database/UsuarioRepositoryImpl')
 const usuarioRepository = new UsuarioRepository()
 
 const UsuarioService = {
   async registrar(data) {
-    // lógica de negocio (validaciones)
+    // Validar esquema
+    const validatedData = usuarioSchema.parse(data)
+
     const salt = await bcrypt.genSalt(10)
-    data.contrasena = await bcrypt.hash(data.contrasena, salt)
-    return usuarioRepository.create(data)
+    validatedData.contrasena = await bcrypt.hash(validatedData.contrasena, salt)
+    
+    const id = await usuarioRepository.create(validatedData)
+    return { id_usuario: id, ...validatedData, contrasena: undefined }
   },
 
   async login(email, contrasena) {
+    // Validar esquema
+    loginSchema.parse({ email, contrasena })
+
     const usuario = await usuarioRepository.findByEmail(email)
 
     if (!usuario) {
@@ -29,19 +37,34 @@ const UsuarioService = {
       { expiresIn: '8h' }
     )
 
-    return { usuario, token }
+    // Quitar contraseña de la respuesta
+    const { contrasena: _, ...usuarioSinPassword } = usuario
+
+    return { usuario: usuarioSinPassword, token }
   },
 
   async obtenerPerfil(id) {
-    return usuarioRepository.findById(id)
+    const usuario = await usuarioRepository.findById(id)
+    if (usuario) {
+      const { contrasena, ...usuarioSinPassword } = usuario
+      return usuarioSinPassword
+    }
+    return null
   },
 
   async actualizarPerfil(id, data) {
-    if (data.contrasena) {
+    // Validar esquema (partial)
+    const validatedData = updateUsuarioSchema.parse(data)
+
+    if (validatedData.contrasena) {
       const salt = await bcrypt.genSalt(10)
-      data.contrasena = await bcrypt.hash(data.contrasena, salt)
+      validatedData.contrasena = await bcrypt.hash(validatedData.contrasena, salt)
     }
-    return usuarioRepository.update(id, data)
+    await usuarioRepository.update(id, validatedData)
+    
+    const actualizado = await usuarioRepository.findById(id)
+    const { contrasena, ...usuarioSinPassword } = actualizado
+    return usuarioSinPassword
   }
 }
 

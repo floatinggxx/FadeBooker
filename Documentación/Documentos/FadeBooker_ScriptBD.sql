@@ -62,6 +62,7 @@ GO
 CREATE TABLE dbo.Usuario (
     id_usuario INT IDENTITY(1,1) PRIMARY KEY,
     email NVARCHAR(255) NOT NULL UNIQUE,
+    contrasena NVARCHAR(255) NOT NULL, -- Implementado para autenticación v1.2.0
     nombre NVARCHAR(100) NOT NULL,
     apellido NVARCHAR(100) NOT NULL,
     telefono NVARCHAR(20),
