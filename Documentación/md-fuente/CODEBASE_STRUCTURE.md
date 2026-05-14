@@ -27,6 +27,15 @@
 | [Producto/back-fadebooker/src/db/knex.js](Producto/back-fadebooker/src/db/knex.js) | Knex instance initialization (uses `config.development` by default) |
 | [Producto/back-fadebooker/.env](#environment-setup) | **Required env vars**: `DB_SERVER`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `PORT` |
 
+### API Documentation & Synchronization
+
+| File | Role | Description |
+|------|------|-------------|
+| [Producto/back-fadebooker/openapi.yaml](Producto/back-fadebooker/openapi.yaml) | **SSOT** | Single Source of Truth for API definitions. |
+| [Producto/back-fadebooker/swagger.json](Producto/back-fadebooker/swagger.json) | Generated | JSON version for Swagger UI and local use. |
+| [Producto/back-fadebooker/swagger_powerapps.json](Producto/back-fadebooker/swagger_powerapps.json) | Generated | Swagger 2.0 specialized for Power Platform integration. |
+| [Producto/back-fadebooker/fix_swagger.js](Producto/back-fadebooker/fix_swagger.js) | Script | Syncs and corrects YAML to JSON formats. |
+
 ### Architecture Pattern: **Hexagonal (Ports & Adapters)**
 
 ```

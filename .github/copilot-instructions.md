@@ -46,6 +46,12 @@
 - **Confirmación:** Es una regla innegociable **solicitar confirmación explícita al usuario** antes de proceder con cualquier comando de commit.
 - **Delegación:** El Orchestrator debe delegar en el `@github-git-agent` la redacción y validación del mensaje antes de persistir cambios.
 
+### 6. Mantenimiento de Documentación API
+- **SSOT:** El archivo `Producto/back-fadebooker/openapi.yaml` es la **Fuente Única de Verdad (Single Source of Truth)**.
+- **Identificadores:** Cada endpoint **DEBE** tener un `operationId` único en formato `camelCase` (ej: `getUsuarios`, `createCita`) para asegurar la compatibilidad con Custom Connectors de Power Apps.
+- **Sincronización:** Tras cualquier modificación en el YAML, se deben ejecutar los scripts de sincronización (`fix_swagger.js`) para actualizar `swagger.json` y `swagger_powerapps.json`.
+- **Esquemas:** Los esquemas en `components/schemas` del YAML deben coincidir estrictamente con las validaciones de Zod en `src/infraestructure/schemas` o `src/validations`.
+
 ---
 
 ## 🔗 Endpoints de Producción

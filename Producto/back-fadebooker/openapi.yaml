@@ -4,15 +4,16 @@ info:
   description: |
     Sistema de gestión de citas para barberías - Marketplace de barbería
     
-    **Versión:** 1.10.0 (con ServicioBarbero refactor)
+    **Versión:** 1.11.0 (Refactorización técnica y Fase 3)
     
-    **Base URL:** `http://localhost:3000/api`
+    **Base URL:** `https://fadebooker-backend-ok.azurewebsites.net/api`
     
-    **Cambios principales (v1.10.0):**
-    - Servicios ahora vinculados directamente con Barberos
-    - Nuevos endpoints para gestión de servicios por barbero
-    - Validación en agendamiento para evitar servicios que barbero no puede hacer
-  version: 1.10.0
+    **Cambios principales (v1.11.0):**
+    - Autenticación JWT integrada y campo contrasena.
+    - Endpoints de Citas (Agendamiento) validados.
+    - Health Check para despliegue en Azure.
+    - Servicios vinculados directamente con Barberos.
+  version: 1.11.0
   contact:
     name: FadeBooker Team
     email: team@fadebooker.com
@@ -20,14 +21,41 @@ info:
     name: MIT
 
 servers:
+  - url: https://fadebooker-backend-ok.azurewebsites.net/api
+    description: Production server
   - url: http://localhost:3000/api
     description: Development server
-  - url: https://fadebooker-api.azurewebsites.net/api
-    description: Production server
 
 paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Health Check
+      description: Verifica que la API esté activa y responde correctamente. Es vital para el monitoreo en Azure App Service.
+      responses:
+        '200':
+          description: API operativa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  timestamp:
+                    type: string
+                    format: date-time
+                  environment:
+                    type: string
+                  message:
+                    type: string
+      tags:
+        - Sistema
+
   /barberos/{id}/servicios:
     get:
+      operationId: getBarberoServicios
       summary: Obtener servicios de un barbero
       description: |
         Retorna todos los servicios que puede ofrecer un barbero específico.
@@ -55,6 +83,7 @@ paths:
         - ServicioBarbero
 
     post:
+      operationId: addServicioToBarbero
       summary: Agregar servicio a un barbero
       description: |
         Asigna un servicio específico a un barbero con opción de override de precio y duración.
@@ -94,6 +123,7 @@ paths:
 
   /barberos/{id}/servicios/{id_servicio}:
     delete:
+      operationId: removeServicioFromBarbero
       summary: Remover servicio de un barbero
       description: |
         Elimina la relación entre un servicio y un barbero específico.
@@ -122,6 +152,7 @@ paths:
 
   /servicios/{id}/barberos:
     get:
+      operationId: getBarberosByServicio
       summary: Obtener barberos que hacen un servicio
       description: |
         Retorna todos los barberos que pueden ofrecer un servicio específico.
@@ -150,6 +181,7 @@ paths:
 
   /servicios/{id_barbero}/{id_servicio}/precio:
     get:
+      operationId: getServicioPrecioEfectivo
       summary: Obtener precio efectivo del servicio para un barbero
       description: |
         Retorna el precio a cobrar considerando overrides de precio por barbero.
@@ -203,6 +235,7 @@ paths:
 
   /servicios/{id_barbero}/{id_servicio}/duracion:
     get:
+      operationId: getServicioDuracionEfectiva
       summary: Obtener duración efectiva del servicio para un barbero
       description: |
         Retorna la duración a usar considerando overrides de duración por barbero.
@@ -258,6 +291,7 @@ paths:
 
   /citas:
     post:
+      operationId: agendarCita
       summary: Agendar cita
       description: |
         Crea una nueva cita con validaciones completas.
@@ -349,6 +383,7 @@ paths:
 
   /citas/disponibilidad:
     get:
+      operationId: verificarDisponibilidad
       summary: Verificar disponibilidad de un barbero
       description: |
         Comprueba si un barbero está libre en un rango de tiempo específico.
@@ -392,6 +427,7 @@ paths:
 
   /citas/{id}:
     get:
+      operationId: getCitaById
       summary: Obtener detalles de una cita
       description: |
         Retorna información completa de una cita incluyendo:
@@ -420,6 +456,7 @@ paths:
         - Citas
 
     put:
+      operationId: updateCitaEstado
       summary: Actualizar estado de cita
       description: |
         Cambia el estado de una cita y permite agregar motivo de cancelación.
@@ -457,6 +494,7 @@ paths:
 
   /servicios:
     get:
+      operationId: getServicios
       summary: Obtener todos los servicios
       description: Retorna lista completa de servicios disponibles
       responses:
@@ -472,6 +510,7 @@ paths:
         - Servicios
 
     post:
+      operationId: createServicio
       summary: Crear nuevo servicio
       description: Solo para administradores
       requestBody:
@@ -490,6 +529,7 @@ paths:
 
   /servicios/buscar:
     get:
+      operationId: buscarServicios
       summary: Buscar servicios por nombre
       parameters:
         - name: nombre
@@ -511,6 +551,7 @@ paths:
 
   /servicios/barbero/{id_barbero}:
     get:
+      operationId: getServiciosByBarbero
       summary: Obtener servicios de un barbero (vía servicios)
       parameters:
         - name: id_barbero
@@ -526,6 +567,7 @@ paths:
 
   /servicios/{id}:
     get:
+      operationId: getServicioById
       summary: Obtener servicio específico
       parameters:
         - name: id
@@ -543,6 +585,7 @@ paths:
       tags:
         - Servicios
     put:
+      operationId: updateServicio
       summary: Actualizar servicio
       parameters:
         - name: id
@@ -561,6 +604,7 @@ paths:
       tags:
         - Servicios
     delete:
+      operationId: deleteServicio
       summary: Eliminar servicio
       parameters:
         - name: id
@@ -580,6 +624,7 @@ paths:
 
   /barberos:
     get:
+      operationId: getBarberos
       summary: Obtener todos los barberos
       description: Retorna lista de barberos activos
       responses:
@@ -594,6 +639,7 @@ paths:
       tags:
         - Barberos
     post:
+      operationId: createBarbero
       summary: Crear nuevo barbero
       requestBody:
         required: true
@@ -609,6 +655,7 @@ paths:
 
   /barberos/{id}:
     get:
+      operationId: getBarberoById
       summary: Obtener detalles de un barbero
       description: |
         Retorna información del barbero incluyendo:
@@ -632,6 +679,7 @@ paths:
       tags:
         - Barberos
     put:
+      operationId: updateBarbero
       summary: Actualizar barbero
       parameters:
         - name: id
@@ -650,6 +698,7 @@ paths:
       tags:
         - Barberos
     delete:
+      operationId: deleteBarbero
       summary: Eliminar barbero
       parameters:
         - name: id
@@ -669,6 +718,7 @@ paths:
 
   /usuarios/register:
     post:
+      operationId: registerUser
       summary: Registrar nuevo usuario
       description: Crea un nuevo usuario y su perfil base.
       requestBody:
@@ -691,6 +741,7 @@ paths:
 
   /usuarios/login:
     post:
+      operationId: loginUser
       summary: Iniciar sesión
       description: Autentica un usuario y retorna un token JWT.
       requestBody:
@@ -713,6 +764,7 @@ paths:
 
   /usuarios/perfil:
     get:
+      operationId: getMyProfile
       summary: Obtener perfil propio
       security:
         - bearerAuth: []
@@ -726,6 +778,7 @@ paths:
       tags:
         - Usuarios
     put:
+      operationId: updateMyProfile
       summary: Actualizar perfil propio
       security:
         - bearerAuth: []
@@ -922,6 +975,23 @@ components:
           format: decimal
           minimum: 0
 
+    ServicioUpdate:
+      type: object
+      properties:
+        nombre_servicio:
+          type: string
+        descripcion:
+          type: string
+        duracion_minutos:
+          type: integer
+          minimum: 1
+        precio_base:
+          type: number
+          format: decimal
+          minimum: 0
+        activo:
+          type: boolean
+
     Barbero:
       type: object
       properties:
@@ -953,6 +1023,53 @@ components:
           maximum: 5
         total_resenas:
           type: integer
+        activo:
+          type: boolean
+
+    BarberoCreate:
+      type: object
+      required:
+        - id_usuario
+        - id_tienda
+        - nombre
+        - apellido
+      properties:
+        id_usuario:
+          type: integer
+        id_tienda:
+          type: integer
+        nombre:
+          type: string
+        apellido:
+          type: string
+        telefono:
+          type: string
+        especialidad:
+          type: string
+        anos_experiencia:
+          type: integer
+        tarifa_base:
+          type: number
+          format: decimal
+
+    BarberoUpdate:
+      type: object
+      properties:
+        id_tienda:
+          type: integer
+        nombre:
+          type: string
+        apellido:
+          type: string
+        telefono:
+          type: string
+        especialidad:
+          type: string
+        anos_experiencia:
+          type: integer
+        tarifa_base:
+          type: number
+          format: decimal
         activo:
           type: boolean
 
@@ -1047,11 +1164,11 @@ components:
           description: Mensaje de error descriptivo
           example: "Validación fallida"
 
-securitySchemes:
-  bearerAuth:
-    type: http
-    scheme: bearer
-    bearerFormat: JWT
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 
 tags:
   - name: Usuarios

@@ -1027,23 +1027,7 @@
         "monto_total": { "type": "number" }
       },
       "example": {
-        "id_cita": 101,
-        "id_cliente": 1,
-        "fecha_hora_inicio": "2026-05-20T15:00:00Z",
-        "estado": "confirmada",
-        "monto_total": 15000
       }
     }
-  },
-  "securityDefinitions": {
-    "BearerAuth": {
-      "type": "apiKey",
-      "name": "Authorization",
-      "in": "header",
-      "description": "Ingrese: Bearer <token>"
-    }
-  },
-  "security": [
-    { "BearerAuth": [] }
-  ]
+  }
 }
