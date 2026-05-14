@@ -1,0 +1,98 @@
+import React, { useEffect, useState } from 'react';
+
+interface ImageCarouselProps {
+  images?: Array<{ src: string; alt: string; caption?: string }>;
+}
+
+const defaultSlides = [
+  {
+    src: '/images/slider-1.jpg',
+    alt: 'Barbería con estilo moderno',
+    caption: 'Barberías premium cerca de ti. Solo agrega imágenes en /public/images/slider-1.jpg, slider-2.jpg, slider-3.jpg.'
+  },
+  {
+    src: '/images/slider-2.jpg',
+    alt: 'Reserva tu cita fácilmente',
+    caption: 'Agenda tus citas con rapidez y mantén tu rutina de estilo bajo control.'
+  },
+  {
+    src: '/images/slider-3.jpg',
+    alt: 'Cortes profesionales',
+    caption: 'Encuentra cortes y servicios adaptados a tu estilo con un solo clic.'
+  }
+];
+
+const ImageCarousel: React.FC<ImageCarouselProps> = ({ images = defaultSlides }) => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [failedImages, setFailedImages] = useState<boolean[]>([]);
+
+  useEffect(() => {
+    setFailedImages(new Array(images.length).fill(false));
+  }, [images.length]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActiveIndex((current) => (current + 1) % images.length);
+    }, 6000);
+
+    return () => window.clearInterval(timer);
+  }, [images.length]);
+
+  const goToPrevious = () => {
+    setActiveIndex((current) => (current - 1 + images.length) % images.length);
+  };
+
+  const goToNext = () => {
+    setActiveIndex((current) => (current + 1) % images.length);
+  };
+
+  const handleImageError = (index: number) => {
+    setFailedImages((prev) => {
+      const next = [...prev];
+      next[index] = true;
+      return next;
+    });
+  };
+
+  const slide = images[activeIndex];
+  const isFailed = failedImages[activeIndex];
+
+  return (
+    <div className="carousel" aria-label="Carrusel de imágenes">
+      <div className="carousel-slide">
+        {!isFailed ? (
+          <img src={slide.src} alt={slide.alt} onError={() => handleImageError(activeIndex)} />
+        ) : (
+          <div className="carousel-fallback">
+            <h3>{slide.alt}</h3>
+            <p>{slide.caption}</p>
+          </div>
+        )}
+        <div className="carousel-caption">
+          <p>{slide.caption || ''}</p>
+        </div>
+      </div>
+      <div className="carousel-controls">
+        <button type="button" onClick={goToPrevious} className="carousel-action-btn" aria-label="Imagen anterior">
+          ‹
+        </button>
+        <button type="button" onClick={goToNext} className="carousel-action-btn" aria-label="Imagen siguiente">
+          ›
+        </button>
+      </div>
+      <div className="carousel-indicators">
+        {images.map((slide, index) => (
+          <button
+            key={slide.src}
+            type="button"
+            className={`carousel-indicator ${index === activeIndex ? 'active' : ''}`}
+            onClick={() => setActiveIndex(index)}
+            aria-label={`Mostrar imagen ${index + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default ImageCarousel;

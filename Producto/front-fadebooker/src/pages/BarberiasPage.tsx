@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { barberService } from '@/lib/api/barberService';
-import BarberCard from '@/components/ui/BarberCard';
+import BarberSearchSection from '@/components/organisms/BarberSearchSection';
 
 const BarberiasPage: React.FC = () => {
   const [search, setSearch] = useState('');
@@ -30,32 +30,7 @@ const BarberiasPage: React.FC = () => {
   );
 
   return (
-    <div className="page-content container">
-      <div className="section-heading">
-        <h1>Barberías cercanas</h1>
-        <p>Busca por nombre, especialidad o barbería y accede a tu corte ideal.</p>
-      </div>
-
-      <div className="card-surface mb-6">
-        <input
-          type="text"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="Buscar barbería, especialidad o correo"
-          className="input-field"
-        />
-      </div>
-
-      {filteredBarbers.length ? (
-        <div className="grid gap-5 grid-cols-1 md:grid-cols-2">
-          {filteredBarbers.map((barber: any) => (
-            <BarberCard key={barber.id} barber={barber} />
-          ))}
-        </div>
-      ) : (
-        <div className="card-surface page-message">No se encontraron barberías con ese término. Prueba otro filtro.</div>
-      )}
-    </div>
+    <BarberSearchSection search={search} onSearchChange={setSearch} barbers={filteredBarbers} />
   );
 };
 

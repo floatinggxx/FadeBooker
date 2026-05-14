@@ -36,8 +36,13 @@ const AppHeader = () => {
     <header className="site-header">
       <div className="container header-container">
         <div className="brand">
-          <Link to="/" className="brand-title">FadeBooker</Link>
-          <p className="brand-subtitle">Reserva cortes, accede a tu perfil y encuentra barberías cercanas.</p>
+          <Link to="/" className="brand-logo-link">
+            <img src="/images/logo.svg" alt="Logo FadeBooker" className="brand-logo" />
+            <div className="brand-text">
+              <span className="brand-title">FadeBooker</span>
+              <span className="brand-subtitle">Reserva cortes y gestiona tu estilo.</span>
+            </div>
+          </Link>
         </div>
         <div className="header-right">
           <nav className="header-links">

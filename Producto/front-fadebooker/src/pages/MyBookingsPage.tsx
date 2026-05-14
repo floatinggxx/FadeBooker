@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { bookingService } from '@/lib/api/bookingService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
+import BookingsSection from '@/components/organisms/BookingsSection';
 
 const MyBookingsPage: React.FC = () => {
   const { user } = useAuth();
@@ -25,31 +26,20 @@ const MyBookingsPage: React.FC = () => {
   if (isLoading) return <div className="page-content container page-message">Cargando tus citas...</div>;
   if (error) return <div className="page-content container page-message">Error al cargar tus citas.</div>;
 
-  return (
-    <div className="page-content container">
-      <div className="section-heading">
-        <h1>Mis Citas</h1>
-        <p>Revisa tus próximas reservas y accede a la información de cada barbero.</p>
-      </div>
-      {sortedAppointments && sortedAppointments.length ? (
-        <div className="grid gap-4">
-          {sortedAppointments.map((c: any) => {
-            const fechaHora = `${c.fecha} ${c.hora}`;
-            return (
-              <article key={c.id} className="booking-card card-surface">
-                <h3>{new Date(fechaHora).toLocaleString()}</h3>
-                <p><strong>Barbero:</strong> {c.barbero?.nombre || 'No especificado'}</p>
-                <p><strong>Servicio:</strong> {c.servicio?.servicio?.nombre || c.servicio?.nombre || 'Sin datos'}</p>
-                <p><strong>Estado:</strong> {c.estado}</p>
-                {c.notas && <p><strong>Notas:</strong> {c.notas}</p>}
-              </article>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="card-surface page-message">No tienes citas registradas. Explora barberías y reserva tu próximo corte.</div>
-      )}
-    </div>
+  return sortedAppointments && sortedAppointments.length ? (
+    <BookingsSection
+      bookings={sortedAppointments.map((c: any) => ({
+        id: c.id,
+        fecha: c.fecha,
+        hora: c.hora,
+        barberoName: c.barbero?.nombre || 'No especificado',
+        servicioName: c.servicio?.servicio?.nombre || c.servicio?.nombre || 'Sin datos',
+        estado: c.estado,
+        notas: c.notas,
+      }))}
+    />
+  ) : (
+    <div className="card-surface page-message">No tienes citas registradas. Explora barberías y reserva tu próximo corte.</div>
   );
 };
 
