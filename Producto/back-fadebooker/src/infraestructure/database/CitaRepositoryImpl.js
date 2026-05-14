@@ -38,18 +38,33 @@ class CitaRepositoryImpl {
   }
 
   async verificarDisponibilidad(id_barbero, fecha_hora_inicio, duracion_minutos) {
-    const fecha_hora_fin = new Date(new Date(fecha_hora_inicio).getTime() + duracion_minutos * 60000)
-    return this.db('Cita')
-      .where({ id_barbero })
-      .whereIn('estado', ['confirmada', 'completada'])
-      .where(kb => {
-        kb.whereBetween('fecha_hora_inicio', [fecha_hora_inicio, fecha_hora_fin])
-          .orWhere(function() {
-            this.where('fecha_hora_inicio', '<', fecha_hora_fin)
-              .andWhere(this.db.raw('DATEADD(minute, duracion_minutos, fecha_hora_inicio) > ?', [fecha_hora_inicio]))
-          })
+    const inicio = new Date(fecha_hora_inicio);
+    const fin = new Date(inicio.getTime() + duracion_minutos * 60000);
+    
+    // Convertir a formato compatible con SQL
+    const inicioStr = inicio.toISOString().replace('T', ' ').substring(0, 19);
+    const finStr = fin.toISOString().replace('T', ' ').substring(0, 19);
+
+    const solapamientos = await this.db('Cita')
+      .where('id_barbero', id_barbero)
+      .whereIn('estado', ['Confirmada', 'Pendiente'])
+      .where(function() {
+        this.where(function() {
+          this.where('fecha_hora_inicio', '>=', inicioStr)
+            .andWhere('fecha_hora_inicio', '<', finStr)
+        })
+        .orWhere(function() {
+          this.whereRaw('DATEADD(minute, duracion_minutos, fecha_hora_inicio) > ?', [inicioStr])
+            .andWhereRaw('DATEADD(minute, duracion_minutos, fecha_hora_inicio) <= ?', [finStr])
+        })
+        .orWhere(function() {
+          this.where('fecha_hora_inicio', '<=', inicioStr)
+            .andWhereRaw('DATEADD(minute, duracion_minutos, fecha_hora_inicio) >= ?', [finStr])
+        })
       })
-      .select()
+      .select('id_cita')
+
+    return solapamientos.length === 0
   }
 
   async findAll() {

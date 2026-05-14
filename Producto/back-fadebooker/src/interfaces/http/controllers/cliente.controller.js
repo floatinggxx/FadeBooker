@@ -1,9 +1,13 @@
+const ClienteRepository = require('../../../infraestructure/database/ClienteRepositoryImpl')
 const ClienteService = require('../../../application/usecases/cliente.service')
+
+const clienteRepository = new ClienteRepository()
+const clienteService = new ClienteService(clienteRepository)
 
 const ClienteController = {
   async crear(req, res) {
     try {
-      const cliente = await ClienteService.crearCliente(req.body)
+      const cliente = await clienteService.crearCliente(req.body)
       res.status(201).json(cliente)
     } catch (error) {
       res.status(400).json({ error: error.message })
@@ -13,7 +17,7 @@ const ClienteController = {
   async obtenerPorId(req, res) {
     try {
       const { id } = req.params
-      const cliente = await ClienteService.obtenerClientePorId(id)
+      const cliente = await clienteService.obtenerClientePorId(id)
       if (!cliente) {
         return res.status(404).json({ error: 'Cliente no encontrado' })
       }
@@ -26,7 +30,7 @@ const ClienteController = {
   async obtenerPorEmail(req, res) {
     try {
       const { email } = req.params
-      const cliente = await ClienteService.obtenerClientePorEmail(email)
+      const cliente = await clienteService.obtenerClientePorEmail(email)
       if (!cliente) {
         return res.status(404).json({ error: 'Cliente no encontrado' })
       }
@@ -39,7 +43,7 @@ const ClienteController = {
   async buscarPorNombre(req, res) {
     try {
       const { nombre } = req.query
-      const clientes = await ClienteService.buscarClientePorNombre(nombre)
+      const clientes = await clienteService.buscarClientePorNombre(nombre)
       res.json(clientes)
     } catch (error) {
       res.status(400).json({ error: error.message })

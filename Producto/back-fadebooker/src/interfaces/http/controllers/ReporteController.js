@@ -1,12 +1,15 @@
 const GenerarReporteCitas = require('../../../application/usecases/generarReporteCitas');
+const CitaRepository = require('../../../infraestructure/database/CitaRepositoryImpl');
+
+const citaRepository = new CitaRepository();
 
 class ReporteController {
     async getReporteCitas(req, res) {
         try {
             const { fechaInicio, fechaFin } = req.query;
             
-            // Instanciamos el caso de uso (aquí se inyectaría el repo real)
-            const useCase = new GenerarReporteCitas();
+            // Instanciamos el caso de uso con inyección de dependencias
+            const useCase = new GenerarReporteCitas(citaRepository);
             const buffer = await useCase.execute(fechaInicio, fechaFin);
 
             res.setHeader(

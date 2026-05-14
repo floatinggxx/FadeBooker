@@ -6,6 +6,9 @@
  */
 
 const HairstyleService = require('../../../application/usecases/hairstyle.service');
+const cloudinaryConfig = require('../../config/cloudinary.config');
+
+const hairstyleService = new HairstyleService(cloudinaryConfig);
 
 const HairstyleController = {
   /**
@@ -32,7 +35,7 @@ const HairstyleController = {
   async generateUploadSignature(req, res) {
     try {
       const { folder } = req.body || {};
-      const result = HairstyleService.generateUploadSignature({ folder });
+      const result = hairstyleService.generateUploadSignature({ folder });
       res.status(200).json(result);
     } catch (error) {
       console.error('Error en generateUploadSignature:', error.message);
@@ -76,7 +79,7 @@ const HairstyleController = {
         });
       }
       
-      const result = HairstyleService.generateHairstyleSimulation({
+      const result = hairstyleService.generateHairstyleSimulation({
         publicId,
         styleId
       });

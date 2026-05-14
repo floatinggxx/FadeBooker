@@ -1,53 +1,50 @@
-const BarberoRepository = require('../../infraestructure/database/BarberoRepositoryImpl')
-const barberoRepository = new BarberoRepository()
+class BarberoService {
+  constructor(barberoRepository) {
+    this.barberoRepository = barberoRepository;
+  }
 
-/**
- * BarberoService
- * 
- * ACTUALIZADO (v1.1.0):
- * - Agregados métodos para gestionar servicios de barberos
- * - Métodos para obtener servicios, precios y duraciones de cada barbero
- */
-const BarberoService = {
   async crearBarbero(data) {
-    return barberoRepository.create(data)
-  },
+    return this.barberoRepository.create(data)
+  }
 
   async obtenerBarberoPorId(id) {
-    return barberoRepository.findById(id)
-  },
+    return this.barberoRepository.findById(id)
+  }
 
   async obtenerBarberoPorEmail(email) {
-    return barberoRepository.findByEmail(email)
-  },
+    return this.barberoRepository.findByEmail(email)
+  }
 
   async buscarBarberosPorEspecialidad(especialidad) {
-    return barberoRepository.findByEspecialidad(especialidad)
-  },
+    return this.barberoRepository.findByEspecialidad(especialidad)
+  }
 
   async obtenerTodosLosBarberos() {
-    return barberoRepository.findAll()
-  },
+    return this.barberoRepository.findAll()
+  }
 
   async actualizarBarbero(id, data) {
-    return barberoRepository.update(id, data)
-  },
+    return this.barberoRepository.update(id, data)
+  }
 
   async eliminarBarbero(id) {
-    return barberoRepository.delete(id)
-  },
+    return this.barberoRepository.delete(id)
+  }
 
   async actualizarHorarioBarbero(id_barbero, horario) {
-    return barberoRepository.actualizarHorario(id_barbero, horario)
-  },
+    return this.barberoRepository.actualizarHorario(id_barbero, horario)
+  }
 
   async obtenerDisponibilidadBarbero(id_barbero, fecha) {
-    return barberoRepository.obtenerDisponibilidad(id_barbero, fecha)
-  },
+    return this.barberoRepository.obtenerDisponibilidad(id_barbero, fecha)
+  }
 
-  /**
-   * NUEVO (v1.1.0): Obtiene todos los servicios que ofrece un barbero
-   * @param {number} id_barbero - ID del barbero
+  async obtenerServiciosPorBarbero(id_barbero) {
+    return this.barberoRepository.obtenerServiciosPorBarbero(id_barbero)
+  }
+}
+
+module.exports = BarberoService
    */
   async obtenerServiciosBarbero(id_barbero) {
     return barberoRepository.getServicios(id_barbero)

@@ -8,7 +8,11 @@
 const crypto = require('crypto');
 const cloudinaryConfig = require('../../config/cloudinary.config');
 
-const HairstyleService = {
+class HairstyleService {
+  constructor(cloudinaryConfig) {
+    this.cloudinaryConfig = cloudinaryConfig;
+  }
+
   /**
    * Genera una firma segura para permitir que el frontend suba fotos a Cloudinary
    * sin exponer el API Secret del servidor.
@@ -20,7 +24,7 @@ const HairstyleService = {
   generateUploadSignature(params = {}) {
     try {
       // Verificar que Cloudinary esté configurado
-      if (!cloudinaryConfig.isConfigured) {
+      if (!this.cloudinaryConfig.isConfigured) {
         throw new Error('Cloudinary no está configurado. Por favor, configura las variables de entorno CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, y CLOUDINARY_API_SECRET en el archivo .env');
       }
 
@@ -30,7 +34,7 @@ const HairstyleService = {
       // Parámetros a firmar (deben coincidir con los que use el frontend)
       const signParams = {
         folder: folder,
-        upload_preset: cloudinaryConfig.uploadPreset,
+        upload_preset: this.cloudinaryConfig.uploadPreset,
         timestamp: timestamp
       };
       
@@ -43,22 +47,22 @@ const HairstyleService = {
       // Firmar usando SHA-1
       const signature = crypto
         .createHash('sha1')
-        .update(paramsToSign + cloudinaryConfig.apiSecret)
+        .update(paramsToSign + this.cloudinaryConfig.apiSecret)
         .digest('hex');
       
       return {
         success: true,
         signature,
         timestamp,
-        cloudName: cloudinaryConfig.cloudName,
-        apiKey: cloudinaryConfig.apiKey,
-        uploadPreset: cloudinaryConfig.uploadPreset,
+        cloudName: this.cloudinaryConfig.cloudName,
+        apiKey: this.cloudinaryConfig.apiKey,
+        uploadPreset: this.cloudinaryConfig.uploadPreset,
         folder: folder
       };
     } catch (error) {
       throw new Error(`Error generando firma de subida: ${error.message}`);
     }
-  },
+  }
 
   /**
    * Genera una URL transformada que simula un corte de pelo usando overlays.
@@ -79,7 +83,7 @@ const HairstyleService = {
   generateHairstyleSimulation(params = {}) {
     try {
       // Verificar que Cloudinary esté configurado
-      if (!cloudinaryConfig.isConfigured) {
+      if (!this.cloudinaryConfig.isConfigured) {
         throw new Error('Cloudinary no está configurado. Por favor, configura las variables de entorno CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, y CLOUDINARY_API_SECRET en el archivo .env');
       }
 
@@ -98,6 +102,41 @@ const HairstyleService = {
         degradado: 'cortes/degradado',
         clasico: 'cortes/clasico',
         moderno: 'cortes/moderno',
+        mohicano: 'cortes/mohicano',
+        buzzcut: 'cortes/buzzcut'
+      };
+
+      const overlay = styleMap[styleId];
+      
+      if (!overlay) {
+        throw new Error(`El estilo '${styleId}' no es válido. Opciones: ${Object.keys(styleMap).join(', ')}`);
+      }
+
+      /**
+       * Generamos la URL de transformación:
+       * 1. Detectamos el rostro (g_face)
+       * 2. Ajustamos el overlay al rostro (u_overlay, w_1.3, flags_region_relative)
+       * 3. Ajustamos posición vertical (y_-0.1) para que el pelo quede arriba del rostro
+       */
+      const baseUrl = `https://res.cloudinary.com/${this.cloudinaryConfig.cloudName}/image/upload`;
+      const transformations = `g_face,u_${overlay.replace(/\//g, ':')},w_1.3,fl_region_relative,y_-0.1`;
+      const simulatedImageUrl = `${baseUrl}/${transformations}/${publicId}`;
+
+      return {
+        success: true,
+        simulatedImageUrl,
+        styleId,
+        publicId,
+        overlay,
+        message: 'Simulación de corte generada exitosamente'
+      };
+    } catch (error) {
+      throw new Error(`Error generando simulación de peinado: ${error.message}`);
+    }
+  }
+}
+
+module.exports = HairstyleService;
         mohicano: 'cortes/mohicano',
         buzzcut: 'cortes/buzzcut'
       };

@@ -347,6 +347,49 @@ paths:
       tags:
         - Citas
 
+  /citas/disponibilidad:
+    get:
+      summary: Verificar disponibilidad de un barbero
+      description: |
+        Comprueba si un barbero está libre en un rango de tiempo específico.
+      parameters:
+        - name: idBarbero
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: fecha
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+          example: "2026-05-20"
+        - name: hora
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "15:30"
+        - name: duracion
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Duración en minutos
+      responses:
+        '200':
+          description: Resultado de disponibilidad
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  disponible:
+                    type: boolean
+      tags:
+        - Citas
+
   /citas/{id}:
     get:
       summary: Obtener detalles de una cita
@@ -373,6 +416,38 @@ paths:
                 $ref: '#/components/schemas/CitaDetallada'
         '404':
           description: Cita no encontrada
+      tags:
+        - Citas
+
+    put:
+      summary: Actualizar estado de cita
+      description: |
+        Cambia el estado de una cita y permite agregar motivo de cancelación.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - estado
+              properties:
+                estado:
+                  type: string
+                  enum: [Pendiente, Confirmada, Cancelada, Completada]
+                motivo_cancelacion:
+                  type: string
+      responses:
+        '200':
+          description: Estado actualizado
+        '400':
+          description: Validación fallida
       tags:
         - Citas
 

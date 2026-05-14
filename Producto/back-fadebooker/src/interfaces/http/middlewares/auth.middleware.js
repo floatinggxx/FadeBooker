@@ -1,4 +1,5 @@
-const jwt = require('jsonwebtoken');
+const JwtTokenManager = require('../../../infraestructure/security/JwtTokenManager');
+const tokenManager = new JwtTokenManager();
 
 /**
  * Middleware para autenticar usuarios mediante JWT.
@@ -13,7 +14,10 @@ const authMiddleware = (req, res, next) => {
     const token = authHeader.split(' ')[1];
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret_key_temporal');
+        const decoded = tokenManager.verify(token);
+        if (!decoded) {
+            throw new Error('Token inválido');
+        }
         req.user = decoded;
         next();
     } catch (error) {

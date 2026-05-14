@@ -1,16 +1,15 @@
-const BarberoService = require('../../../application/usecases/barbero.service')
-const { BarberoSchema, ServicioBarberoSchema } = require('../validations/servicioBarbero.validation')
+const BarberoRepository = require('../../../infraestructure/database/BarberoRepositoryImpl');
+const BarberoService = require('../../../application/usecases/barbero.service');
+
+const barberoRepository = new BarberoRepository();
+const barberoService = new BarberoService(barberoRepository);
 
 const BarberoController = {
   async crear(req, res) {
     try {
-      const validatedData = BarberoSchema.parse(req.body)
-      const barbero = await BarberoService.crearBarbero(validatedData)
+      const barbero = await barberoService.crearBarbero(req.body)
       res.status(201).json(barbero)
     } catch (error) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ error: 'Error de validación', detalles: error.errors })
-      }
       res.status(400).json({ error: error.message })
     }
   },
@@ -18,7 +17,7 @@ const BarberoController = {
   async obtenerPorId(req, res) {
     try {
       const { id } = req.params
-      const barbero = await BarberoService.obtenerBarberoPorId(id)
+      const barbero = await barberoService.obtenerBarberoPorId(id)
       if (!barbero) {
         return res.status(404).json({ error: 'Barbero no encontrado' })
       }
@@ -31,7 +30,7 @@ const BarberoController = {
   async obtenerPorEmail(req, res) {
     try {
       const { email } = req.params
-      const barbero = await BarberoService.obtenerBarberoPorEmail(email)
+      const barbero = await barberoService.obtenerBarberoPorEmail(email)
       if (!barbero) {
         return res.status(404).json({ error: 'Barbero no encontrado' })
       }
@@ -44,7 +43,7 @@ const BarberoController = {
   async buscarPorEspecialidad(req, res) {
     try {
       const { especialidad } = req.params
-      const barberos = await BarberoService.buscarBarberosPorEspecialidad(especialidad)
+      const barberos = await barberoService.buscarBarberosPorEspecialidad(especialidad)
       res.json(barberos)
     } catch (error) {
       res.status(400).json({ error: error.message })
@@ -53,7 +52,7 @@ const BarberoController = {
 
   async obtenerTodos(req, res) {
     try {
-      const barberos = await BarberoService.obtenerTodosLosBarberos()
+      const barberos = await barberoService.obtenerTodosLosBarberos()
       res.json(barberos)
     } catch (error) {
       res.status(400).json({ error: error.message })
@@ -63,13 +62,9 @@ const BarberoController = {
   async actualizar(req, res) {
     try {
       const { id } = req.params
-      const validatedData = BarberoSchema.partial().parse(req.body)
-      const barbero = await BarberoService.actualizarBarbero(id, validatedData)
+      const barbero = await barberoService.actualizarBarbero(id, req.body)
       res.json(barbero)
     } catch (error) {
-      if (error.name === 'ZodError') {
-        return res.status(400).json({ error: 'Error de validación', detalles: error.errors })
-      }
       res.status(400).json({ error: error.message })
     }
   },
@@ -77,7 +72,7 @@ const BarberoController = {
   async eliminar(req, res) {
     try {
       const { id } = req.params
-      await BarberoService.eliminarBarbero(id)
+      await barberoService.eliminarBarbero(id)
       res.json({ mensaje: 'Barbero eliminado' })
     } catch (error) {
       res.status(400).json({ error: error.message })
@@ -88,7 +83,7 @@ const BarberoController = {
     try {
       const { id } = req.params
       const { horario } = req.body
-      await BarberoService.actualizarHorarioBarbero(id, horario)
+      await barberoService.actualizarHorarioBarbero(id, horario)
       res.json({ mensaje: 'Horario actualizado' })
     } catch (error) {
       res.status(400).json({ error: error.message })
@@ -98,7 +93,7 @@ const BarberoController = {
   async obtenerDisponibilidad(req, res) {
     try {
       const { id, fecha } = req.params
-      const disponibilidad = await BarberoService.obtenerDisponibilidadBarbero(id, fecha)
+      const disponibilidad = await barberoService.obtenerDisponibilidadBarbero(id, fecha)
       res.json(disponibilidad)
     } catch (error) {
       res.status(400).json({ error: error.message })
