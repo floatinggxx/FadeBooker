@@ -53,7 +53,7 @@ const ClienteController = {
   async buscarPorTelefono(req, res) {
     try {
       const { telefono } = req.params
-      const cliente = await ClienteService.buscarClientePorTelefono(telefono)
+      const cliente = await clienteService.buscarClientePorTelefono(telefono)
       if (!cliente) {
         return res.status(404).json({ error: 'Cliente no encontrado' })
       }
@@ -65,7 +65,7 @@ const ClienteController = {
 
   async obtenerTodos(req, res) {
     try {
-      const clientes = await ClienteService.obtenerTodosLosClientes()
+      const clientes = await clienteService.obtenerTodosLosClientes()
       res.json(clientes)
     } catch (error) {
       res.status(400).json({ error: error.message })
@@ -75,7 +75,7 @@ const ClienteController = {
   async actualizar(req, res) {
     try {
       const { id } = req.params
-      const cliente = await ClienteService.actualizarCliente(id, req.body)
+      const cliente = await clienteService.actualizarCliente(id, req.body)
       res.json(cliente)
     } catch (error) {
       res.status(400).json({ error: error.message })
@@ -85,7 +85,7 @@ const ClienteController = {
   async eliminar(req, res) {
     try {
       const { id } = req.params
-      await ClienteService.eliminarCliente(id)
+      await clienteService.eliminarCliente(id)
       res.json({ mensaje: 'Cliente eliminado' })
     } catch (error) {
       res.status(400).json({ error: error.message })
@@ -96,7 +96,7 @@ const ClienteController = {
     try {
       const { id } = req.params
       const { puntos } = req.body
-      await ClienteService.actualizarPuntosCliente(id, puntos)
+      await clienteService.actualizarPuntosCliente(id, puntos)
       res.json({ mensaje: 'Puntos actualizados' })
     } catch (error) {
       res.status(400).json({ error: error.message })

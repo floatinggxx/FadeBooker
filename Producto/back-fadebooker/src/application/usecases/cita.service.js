@@ -53,34 +53,30 @@ class CitaService {
   async obtenerCitasPorBarbero(id_barbero, fecha = null) {
     return this.citaRepository.findByBarbero(id_barbero, fecha)
   }
-}
-
-module.exports = CitaService
-  },
 
   async verificarDisponibilidad(idBarbero, fecha, hora, duracion) {
     const fechaHora = `${fecha}T${hora}`
-    return citaRepository.verificarDisponibilidad(idBarbero, fechaHora, duracion)
-  },
+    return this.citaRepository.verificarDisponibilidad(idBarbero, fechaHora, duracion)
+  }
 
-  async obtenerCitaPorId(id) {
-    return citaRepository.findByIdConDetalles(id)
-  },
+  async obtenerCitaPorIdConDetalles(id) {
+    return this.citaRepository.findByIdConDetalles(id)
+  }
 
   async obtenerCitasDelCliente(id_cliente) {
-    return citaRepository.findByClienteId(id_cliente)
-  },
+    return this.citaRepository.findByClienteId(id_cliente)
+  }
 
   async obtenerCitasDelBarbero(id_barbero) {
-    return citaRepository.findByBarberoId(id_barbero)
-  },
+    return this.citaRepository.findByBarberoId(id_barbero)
+  }
 
   async obtenerCitasPorEstado(estado) {
-    return citaRepository.findByEstado(estado)
-  },
+    return this.citaRepository.findByEstado(estado)
+  }
 
   async eliminarCita(id) {
-    return citaRepository.delete(id)
+    return this.citaRepository.delete(id)
   }
 }
 
