@@ -8,6 +8,7 @@ const barberoRoutes = require('./barbero.routes')
 const servicioRoutes = require('./servicio.routes')
 const hairstyleRoutes = require('./hairstyle.routes')
 const reporteRoutes = require('./reporte.routes')
+const pagoRoutes = require('./pago.routes')
 const authMiddleware = require('../middlewares/auth.middleware')
 
 router.get('/health', (req, res) => {
@@ -26,5 +27,6 @@ router.use('/barberos', barberoRoutes)
 router.use('/servicios', servicioRoutes)
 router.use('/hairstyle', hairstyleRoutes)
 router.use('/reportes', reporteRoutes)
+router.use('/pagos', pagoRoutes)
 
 module.exports = router

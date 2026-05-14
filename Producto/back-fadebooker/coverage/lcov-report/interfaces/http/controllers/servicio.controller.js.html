@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/38</span>
+                <span class='fraction'>0/41</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/38</span>
+                <span class='fraction'>0/41</span>
             </div>
         
             
@@ -138,7 +138,16 @@
 <a name='L73'></a><a href='#L73'>73</a>
 <a name='L74'></a><a href='#L74'>74</a>
 <a name='L75'></a><a href='#L75'>75</a>
-<a name='L76'></a><a href='#L76'>76</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -213,12 +222,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const ServicioService = <span class="cstat-no" title="statement not covered" >require('../../../application/usecases/servicio.service')</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const ServicioRepository = <span class="cstat-no" title="statement not covered" >require('../../../infraestructure/database/ServicioRepositoryImpl');</span>
+const ServicioService = <span class="cstat-no" title="statement not covered" >require('../../../application/usecases/servicio.service');</span>
+&nbsp;
+const servicioRepository = <span class="cstat-no" title="statement not covered" >new ServicioRepository();</span>
+const servicioService = <span class="cstat-no" title="statement not covered" >new ServicioService(servicioRepository);</span>
 &nbsp;
 const ServicioController = <span class="cstat-no" title="statement not covered" >{</span>
 <span class="fstat-no" title="function not covered" >  as</span>ync crear(req, res) {
 <span class="cstat-no" title="statement not covered" >    try {</span>
-      const servicio = <span class="cstat-no" title="statement not covered" >await ServicioService.crearServicio(req.body)</span>
+      const servicio = <span class="cstat-no" title="statement not covered" >await servicioService.crearServicio(req.body)</span>
 <span class="cstat-no" title="statement not covered" >      res.status(201).json(servicio)</span>
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >      res.status(400).json({ error: error.message })</span>
@@ -228,7 +242,7 @@ const ServicioController = <span class="cstat-no" title="statement not covered" 
 <span class="fstat-no" title="function not covered" >  as</span>ync obtenerPorId(req, res) {
 <span class="cstat-no" title="statement not covered" >    try {</span>
       const { id } = <span class="cstat-no" title="statement not covered" >req.params</span>
-      const servicio = <span class="cstat-no" title="statement not covered" >await ServicioService.obtenerServicioPorId(id)</span>
+      const servicio = <span class="cstat-no" title="statement not covered" >await servicioService.obtenerServicioPorId(id)</span>
 <span class="cstat-no" title="statement not covered" >      if (!servicio) {</span>
 <span class="cstat-no" title="statement not covered" >        return res.status(404).json({ error: 'Servicio no encontrado' })</span>
       }
@@ -241,7 +255,7 @@ const ServicioController = <span class="cstat-no" title="statement not covered" 
 <span class="fstat-no" title="function not covered" >  as</span>ync buscarPorNombre(req, res) {
 <span class="cstat-no" title="statement not covered" >    try {</span>
       const { nombre } = <span class="cstat-no" title="statement not covered" >req.query</span>
-      const servicios = <span class="cstat-no" title="statement not covered" >await ServicioService.buscarServicioPorNombre(nombre)</span>
+      const servicios = <span class="cstat-no" title="statement not covered" >await servicioService.buscarServicioPorNombre(nombre)</span>
 <span class="cstat-no" title="statement not covered" >      res.json(servicios)</span>
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >      res.status(400).json({ error: error.message })</span>
@@ -250,7 +264,7 @@ const ServicioController = <span class="cstat-no" title="statement not covered" 
 &nbsp;
 <span class="fstat-no" title="function not covered" >  as</span>ync obtenerTodos(req, res) {
 <span class="cstat-no" title="statement not covered" >    try {</span>
-      const servicios = <span class="cstat-no" title="statement not covered" >await ServicioService.obtenerTodosLosServicios()</span>
+      const servicios = <span class="cstat-no" title="statement not covered" >await servicioService.obtenerTodosLosServicios()</span>
 <span class="cstat-no" title="statement not covered" >      res.json(servicios)</span>
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >      res.status(400).json({ error: error.message })</span>
@@ -260,7 +274,7 @@ const ServicioController = <span class="cstat-no" title="statement not covered" 
 <span class="fstat-no" title="function not covered" >  as</span>ync actualizar(req, res) {
 <span class="cstat-no" title="statement not covered" >    try {</span>
       const { id } = <span class="cstat-no" title="statement not covered" >req.params</span>
-      const servicio = <span class="cstat-no" title="statement not covered" >await ServicioService.actualizarServicio(id, req.body)</span>
+      const servicio = <span class="cstat-no" title="statement not covered" >await servicioService.actualizarServicio(id, req.body)</span>
 <span class="cstat-no" title="statement not covered" >      res.json(servicio)</span>
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >      res.status(400).json({ error: error.message })</span>
@@ -270,17 +284,17 @@ const ServicioController = <span class="cstat-no" title="statement not covered" 
 <span class="fstat-no" title="function not covered" >  as</span>ync eliminar(req, res) {
 <span class="cstat-no" title="statement not covered" >    try {</span>
       const { id } = <span class="cstat-no" title="statement not covered" >req.params</span>
-<span class="cstat-no" title="statement not covered" >      await ServicioService.eliminarServicio(id)</span>
+<span class="cstat-no" title="statement not covered" >      await servicioService.eliminarServicio(id)</span>
 <span class="cstat-no" title="statement not covered" >      res.json({ mensaje: 'Servicio eliminado' })</span>
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >      res.status(400).json({ error: error.message })</span>
     }
   },
 &nbsp;
-<span class="fstat-no" title="function not covered" >  as</span>ync obtenerPorTienda(req, res) {
+<span class="fstat-no" title="function not covered" >  as</span>ync obtenerPorBarbero(req, res) {
 <span class="cstat-no" title="statement not covered" >    try {</span>
-      const { id_tienda } = <span class="cstat-no" title="statement not covered" >req.params</span>
-      const servicios = <span class="cstat-no" title="statement not covered" >await ServicioService.obtenerServiciosPorTienda(id_tienda)</span>
+      const { id_barbero } = <span class="cstat-no" title="statement not covered" >req.params</span>
+      const servicios = <span class="cstat-no" title="statement not covered" >await servicioService.obtenerServiciosPorBarbero(id_barbero)</span>
 <span class="cstat-no" title="statement not covered" >      res.json(servicios)</span>
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >      res.status(400).json({ error: error.message })</span>
@@ -288,14 +302,15 @@ const ServicioController = <span class="cstat-no" title="statement not covered" 
   }
 }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >module.exports = ServicioController</span></pre></td></tr></table></pre>
+<span class="cstat-no" title="statement not covered" >module.exports = ServicioController</span>
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-21T19:07:19.436Z
+                at 2026-05-14T21:47:39.860Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

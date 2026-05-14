@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/22</span>
+                <span class='fraction'>0/29</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/17</span>
+                <span class='fraction'>0/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/22</span>
+                <span class='fraction'>0/29</span>
             </div>
         
             
@@ -183,7 +183,23 @@
 <a name='L118'></a><a href='#L118'>118</a>
 <a name='L119'></a><a href='#L119'>119</a>
 <a name='L120'></a><a href='#L120'>120</a>
-<a name='L121'></a><a href='#L121'>121</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -227,17 +243,14 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -250,8 +263,27 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -343,18 +375,33 @@ class CitaRepositoryImpl {
   }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  as</span>ync verificarDisponibilidad(id_barbero, fecha_hora_inicio, duracion_minutos) {
-    const fecha_hora_fin = <span class="cstat-no" title="statement not covered" >new Date(new Date(fecha_hora_inicio).getTime() + duracion_minutos * 60000)</span>
-<span class="cstat-no" title="statement not covered" >    return this.db('Cita')</span>
-      .where({ id_barbero })
-      .whereIn('estado', ['confirmada', 'completada'])
-      .where(<span class="fstat-no" title="function not covered" >kb</span> =&gt; {
-<span class="cstat-no" title="statement not covered" >        kb.whereBetween('fecha_hora_inicio', [fecha_hora_inicio, fecha_hora_fin])</span>
-          .orWhere(<span class="fstat-no" title="function not covered" >fu</span>nction() {
-<span class="cstat-no" title="statement not covered" >            this.where('fecha_hora_inicio', '&lt;', fecha_hora_fin)</span>
-              .andWhere(this.db.raw('DATEADD(minute, duracion_minutos, fecha_hora_inicio) &gt; ?', [fecha_hora_inicio]))
-          })
+    const inicio = <span class="cstat-no" title="statement not covered" >new Date(fecha_hora_inicio);</span>
+    const fin = <span class="cstat-no" title="statement not covered" >new Date(inicio.getTime() + duracion_minutos * 60000);</span>
+    
+    // Convertir a formato compatible con SQL
+    const inicioStr = <span class="cstat-no" title="statement not covered" >inicio.toISOString().replace('T', ' ').substring(0, 19);</span>
+    const finStr = <span class="cstat-no" title="statement not covered" >fin.toISOString().replace('T', ' ').substring(0, 19);</span>
+&nbsp;
+    const solapamientos = <span class="cstat-no" title="statement not covered" >await this.db('Cita')</span>
+      .where('id_barbero', id_barbero)
+      .whereIn('estado', ['Confirmada', 'Pendiente'])
+      .where(<span class="fstat-no" title="function not covered" >fu</span>nction() {
+<span class="cstat-no" title="statement not covered" >        this.where(<span class="fstat-no" title="function not covered" >fu</span>nction() {</span>
+<span class="cstat-no" title="statement not covered" >          this.where('fecha_hora_inicio', '&gt;=', inicioStr)</span>
+            .andWhere('fecha_hora_inicio', '&lt;', finStr)
+        })
+        .orWhere(<span class="fstat-no" title="function not covered" >fu</span>nction() {
+<span class="cstat-no" title="statement not covered" >          this.whereRaw('DATEADD(minute, duracion_minutos, fecha_hora_inicio) &gt; ?', [inicioStr])</span>
+            .andWhereRaw('DATEADD(minute, duracion_minutos, fecha_hora_inicio) &lt;= ?', [finStr])
+        })
+        .orWhere(<span class="fstat-no" title="function not covered" >fu</span>nction() {
+<span class="cstat-no" title="statement not covered" >          this.where('fecha_hora_inicio', '&lt;=', inicioStr)</span>
+            .andWhereRaw('DATEADD(minute, duracion_minutos, fecha_hora_inicio) &gt;= ?', [finStr])
+        })
       })
-      .select()
+      .select('id_cita')
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    return solapamientos.length === 0</span>
   }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  as</span>ync findAll() {
@@ -370,9 +417,10 @@ class CitaRepositoryImpl {
   }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  as</span>ync findByFecha(fecha) {
+    // Asegurarse de quitar la 'Z' o cualquier formato que confunda a MSSQL
+    const fechaLimpia = <span class="cstat-no" title="statement not covered" >fecha.split('T')[0] </span>
 <span class="cstat-no" title="statement not covered" >    return this.db('Cita')</span>
-      .where('fecha_hora_inicio', '&gt;=', fecha)
-      .andWhere('fecha_hora_inicio', '&lt;', fecha + ' 23:59:59')
+      .whereRaw('CAST(fecha_hora_inicio AS DATE) = ?', [fechaLimpia])
       .select()
   }
 &nbsp;
@@ -430,7 +478,7 @@ class CitaRepositoryImpl {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-21T19:07:19.436Z
+                at 2026-05-14T21:47:39.860Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

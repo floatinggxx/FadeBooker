@@ -488,6 +488,76 @@ paths:
       tags:
         - Citas
 
+  /pagos/crear:
+    post:
+      operationId: crearPago
+      summary: Crear preferencia de pago para una cita
+      description: Genera la preferencia de Mercado Pago y devuelve la URL de checkout.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PagoCrear'
+      responses:
+        '200':
+          description: Preferencia creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagoResponse'
+        '400':
+          description: Datos inválidos
+        '500':
+          description: Error interno
+      tags:
+        - Pagos
+
+  /pagos/webhook:
+    post:
+      operationId: pagoWebhook
+      summary: Webhook de Mercado Pago
+      description: Recibe notificaciones de pagos y actualiza el estado del pago y la cita correspondiente.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Notificación recibida
+        '500':
+          description: Error interno
+      tags:
+        - Pagos
+
+  /pagos/cita/{id_cita}:
+    get:
+      operationId: getPagosPorCita
+      summary: Obtener pagos asociados a una cita
+      parameters:
+        - name: id_cita
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Pagos de la cita
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PagoDetalle'
+        '400':
+          description: ID inválido
+        '404':
+          description: No encontrado
+      tags:
+        - Pagos
+
     # ============================================================================
   # SERVICIOS ENDPOINTS (ACTUALIZADOS v1.10.0)
   # ============================================================================
@@ -928,6 +998,43 @@ components:
           type: integer
         nombre_tienda:
           type: string
+
+    PagoCrear:
+      type: object
+      required:
+        - id_cita
+      properties:
+        id_cita:
+          type: integer
+
+    PagoResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+        preference_id:
+          type: string
+
+    PagoDetalle:
+      type: object
+      properties:
+        id_pago:
+          type: integer
+        id_cita:
+          type: integer
+        monto_pagado:
+          type: number
+          format: decimal
+        metodo_pago:
+          type: string
+        estado_pago:
+          type: string
+        referencia_transaccion:
+          type: string
+        fecha_pago:
+          type: string
+          format: date-time
 
     # ========================================================================
     # SCHEMAS - Entidades Principales
