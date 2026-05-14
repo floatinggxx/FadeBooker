@@ -6,7 +6,7 @@
  */
 
 const HairstyleService = require('../../../application/usecases/hairstyle.service');
-const cloudinaryConfig = require('../../config/cloudinary.config');
+const cloudinaryConfig = require('../../../config/cloudinary.config');
 
 const hairstyleService = new HairstyleService(cloudinaryConfig);
 

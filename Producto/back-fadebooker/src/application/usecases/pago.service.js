@@ -1,4 +1,4 @@
-const mercadopago = require('../../config/mercadopago')
+const { client, Preference } = require('../../config/mercadopago');
 
 class PagoService {
   constructor(pagoRepository, citaRepository) {
@@ -20,14 +20,16 @@ class PagoService {
         throw new Error('La cita ya está completamente pagada');
       }
 
+      // Crear instancia de Preferencia
+      const preference = new Preference(client);
+
       // Crear preferencia en Mercado Pago
-      const preference = {
+      const body = {
         items: [
           {
             title: `Reserva FadeBooker - Cita #${id_cita}`,
             quantity: 1,
-            currency_id: 'CLP',
-            unit_price: montoPendiente
+            unit_price: Number(montoPendiente)
           }
         ],
         back_urls: {
@@ -39,7 +41,7 @@ class PagoService {
         external_reference: `cita_${id_cita}`
       };
 
-      const response = await mercadopago.preferences.create(preference);
+      const response = await preference.create({ body });
 
       // Crear registro de pago pendiente
       const pagoData = {
@@ -47,14 +49,14 @@ class PagoService {
         monto_pagado: montoPendiente,
         metodo_pago: 'mercadopago',
         estado_pago: 'pendiente',
-        referencia_transaccion: response.body.id
+        referencia_transaccion: response.id
       };
 
       await this.pagoRepository.create(pagoData);
 
       return {
-        url: response.body.init_point,
-        preference_id: response.body.id
+        url: response.init_point,
+        preference_id: response.id
       };
 
     } catch (error) {
