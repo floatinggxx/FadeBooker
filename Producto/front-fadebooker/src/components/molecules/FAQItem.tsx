@@ -38,14 +38,17 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, open, onToggle }) =
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          gap: '1rem',
+          flexWrap: 'wrap',
           transition: 'all 0.2s ease',
-          fontWeight: '600',
+          fontWeight: 600,
           color: '#0f3460',
           fontSize: '1rem',
         }}
       >
-        <span>{question}</span>
+        <span style={{ flex: 1, minWidth: 0, textAlign: 'left', lineHeight: '1.4' }}>{question}</span>
         <span
+          className="faq-toggle-icon"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -59,7 +62,7 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, open, onToggle }) =
             fontSize: '1.2rem',
             transition: 'all 0.3s ease',
             flexShrink: 0,
-            marginLeft: '1rem',
+            marginLeft: 'auto',
           }}
         >
           {open ? '✓' : '+'}

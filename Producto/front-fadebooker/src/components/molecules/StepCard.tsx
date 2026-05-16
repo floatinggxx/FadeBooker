@@ -8,9 +8,11 @@ interface StepCardProps {
 }
 
 const StepCard: React.FC<StepCardProps> = ({ step, title, description }) => (
-  <article className="card-surface animate-fade-in-up">
-    <strong>{step}</strong>
-    <h3>{title}</h3>
+  <article className="card-surface step-card animate-fade-in-up">
+    <div className="step-card-header">
+      <div className="step-badge">{step}</div>
+      <h3>{title}</h3>
+    </div>
     <Text>{description}</Text>
   </article>
 );

@@ -1,15 +1,20 @@
 
 import React from 'react';
 import HeroSection from '../components/organisms/HeroSection';
+import WhyChooseSection from '../components/organisms/WhyChooseSection';
 import FeaturesSection from '../components/organisms/FeaturesSection';
 import HowItWorksSection from '../components/organisms/HowItWorksSection';
 import TestimonialsSection from '../components/organisms/TestimonialsSection';
 import { ButtonLink } from '../components/atoms/ButtonLink';
+import { useAuth } from '@/features/auth/hooks/useAuthContext';
 
 const HomePage: React.FC = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
     <div className="page-content">
       <HeroSection />
+      <WhyChooseSection />
       <FeaturesSection />
       <HowItWorksSection />
       <TestimonialsSection />
@@ -18,11 +23,15 @@ const HomePage: React.FC = () => {
         <div className="card-surface cta-panel">
           <div>
             <h2 className="section-highlight">¿Listo para tu primer corte?</h2>
-            <p>Regístrate ahora y descubre barberías, perfiles y reservas con una experiencia visual moderna.</p>
+            <p>{isAuthenticated ? 'Continúa gestionando tus citas y descubre nuevas barberías con tu sesión activa.' : 'Regístrate ahora y descubre barberías, perfiles y reservas con una experiencia visual moderna.'}</p>
           </div>
           <div className="hero-actions">
-            <ButtonLink to="/register" variant="primary">Crear cuenta</ButtonLink>
-            <ButtonLink to="/barberias" variant="blue">Ir a barberías</ButtonLink>
+            {!isAuthenticated ? (
+              <ButtonLink to="/register" variant="primary">Crear cuenta</ButtonLink>
+            ) : (
+              <ButtonLink to="/bookings" variant="primary">Ver mis citas</ButtonLink>
+            )}
+            <ButtonLink to="/barberias" variant="blue">{isAuthenticated ? 'Explorar barberías' : 'Ver barberías'}</ButtonLink>
           </div>
         </div>
       </section>

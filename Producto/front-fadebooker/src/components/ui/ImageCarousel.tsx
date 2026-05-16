@@ -25,18 +25,20 @@ const defaultSlides = [
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ images = defaultSlides }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [failedImages, setFailedImages] = useState<boolean[]>([]);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     setFailedImages(new Array(images.length).fill(false));
   }, [images.length]);
 
   useEffect(() => {
+    if (isPaused) return;
     const timer = window.setInterval(() => {
       setActiveIndex((current) => (current + 1) % images.length);
     }, 6000);
 
     return () => window.clearInterval(timer);
-  }, [images.length]);
+  }, [images.length, isPaused]);
 
   const goToPrevious = () => {
     setActiveIndex((current) => (current - 1 + images.length) % images.length);
@@ -56,9 +58,15 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images = defaultSlides })
 
   const slide = images[activeIndex];
   const isFailed = failedImages[activeIndex];
+  const progressPercent = ((activeIndex + 1) / images.length) * 100;
 
   return (
-    <div className="carousel" aria-label="Carrusel de imágenes">
+    <div
+      className="carousel"
+      aria-label="Carrusel de imágenes"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       <div className="carousel-slide">
         {!isFailed ? (
           <img src={slide.src} alt={slide.alt} onError={() => handleImageError(activeIndex)} />
@@ -68,7 +76,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images = defaultSlides })
             <p>{slide.caption}</p>
           </div>
         )}
-        <div className="carousel-caption">
+        <div className="carousel-caption" aria-live="polite">
           <p>{slide.caption || ''}</p>
         </div>
       </div>
@@ -79,6 +87,9 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images = defaultSlides })
         <button type="button" onClick={goToNext} className="carousel-action-btn" aria-label="Imagen siguiente">
           ›
         </button>
+      </div>
+      <div className="carousel-progress">
+        <div className="carousel-progress-inner" style={{ width: `${progressPercent}%` }} />
       </div>
       <div className="carousel-indicators">
         {images.map((slide, index) => (

@@ -7,8 +7,11 @@ interface FeatureCardProps {
 }
 
 const FeatureCard: React.FC<FeatureCardProps> = ({ title, description }) => (
-  <article className="card-surface animate-fade-in-up">
-    <h3>{title}</h3>
+  <article className="card-surface feature-card animate-fade-in-up">
+    <div className="feature-card-header">
+      <span className="feature-card-accent" aria-hidden="true" />
+      <h3>{title}</h3>
+    </div>
     <Text>{description}</Text>
   </article>
 );
