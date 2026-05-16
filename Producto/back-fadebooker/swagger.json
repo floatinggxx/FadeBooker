@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "FadeBooker API",
-    "description": "Sistema de gesti\u00f3n de citas para barber\u00edas - Marketplace de barber\u00eda. \n\n**Autenticaci\u00f3n:** Use el header Authorization con el valor Bearer <token>.",
+    "description": "Sistema de gestión de citas para barberías - Marketplace de barbería. \n\n**Autenticación:** Use el header Authorization con el valor Bearer <token>.",
     "version": "1.11.0"
   },
   "servers": [
@@ -18,7 +18,7 @@
   "tags": [
     {
       "name": "Usuarios",
-      "description": "Gesti\u00f3n de cuentas y autenticaci\u00f3n"
+      "description": "Gestión de cuentas y autenticación"
     },
     {
       "name": "Clientes",
@@ -26,11 +26,11 @@
     },
     {
       "name": "Barberos",
-      "description": "Gesti\u00f3n de barberos y su disponibilidad"
+      "description": "Gestión de barberos y su disponibilidad"
     },
     {
       "name": "Servicios",
-      "description": "Cat\u00e1logo base de servicios"
+      "description": "Catálogo base de servicios"
     },
     {
       "name": "Citas",
@@ -38,11 +38,11 @@
     },
     {
       "name": "Hairstyle",
-      "description": "Simulaci\u00f3n de cortes y gesti\u00f3n de im\u00e1genes"
+      "description": "Simulación de cortes y gestión de imágenes"
     },
     {
       "name": "Reportes",
-      "description": "Generaci\u00f3n de reportes administrativos"
+      "description": "Generación de reportes administrativos"
     }
   ],
   "paths": {
@@ -62,7 +62,8 @@
               }
             }
           }
-        }
+        },
+        "operationId": "get_health"
       }
     },
     "/usuarios/register": {
@@ -93,9 +94,10 @@
             }
           },
           "400": {
-            "description": "Email ya registrado o datos inv\u00e1lidos"
+            "description": "Email ya registrado o datos inválidos"
           }
-        }
+        },
+        "operationId": "post_usuarios_register"
       }
     },
     "/usuarios/login": {
@@ -126,9 +128,10 @@
             }
           },
           "401": {
-            "description": "Credenciales inv\u00e1lidas"
+            "description": "Credenciales inválidas"
           }
-        }
+        },
+        "operationId": "post_usuarios_login"
       }
     },
     "/usuarios/perfil": {
@@ -148,7 +151,8 @@
               }
             }
           }
-        }
+        },
+        "operationId": "get_usuarios_perfil"
       },
       "put": {
         "summary": "Actualizar perfil del usuario autenticado",
@@ -176,7 +180,8 @@
               }
             }
           }
-        }
+        },
+        "operationId": "put_usuarios_perfil"
       }
     },
     "/clientes": {
@@ -199,7 +204,8 @@
               }
             }
           }
-        }
+        },
+        "operationId": "get_clientes"
       },
       "post": {
         "summary": "Crear un nuevo cliente",
@@ -221,9 +227,10 @@
             "description": "Cliente creado"
           },
           "400": {
-            "description": "Datos inv\u00e1lidos"
+            "description": "Datos inválidos"
           }
-        }
+        },
+        "operationId": "post_clientes"
       }
     },
     "/clientes/buscar": {
@@ -244,7 +251,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Resultados de b\u00fasqueda",
+            "description": "Resultados de búsqueda",
             "content": {
               "application/json": {
                 "schema": {
@@ -256,12 +263,13 @@
               }
             }
           }
-        }
+        },
+        "operationId": "get_clientes_buscar"
       }
     },
     "/clientes/telefono/{telefono}": {
       "get": {
-        "summary": "Buscar cliente por tel\u00e9fono",
+        "summary": "Buscar cliente por teléfono",
         "tags": [
           "Clientes"
         ],
@@ -288,7 +296,8 @@
           "404": {
             "description": "No encontrado"
           }
-        }
+        },
+        "operationId": "get_clientes_telefono_telefono"
       }
     },
     "/clientes/email/{email}": {
@@ -320,7 +329,8 @@
           "404": {
             "description": "No encontrado"
           }
-        }
+        },
+        "operationId": "get_clientes_email_email"
       }
     },
     "/clientes/{id}": {
@@ -352,7 +362,8 @@
           "404": {
             "description": "No encontrado"
           }
-        }
+        },
+        "operationId": "get_clientes_id"
       },
       "put": {
         "summary": "Actualizar cliente",
@@ -382,7 +393,8 @@
           "200": {
             "description": "Actualizado"
           }
-        }
+        },
+        "operationId": "put_clientes_id"
       },
       "delete": {
         "summary": "Eliminar cliente",
@@ -403,7 +415,8 @@
           "200": {
             "description": "Eliminado"
           }
-        }
+        },
+        "operationId": "delete_clientes_id"
       }
     },
     "/clientes/{id}/puntos": {
@@ -441,7 +454,8 @@
           "200": {
             "description": "Puntos actualizados"
           }
-        }
+        },
+        "operationId": "put_clientes_id_puntos"
       }
     },
     "/barberos": {
@@ -464,7 +478,8 @@
               }
             }
           }
-        }
+        },
+        "operationId": "get_barberos"
       },
       "post": {
         "summary": "Crear un nuevo barbero",
@@ -485,7 +500,8 @@
           "201": {
             "description": "Barbero creado"
           }
-        }
+        },
+        "operationId": "post_barberos"
       }
     },
     "/barberos/especialidad/{especialidad}": {
@@ -517,7 +533,8 @@
               }
             }
           }
-        }
+        },
+        "operationId": "get_barberos_especialidad_especialidad"
       }
     },
     "/barberos/email/{email}": {
@@ -549,7 +566,8 @@
           "404": {
             "description": "No encontrado"
           }
-        }
+        },
+        "operationId": "get_barberos_email_email"
       }
     },
     "/barberos/{id}": {
@@ -578,7 +596,8 @@
               }
             }
           }
-        }
+        },
+        "operationId": "get_barberos_id"
       },
       "put": {
         "summary": "Actualizar barbero",
@@ -608,7 +627,8 @@
           "200": {
             "description": "Actualizado"
           }
-        }
+        },
+        "operationId": "put_barberos_id"
       },
       "delete": {
         "summary": "Eliminar barbero",
@@ -629,7 +649,8 @@
           "200": {
             "description": "Eliminado"
           }
-        }
+        },
+        "operationId": "delete_barberos_id"
       }
     },
     "/barberos/{id}/servicios": {
@@ -662,12 +683,13 @@
               }
             }
           }
-        }
+        },
+        "operationId": "get_barberos_id_servicios"
       }
     },
     "/barberos/{id}/horario": {
       "put": {
-        "summary": "Actualizar horario de atenci\u00f3n",
+        "summary": "Actualizar horario de atención",
         "tags": [
           "Barberos"
         ],
@@ -695,12 +717,13 @@
           "200": {
             "description": "Horario actualizado"
           }
-        }
+        },
+        "operationId": "put_barberos_id_horario"
       }
     },
     "/barberos/{id}/disponibilidad/{fecha}": {
       "get": {
-        "summary": "Consultar disponibilidad en fecha espec\u00edfica",
+        "summary": "Consultar disponibilidad en fecha específica",
         "tags": [
           "Barberos"
         ],
@@ -741,12 +764,13 @@
               }
             }
           }
-        }
+        },
+        "operationId": "get_barberos_id_disponibilidad_fecha"
       }
     },
     "/servicios": {
       "get": {
-        "summary": "Obtener cat\u00e1logo de servicios base",
+        "summary": "Obtener catálogo de servicios base",
         "tags": [
           "Servicios"
         ],
@@ -763,7 +787,8 @@
               }
             }
           }
-        }
+        },
+        "operationId": "get_servicios"
       },
       "post": {
         "summary": "Crear nuevo servicio base",
@@ -784,7 +809,8 @@
           "201": {
             "description": "Servicio creado"
           }
-        }
+        },
+        "operationId": "post_servicios"
       }
     },
     "/servicios/buscar": {
@@ -816,7 +842,8 @@
               }
             }
           }
-        }
+        },
+        "operationId": "get_servicios_buscar"
       }
     },
     "/servicios/tienda/{id_tienda}": {
@@ -840,7 +867,8 @@
           "200": {
             "description": "Use /barberos/{id}/servicios en su lugar"
           }
-        }
+        },
+        "operationId": "get_servicios_tienda_id_tienda"
       }
     },
     "/servicios/{id}": {
@@ -869,7 +897,8 @@
               }
             }
           }
-        }
+        },
+        "operationId": "get_servicios_id"
       },
       "put": {
         "summary": "Actualizar servicio",
@@ -899,7 +928,8 @@
           "200": {
             "description": "Actualizado"
           }
-        }
+        },
+        "operationId": "put_servicios_id"
       },
       "delete": {
         "summary": "Eliminar servicio",
@@ -920,7 +950,8 @@
           "200": {
             "description": "Eliminado"
           }
-        }
+        },
+        "operationId": "delete_servicios_id"
       }
     },
     "/citas": {
@@ -951,9 +982,10 @@
             }
           },
           "400": {
-            "description": "Conflicto de horario o datos inv\u00e1lidos"
+            "description": "Conflicto de horario o datos inválidos"
           }
-        }
+        },
+        "operationId": "post_citas"
       }
     },
     "/citas/{id}": {
@@ -982,8 +1014,11 @@
               }
             }
           },
-          "404": { "description": "No encontrada" }
-        }
+          "404": {
+            "description": "No encontrada"
+          }
+        },
+        "operationId": "get_citas_id"
       },
       "delete": {
         "summary": "Eliminar/Cancelar cita físicamente",
@@ -1001,8 +1036,11 @@
           }
         ],
         "responses": {
-          "200": { "description": "Eliminada" }
-        }
+          "200": {
+            "description": "Eliminada"
+          }
+        },
+        "operationId": "delete_citas_id"
       }
     },
     "/citas/{id}/estado": {
@@ -1046,7 +1084,112 @@
           "200": {
             "description": "Estado actualizado"
           }
-        }
+        },
+        "operationId": "put_citas_id_estado"
+      }
+    },
+    "/pagos/crear": {
+      "post": {
+        "summary": "Crear preferencia de pago para una cita",
+        "tags": [
+          "Pagos"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PagoCrear"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Preferencia creada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagoResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "500": {
+            "description": "Error interno"
+          }
+        },
+        "operationId": "post_pagos_crear"
+      }
+    },
+    "/pagos/webhook": {
+      "post": {
+        "summary": "Webhook de Mercado Pago",
+        "tags": [
+          "Pagos"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Notificación recibida"
+          },
+          "500": {
+            "description": "Error interno"
+          }
+        },
+        "operationId": "post_pagos_webhook"
+      }
+    },
+    "/pagos/cita/{id_cita}": {
+      "get": {
+        "summary": "Obtener pagos asociados a una cita",
+        "tags": [
+          "Pagos"
+        ],
+        "parameters": [
+          {
+            "name": "id_cita",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pagos de la cita",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PagoDetalle"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "ID inválido"
+          },
+          "404": {
+            "description": "No encontrado"
+          }
+        },
+        "operationId": "get_pagos_cita_id_cita"
       }
     },
     "/hairstyle/signature": {
@@ -1067,7 +1210,8 @@
               }
             }
           }
-        }
+        },
+        "operationId": "post_hairstyle_signature"
       }
     },
     "/hairstyle/simulate": {
@@ -1112,7 +1256,8 @@
               }
             }
           }
-        }
+        },
+        "operationId": "post_hairstyle_simulate"
       }
     },
     "/reportes/citas": {
@@ -1156,7 +1301,8 @@
           {
             "BearerAuth": []
           }
-        ]
+        ],
+        "operationId": "get_reportes_citas"
       }
     }
   },
@@ -1222,7 +1368,7 @@
             "enum": [
               "Cliente",
               "Barbero",
-              "Due\u00f1o",
+              "Dueño",
               "Administrador"
             ]
           }
@@ -1239,11 +1385,21 @@
       "UsuarioUpdate": {
         "type": "object",
         "properties": {
-          "nombre": { "type": "string" },
-          "apellido": { "type": "string" },
-          "telefono": { "type": "string" },
-          "email": { "type": "string" },
-          "contrasena": { "type": "string" }
+          "nombre": {
+            "type": "string"
+          },
+          "apellido": {
+            "type": "string"
+          },
+          "telefono": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "contrasena": {
+            "type": "string"
+          }
         },
         "example": {
           "nombre": "Juan",
@@ -1616,6 +1772,76 @@
           "fecha_hora_inicio": "2026-05-20T15:00:00Z",
           "estado": "confirmada",
           "monto_total": 15000
+        }
+      },
+      "PagoCrear": {
+        "type": "object",
+        "required": [
+          "id_cita"
+        ],
+        "properties": {
+          "id_cita": {
+            "type": "integer"
+          }
+        },
+        "example": {
+          "id_cita": 1,
+          "monto": 15000,
+          "descripcion": "Pago por servicio de barbería - Corte degradado",
+          "email_cliente": "cliente@example.com"
+        }
+      },
+      "PagoResponse": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "preference_id": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "id_pago": "123456789",
+          "init_point": "https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=123456789",
+          "status": "pending"
+        }
+      },
+      "PagoDetalle": {
+        "type": "object",
+        "properties": {
+          "id_pago": {
+            "type": "integer"
+          },
+          "id_cita": {
+            "type": "integer"
+          },
+          "monto_pagado": {
+            "type": "number"
+          },
+          "metodo_pago": {
+            "type": "string"
+          },
+          "estado_pago": {
+            "type": "string"
+          },
+          "referencia_transaccion": {
+            "type": "string"
+          },
+          "fecha_pago": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "example": {
+          "id_pago": 1,
+          "id_cita": 1,
+          "monto": 15000,
+          "estado": "approved",
+          "fecha_creacion": "2026-05-20T14:30:00Z",
+          "fecha_actualizacion": "2026-05-20T14:35:00Z",
+          "referencia_mp": "123456789"
         }
       }
     }

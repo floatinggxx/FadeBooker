@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/11</span>
+                <span class='fraction'>0/9</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>0/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/11</span>
+                <span class='fraction'>0/9</span>
             </div>
         
             
@@ -98,30 +98,7 @@
 <a name='L33'></a><a href='#L33'>33</a>
 <a name='L34'></a><a href='#L34'>34</a>
 <a name='L35'></a><a href='#L35'>35</a>
-<a name='L36'></a><a href='#L36'>36</a>
-<a name='L37'></a><a href='#L37'>37</a>
-<a name='L38'></a><a href='#L38'>38</a>
-<a name='L39'></a><a href='#L39'>39</a>
-<a name='L40'></a><a href='#L40'>40</a>
-<a name='L41'></a><a href='#L41'>41</a>
-<a name='L42'></a><a href='#L42'>42</a>
-<a name='L43'></a><a href='#L43'>43</a>
-<a name='L44'></a><a href='#L44'>44</a>
-<a name='L45'></a><a href='#L45'>45</a>
-<a name='L46'></a><a href='#L46'>46</a>
-<a name='L47'></a><a href='#L47'>47</a>
-<a name='L48'></a><a href='#L48'>48</a>
-<a name='L49'></a><a href='#L49'>49</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L36'></a><a href='#L36'>36</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -147,10 +124,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -159,50 +133,37 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const ServicioRepository = <span class="cstat-no" title="statement not covered" >require('../../infraestructure/database/ServicioRepositoryImpl')</span>
-const servicioRepository = <span class="cstat-no" title="statement not covered" >new ServicioRepository()</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">class ServicioService {
+<span class="fstat-no" title="function not covered" >  co</span>nstructor(servicioRepository) {
+<span class="cstat-no" title="statement not covered" >    this.servicioRepository = servicioRepository;</span>
+  }
 &nbsp;
-/**
- * ServicioService
- * 
- * ACTUALIZADO (v1.1.0):
- * - Método findByTienda() reemplazado con findByBarbero()
- * - Servicios ahora se obtienen a nivel de barbero, no de tienda
- */
-const ServicioService = <span class="cstat-no" title="statement not covered" >{</span>
 <span class="fstat-no" title="function not covered" >  as</span>ync crearServicio(data) {
-<span class="cstat-no" title="statement not covered" >    return servicioRepository.create(data)</span>
-  },
+<span class="cstat-no" title="statement not covered" >    return this.servicioRepository.create(data)</span>
+  }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  as</span>ync obtenerServicioPorId(id) {
-<span class="cstat-no" title="statement not covered" >    return servicioRepository.findById(id)</span>
-  },
+<span class="cstat-no" title="statement not covered" >    return this.servicioRepository.findById(id)</span>
+  }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  as</span>ync buscarServicioPorNombre(nombre) {
-<span class="cstat-no" title="statement not covered" >    return servicioRepository.findByNombre(nombre)</span>
-  },
+<span class="cstat-no" title="statement not covered" >    return this.servicioRepository.findByNombre(nombre)</span>
+  }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  as</span>ync obtenerTodosLosServicios() {
-<span class="cstat-no" title="statement not covered" >    return servicioRepository.findAll()</span>
-  },
+<span class="cstat-no" title="statement not covered" >    return this.servicioRepository.findAll()</span>
+  }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  as</span>ync actualizarServicio(id, data) {
-<span class="cstat-no" title="statement not covered" >    return servicioRepository.update(id, data)</span>
-  },
+<span class="cstat-no" title="statement not covered" >    return this.servicioRepository.update(id, data)</span>
+  }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  as</span>ync eliminarServicio(id) {
-<span class="cstat-no" title="statement not covered" >    return servicioRepository.delete(id)</span>
-  },
+<span class="cstat-no" title="statement not covered" >    return this.servicioRepository.delete(id)</span>
+  }
 &nbsp;
-  /**
-   * ACTUALIZADO (v1.1.0): Obtiene servicios disponibles para un barbero específico
-   * Reemplaza obtenerServiciosPorTienda()
-   * 
-   * @param {number} id_barbero - ID del barbero
-   * @returns {Promise&lt;Array&gt;} Servicios que puede ofrecer el barbero
-   */
 <span class="fstat-no" title="function not covered" >  as</span>ync obtenerServiciosPorBarbero(id_barbero) {
-<span class="cstat-no" title="statement not covered" >    return servicioRepository.findByBarbero(id_barbero)</span>
+<span class="cstat-no" title="statement not covered" >    return this.servicioRepository.findByBarbero(id_barbero)</span>
   }
 }
 &nbsp;
@@ -214,7 +175,7 @@ const ServicioService = <span class="cstat-no" title="statement not covered" >{<
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-21T19:07:19.436Z
+                at 2026-05-14T21:47:39.860Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

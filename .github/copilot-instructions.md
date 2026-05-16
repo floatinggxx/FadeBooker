@@ -1,17 +1,28 @@
 # 🎭 FadeBooker - Instrucciones Globales para Copilot Agents
 
-**Versión:** 1.3.0  
-**Última actualización:** 12 de mayo de 2026  
+**Versión:** 1.4.0  
+**Última actualización:** 14 de mayo de 2026  
+<<<<<<< Updated upstream
 **Estado:** Fase Implementación (Consolidación de esquema, backend y seguridad)
+=======
+**Estado:** Fase Implementación (Frontend Feature-Based, Backend Hexagonal, Security audit pendiente)
+
+>>>>>>> Stashed changes
 
 ## 📌 Visión General del Proyecto
 
 **FadeBooker** es una plataforma de gestión de citas para servicios de barbería y fotografía relacional.
 
-- **Stack:** Node.js (Backend), React (Frontend), Azure SQL Server (BD).
+- **Stack:** Node.js 20 (Backend), React (Frontend), Azure SQL Server (BD).
 - **BD:** `fadebooker-server.database.windows.net` / `FadeBooker_DB`
+<<<<<<< Updated upstream
 - **Repositorio Local:** `c:\Users\SanNi\OneDrive\Escritorio\Barberia\FadeBooker`
+- **Estado:** Backend 95% completo, Dockerizado, Migrado a MPv2, Frontend iniciando.
+=======
+- **Repositorio Local:** `c:\Users\Steve\Desktop\GitHub\FadeBooker`
 - **Estado:** Backend 95% completo, Frontend iniciando, Security audit pendiente
+>>>>>>> Stashed changes
+
 
 ---
 
@@ -22,17 +33,73 @@
 - **Inyección de Dependencias:** Obligatoria en Use Cases y Controladores.
 - **Validación:** Zod para esquemas de entrada.
 - **Self-healing Aware:** El backend debe detectar fallos en servicios externos y manejar reintentos o fallbacks elegantes.
+- **Evitar Duplicación:** Al editar archivos, verificar que no se duplique código al final del archivo (causa SyntaxError).
 
 ### 2. Frontend React (Feature-Based Architecture)
-- **Arquitectura:** Feature Slices (Prohibido Atomic Design).
-- **Estructura:** Cada feature contiene su propio `api/`, `components/`, `hooks/`, `types/` y `utils/`.
-- **Estado:** React Query para datos asíncronos (servidor) y Zustand para estado local global.
-- **Componentes:** Tailwind CSS para estilos, headless UI para accesibilidad.
+**Decisión:** Sustituimos Atomic Design por Feature-Based Architecture para reducir fatiga de niveles de carpetas y alinearnos directamente con dominios del negocio.
 
-### 3. Integración Power Platform
+**Estructura:**
+```
+src/
+├── features/              # Rebanadas verticales por dominio del negocio
+│   ├── auth/              # Feature: Autenticación y Autorización
+│   │   ├── ui/            # Páginas/componentes específicos (LoginPage, RegisterPage)
+│   │   ├── hooks/         # useAuthContext, useAuth
+│   │   ├── services/      # authService (llamadas a API)
+│   │   └── types/         # Tipos locales si aplica
+│   ├── bookings/          # Feature: Gestión de Citas (Future)
+│   ├── barbers/           # Feature: Gestión de Barberos (Future)
+│   └── profile/           # Feature: Perfil de Usuario (Future)
+│
+├── components/            # Componentes compartidos reutilizables
+│   ├── atoms/             # Componentes base: Button, Text, Heading
+│   ├── molecules/         # Componentes compuestos: FeatureCard, BookingCard
+│   ├── organisms/         # Secciones complejas: HeroSection, BarberSearchSection
+│   ├── ui/                # Componentes UI genéricos: ImageCarousel, BarberCard
+│   └── booking/           # Componentes específicos de booking (transición a feature/bookings)
+│
+├── pages/                 # Páginas principales (ruteadas)
+│   ├── HomePage.tsx
+│   ├── BarberiasPage.tsx
+│   ├── ProfilePage.tsx
+│   ├── MyBookingsPage.tsx
+│   └── ...
+│
+├── lib/                   # Utilidades compartidas
+│   ├── api/               # Servicios de API (authService, barberService, bookingService, userService)
+│   ├── hooks/             # Hooks reutilizables
+│   └── utils/             # Funciones auxiliares
+│
+├── styles/                # Estilos globales
+│   └── globals.css        # Paleta, animaciones, clases base
+│
+├── types/                 # Tipos TypeScript compartidos
+│   └── index.ts
+│
+├── App.tsx                # Root component + routing
+└── main.tsx               # Entry point
+```
+
+**Gestión de Estado:**
+- **React Query:** Sincronización con servidor (API caching, refetching automático).
+- **Context API:** AuthContext para usuario/token (alternativa a Redux para simplificar).
+- **localStorage:** Persistencia de sesión (token, user data).
+
+**Reglas:**
+- Cada feature es autónoma: contiene su lógica de negocio, componentes y servicios.
+- Los componentes compartidos (`components/atoms`, `molecules`, `organisms`) no dependen de features específicas.
+- Las páginas (`pages/`) son vistas composables que pueden usar features y componentes compartidos.
+- Los servicios de API (`lib/api/`) son agnósticos a React (no usan hooks).
+
+**Estilo:**
+- Tailwind CSS para utilidades (ya integrado en `globals.css` via `@tailwind`).
+- Clases Bootstrap 5 heredadas en algunos componentes legacy (transición gradual).
+- Animaciones suaves con `@keyframes` definidas en `globals.css` (fadeInUp, appear, fadeIn).
+
+### 3. Integración Power Platform y Pagos
 - **Conectores:** Custom Connectors basados exclusivamente en **Swagger 2.0**.
+- **Mercado Pago:** Se utiliza la **SDK v2**. Requiere instanciar `MercadoPagoConfig` y usar clases específicas (ej: `new Preference(client)`).
 - **Sincronización:** El archivo `swagger_powerapps.json` debe reflejar siempre la última versión estable del API.
-- **Compatibilidad:** Evitar tipos de datos complejos no soportados por Power Automate.
 
 ### 4. Seguridad y Resiliencia
 - **Auth:** JWT con expiración de 24 horas (`EXPIRES_IN=24h`).
@@ -46,7 +113,15 @@
 - **Confirmación:** Es una regla innegociable **solicitar confirmación explícita al usuario** antes de proceder con cualquier comando de commit.
 - **Delegación:** El Orchestrator debe delegar en el `@github-git-agent` la redacción y validación del mensaje antes de persistir cambios.
 
+<<<<<<< HEAD
 ### 6. Mantenimiento de Documentación API
+=======
+### 6. Despliegue y Entorno
+- **Docker:** El entorno de ejecución oficial es `node:20-alpine`. No usar imágenes basadas en Debian/Ubuntu para producción por temas de permisos y peso.
+- **Paths:** Los controladores deben acceder a la carpeta `config` usando rutas relativas robustas (e.g., `../../../config/`).
+
+### 7. Mantenimiento de Documentación API
+>>>>>>> 54e8e65cc4b18f1ddaa09afd038a4e332ee89c72
 - **SSOT:** El archivo `Producto/back-fadebooker/openapi.yaml` es la **Fuente Única de Verdad (Single Source of Truth)**.
 - **Identificadores:** Cada endpoint **DEBE** tener un `operationId` único en formato `camelCase` (ej: `getUsuarios`, `createCita`) para asegurar la compatibilidad con Custom Connectors de Power Apps.
 - **Sincronización:** Tras cualquier modificación en el YAML, se deben ejecutar los scripts de sincronización (`fix_swagger.js`) para actualizar `swagger.json` y `swagger_powerapps.json`.
@@ -61,6 +136,81 @@
 
 ---
 
+## 🖼️ Gestión de Assets e Imágenes
+
+### Ubicación de archivos
+Todos los assets públicos se almacenan en:
+```
+Producto/front-fadebooker/public/images/
+```
+
+### Imágenes del Proyecto
+
+| Archivo | Ubicación | Dónde se usa | Descripción |
+|---------|-----------|-------------|-------------|
+| `logo.png` | `public/images/logo.png` | Header (App.tsx → AppHeader) | Logo de la marca en navbar. Formato: PNG transparente (46x46px). Cargado en `<img src="/images/logo.png" />` |
+| `slider-1.jpg` | `public/images/slider-1.jpg` | HomePage → HeroSection → ImageCarousel | Carrusel automático home (slide 1) - Fotografía barbería/estilo (1200x600px recomendado) |
+| `slider-2.jpg` | `public/images/slider-2.jpg` | HomePage → HeroSection → ImageCarousel | Carrusel automático home (slide 2) - Fotografía barbería/estilo (1200x600px recomendado) |
+| `slider-3.jpg` | `public/images/slider-3.jpg` | HomePage → HeroSection → ImageCarousel | Carrusel automático home (slide 3) - Fotografía barbería/estilo (1200x600px recomendado) |
+| `barber-placeholder.jpg` | `public/images/barber-placeholder.jpg` | Fallback para tarjetas de barbero | Imagen por defecto si barbero no tiene `fotoUrl` - Avatar/silhueta genérico (400x400px) |
+
+### Cómo agregar imágenes
+
+1. **Copiar archivos a** `Producto/front-fadebooker/public/images/`
+2. **Referenciar en código** con rutas relativas a public: `src="/images/slider-1.jpg"`
+3. **Sin procesar:** Las imágenes en `public/` se sirven tal cual (sin bundling)
+4. **Fallback automático:** Si falta una imagen, `ImageCarousel.tsx` muestra un gradiente azul con texto
+
+### Convenciones de nombres
+
+- Imágenes de banner/carrusel: `slider-N.jpg` (N=número)
+- Imágenes de usuario/barbero: `avatar-*.jpg` o `barber-*.jpg`
+- Iconos: `.svg` preferentemente (escalables)
+- Logotipos: `.svg` (mejor calidad, menor tamaño)
+
+---
+
+## 🎨 Convenciones de Componentes (Hybrid Pattern)
+
+El proyecto combina **Feature-Based Architecture** con niveles de componentes heredados de Atomic Design:
+
+### Niveles de Componentes
+
+**Atoms** (`components/atoms/`)
+- `Button.tsx`, `ButtonLink.tsx`, `Text.tsx`, `Heading.tsx`, `Paragraph.tsx`
+- Componentes base reutilizables
+- Sin estilos propios complejos; usan CSS global
+
+**Molecules** (`components/molecules/`)
+- `FeatureCard.tsx`, `BookingCard.tsx`, `TestimonialCard.tsx`, `StepCard.tsx`
+- Combinan atoms con lógica simple
+- Reutilizables en múltiples vistas
+
+**Organisms** (`components/organisms/`)
+- `HeroSection.tsx`, `FeaturesSection.tsx`, `BarberSearchSection.tsx`, `ProfileSection.tsx`, `FAQSection.tsx`, `BookingsSection.tsx`
+- Secciones complejas que combina molecules y atoms
+- Cada página (HomePage, BarberiasPage, etc.) usa uno o varios organismos
+
+**Pages** (`pages/`)
+- Vistas completas componibles
+- Carga data, define rutas
+- Usa organismos y ligamos al contexto
+
+### Migrando a Feature-Based Puro
+
+Cuando una feature crezca, migra sus componentes de `/components/` a `/features/[feature]/ui/`:
+```
+// Antes
+src/components/organisms/ProfileSection.tsx
+
+// Después (cuando Profile sea feature completa)
+src/features/profile/ui/ProfileSection.tsx
+src/features/profile/hooks/useProfile.ts
+src/features/profile/services/profileService.ts
+```
+
+---
+
 ## 🤝 Protocolos de Negocio Críticos
 
 ### 1. Registro en dos pasos (Onboarding Barbero)
@@ -72,6 +222,7 @@ Para registrar un barbero, se debe seguir este flujo:
 ### 2. Gestión de Perfil
 - Los usuarios pueden gestionar sus datos (nombre, apellido, teléfono) vía `GET/PUT /api/usuarios/perfil`.
 - Estos endpoints requieren el header `Authorization: Bearer <token>`.
+
 
 ---
 

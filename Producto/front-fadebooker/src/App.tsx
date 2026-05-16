@@ -37,7 +37,9 @@ const AppHeader = () => {
       <div className="container header-container">
         <div className="brand">
           <Link to="/" className="brand-logo-link">
-            <img src="/images/logo.svg" alt="Logo FadeBooker" className="brand-logo" />
+            
+            <img src="/images/logo.png" alt="Logo FadeBooker" className="brand-logo-image" />
+        
             <div className="brand-text">
               <span className="brand-title">FadeBooker</span>
               <span className="brand-subtitle">Reserva cortes y gestiona tu estilo.</span>

@@ -103,7 +103,7 @@ const BarberoController = {
   async obtenerServicios(req, res) {
     try {
       const { id } = req.params
-      const servicios = await BarberoService.obtenerServiciosBarbero(id)
+      const servicios = await barberoService.obtenerServiciosBarbero(id)
       res.json(servicios)
     } catch (error) {
       res.status(400).json({ error: error.message })
@@ -114,7 +114,7 @@ const BarberoController = {
     try {
       const { id } = req.params
       const validatedData = ServicioBarberoSchema.parse({ ...req.body, id_barbero: parseInt(id) })
-      await BarberoService.agregarServicioBarbero(
+      await barberoService.agregarServicioBarbero(
         validatedData.id_barbero,
         validatedData.id_servicio,
         validatedData.precio_barbero,
@@ -132,7 +132,7 @@ const BarberoController = {
   async eliminarServicio(req, res) {
     try {
       const { id, id_servicio } = req.params
-      await BarberoService.eliminarServicioBarbero(id, id_servicio)
+      await barberoService.eliminarServicioBarbero(id, id_servicio)
       res.json({ mensaje: 'Servicio eliminado del barbero' })
     } catch (error) {
       res.status(400).json({ error: error.message })
@@ -141,3 +141,4 @@ const BarberoController = {
 }
 
 module.exports = BarberoController
+
