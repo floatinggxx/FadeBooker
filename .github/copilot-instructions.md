@@ -43,7 +43,7 @@
 
 ### 5. Estándar de Commits (GitHub Git Agent)
 - **Formato obligatorio:** Los mensajes de commit deben seguir estrictamente el patrón: `X.X. Titulo` seguido de un cuerpo descriptivo detallado, **todo en idioma Español**.
-- **Versión:** La numeración debe continuar progresivamente desde el hito **4.5** (el siguiente commit relevante será el **4.6** o superior).
+- **Versión:** La numeración debe continuar progresivamente desde el hito **5.6** (el siguiente commit relevante será el **5.7** o superior).
 - **Confirmación:** Es una regla innegociable **solicitar confirmación explícita al usuario** antes de proceder con cualquier comando de commit.
 - **Delegación:** El Orchestrator debe delegar en el `@github-git-agent` la redacción y validación del mensaje antes de persistir cambios.
 
