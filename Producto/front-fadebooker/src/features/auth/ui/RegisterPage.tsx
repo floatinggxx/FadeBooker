@@ -126,42 +126,46 @@ const RegisterPage: React.FC = () => {
           </div>
 
           <div className="input-container">
-            <input 
-              {...register('contrasena', { 
-                required: 'La contraseña es obligatoria',
-                minLength: { value: 6, message: 'Debe tener al menos 6 caracteres' }
-              })} 
-              type={showPassword ? 'text' : 'password'} 
-              placeholder="Contraseña" 
-              className={`input-field ${errors.contrasena ? 'input-error' : ''}`} 
-            />
-            <button 
-              type="button" 
-              className="password-toggle"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
+            <div className="input-wrapper">
+              <input 
+                {...register('contrasena', { 
+                  required: 'La contraseña es obligatoria',
+                  minLength: { value: 6, message: 'Debe tener al menos 6 caracteres' }
+                })} 
+                type={showPassword ? 'text' : 'password'} 
+                placeholder="Contraseña" 
+                className={`input-field ${errors.contrasena ? 'input-error' : ''}`} 
+              />
+              <button 
+                type="button" 
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
             {errors.contrasena && <span className="error-message">{errors.contrasena.message}</span>}
           </div>
 
           <div className="input-container">
-            <input 
-              {...register('contrasenaConfirm', { 
-                required: 'Confirma tu contraseña',
-                validate: value => value === password || 'Las contraseñas no coinciden'
-              })} 
-              type={showConfirmPassword ? 'text' : 'password'} 
-              placeholder="Confirmar contraseña" 
-              className={`input-field ${errors.contrasenaConfirm ? 'input-error' : ''}`} 
-            />
-            <button 
-              type="button" 
-              className="password-toggle"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            >
-              {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
+            <div className="input-wrapper">
+              <input 
+                {...register('contrasenaConfirm', { 
+                  required: 'Confirma tu contraseña',
+                  validate: value => value === password || 'Las contraseñas no coinciden'
+                })} 
+                type={showConfirmPassword ? 'text' : 'password'} 
+                placeholder="Confirmar contraseña" 
+                className={`input-field ${errors.contrasenaConfirm ? 'input-error' : ''}`} 
+              />
+              <button 
+                type="button" 
+                className="password-toggle"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
             {errors.contrasenaConfirm && <span className="error-message">{errors.contrasenaConfirm.message}</span>}
           </div>
 

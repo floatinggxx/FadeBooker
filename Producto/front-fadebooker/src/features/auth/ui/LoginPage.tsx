@@ -56,19 +56,21 @@ const LoginPage: React.FC = () => {
           </div>
 
           <div className="input-container">
-            <input 
-              {...register('password', { required: 'La contraseña es obligatoria' })} 
-              type={showPassword ? 'text' : 'password'} 
-              placeholder="Contraseña" 
-              className={`input-field ${errors.password ? 'input-error' : ''}`} 
-            />
-            <button 
-              type="button" 
-              className="password-toggle"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
+            <div className="input-wrapper">
+              <input 
+                {...register('password', { required: 'La contraseña es obligatoria' })} 
+                type={showPassword ? 'text' : 'password'} 
+                placeholder="Contraseña" 
+                className={`input-field ${errors.password ? 'input-error' : ''}`} 
+              />
+              <button 
+                type="button" 
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
             {errors.password && <span className="error-message">{errors.password.message}</span>}
           </div>
 

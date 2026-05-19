@@ -1106,6 +1106,12 @@ h1, h2, h3, h4, h5, h6 {
   box-sizing: border-box;
 }
 
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  display: block;
+}
+
 .password-toggle {
   position: absolute;
   right: 1.25rem;
@@ -1122,7 +1128,7 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
   height: 24px;
   width: 24px;
-  z-index: 5;
+  z-index: 10;
 }
 
 .password-toggle:hover {
