@@ -5,18 +5,19 @@ import { barberService } from '@/lib/api/barberService';
 
 const BarberDetailPage: React.FC = () => {
   const { id } = useParams();
-  const { data: barber, isLoading, error } = useQuery({
+  const { data: barber, isLoading: loadingBarber, error } = useQuery({
     queryKey: ['barber', id],
     queryFn: () => barberService.getBarberoById(Number(id)),
     enabled: !!id,
   });
-  const { data: services } = useQuery({
+
+  const { data: services, isLoading: loadingServices } = useQuery({
     queryKey: ['barber-services', id],
-    queryFn: () => barberService.getBarberServices(Number(id)),
+    queryFn: () => barberService.getServicios(Number(id)),
     enabled: !!id,
   });
 
-  if (isLoading) return <div className="p-10">Cargando...</div>;
+  if (loadingBarber || loadingServices) return <div className="p-10">Cargando...</div>;
   if (error || !barber) return <div className="p-10 text-red-600">No se encontró el barbero.</div>;
 
   return (
@@ -28,7 +29,7 @@ const BarberDetailPage: React.FC = () => {
         {services && services.length ? (
           <ul className="mt-2 space-y-2">
             {services.map((s: any) => (
-              <li key={s.id} className="border rounded p-3">{s.nombre} — {s.duracionMinutos} min — ${s.precio}</li>
+              <li key={s.id} className="border rounded p-3">{s.servicio?.nombre || 'Servicio'} — {(s.duracion ?? s.servicio?.duracion) || 'N/A'} min — ${(s.precio ?? s.servicio?.precioBase) || 'N/A'}</li>
             ))}
           </ul>
         ) : <p>No hay servicios registrados.</p>}

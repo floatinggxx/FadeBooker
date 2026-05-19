@@ -78,6 +78,20 @@ FadeBooker utiliza una arquitectura orientada a características (**Feature-Base
 | `servicios`      | `Servicios` |
 | `tiendas`        | `Tiendas` (Sucursales) |
 
+### Integración Backend/Frontend
+- El frontend debe consumir los endpoints del backend en `Producto/back-fadebooker`.
+- Prioriza la experiencia con usuario autenticado: `BarberiasPage`, `MyBookingsPage` y `ProfilePage` deben mostrar datos desde el API según el token almacenado.
+- Usa `AuthContext` (`useAuth`) para renderizar rutas protegidas y condicionar CTA en el home.
+- Las rutas clave son:
+  - `/api/usuarios/login`
+  - `/api/usuarios/register`
+  - `/api/usuarios/perfil`
+  - `/api/barberos`
+  - `/api/citas`
+- Asegura que la sesión persista con `localStorage` y que el token JWT se envíe en `Authorization: Bearer <token>`.
+- Si el usuario está autenticado, el header debe incluir: `Inicio`, `Barberías`, `Mis Citas`, `Mi Perfil`, `Ayuda`.
+- Valida los flujos reales de `Barberías`, `Mis Citas` y `Mi Perfil` usando datos obtenidos del backend, no datos estáticos.
+
 ---
 
 ## 🛠️ Stack Tecnológico

@@ -54,6 +54,10 @@ class CitaService {
     return this.citaRepository.findByBarbero(id_barbero, fecha)
   }
 
+  async obtenerTodasCitas() {
+    return this.citaRepository.findAll()
+  }
+
   async verificarDisponibilidad(idBarbero, fecha, hora, duracion) {
     const fechaHora = `${fecha}T${hora}`
     return this.citaRepository.verificarDisponibilidad(idBarbero, fechaHora, duracion)

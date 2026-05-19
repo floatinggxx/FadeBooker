@@ -19,10 +19,11 @@ const validateRequest = (schema) => {
       next();
     } catch (error) {
       if (error instanceof z.ZodError) {
+        const issues = error.errors ?? error.issues;
         return res.status(400).json({
           status: 'error',
           message: 'Error de validación de datos',
-          errors: error.errors.map(err => ({
+          errors: issues.map(err => ({
             path: err.path.join('.'),
             message: err.message
           }))

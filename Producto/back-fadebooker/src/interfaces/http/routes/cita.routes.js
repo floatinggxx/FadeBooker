@@ -5,6 +5,7 @@ const validateRequest = require('../middlewares/validateRequest')
 const { citaSchema, actualizarEstadoSchema } = require('../../../infraestructure/schemas/cita.schema')
 
 router.post('/', validateRequest({ body: citaSchema }), CitaController.crear)
+router.get('/', CitaController.listar)
 router.get('/disponibilidad', CitaController.checkDisponibilidad)
 router.get('/:id', CitaController.obtenerPorId)
 router.put('/:id/estado', validateRequest({ body: actualizarEstadoSchema }), CitaController.cambiarEstado)

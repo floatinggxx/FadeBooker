@@ -4,7 +4,7 @@ export interface Usuario {
   nombre: string;
   email: string;
   contrasena?: string;
-  rol: 'cliente' | 'barbero' | 'admin';
+  rol: 'Cliente' | 'Barbero' | 'Admin';
   createdAt?: string;
   updatedAt?: string;
 }
@@ -18,7 +18,7 @@ export interface LoginResponse {
   id: string;
   nombre: string;
   email: string;
-  rol: 'cliente' | 'barbero' | 'admin';
+  rol: 'Cliente' | 'Barbero' | 'Admin';
   token?: string;
 }
 
@@ -26,7 +26,7 @@ export interface RegisterRequest {
   nombre: string;
   email: string;
   contrasena: string;
-  rol: 'cliente' | 'barbero';
+  rol: 'Cliente' | 'Barbero';
 }
 
 // Barberos

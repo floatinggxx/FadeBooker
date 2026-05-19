@@ -33,8 +33,13 @@ class CitaRepositoryImpl {
     return this.db('Cita').where({ id_cliente }).orderBy('fecha_hora_inicio', 'desc').select()
   }
 
-  async findByBarbero(id_barbero) {
-    return this.db('Cita').where({ id_barbero }).orderBy('fecha_hora_inicio', 'desc').select()
+  async findByBarbero(id_barbero, fecha = null) {
+    const query = this.db('Cita').where({ id_barbero })
+    if (fecha) {
+      const fechaLimpia = fecha.split('T')[0]
+      query.whereRaw('CAST(fecha_hora_inicio AS DATE) = ?', [fechaLimpia])
+    }
+    return query.orderBy('fecha_hora_inicio', 'desc').select()
   }
 
   async verificarDisponibilidad(id_barbero, fecha_hora_inicio, duracion_minutos) {

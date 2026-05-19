@@ -67,9 +67,7 @@ export const barberService = {
 
   // Obtener disponibilidad (por fecha)
   async getDisponibilidad(barberoId: number, fecha: string): Promise<Disponibilidad[]> {
-    const response = await api.get<Disponibilidad[]>(`/barberos/${barberoId}/disponibilidad`, {
-      params: { fecha }
-    });
+    const response = await api.get<Disponibilidad[]>(`/barberos/${barberoId}/disponibilidad/${fecha}`);
     return response.data;
   },
 

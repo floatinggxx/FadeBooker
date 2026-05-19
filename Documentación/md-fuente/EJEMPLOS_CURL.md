@@ -322,6 +322,20 @@ curl -X POST http://localhost:3000/api/citas \
 curl -X GET http://localhost:3000/api/citas/5
 ```
 
+### Listar Citas
+
+```bash
+curl -X GET "http://localhost:3000/api/citas?clienteId=1"
+```
+
+```bash
+curl -X GET "http://localhost:3000/api/citas?barberoId=2"
+```
+
+```bash
+curl -X GET http://localhost:3000/api/citas
+```
+
 ### Cambiar Estado de Cita
 
 ```bash

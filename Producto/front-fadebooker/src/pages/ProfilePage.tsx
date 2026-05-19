@@ -5,12 +5,12 @@ import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import ProfileSection from '@/components/organisms/ProfileSection';
 
 const ProfilePage: React.FC = () => {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const queryClient = useQueryClient();
   const { data, isLoading } = useQuery({
     queryKey: ['my-profile'],
     queryFn: userService.getPerfil,
-    enabled: !!user,
+    enabled: !!token,
   });
 
   const mutation = useMutation({
@@ -24,7 +24,7 @@ const ProfilePage: React.FC = () => {
     <ProfileSection
       name={data?.nombre || user?.nombre || 'No registrado'}
       email={data?.email || user?.email || 'No registrado'}
-      role={data?.rol || user?.rol || 'cliente'}
+      role={data?.rol || user?.rol || 'Cliente'}
       createdAt={data?.createdAt ? new Date(data.createdAt).toLocaleDateString() : 'Fecha no disponible'}
       onUpdate={() => mutation.mutate({ nombre: data?.nombre })}
     />

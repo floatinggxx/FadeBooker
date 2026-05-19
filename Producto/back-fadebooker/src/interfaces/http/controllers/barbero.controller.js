@@ -92,7 +92,11 @@ const BarberoController = {
 
   async obtenerDisponibilidad(req, res) {
     try {
-      const { id, fecha } = req.params
+      const { id } = req.params
+      const fecha = req.params.fecha || req.query.fecha
+      if (!fecha) {
+        return res.status(400).json({ error: 'Falta el parámetro fecha para verificar la disponibilidad.' })
+      }
       const disponibilidad = await barberoService.obtenerDisponibilidadBarbero(id, fecha)
       res.json(disponibilidad)
     } catch (error) {

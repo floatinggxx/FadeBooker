@@ -45,6 +45,36 @@ const CitaController = {
     }
   },
 
+  async listar(req, res) {
+    try {
+      const { clienteId, barberoId, fecha } = req.query
+      if (clienteId && barberoId) {
+        return res.status(400).json({ error: 'No puede especificarse clienteId y barberoId al mismo tiempo.' })
+      }
+
+      let citas
+      if (clienteId !== undefined) {
+        const id = parseInt(clienteId, 10)
+        if (Number.isNaN(id)) {
+          return res.status(400).json({ error: 'clienteId debe ser un número válido.' })
+        }
+        citas = await citaService.obtenerCitasPorCliente(id)
+      } else if (barberoId !== undefined) {
+        const id = parseInt(barberoId, 10)
+        if (Number.isNaN(id)) {
+          return res.status(400).json({ error: 'barberoId debe ser un número válido.' })
+        }
+        citas = await citaService.obtenerCitasPorBarbero(id, fecha)
+      } else {
+        citas = await citaService.obtenerTodasCitas()
+      }
+
+      res.status(200).json(citas)
+    } catch (error) {
+      res.status(400).json({ error: error.message })
+    }
+  },
+
   async obtenerPorId(req, res) {
     try {
       const { id } = req.params
