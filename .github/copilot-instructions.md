@@ -2,7 +2,10 @@
 
 **Versión:** 1.4.0  
 **Última actualización:** 14 de mayo de 2026  
+<<<<<<< HEAD
 <<<<<<< Updated upstream
+=======
+>>>>>>> bd8a87173f72b61cdce8c57b05663ee313cd450b
 **Estado:** Fase Implementación (Consolidación de esquema, backend y seguridad)
 =======
 **Estado:** Fase Implementación (Frontend Feature-Based, Backend Hexagonal, Security audit pendiente)
@@ -18,11 +21,14 @@
 <<<<<<< Updated upstream
 - **Repositorio Local:** `c:\Users\SanNi\OneDrive\Escritorio\Barberia\FadeBooker`
 - **Estado:** Backend 95% completo, Dockerizado, Migrado a MPv2, Frontend iniciando.
+<<<<<<< HEAD
 =======
 - **Repositorio Local:** `c:\Users\Steve\Desktop\GitHub\FadeBooker`
 - **Estado:** Backend 95% completo, Frontend iniciando, Security audit pendiente
 >>>>>>> Stashed changes
 
+=======
+>>>>>>> bd8a87173f72b61cdce8c57b05663ee313cd450b
 
 ---
 
@@ -38,6 +44,7 @@
 ### 2. Frontend React (Feature-Based Architecture)
 **Decisión:** Sustituimos Atomic Design por Feature-Based Architecture para reducir fatiga de niveles de carpetas y alinearnos directamente con dominios del negocio.
 
+<<<<<<< HEAD
 **Estructura:**
 ```
 src/
@@ -96,6 +103,8 @@ src/
 - Clases Bootstrap 5 heredadas en algunos componentes legacy (transición gradual).
 - Animaciones suaves con `@keyframes` definidas en `globals.css` (fadeInUp, appear, fadeIn).
 
+=======
+>>>>>>> bd8a87173f72b61cdce8c57b05663ee313cd450b
 ### 3. Integración Power Platform y Pagos
 - **Conectores:** Custom Connectors basados exclusivamente en **Swagger 2.0**.
 - **Mercado Pago:** Se utiliza la **SDK v2**. Requiere instanciar `MercadoPagoConfig` y usar clases específicas (ej: `new Preference(client)`).
@@ -109,19 +118,25 @@ src/
 
 ### 5. Estándar de Commits (GitHub Git Agent)
 - **Formato obligatorio:** Los mensajes de commit deben seguir estrictamente el patrón: `X.X. Titulo` seguido de un cuerpo descriptivo detallado, **todo en idioma Español**.
-- **Versión:** La numeración debe continuar progresivamente desde el hito **4.5** (el siguiente commit relevante será el **4.6** o superior).
+- **Versión:** La numeración debe continuar progresivamente desde el hito **5.6** (el siguiente commit relevante será el **5.7** o superior).
 - **Confirmación:** Es una regla innegociable **solicitar confirmación explícita al usuario** antes de proceder con cualquier comando de commit.
 - **Delegación:** El Orchestrator debe delegar en el `@github-git-agent` la redacción y validación del mensaje antes de persistir cambios.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ### 6. Mantenimiento de Documentación API
 =======
+=======
+>>>>>>> bd8a87173f72b61cdce8c57b05663ee313cd450b
 ### 6. Despliegue y Entorno
 - **Docker:** El entorno de ejecución oficial es `node:20-alpine`. No usar imágenes basadas en Debian/Ubuntu para producción por temas de permisos y peso.
 - **Paths:** Los controladores deben acceder a la carpeta `config` usando rutas relativas robustas (e.g., `../../../config/`).
 
 ### 7. Mantenimiento de Documentación API
+<<<<<<< HEAD
 >>>>>>> 54e8e65cc4b18f1ddaa09afd038a4e332ee89c72
+=======
+>>>>>>> bd8a87173f72b61cdce8c57b05663ee313cd450b
 - **SSOT:** El archivo `Producto/back-fadebooker/openapi.yaml` es la **Fuente Única de Verdad (Single Source of Truth)**.
 - **Identificadores:** Cada endpoint **DEBE** tener un `operationId` único en formato `camelCase` (ej: `getUsuarios`, `createCita`) para asegurar la compatibilidad con Custom Connectors de Power Apps.
 - **Sincronización:** Tras cualquier modificación en el YAML, se deben ejecutar los scripts de sincronización (`fix_swagger.js`) para actualizar `swagger.json` y `swagger_powerapps.json`.
