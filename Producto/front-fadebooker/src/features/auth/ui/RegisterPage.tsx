@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { authService } from '@/lib/api/authService';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 
 type FormData = { 
@@ -179,6 +179,11 @@ const RegisterPage: React.FC = () => {
           </div>
 
           <button type="submit" className="button button-primary button-glow">Registrar</button>
+
+          <div className="form-footnote">
+            <span>¿Ya tienes cuenta?</span>
+            <Link to="/login" className="link-alt">Inicia sesión</Link>
+          </div>
         </form>
       </div>
     </section>
