@@ -1,16 +1,8 @@
 # 🎭 FadeBooker - Instrucciones Globales para Copilot Agents
 
-**Versión:** 1.4.0  
-**Última actualización:** 14 de mayo de 2026  
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
->>>>>>> bd8a87173f72b61cdce8c57b05663ee313cd450b
-**Estado:** Fase Implementación (Consolidación de esquema, backend y seguridad)
-=======
-**Estado:** Fase Implementación (Frontend Feature-Based, Backend Hexagonal, Security audit pendiente)
-
->>>>>>> Stashed changes
+**Versión:** 1.5.0  
+**Última actualización:** 19 de mayo de 2026  
+**Estado:** Fase Implementación (Frontend Feature-Based, Backend Hexagonal)
 
 ## 📌 Visión General del Proyecto
 
@@ -18,17 +10,8 @@
 
 - **Stack:** Node.js 20 (Backend), React (Frontend), Azure SQL Server (BD).
 - **BD:** `fadebooker-server.database.windows.net` / `FadeBooker_DB`
-<<<<<<< Updated upstream
-- **Repositorio Local:** `c:\Users\SanNi\OneDrive\Escritorio\Barberia\FadeBooker`
-- **Estado:** Backend 95% completo, Dockerizado, Migrado a MPv2, Frontend iniciando.
-<<<<<<< HEAD
-=======
-- **Repositorio Local:** `c:\Users\Steve\Desktop\GitHub\FadeBooker`
-- **Estado:** Backend 95% completo, Frontend iniciando, Security audit pendiente
->>>>>>> Stashed changes
-
-=======
->>>>>>> bd8a87173f72b61cdce8c57b05663ee313cd450b
+- **Repositorio Local:** `/home/mauricio/Documentos/GitHub/FadeBooker`
+- **Estado:** Backend 95% completo, Frontend en migración a Feature-Based.
 
 ---
 
@@ -103,12 +86,16 @@ src/
 - Clases Bootstrap 5 heredadas en algunos componentes legacy (transición gradual).
 - Animaciones suaves con `@keyframes` definidas en `globals.css` (fadeInUp, appear, fadeIn).
 
-=======
->>>>>>> bd8a87173f72b61cdce8c57b05663ee313cd450b
 ### 3. Integración Power Platform y Pagos
 - **Conectores:** Custom Connectors basados exclusivamente en **Swagger 2.0**.
 - **Mercado Pago:** Se utiliza la **SDK v2**. Requiere instanciar `MercadoPagoConfig` y usar clases específicas (ej: `new Preference(client)`).
-- **Sincronización:** El archivo `swagger_powerapps.json` debe reflejar siempre la última versión estable del API.
+- **Sincronización:** El archivo `swagger_powerapps.json` debe reflejar siempre la última versión estable del API, procesada mediante `fix_swagger.js`.
+- **Validación Estricta Swagger 2.0 (Power Apps):**
+    1. **No `example`:** Eliminar `example` de respuestas/parámetros si causa errores de validación; preferir incluirlos dentro del `schema`.
+    2. **Parámetros:** Los parámetros `in: body` NO deben tener propiedad `type` (usar `schema`). Parámetros `in: path|query|header` NO deben tener `schema` (usar `type`).
+    3. **No `content`:** Propiedad de OpenAPI 3.0. En 2.0 usar `schema` directamente bajo la respuesta.
+    4. **No `nullable`:** No soportado en 2.0. Eliminar la propiedad.
+    5. **OperationId:** Obligatorio, único y en `camelCase`.
 
 ### 4. Seguridad y Resiliencia
 - **Auth:** JWT con expiración de 24 horas (`EXPIRES_IN=24h`).
@@ -122,21 +109,15 @@ src/
 - **Confirmación:** Es una regla innegociable **solicitar confirmación explícita al usuario** antes de proceder con cualquier comando de commit.
 - **Delegación:** El Orchestrator debe delegar en el `@github-git-agent` la redacción y validación del mensaje antes de persistir cambios.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-### 6. Mantenimiento de Documentación API
-=======
-=======
->>>>>>> bd8a87173f72b61cdce8c57b05663ee313cd450b
 ### 6. Despliegue y Entorno
 - **Docker:** El entorno de ejecución oficial es `node:20-alpine`. No usar imágenes basadas en Debian/Ubuntu para producción por temas de permisos y peso.
 - **Paths:** Los controladores deben acceder a la carpeta `config` usando rutas relativas robustas (e.g., `../../../config/`).
 
 ### 7. Mantenimiento de Documentación API
-<<<<<<< HEAD
->>>>>>> 54e8e65cc4b18f1ddaa09afd038a4e332ee89c72
-=======
->>>>>>> bd8a87173f72b61cdce8c57b05663ee313cd450b
+- **Docker:** El entorno de ejecución oficial es `node:20-alpine`. No usar imágenes basadas en Debian/Ubuntu para producción por temas de permisos y peso.
+- **Paths:** Los controladores deben acceder a la carpeta `config` usando rutas relativas robustas (e.g., `../../../config/`).
+
+### 7. Mantenimiento de Documentación API
 - **SSOT:** El archivo `Producto/back-fadebooker/openapi.yaml` es la **Fuente Única de Verdad (Single Source of Truth)**.
 - **Identificadores:** Cada endpoint **DEBE** tener un `operationId` único en formato `camelCase` (ej: `getUsuarios`, `createCita`) para asegurar la compatibilidad con Custom Connectors de Power Apps.
 - **Sincronización:** Tras cualquier modificación en el YAML, se deben ejecutar los scripts de sincronización (`fix_swagger.js`) para actualizar `swagger.json` y `swagger_powerapps.json`.

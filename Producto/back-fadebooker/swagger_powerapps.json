@@ -1,8 +1,21 @@
 {
+  "swagger": "2.0",
   "info": {
     "title": "FadeBooker API",
     "description": "Sistema de gestión de citas para barberías - Marketplace de barbería. \n\n**Autenticación:** Use el header Authorization con el valor Bearer <token>.",
     "version": "1.11.0"
+  },
+  "host": "fadebooker-backend-ok.azurewebsites.net",
+  "basePath": "/api",
+  "schemes": [
+    "https"
+  ],
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
   },
   "tags": [
     {
@@ -38,12 +51,13 @@
     "/health": {
       "get": {
         "summary": "Verificar estado de la API",
+        
         "responses": {
           "200": {
             "description": "API operativa"
           }
         },
-        "operationId": "get_health"
+        "operationId": "getHealth"
       }
     },
     "/usuarios/register": {
@@ -52,18 +66,19 @@
         "tags": [
           "Usuarios"
         ],
+        
         "responses": {
           "201": {
             "description": "Usuario registrado exitosamente",
             "schema": {
-              "$ref": "#/definitions/Usuario"
+              "$ref": "#/definitions/RegisterResponse"
             }
           },
           "400": {
             "description": "Email ya registrado o datos inválidos"
           }
         },
-        "operationId": "post_usuarios_register",
+        "operationId": "postUsuariosRegister",
         "parameters": [
           {
             "name": "body",
@@ -82,6 +97,7 @@
         "tags": [
           "Usuarios"
         ],
+        
         "responses": {
           "200": {
             "description": "Login exitoso",
@@ -93,7 +109,7 @@
             "description": "Credenciales inválidas"
           }
         },
-        "operationId": "post_usuarios_login",
+        "operationId": "postUsuariosLogin",
         "parameters": [
           {
             "name": "body",
@@ -120,7 +136,12 @@
             }
           }
         },
-        "operationId": "get_usuarios_perfil"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getUsuariosPerfil"
       },
       "put": {
         "summary": "Actualizar perfil del usuario autenticado",
@@ -135,7 +156,12 @@
             }
           }
         },
-        "operationId": "put_usuarios_perfil",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "putUsuariosPerfil",
         "parameters": [
           {
             "name": "body",
@@ -165,7 +191,12 @@
             }
           }
         },
-        "operationId": "get_clientes"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getClientes"
       },
       "post": {
         "summary": "Crear un nuevo cliente",
@@ -180,7 +211,12 @@
             "description": "Datos inválidos"
           }
         },
-        "operationId": "post_clientes",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "postClientes",
         "parameters": [
           {
             "name": "body",
@@ -218,7 +254,12 @@
             }
           }
         },
-        "operationId": "get_clientes_buscar"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getClientesBuscar"
       }
     },
     "/clientes/telefono/{telefono}": {
@@ -246,7 +287,12 @@
             "description": "No encontrado"
           }
         },
-        "operationId": "get_clientes_telefono_telefono"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getClientesByTelefono"
       }
     },
     "/clientes/email/{email}": {
@@ -274,7 +320,12 @@
             "description": "No encontrado"
           }
         },
-        "operationId": "get_clientes_email_email"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getClientesByEmail"
       }
     },
     "/clientes/{id}": {
@@ -302,7 +353,12 @@
             "description": "No encontrado"
           }
         },
-        "operationId": "get_clientes_id"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getClientesById"
       },
       "put": {
         "summary": "Actualizar cliente",
@@ -330,7 +386,12 @@
             "description": "Actualizado"
           }
         },
-        "operationId": "put_clientes_id"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "putClientesById"
       },
       "delete": {
         "summary": "Eliminar cliente",
@@ -350,7 +411,12 @@
             "description": "Eliminado"
           }
         },
-        "operationId": "delete_clientes_id"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "deleteClientesById"
       }
     },
     "/clientes/{id}/puntos": {
@@ -385,7 +451,12 @@
             "description": "Puntos actualizados"
           }
         },
-        "operationId": "put_clientes_id_puntos"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "putClientesByIdPuntos"
       }
     },
     "/barberos": {
@@ -405,7 +476,12 @@
             }
           }
         },
-        "operationId": "get_barberos"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getBarberos"
       },
       "post": {
         "summary": "Crear un nuevo barbero",
@@ -417,7 +493,12 @@
             "description": "Barbero creado"
           }
         },
-        "operationId": "post_barberos",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "postBarberos",
         "parameters": [
           {
             "name": "body",
@@ -455,7 +536,12 @@
             }
           }
         },
-        "operationId": "get_barberos_especialidad_especialidad"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getBarberosByEspecialidad"
       }
     },
     "/barberos/email/{email}": {
@@ -483,7 +569,12 @@
             "description": "No encontrado"
           }
         },
-        "operationId": "get_barberos_email_email"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getBarberosByEmail"
       }
     },
     "/barberos/{id}": {
@@ -508,7 +599,12 @@
             }
           }
         },
-        "operationId": "get_barberos_id"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getBarberosById"
       },
       "put": {
         "summary": "Actualizar barbero",
@@ -536,7 +632,12 @@
             "description": "Actualizado"
           }
         },
-        "operationId": "put_barberos_id"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "putBarberosById"
       },
       "delete": {
         "summary": "Eliminar barbero",
@@ -556,7 +657,12 @@
             "description": "Eliminado"
           }
         },
-        "operationId": "delete_barberos_id"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "deleteBarberosById"
       }
     },
     "/barberos/{id}/servicios": {
@@ -584,7 +690,12 @@
             }
           }
         },
-        "operationId": "get_barberos_id_servicios"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getBarberosByIdServicios"
       }
     },
     "/barberos/{id}/horario": {
@@ -614,7 +725,12 @@
             "description": "Horario actualizado"
           }
         },
-        "operationId": "put_barberos_id_horario"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "putBarberosByIdHorario"
       }
     },
     "/barberos/{id}/disponibilidad/{fecha}": {
@@ -643,7 +759,12 @@
             "description": "Horarios libres"
           }
         },
-        "operationId": "get_barberos_id_disponibilidad_fecha"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getBarberosByIdDisponibilidadByFecha"
       }
     },
     "/servicios": {
@@ -663,7 +784,12 @@
             }
           }
         },
-        "operationId": "get_servicios"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getServicios"
       },
       "post": {
         "summary": "Crear nuevo servicio base",
@@ -675,7 +801,12 @@
             "description": "Servicio creado"
           }
         },
-        "operationId": "post_servicios",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "postServicios",
         "parameters": [
           {
             "name": "body",
@@ -713,7 +844,12 @@
             }
           }
         },
-        "operationId": "get_servicios_buscar"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getServiciosBuscar"
       }
     },
     "/servicios/tienda/{id_tienda}": {
@@ -736,7 +872,12 @@
             "description": "Use /barberos/{id}/servicios en su lugar"
           }
         },
-        "operationId": "get_servicios_tienda_id_tienda"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getServiciosByTiendaByIdTienda"
       }
     },
     "/servicios/{id}": {
@@ -761,7 +902,12 @@
             }
           }
         },
-        "operationId": "get_servicios_id"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getServiciosById"
       },
       "put": {
         "summary": "Actualizar servicio",
@@ -789,7 +935,12 @@
             "description": "Actualizado"
           }
         },
-        "operationId": "put_servicios_id"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "putServiciosById"
       },
       "delete": {
         "summary": "Eliminar servicio",
@@ -809,7 +960,12 @@
             "description": "Eliminado"
           }
         },
-        "operationId": "delete_servicios_id"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "deleteServiciosById"
       }
     },
     "/citas": {
@@ -829,7 +985,12 @@
             "description": "Conflicto de horario o datos inválidos"
           }
         },
-        "operationId": "post_citas",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "postCitas",
         "parameters": [
           {
             "name": "body",
@@ -867,7 +1028,12 @@
             "description": "No encontrada"
           }
         },
-        "operationId": "get_citas_id"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getCitasById"
       },
       "delete": {
         "summary": "Eliminar/Cancelar cita físicamente",
@@ -887,7 +1053,12 @@
             "description": "Eliminada"
           }
         },
-        "operationId": "delete_citas_id"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "deleteCitasById"
       }
     },
     "/citas/{id}/estado": {
@@ -928,7 +1099,12 @@
             "description": "Estado actualizado"
           }
         },
-        "operationId": "put_citas_id_estado"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "putCitasByIdEstado"
       }
     },
     "/pagos/crear": {
@@ -951,7 +1127,12 @@
             "description": "Error interno"
           }
         },
-        "operationId": "post_pagos_crear",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "postPagosCrear",
         "parameters": [
           {
             "name": "body",
@@ -978,7 +1159,7 @@
             "description": "Error interno"
           }
         },
-        "operationId": "post_pagos_webhook",
+        "operationId": "postPagosWebhook",
         "parameters": [
           {
             "name": "body",
@@ -1022,7 +1203,12 @@
             "description": "No encontrado"
           }
         },
-        "operationId": "get_pagos_cita_id_cita"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "getPagosByCitaByIdCita"
       }
     },
     "/hairstyle/signature": {
@@ -1036,7 +1222,12 @@
             "description": "Operación exitosa"
           }
         },
-        "operationId": "post_hairstyle_signature"
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "postHairstyleSignature"
       }
     },
     "/hairstyle/simulate": {
@@ -1050,7 +1241,12 @@
             "description": "Operación exitosa"
           }
         },
-        "operationId": "post_hairstyle_simulate",
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "operationId": "postHairstyleSimulate",
         "parameters": [
           {
             "name": "body",
@@ -1109,25 +1305,28 @@
         },
         "security": [
           {
-            "BearerAuth": []
+            "api_key": []
           }
         ],
-        "operationId": "get_reportes_citas"
+        "operationId": "getReportesCitas"
       }
     }
   },
-  "security": [
-    {
-      "BearerAuth": []
-    }
-  ],
-  "swagger": "2.0",
-  "host": "fadebooker-backend-ok.azurewebsites.net",
-  "basePath": "/api",
-  "schemes": [
-    "https"
-  ],
   "definitions": {
+    "RegisterResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/definitions/Usuario"
+        }
+      }
+    },
     "Usuario": {
       "type": "object",
       "properties": {
@@ -1146,6 +1345,9 @@
         "rol": {
           "type": "string"
         },
+        "telefono": {
+          "type": "string"
+        },
         "estado": {
           "type": "boolean"
         }
@@ -1157,7 +1359,6 @@
         "email",
         "contrasena",
         "nombre",
-        "apellido",
         "rol"
       ],
       "properties": {
@@ -1173,17 +1374,11 @@
         "apellido": {
           "type": "string"
         },
-        "telefono": {
+        "rol": {
           "type": "string"
         },
-        "rol": {
-          "type": "string",
-          "enum": [
-            "Cliente",
-            "Barbero",
-            "Dueño",
-            "Administrador"
-          ]
+        "telefono": {
+          "type": "string"
         }
       }
     },
@@ -1578,14 +1773,6 @@
           "format": "date-time"
         }
       }
-    }
-  },
-  "securityDefinitions": {
-    "BearerAuth": {
-      "type": "apiKey",
-      "name": "Authorization",
-      "in": "header",
-      "description": "Ingrese: Bearer <token>"
     }
   }
 }

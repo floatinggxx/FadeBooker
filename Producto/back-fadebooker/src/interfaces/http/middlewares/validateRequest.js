@@ -19,13 +19,23 @@ const validateRequest = (schema) => {
       next();
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const issues = error.errors ?? error.issues;
+        console.warn(`[VALIDATION-MIDDLEWARE] Zod Error: ${error.message}`);
+        // 🛡️ Súper defensivo para evitar crash de .map y soportar tanto Power Apps como React
+        const issues = error.errors || error.issues || [];
+        const safeErrors = Array.isArray(issues) ? issues : [];
+        
+        const errorDetails = safeErrors.map(err => {
+          const path = (err && Array.isArray(err.path)) ? err.path.join('.') : '';
+          const msg = (err && err.message) ? err.message : 'Error desconocido';
+          return path ? `${path}: ${msg}` : msg;
+        }).join(', ');
+        
         return res.status(400).json({
           status: 'error',
-          message: 'Error de validación de datos',
-          errors: issues.map(err => ({
-            path: err.path.join('.'),
-            message: err.message
+          message: `Error de validación: ${errorDetails}`,
+          errors: safeErrors.map(err => ({
+            path: (err && Array.isArray(err.path)) ? err.path.join('.') : '',
+            message: (err && err.message) ? err.message : 'Error desconocido'
           }))
         });
       }
@@ -33,7 +43,7 @@ const validateRequest = (schema) => {
       return res.status(400).json({
         status: 'error',
         message: 'Error de validación',
-        details: error.message
+        errors: [{ message: error.message }]
       });
     }
   };

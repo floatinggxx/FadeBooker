@@ -2,10 +2,10 @@ const { z } = require('zod')
 
 const usuarioSchema = z.object({
   nombre: z.string().min(2).max(100),
-  apellido: z.string().min(2).max(100),
+  apellido: z.string().max(100).optional().default(''),
   email: z.string().email(),
   telefono: z.string().max(20).optional(),
-  rol: z.enum(['Cliente', 'Barbero', 'Admin']),
+  rol: z.enum(['Cliente', 'Barbero', 'Dueño', 'Administrador']),
   contrasena: z.string().min(6)
 })
 

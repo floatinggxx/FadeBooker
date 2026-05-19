@@ -6,7 +6,9 @@ class UsuarioRepositoryImpl {
   }
 
   async create(data) {
-    const [id] = await this.db('Usuario').insert(data).returning('id_usuario')
+    const [result] = await this.db('Usuario').insert(data).returning('id_usuario')
+    // 🛡️ Manejo robusto para MSSQL/Tedious que a veces retorna el objeto o el valor
+    const id = (result && typeof result === 'object') ? result.id_usuario : result
     return id
   }
 

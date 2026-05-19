@@ -1,8 +1,8 @@
 # 🤖 AGENTS.md - Registro Central de Agentes FadeBooker
 
-**Última actualización:** 14 de mayo de 2026  
-**Versión:** 1.4.0  
-**Estado:** Fase Implementación (Consolidación Docker & Pagos)
+**Última actualización:** 19 de mayo de 2026  
+**Versión:** 1.5.0  
+**Estado:** Fase Implementación (Integración React-Backend & Refuerzo de Resiliencia)
 
 ---
 
@@ -11,6 +11,7 @@
 Todos los agentes deben adherirse estrictamente a estas reglas:
 - **Arquitectura Hexagonal:** Obligatoria en backend con inyección de dependencias.
 - **Self-healing Aware:** Lógica resiliente ante fallos de infraestructura.
+- **Validación Defensiva:** El middleware `validateRequest` debe ser robusto y no colapsar ante fallos de mapeo de errores (blindaje Power Apps).
 - **Feature-Based Frontend:** Desarrollo por slices funcionales (No Atomic Design).
 - **Power Platform Sync:** Mantener `swagger_powerapps.json` bajo estándar **Swagger 2.0**.
 - **Log de Errores:** Auditoría obligatoria en `LogErrores`.
@@ -34,7 +35,7 @@ Para entender la estructura completa del proyecto, ver: [CODEBASE_STRUCTURE.md](
 | :--- | :--- | :--- | :--- |
 | **Database Agent** | Gestión de esquema SQL Server y migraciones | ✅ Activo | [Instrucciones](agents/database-agent.md) |
 | **Backend Agent** | Desarrollo de API Node.js (Ark. Hexagonal) | ✅ Activo | [Instrucciones](agents/backend-agent.md) |
-| **Frontend Agent** | Migración React a Feature-Based Architecture | 🆕 Iniciando | [Instrucciones](agents/frontend-agent.md) |
+| **Frontend Agent** | Migración React a Feature-Based Architecture | ✅ Activo | [Instrucciones](agents/frontend-agent.md) |
 | **Documentation Agent** | Creación de manuales, READMEs y reporte Office | ✅ Activo | [Instrucciones](agents/documentation-agent.md) |
 | **Diagram Agent** | Visualización de arquitectura y flujos (draw.io) | ✅ Activo | [Instrucciones](agents/diagram-agent.md) |
 | **Testing Agent** | Pruebas (unit, integracion, estres) y diagnóstico Azure | ✅ Activo | [Instrucciones](agents/testing-agent.md) |
@@ -48,6 +49,17 @@ Para entender la estructura completa del proyecto, ver: [CODEBASE_STRUCTURE.md](
 ---
 
 ## 🚀 Estado Actual del Proyecto
+
+**Hito Actual:** 5.9 - Integración Frontend-Backend inicial.
+
+| Módulo | Progreso | Notas |
+| :--- | :--- | :--- |
+| **Backend Core** | 98% | Endpoints de Citas y Barberos expandidos. |
+| **Base de Datos** | 100% | Esquema estable, triggers de auditoría configurados. |
+| **Frontend React** | 40% | Migración a Feature-Based en curso. Auth listo. |
+| **Power Apps** | 90% | Integración exitosa, conectores parchados. |
+| **Security/JWT** | 80% | Validaciones de tokens activas. |
+| **Deployment** | 100% | Azure CD funcional vía ACR. |
 
 | Componente | Estado | Completado | Detalles |
 |:-----------|:------:|:----------:|----------|
