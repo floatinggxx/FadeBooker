@@ -1,3 +1,5 @@
+const { enviarReserva } = require('../../infraestructure/automation/PowerAutomateService');
+
 class CitaService {
   constructor(citaRepository, servicioRepository) {
     this.citaRepository = citaRepository;
@@ -39,7 +41,40 @@ class CitaService {
 
   async actualizarEstado(id, estado, motivo = null) {
     const dataUpdate = { estado }
-    return this.citaRepository.update(id, dataUpdate)
+    const result = await this.citaRepository.update(id, dataUpdate)
+
+    if (estado === 'Confirmada') {
+      try {
+        await this.enviarReservaPowerAutomate(id)
+      } catch (error) {
+        console.error('Error al enviar reserva a Power Automate:', error.message)
+      }
+    }
+
+    return result
+  }
+
+  async enviarReservaPowerAutomate(id_cita) {
+    const cita = await this.citaRepository.findByIdConDetalles(id_cita)
+    if (!cita) {
+      throw new Error('No se encontró la cita para enviar a Power Automate')
+    }
+
+    const fechaHora = new Date(cita.fecha_hora_inicio)
+    const fecha = fechaHora.toISOString().split('T')[0]
+    const hora = fechaHora.toISOString().split('T')[1].slice(0, 5)
+
+    await enviarReserva({
+      cliente: cita.cliente_nombre || '',
+      telefono: cita.cliente_telefono || '',
+      correo: cita.cliente_email || '',
+      fecha,
+      hora,
+      servicio: cita.nombre_servicio || '',
+      barbero: cita.barbero_nombre || '',
+      tienda: cita.nombre_tienda || '',
+      id_cita: cita.id_cita
+    })
   }
 
   async obtenerCitaPorId(id) {

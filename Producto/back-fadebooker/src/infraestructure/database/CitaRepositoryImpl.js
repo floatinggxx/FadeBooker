@@ -130,6 +130,7 @@ class CitaRepositoryImpl {
         'Cita.*',
         'cliente.nombre as cliente_nombre',
         'cliente.email as cliente_email',
+        'cliente.telefono as cliente_telefono',
         'barbero_usuario.nombre as barbero_nombre',
         'barbero_usuario.email as barbero_email',
         'Servicio.nombre_servicio',
