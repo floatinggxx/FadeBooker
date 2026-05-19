@@ -35,8 +35,8 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
           // Opcionalmente actualizar el rol si era cliente
           await trx('Usuario').where({ id_usuario }).update({ rol: 'Barbero' })
         } else {
-          const [newUserId] = await trx('Usuario').insert(usuarioData).returning('id_usuario')
-          id_usuario = typeof newUserId === 'object' ? newUserId.id_usuario : newUserId
+          const [newUserId] = await trx('Usuario').insert(usuarioData)
+          id_usuario = newUserId.id_usuario || newUserId
         }
       }
 
@@ -51,10 +51,10 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
         activo: 1
       }
 
-      const [id_barbero] = await trx('Barbero').insert(barberoData).returning('id_barbero')
+      const [id_barbero] = await trx('Barbero').insert(barberoData)
       
       await trx.commit()
-      return typeof id_barbero === 'object' ? id_barbero.id_barbero : id_barbero
+      return id_barbero.id_barbero || id_barbero
     } catch (error) {
       await trx.rollback()
       throw error
@@ -147,7 +147,7 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
       disponible: true,
       createdAt: new Date(),
       updatedAt: new Date()
-    }).returning('id_servicio_barbero')
+    })
     return id
   }
 

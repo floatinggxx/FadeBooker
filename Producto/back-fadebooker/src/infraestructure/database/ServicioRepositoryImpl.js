@@ -6,8 +6,8 @@ class ServicioRepositoryImpl {
   }
 
   async create(data) {
-    const [id] = await this.db('Servicio').insert(data).returning('id_servicio')
-    return id
+    const [id] = await this.db('Servicio').insert(data)
+    return id.id_servicio || id
   }
 
   async findById(id) {

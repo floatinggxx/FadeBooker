@@ -78,8 +78,8 @@ class ServicioBarberoRepositoryImpl {
       disponible: true,
       createdAt: new Date(),
       updatedAt: new Date()
-    }).returning('id_servicio_barbero')
-    return id
+    })
+    return id.id_servicio_barbero || id
   }
 
   /**

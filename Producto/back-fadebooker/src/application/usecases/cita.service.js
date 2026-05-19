@@ -35,7 +35,7 @@ class CitaService {
     return this.citaRepository.create({
       ...data,
       duracion_minutos: duracion,
-      estado: 'Pendiente'
+      estado: 'confirmada'
     })
   }
 
@@ -43,7 +43,7 @@ class CitaService {
     const dataUpdate = { estado }
     const result = await this.citaRepository.update(id, dataUpdate)
 
-    if (estado === 'Confirmada') {
+    if (estado.toLowerCase() === 'confirmada') {
       try {
         await this.enviarReservaPowerAutomate(id)
       } catch (error) {

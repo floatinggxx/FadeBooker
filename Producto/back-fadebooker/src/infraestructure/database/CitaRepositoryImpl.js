@@ -13,8 +13,46 @@ class CitaRepositoryImpl {
   }
 
   async create(data) {
-    const [id] = await this.db('Cita').insert(data).returning('id_cita')
-    return id
+    console.log('--- DEBUG: Entrando a CitaRepositoryImpl.create (SQL RAW) ---');
+    console.log('--- Datos recibidos:', data);
+    // Solución específica para Azure SQL con Triggers: 
+    // Usar query raw para evitar que Knex agregue "OUTPUT INSERTED.id_cita"
+    const result = await this.db.raw(`
+      DECLARE @InsertedTable TABLE (id_cita INT);
+      INSERT INTO [dbo].[Cita] (id_cliente, id_barbero, id_servicio, id_tienda, fecha_hora_inicio, duracion_minutos, estado, monto_total, pago_abono, metodo_pago, notas)
+      OUTPUT INSERTED.id_cita INTO @InsertedTable
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+      SELECT id_cita FROM @InsertedTable;
+    `, [
+      data.id_cliente, 
+      data.id_barbero, 
+      data.id_servicio, 
+      data.id_tienda, 
+      data.fecha_hora_inicio, 
+      data.duracion_minutos || 30, 
+      data.estado || 'confirmada', 
+      data.monto_total, 
+      data.pago_abono || 0, 
+      (data.metodo_pago || 'efectivo').toLowerCase(), 
+      data.notas || ''
+    ]);
+    
+    console.log('--- Resultado RAW (OUTPUT INTO):', JSON.stringify(result));
+    
+    // En MSSQL con Knex y mssql driver, el resultado suele ser un array simple para SELECT
+    let id_cita = null;
+    if (result && Array.isArray(result) && result.length > 0) {
+      id_cita = result[0].id_cita;
+    } else if (result && result[0] && Array.isArray(result[0]) && result[0].length > 0) {
+      id_cita = result[0][0].id_cita;
+    }
+    
+    if (id_cita === null || id_cita === undefined) {
+      console.error('--- FALLO AL OBTENER ID_CITA. Estructura:', result);
+      throw new Error('No se pudo obtener el ID de la cita insertada');
+    }
+    
+    return id_cita;
   }
 
   async findById(id) {
