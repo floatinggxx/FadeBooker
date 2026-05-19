@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { authService } from '@/lib/api/authService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
+import { Eye, EyeOff } from 'lucide-react';
 
 type FormData = { email: string; password: string };
 
 const LoginPage: React.FC = () => {
-  const { register, handleSubmit } = useForm<FormData>();
+  const [showPassword, setShowPassword] = useState(false);
+  const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,11 +37,43 @@ const LoginPage: React.FC = () => {
     <section className="page-content container auth-page">
       <div className="auth-card">
         <h1>Iniciar sesión</h1>
-        <p className="auth-subtitle">Accede a tu cuenta para gestionar tus citas, tu perfil y ver barberías cercanas.</p>
+        <p className="auth-subtitle">Accede a tu cuenta para gestionar tus citas y ver las mejores barberías.</p>
+        
         <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
-          <input {...register('email', { required: true })} placeholder="Correo electrónico" className="input-field" />
-          <input {...register('password', { required: true })} type="password" placeholder="Contraseña" className="input-field" />
+          <div className="input-container">
+            <input 
+              {...register('email', { 
+                required: 'El correo es obligatorio',
+                pattern: {
+                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                  message: 'Correo electrónico inválido'
+                }
+              })} 
+              placeholder="Correo electrónico" 
+              className={`input-field ${errors.email ? 'input-error' : ''}`} 
+            />
+            {errors.email && <span className="error-message">{errors.email.message}</span>}
+          </div>
+
+          <div className="input-container">
+            <input 
+              {...register('password', { required: 'La contraseña es obligatoria' })} 
+              type={showPassword ? 'text' : 'password'} 
+              placeholder="Contraseña" 
+              className={`input-field ${errors.password ? 'input-error' : ''}`} 
+            />
+            <button 
+              type="button" 
+              className="password-toggle"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+            {errors.password && <span className="error-message">{errors.password.message}</span>}
+          </div>
+
           <button type="submit" className="button button-primary button-glow">Entrar</button>
+          
           <div className="form-footnote">
             <span>¿Aún no tienes cuenta?</span>
             <Link to="/register" className="link-alt">Regístrate</Link>

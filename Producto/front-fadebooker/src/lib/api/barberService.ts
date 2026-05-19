@@ -5,13 +5,20 @@ export const barberService = {
   // Listar todos los barberos
   async listBarberos(): Promise<Barbero[]> {
     const response = await api.get<Barbero[]>('/barberos');
-    return response.data;
+    return response.data.map(b => ({
+      ...b,
+      id: b.id_barbero || b.id
+    }));
   },
 
   // Obtener un barbero por ID con sus servicios
   async getBarberoById(barberoId: number): Promise<BarberoWithServices> {
     const response = await api.get<BarberoWithServices>(`/barberos/${barberoId}`);
-    return response.data;
+    const b = response.data;
+    return {
+      ...b,
+      id: b.id_barbero || b.id
+    };
   },
 
   // Crear un barbero

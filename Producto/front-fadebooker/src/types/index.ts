@@ -1,8 +1,11 @@
 // Usuarios
 export interface Usuario {
   id?: string | number;
+  id_usuario?: string | number; // Alineado con BD
   nombre: string;
+  apellido?: string; // Agregado
   email: string;
+  telefono?: string; // Agregado
   contrasena?: string;
   rol: 'Cliente' | 'Barbero' | 'Admin';
   createdAt?: string;
@@ -24,7 +27,9 @@ export interface LoginResponse {
 
 export interface RegisterRequest {
   nombre: string;
+  apellido?: string; // Agregado
   email: string;
+  telefono?: string; // Agregado
   contrasena: string;
   rol: 'Cliente' | 'Barbero';
 }
@@ -32,6 +37,7 @@ export interface RegisterRequest {
 // Barberos
 export interface Barbero {
   id?: string | number;
+  id_barbero?: string | number; // Alineado con BD
   nombre: string;
   email: string;
   telefono: string;
@@ -52,6 +58,7 @@ export interface BarberoWithServices extends Barbero {
 // Servicios
 export interface Servicio {
   id?: string | number;
+  id_servicio?: string | number; // Alineado con BD
   nombre: string;
   descripcion?: string;
   duracion: number; // minutos
@@ -62,6 +69,7 @@ export interface Servicio {
 
 export interface ServicioBarbero {
   id?: string | number;
+  id_servicio_barbero?: string | number; // Alineado con BD
   servicioId?: string | number;
   barberoId?: string | number;
   precio?: number;
@@ -75,6 +83,7 @@ export interface ServicioBarbero {
 // Citas
 export interface Cita {
   id?: string | number;
+  id_cita?: string | number; // Alineado con BD
   clienteId: string | number;
   barberoId: string | number;
   servicioBarberoId: string | number;
@@ -112,6 +121,7 @@ export interface Cliente {
 // Horarios
 export interface Horario {
   id?: string | number;
+  id_horario?: string | number; // Alineado con BD
   barberoId: string | number;
   diaSemana: number; // 0-6 (lunes-domingo)
   horaInicio: string; // HH:mm

@@ -55,6 +55,7 @@ const BarberoController = {
       const barberos = await barberoService.obtenerTodosLosBarberos()
       res.json(barberos)
     } catch (error) {
+      console.error('[DEBUG] Error en obtenerTodos los barberos:', error.message);
       res.status(400).json({ error: error.message })
     }
   },

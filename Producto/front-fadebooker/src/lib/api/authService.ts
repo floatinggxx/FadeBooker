@@ -7,9 +7,10 @@ export const authService = {
       email,
       contrasena
     });
+    // El backend devuelve { usuario, token } directamente según usuario.service.js
     const { usuario, token } = response.data;
     return {
-      id: usuario.id_usuario?.toString() || '',
+      id: (usuario.id_usuario || usuario.id)?.toString() || '',
       nombre: usuario.nombre,
       email: usuario.email,
       rol: usuario.rol,
@@ -18,7 +19,15 @@ export const authService = {
   },
 
   async register(data: RegisterRequest): Promise<Usuario> {
-    const response = await api.post<Usuario>('/usuarios/register', data);
+    const response = await api.post<any>('/usuarios/register', data);
+    // El backend devuelve { status, message, data: user } en UsuarioController.js
+    if (response.data?.status === 'success' && response.data?.data) {
+      const user = response.data.data;
+      return {
+        ...user,
+        id: (user.id_usuario || user.id)?.toString() || ''
+      };
+    }
     return response.data;
   },
 

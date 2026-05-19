@@ -1082,21 +1082,58 @@ h1, h2, h3, h4, h5, h6 {
 
 .auth-form {
   display: grid;
-  gap: 1rem;
+  gap: 1.25rem;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 100%;
 }
 
 .input-field {
   width: 100%;
   border: 1px solid var(--color-input-border);
   border-radius: 16px;
-  padding: 1rem 1rem;
+  padding: 1rem 3.5rem 1rem 1rem;
+  margin: 0;
   font-size: 1rem;
   background: var(--color-input-bg);
   color: var(--color-text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
 }
 
-.input-field::placeholder {
-  color: rgba(71,85,105,0.65);
+.password-toggle {
+  position: absolute;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--color-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  height: 24px;
+  width: 24px;
+  z-index: 5;
+}
+
+.password-toggle:hover {
+  color: var(--color-primary-900);
+}
+
+.error-message {
+  color: var(--color-danger);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-left: 0.5rem;
 }
 
 .radio-group {
