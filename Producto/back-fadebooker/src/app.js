@@ -19,6 +19,12 @@ app.use(cors(corsOptions))
 
 app.use(express.json())
 
+// Logger simple para debug
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
+
 // Rutas de documentación ANTES del catch-all
 const path = require('path');
 const docsPath = path.resolve(__dirname, '..');

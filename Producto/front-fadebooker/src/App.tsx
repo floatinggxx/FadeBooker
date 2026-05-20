@@ -5,11 +5,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import HomePage from '@/pages/HomePage';
 import BarberiasPage from '@/pages/BarberiasPage';
+import TiendaDetailPage from '@/pages/TiendaDetailPage';
 import BarberDetailPage from '@/pages/BarberDetailPage';
 import MyBookingsPage from '@/pages/MyBookingsPage';
 import BookingPage from '@/pages/BookingPage';
 import ProfilePage from '@/pages/ProfilePage';
 import HelpPage from '@/pages/HelpPage';
+import PaymentResultPage from '@/pages/PaymentResultPage';
 import LoginPage from '@/features/auth/ui/LoginPage';
 import RegisterPage from '@/features/auth/ui/RegisterPage';
 
@@ -50,11 +52,10 @@ const AppHeader = () => {
           <nav className="header-links">
             <Link to="/" className="link-button">Inicio</Link>
             <Link to="/barberias" className="link-button">Barberías</Link>
-            <Link to="/ayuda" className="link-button link-alt">Ayuda</Link>
             {isAuthenticated ? (
               <>
-                <Link to="/bookings" className="link-button">Mis Citas</Link>
-                <Link to="/profile" className="link-button">Mi Perfil</Link>
+                <Link to="/bookings" className="link-button">Citas</Link>
+                <Link to="/profile" className="link-button">Mi perfil</Link>
                 <button onClick={logout} className="button button-secondary">Cerrar sesión</button>
               </>
             ) : (
@@ -84,10 +85,14 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
               <Route path="/barbero/:id" element={<BarberDetailPage />} />
+              <Route path="/tienda/:id" element={<TiendaDetailPage />} />
               <Route path="/booking/new" element={<PrivateRoute><BookingPage /></PrivateRoute>} />
               <Route path="/bookings" element={<PrivateRoute><MyBookingsPage /></PrivateRoute>} />
               <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
               <Route path="/barberias" element={<BarberiasPage />} />
+              <Route path="/pago-exitoso" element={<PaymentResultPage />} />
+              <Route path="/pago-fallido" element={<PaymentResultPage />} />
+              <Route path="/pago-pendiente" element={<PaymentResultPage />} />
               <Route path="/ayuda" element={<HelpPage />} />
               <Route path="/" element={<HomePage />} />
               <Route path="*" element={<Navigate to="/" />} />

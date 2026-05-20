@@ -46,6 +46,7 @@ export interface Barbero {
   foto?: string;
   bio?: string;
   usuarioId?: string | number;
+  id_tienda?: number; // Agregado para vinculación
   createdAt?: string;
   updatedAt?: string;
 }
@@ -76,6 +77,25 @@ export interface ServicioBarbero {
   duracion?: number;
   servicio?: Servicio;
   barbero?: Barbero;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Tienda {
+  id_tienda?: string | number;
+  id_dueño?: string | number;
+  nombre_tienda: string;
+  direccion: string;
+  ciudad: string;
+  codigo_postal?: string;
+  telefono_tienda?: string;
+  email_tienda?: string;
+  horario_apertura?: string;
+  horario_cierre?: string;
+  dias_laborales?: string;
+  foto_portada_url?: string;
+  calificacion_promedio?: number;
+  este_activa?: boolean | number;
   createdAt?: string;
   updatedAt?: string;
 }

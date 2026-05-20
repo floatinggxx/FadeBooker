@@ -80,8 +80,22 @@ export const barberService = {
 
   // Obtener servicios de un barbero
   async getServicios(barberoId: number): Promise<ServicioBarbero[]> {
-    const response = await api.get<ServicioBarbero[]>(`/barberos/${barberoId}/servicios`);
-    return response.data;
+    const response = await api.get<any[]>(`/barberos/${barberoId}/servicios`);
+    return response.data.map(sb => ({
+      id: sb.id_servicio_barbero,
+      id_servicio_barbero: sb.id_servicio_barbero,
+      id_servicio: sb.id_servicio,
+      precio: sb.precio_barbero || sb.precio_base,
+      duracion: sb.tiempo_servicio_minutos || sb.duracion_minutos,
+      servicio: {
+        id: sb.id_servicio,
+        id_servicio: sb.id_servicio,
+        nombre: sb.nombre_servicio,
+        descripcion: sb.descripcion,
+        duracion: sb.duracion_minutos,
+        precioBase: sb.precio_base
+      }
+    }));
   },
 
   // Agregar un servicio a un barbero

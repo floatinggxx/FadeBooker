@@ -36,7 +36,38 @@ class BarberoService {
   }
 
   async obtenerDisponibilidadBarbero(id_barbero, fecha) {
-    return this.barberoRepository.obtenerDisponibilidad(id_barbero, fecha)
+    const citas = await this.barberoRepository.obtenerDisponibilidad(id_barbero, fecha);
+    
+    const slots = [];
+    const inicio = 9; // 09:00
+    const fin = 18;   // 18:00
+    
+    for (let hora = inicio; hora < fin; hora++) {
+      for (let min of ['00', '30']) {
+        const horaStr = `${hora.toString().padStart(2, '0')}:${min}:00`;
+        const slotKey = `${hora.toString().padStart(2, '0')}:${min}`;
+        
+        const ocupado = citas.some(cita => {
+          let citaHora = '';
+          if (cita.fecha_hora_inicio instanceof Date) {
+            citaHora = cita.fecha_hora_inicio.toTimeString().substring(0, 5);
+          } else if (typeof cita.fecha_hora_inicio === 'string') {
+            const timePart = cita.fecha_hora_inicio.includes('T') 
+              ? cita.fecha_hora_inicio.split('T')[1] 
+              : cita.fecha_hora_inicio.split(' ')[1];
+            citaHora = timePart ? timePart.substring(0, 5) : '';
+          }
+          return citaHora === slotKey;
+        });
+
+        slots.push({
+          hora: horaStr,
+          disponible: !ocupado
+        });
+      }
+    }
+    
+    return slots;
   }
 
   async obtenerServiciosPorBarbero(id_barbero) {

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { FALLBACK_URLS } from '@/lib/utils/placeholders';
 
 interface ImageCarouselProps {
   images?: Array<{ src: string; alt: string; caption?: string }>;
@@ -8,28 +9,27 @@ const defaultSlides = [
   {
     src: '/images/slider-1.jpg',
     alt: 'Barbería con estilo moderno',
-    caption: 'Barberías premium cerca de ti. Solo agrega imágenes en /public/images/slider-1.jpg, slider-2.jpg, slider-3.jpg.'
+    fallback: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=1200',
+    caption: 'Explora barberías premium cerca de ti con resultados profesionales.'
   },
   {
     src: '/images/slider-2.jpg',
     alt: 'Reserva tu cita fácilmente',
+    fallback: 'https://images.unsplash.com/photo-1599351474290-288d8460d689?q=80&w=1200',
     caption: 'Agenda tus citas con rapidez y mantén tu rutina de estilo bajo control.'
   },
   {
     src: '/images/slider-3.jpg',
     alt: 'Cortes profesionales',
+    fallback: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?q=80&w=1200',
     caption: 'Encuentra cortes y servicios adaptados a tu estilo con un solo clic.'
   }
 ];
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({ images = defaultSlides }) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [failedImages, setFailedImages] = useState<boolean[]>([]);
+  const [failedImages, setFailedImages] = useState<Record<number, boolean>>({});
   const [isPaused, setIsPaused] = useState(false);
-
-  useEffect(() => {
-    setFailedImages(new Array(images.length).fill(false));
-  }, [images.length]);
 
   useEffect(() => {
     if (isPaused) return;
@@ -49,15 +49,12 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images = defaultSlides })
   };
 
   const handleImageError = (index: number) => {
-    setFailedImages((prev) => {
-      const next = [...prev];
-      next[index] = true;
-      return next;
-    });
+    setFailedImages((prev) => ({ ...prev, [index]: true }));
   };
 
   const slide = images[activeIndex];
-  const isFailed = failedImages[activeIndex];
+  // @ts-ignore
+  const currentSrc = failedImages[activeIndex] ? (slide.fallback || FALLBACK_URLS.TIENDA) : slide.src;
   const progressPercent = ((activeIndex + 1) / images.length) * 100;
 
   return (
@@ -68,16 +65,14 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({ images = defaultSlides })
       onMouseLeave={() => setIsPaused(false)}
     >
       <div className="carousel-slide">
-        {!isFailed ? (
-          <img src={slide.src} alt={slide.alt} onError={() => handleImageError(activeIndex)} />
-        ) : (
-          <div className="carousel-fallback">
-            <h3>{slide.alt}</h3>
-            <p>{slide.caption}</p>
-          </div>
-        )}
+        <img 
+            src={currentSrc} 
+            alt={slide.alt} 
+            onError={() => handleImageError(activeIndex)} 
+            className="animate-in fade-in duration-700"
+        />
         <div className="carousel-caption" aria-live="polite">
-          <p>{slide.caption || ''}</p>
+          <p className="font-bold text-lg">{slide.caption || ''}</p>
         </div>
       </div>
       <div className="carousel-controls">

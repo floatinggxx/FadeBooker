@@ -86,6 +86,22 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
       .select('id_cita', 'fecha_hora_inicio', 'duracion_minutos', 'estado')
   }
 
+  async findByTienda(id_tienda) {
+    return db('Barbero')
+      .leftJoin('Usuario', 'Barbero.id_usuario', '=', 'Usuario.id_usuario')
+      .where({ 'Barbero.id_tienda': id_tienda, 'Barbero.activo': true })
+      .orderBy('Usuario.nombre')
+      .select(
+        'Barbero.id_barbero',
+        'Usuario.nombre',
+        'Usuario.apellido',
+        'Usuario.email',
+        'Barbero.especialidad',
+        'Usuario.foto_perfil_url',
+        'Barbero.calificacion_promedio'
+      )
+  }
+
   async findAll() {
     return db('Barbero')
       .leftJoin('Usuario', 'Barbero.id_usuario', '=', 'Usuario.id_usuario')
@@ -101,11 +117,19 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
       )
   }
 
-  async findById(id_usuario) {
+  async findById(id_barbero) {
     return db('Barbero')
       .leftJoin('Usuario', 'Barbero.id_usuario', '=', 'Usuario.id_usuario')
-      .where('Barbero.id_usuario', id_usuario)
+      .where('Barbero.id_barbero', id_barbero)
       .first()
+      .select(
+        'Barbero.*',
+        'Usuario.email',
+        'Usuario.nombre',
+        'Usuario.apellido',
+        'Usuario.telefono',
+        'Usuario.foto_perfil_url'
+      )
   }
 
   /**

@@ -27,11 +27,13 @@ const HomePage: React.FC = () => {
           </div>
           <div className="hero-actions">
             {!isAuthenticated ? (
-              <ButtonLink to="/register" variant="primary">Crear cuenta</ButtonLink>
+              <ButtonLink to="/register" variant="primary" className="hover:text-white active:text-white">Crear cuenta</ButtonLink>
             ) : (
-              <ButtonLink to="/bookings" variant="primary">Ver mis citas</ButtonLink>
+              <ButtonLink to="/bookings" variant="primary" className="hover:text-white active:text-white">Ver mis citas</ButtonLink>
             )}
-            <ButtonLink to="/barberias" variant="blue">{isAuthenticated ? 'Explorar barberías' : 'Ver barberías'}</ButtonLink>
+            <ButtonLink to="/barberias" variant="blue" className="hover:text-white active:text-white">
+              {isAuthenticated ? 'Explorar barberías' : 'Ver barberías'}
+            </ButtonLink>
           </div>
         </div>
       </section>
