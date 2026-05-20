@@ -29,6 +29,17 @@ class UsuarioService {
     // Quitar contraseña de la respuesta
     const { contrasena: _, ...usuarioSinPassword } = usuario
 
+    // Si es barbero, incluir id_tienda
+    if (usuario.rol === 'Barbero') {
+      const BarberoRepository = require('../../infraestructure/database/BarberoRepositoryImpl');
+      const barberoRepo = new BarberoRepository();
+      const barbero = await barberoRepo.findByUsuarioId(usuario.id_usuario);
+      if (barbero) {
+        usuarioSinPassword.id_tienda = barbero.id_tienda;
+        usuarioSinPassword.id_barbero = barbero.id_barbero;
+      }
+    }
+
     return { usuario: usuarioSinPassword, token }
   }
 
@@ -36,6 +47,18 @@ class UsuarioService {
     const usuario = await this.usuarioRepository.findById(id)
     if (usuario) {
       const { contrasena, ...usuarioSinPassword } = usuario
+      
+      // Si es barbero, incluir id_tienda e id_barbero
+      if (usuario.rol === 'Barbero') {
+        const BarberoRepository = require('../../infraestructure/database/BarberoRepositoryImpl');
+        const barberoRepo = new BarberoRepository();
+        const barbero = await barberoRepo.findByUsuarioId(usuario.id_usuario);
+        if (barbero) {
+          usuarioSinPassword.id_tienda = barbero.id_tienda;
+          usuarioSinPassword.id_barbero = barbero.id_barbero;
+        }
+      }
+      
       return usuarioSinPassword
     }
     return null;

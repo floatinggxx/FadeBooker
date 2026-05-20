@@ -1,7 +1,9 @@
 const BarberoRepository = require('../../../infraestructure/database/BarberoRepositoryImpl');
+const CitaRepository = require('../../../infraestructure/database/CitaRepositoryImpl');
 const BarberoService = require('../../../application/usecases/barbero.service');
 
 const barberoRepository = new BarberoRepository();
+const citaRepository = new CitaRepository();
 const barberoService = new BarberoService(barberoRepository);
 
 const BarberoController = {
@@ -141,6 +143,28 @@ const BarberoController = {
       res.json({ mensaje: 'Servicio eliminado del barbero' })
     } catch (error) {
       res.status(400).json({ error: error.message })
+    }
+  },
+
+  async obtenerStats(req, res) {
+    try {
+      const { id } = req.params;
+      const { period } = req.query;
+      const stats = await citaRepository.getStats(id, period);
+      res.json(stats);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+
+  async obtenerCitas(req, res) {
+    try {
+      const { id } = req.params;
+      const { date } = req.query;
+      const citas = await citaRepository.findByBarbero(id, date);
+      res.json(citas);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
     }
   }
 }

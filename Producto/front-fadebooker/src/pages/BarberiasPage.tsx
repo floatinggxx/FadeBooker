@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { tiendaService } from '@/lib/api/tiendaService';
+import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import TiendaCard from '@/components/ui/TiendaCard';
 import { MapPin, ChevronDown, Search, Navigation, X } from 'lucide-react';
 import { regionesChile } from '@/lib/utils/chileData';
@@ -98,6 +99,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({ options, value, onC
 };
 
 const BarberiasPage: React.FC = () => {
+  const { user } = useAuth();
   const [selectedRegionId, setSelectedRegionId] = useState<number | ''>('');
   const [selectedComuna, setSelectedComuna] = useState('');
   const [search, setSearch] = useState('');
@@ -111,9 +113,18 @@ const BarberiasPage: React.FC = () => {
     return regionesChile.find(r => r.id === selectedRegionId);
   }, [selectedRegionId]);
 
-  const filteredTiendas = tiendas?.filter(t => 
-    t.nombre_tienda.toLowerCase().includes(search.toLowerCase())
-  ) || [];
+  const filteredTiendas = useMemo(() => {
+    let result = tiendas || [];
+    
+    // Si el usuario es Barbero, solo mostrar su barbería
+    if (user?.rol === 'Barbero' && user.id_tienda) {
+      result = result.filter(t => t.id_tienda === user.id_tienda);
+    }
+
+    return result.filter(t => 
+      t.nombre_tienda.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [tiendas, search, user]);
 
   const { data: allTiendas } = useQuery({
     queryKey: ['all-tiendas'],

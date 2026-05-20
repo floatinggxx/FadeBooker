@@ -98,6 +98,14 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
         'Usuario.email',
         'Barbero.especialidad',
         'Usuario.foto_perfil_url',
+        'Barbero.calificacion_promedio',
+        'Barbero.id_tienda'
+      )
+  }
+
+  async findByUsuarioId(id_usuario) {
+    return db('Barbero').where({ id_usuario }).first()
+  }
         'Barbero.calificacion_promedio'
       )
   }

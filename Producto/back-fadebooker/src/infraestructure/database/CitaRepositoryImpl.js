@@ -80,6 +80,31 @@ class CitaRepositoryImpl {
     return query.orderBy('fecha_hora_inicio', 'desc').select()
   }
 
+  async getStats(id_barbero, period = 'day') {
+    let query = this.db('Cita')
+      .where({ id_barbero })
+      .whereIn('estado', ['confirmada', 'completada']);
+
+    if (period === 'day') {
+      query.whereRaw('CAST(fecha_hora_inicio AS DATE) = CAST(GETDATE() AS DATE)');
+    } else if (period === 'week') {
+      query.whereRaw('fecha_hora_inicio >= DATEADD(day, -7, GETDATE())');
+    } else if (period === 'month') {
+      query.whereRaw('fecha_hora_inicio >= DATEADD(month, -1, GETDATE())');
+    }
+
+    const result = await query.select(
+      this.db.raw('SUM(monto_total) as ingresos'),
+      this.db.raw('COUNT(*) as totalServicios')
+    ).first();
+
+    return {
+      ingresos: result?.ingresos || 0,
+      totalServicios: result?.totalServicios || 0,
+      period
+    };
+  }
+
   async verificarDisponibilidad(id_barbero, fecha_hora_inicio, duracion_minutos) {
     const inicio = new Date(fecha_hora_inicio);
     const fin = new Date(inicio.getTime() + duracion_minutos * 60000);

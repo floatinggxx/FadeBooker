@@ -8,6 +8,8 @@ export interface Usuario {
   telefono?: string; // Agregado
   contrasena?: string;
   rol: 'Cliente' | 'Barbero' | 'Admin';
+  id_tienda?: number; // Agregado para barberos
+  id_barbero?: number; // Agregado para barberos
   createdAt?: string;
   updatedAt?: string;
 }

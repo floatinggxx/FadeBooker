@@ -12,6 +12,7 @@ import BookingPage from '@/pages/BookingPage';
 import ProfilePage from '@/pages/ProfilePage';
 import HelpPage from '@/pages/HelpPage';
 import PaymentResultPage from '@/pages/PaymentResultPage';
+import BarberDashboardPage from '@/pages/BarberDashboardPage';
 import LoginPage from '@/features/auth/ui/LoginPage';
 import RegisterPage from '@/features/auth/ui/RegisterPage';
 
@@ -29,6 +30,16 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
   const location = useLocation();
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace state={{ from: location }} />;
+};
+
+const BarberoRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, user } = useAuth();
+  const location = useLocation();
+  
+  if (!isAuthenticated) return <Navigate to="/login" replace state={{ from: location }} />;
+  if (user?.rol !== 'Barbero') return <Navigate to="/" replace />;
+  
+  return <>{children}</>;
 };
 
 const AppHeader = () => {
@@ -54,6 +65,9 @@ const AppHeader = () => {
             <Link to="/barberias" className="link-button">Barberías</Link>
             {isAuthenticated ? (
               <>
+                {user?.rol === 'Barbero' && (
+                  <Link to="/barber-dashboard" className="link-button text-[#3366FF] font-black">Panel Barbero</Link>
+                )}
                 <Link to="/bookings" className="link-button">Citas</Link>
                 <Link to="/profile" className="link-button">Mi perfil</Link>
                 <button onClick={logout} className="button button-secondary">Cerrar sesión</button>
@@ -84,6 +98,7 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+              <Route path="/barber-dashboard" element={<BarberoRoute><BarberDashboardPage /></BarberoRoute>} />
               <Route path="/barbero/:id" element={<BarberDetailPage />} />
               <Route path="/tienda/:id" element={<TiendaDetailPage />} />
               <Route path="/booking/new" element={<PrivateRoute><BookingPage /></PrivateRoute>} />
