@@ -7,7 +7,7 @@ export interface Usuario {
   email: string;
   telefono?: string; // Agregado
   contrasena?: string;
-  rol: 'Cliente' | 'Barbero' | 'Admin';
+  rol: 'Cliente' | 'Barbero' | 'Dueño' | 'Admin';
   id_tienda?: number; // Agregado para barberos
   id_barbero?: number; // Agregado para barberos
   createdAt?: string;
@@ -23,67 +23,30 @@ export interface LoginResponse {
   id: string;
   nombre: string;
   email: string;
-  rol: 'Cliente' | 'Barbero' | 'Admin';
+  rol: 'Cliente' | 'Barbero' | 'Dueño' | 'Admin';
   token?: string;
 }
 
 export interface RegisterRequest {
   nombre: string;
-  apellido?: string; // Agregado
+  apellido?: string;
   email: string;
-  telefono?: string; // Agregado
+  telefono?: string;
   contrasena: string;
-  rol: 'Cliente' | 'Barbero';
-}
-
-// Barberos
-export interface Barbero {
-  id?: string | number;
-  id_barbero?: string | number; // Alineado con BD
-  nombre: string;
-  email: string;
-  telefono: string;
-  especialidad: string;
-  calificacion?: number;
-  foto?: string;
-  bio?: string;
-  usuarioId?: string | number;
-  id_tienda?: number; // Agregado para vinculación
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface BarberoWithServices extends Barbero {
-  servicios?: ServicioBarbero[];
-  horarios?: Horario[];
-}
-
-// Servicios
-export interface Servicio {
-  id?: string | number;
-  id_servicio?: string | number; // Alineado con BD
-  nombre: string;
-  descripcion?: string;
-  duracion: number; // minutos
-  precioBase: number;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface ServicioBarbero {
-  id?: string | number;
-  id_servicio_barbero?: string | number; // Alineado con BD
-  servicioId?: string | number;
-  barberoId?: string | number;
-  precio?: number;
-  duracion?: number;
-  servicio?: Servicio;
-  barbero?: Barbero;
-  createdAt?: string;
-  updatedAt?: string;
+  rol: 'Cliente' | 'Barbero' | 'Dueño';
+  especialidad?: string;
+  anos_experiencia?: number;
+  id_tienda?: number;
+  servicios?: number[];
+  tienda_nueva?: {
+    nombre_tienda: string;
+    direccion: string;
+    ciudad: string;
+  };
 }
 
 export interface Tienda {
+  id?: string | number;
   id_tienda?: string | number;
   id_dueño?: string | number;
   nombre_tienda: string;
@@ -98,8 +61,31 @@ export interface Tienda {
   foto_portada_url?: string;
   calificacion_promedio?: number;
   este_activa?: boolean | number;
+  galeria?: string;
+  horarios_json?: string;
   createdAt?: string;
   updatedAt?: string;
+}
+
+// Servicios
+export interface Servicio {
+  id_servicio: number;
+  nombre: string;
+  nombre_servicio?: string; // Alineado con BD
+  descripcion?: string;
+  duracion_minutos: number;
+  precio_base: number;
+  activo: boolean;
+}
+
+export interface ServicioBarbero {
+  id_servicio_barbero: number;
+  id_barbero: number;
+  id_servicio: number;
+  precio_barbero?: number;
+  tiempo_servicio_minutos?: number;
+  disponible: boolean;
+  servicio?: Servicio;
 }
 
 // Citas

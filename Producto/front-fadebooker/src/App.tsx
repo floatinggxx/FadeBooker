@@ -37,7 +37,7 @@ const BarberoRoute = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   
   if (!isAuthenticated) return <Navigate to="/login" replace state={{ from: location }} />;
-  if (user?.rol !== 'Barbero') return <Navigate to="/" replace />;
+  if (user?.rol !== 'Barbero' && user?.rol !== 'Dueño') return <Navigate to="/" replace />;
   
   return <>{children}</>;
 };
@@ -65,8 +65,10 @@ const AppHeader = () => {
             <Link to="/barberias" className="link-button">Barberías</Link>
             {isAuthenticated ? (
               <>
-                {user?.rol === 'Barbero' && (
-                  <Link to="/barber-dashboard" className="link-button text-[#3366FF] font-black">Panel Barbero</Link>
+                {(user?.rol === 'Barbero' || user?.rol === 'Dueño') && (
+                  <Link to="/barber-dashboard" className="link-button text-[#3366FF] font-black">
+                    {user?.rol === 'Dueño' ? 'Panel Dueño' : 'Panel Barbero'}
+                  </Link>
                 )}
                 <Link to="/bookings" className="link-button">Citas</Link>
                 <Link to="/profile" className="link-button">Mi perfil</Link>

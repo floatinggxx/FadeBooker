@@ -26,5 +26,10 @@ export const tiendaService = {
     const tiendas: Tienda[] = response.data;
     const ciudades = Array.from(new Set(tiendas.map(t => t.ciudad)));
     return ciudades.sort();
+  },
+
+  updateTienda: async (id: string | number, data: Partial<Tienda>): Promise<Tienda> => {
+    const response = await axios.put(`${API_URL}/tiendas/${id}`, data);
+    return response.data;
   }
 };

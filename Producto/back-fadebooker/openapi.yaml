@@ -1197,6 +1197,9 @@ components:
         rol:
           type: string
           enum: [Cliente, Barbero, Dueño, Administrador]
+        id_tienda:
+          type: integer
+          nullable: true
         estado:
           type: boolean
 
@@ -1223,7 +1226,97 @@ components:
           type: string
         rol:
           type: string
-          enum: [Cliente, Barbero]
+          enum: [Cliente, Barbero, Dueño]
+        especialidad:
+          type: string
+          description: Solo si rol es Barbero o Dueño
+        anos_experiencia:
+          type: integer
+          description: Años de experiencia, solo si rol es Barbero o Dueño
+        id_tienda:
+          type: integer
+          description: ID de la tienda, solo si rol es Barbero
+        servicios:
+          type: array
+          items:
+            type: integer
+          description: IDs de los servicios que ofrece el barbero
+        tienda_nueva:
+          type: object
+          description: Datos para crear una tienda nueva si el usuario es Dueño
+          properties:
+            nombre_tienda:
+              type: string
+            direccion:
+              type: string
+            ciudad:
+              type: string
+        servicios:
+          type: array
+          items:
+            type: integer
+          description: Lista de IDs de servicios, solo si rol es Barbero
+
+    Tienda:
+      type: object
+      properties:
+        id_tienda:
+          type: integer
+        id_dueño:
+          type: integer
+        nombre_tienda:
+          type: string
+        direccion:
+          type: string
+        ciudad:
+          type: string
+        codigo_postal:
+          type: string
+        telefono_tienda:
+          type: string
+        email_tienda:
+          type: string
+        horario_apertura:
+          type: string
+        horario_cierre:
+          type: string
+        dias_laborales:
+          type: string
+        foto_portada_url:
+          type: string
+        calificacion_promedio:
+          type: number
+          format: decimal
+        este_activa:
+          type: boolean
+
+    TiendaCreate:
+      type: object
+      required:
+        - nombre_tienda
+        - direccion
+        - ciudad
+      properties:
+        nombre_tienda:
+          type: string
+        direccion:
+          type: string
+        ciudad:
+          type: string
+        codigo_postal:
+          type: string
+        telefono_tienda:
+          type: string
+        email_tienda:
+          type: string
+        horario_apertura:
+          type: string
+        horario_cierre:
+          type: string
+        dias_laborales:
+          type: string
+        foto_portada_url:
+          type: string
 
     UsuarioUpdate:
       type: object
