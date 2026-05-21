@@ -82,24 +82,30 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
     };
 
     return (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title">
             <div className="bg-white w-full max-w-xl rounded-[3rem] shadow-2xl overflow-hidden border-8 border-white animate-appear">
                 <div className="p-8 border-b-4 border-slate-50 flex justify-between items-center">
-                    <h2 className="text-2xl font-black text-slate-900">Agendar Cita Manual</h2>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-xl transition-colors">
-                        <X size={24} className="text-slate-400" />
+                    <h2 id="modal-title" className="text-2xl font-black text-slate-900">Agendar Cita Manual</h2>
+                    <button 
+                        onClick={onClose} 
+                        aria-label="Cerrar modal"
+                        className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
+                    >
+                        <X size={24} className="text-slate-400" aria-hidden="true" />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-8">
                     {step === 1 ? (
                         <div className="space-y-6">
-                            <div>
-                                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Información del Cliente</label>
+                            <fieldset className="space-y-4">
+                                <legend className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Información del Cliente</legend>
                                 <div className="space-y-4">
                                     <div className="relative">
-                                        <User className="absolute left-4 top-4 text-[#3366FF]" size={20} />
+                                        <label htmlFor="cliente_nombre" className="sr-only">Nombre completo</label>
+                                        <User className="absolute left-4 top-4 text-[#3366FF]" size={20} aria-hidden="true" />
                                         <input 
+                                            id="cliente_nombre"
                                             type="text" 
                                             required
                                             className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-12 pr-4 font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 outline-none transition-all"
@@ -109,29 +115,38 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
                                         />
                                     </div>
                                     <div className="grid grid-cols-2 gap-4">
-                                        <input 
-                                            type="tel" 
-                                            className="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 outline-none"
-                                            placeholder="Teléfono"
-                                            value={formData.cliente_telefono}
-                                            onChange={e => setFormData({...formData, cliente_telefono: e.target.value})}
-                                        />
-                                        <input 
-                                            type="email" 
-                                            className="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 outline-none"
-                                            placeholder="Email (opcional)"
-                                            value={formData.cliente_email}
-                                            onChange={e => setFormData({...formData, cliente_email: e.target.value})}
-                                        />
+                                        <div className="relative">
+                                            <label htmlFor="cliente_telefono" className="sr-only">Teléfono</label>
+                                            <input 
+                                                id="cliente_telefono"
+                                                type="tel" 
+                                                className="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 outline-none"
+                                                placeholder="Teléfono"
+                                                value={formData.cliente_telefono}
+                                                onChange={e => setFormData({...formData, cliente_telefono: e.target.value})}
+                                            />
+                                        </div>
+                                        <div className="relative">
+                                            <label htmlFor="cliente_email" className="sr-only">Email (opcional)</label>
+                                            <input 
+                                                id="cliente_email"
+                                                type="email" 
+                                                className="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 outline-none"
+                                                placeholder="Email (opcional)"
+                                                value={formData.cliente_email}
+                                                onChange={e => setFormData({...formData, cliente_email: e.target.value})}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </fieldset>
 
                             <div>
-                                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Servicio de la Barbería</label>
+                                <label htmlFor="id_servicio" className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Servicio de la Barbería</label>
                                 <div className="relative">
-                                    <Scissors className="absolute left-4 top-4 text-[#3366FF]" size={20} />
+                                    <Scissors className="absolute left-4 top-4 text-[#3366FF]" size={20} aria-hidden="true" />
                                     <select 
+                                        id="id_servicio"
                                         required
                                         className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-12 pr-4 font-bold text-slate-900 appearance-none focus:ring-4 focus:ring-blue-100 outline-none"
                                         value={formData.id_servicio}
@@ -155,7 +170,7 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
                                     className="w-full bg-[#3366FF] text-white py-5 rounded-2xl font-black shadow-xl shadow-blue-100 hover:bg-rose-500 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                                 >
                                     SIGUIENTE PASO
-                                    <Check size={20} />
+                                    <Check size={20} aria-hidden="true" />
                                 </button>
                             </div>
                         </div>
@@ -163,10 +178,11 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
                         <div className="space-y-6">
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Fecha de Cita</label>
+                                    <label htmlFor="fecha" className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Fecha de Cita</label>
                                     <div className="relative">
-                                        <Calendar className="absolute left-4 top-4 text-[#3366FF]" size={20} />
+                                        <Calendar className="absolute left-4 top-4 text-[#3366FF]" size={20} aria-hidden="true" />
                                         <input 
+                                            id="fecha"
                                             type="date" 
                                             required
                                             min={new Date().toISOString().split('T')[0]}
@@ -177,10 +193,11 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Bloque Horario</label>
+                                    <label htmlFor="hora" className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Bloque Horario</label>
                                     <div className="relative">
-                                        <Clock className="absolute left-4 top-4 text-[#3366FF]" size={20} />
+                                        <Clock className="absolute left-4 top-4 text-[#3366FF]" size={20} aria-hidden="true" />
                                         <select 
+                                            id="hora"
                                             required
                                             className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-12 pr-4 font-bold text-slate-900 appearance-none focus:ring-4 focus:ring-blue-100 outline-none"
                                             value={formData.hora}
@@ -197,7 +214,7 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
                                 </div>
                             </div>
 
-                            <div className="bg-slate-50 p-6 rounded-[2rem] border-2 border-slate-100">
+                            <div className="bg-slate-50 p-6 rounded-[2rem] border-2 border-slate-100" aria-labelledby="resume-heading">
                                 <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Resumen de Cobro</h4>
                                 <div className="flex justify-between items-center">
                                     <span className="text-slate-900 font-bold">

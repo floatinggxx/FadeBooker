@@ -84,6 +84,15 @@ class UsuarioService {
       if (barbero) {
         usuarioSinPassword.id_tienda = barbero.id_tienda;
         usuarioSinPassword.id_barbero = barbero.id_barbero;
+      } else if (usuario.rol === 'Dueño') {
+        const TiendaRepository = require('../../infraestructure/database/TiendaRepositoryImpl');
+        const tiendaRepo = new TiendaRepository();
+        const tiendas = await tiendaRepo.findAll({ id_dueño: usuario.id_usuario });
+        // Por ahora, asumimos que el dueño gestiona su primera tienda si tiene varias
+        const misTiendas = await require('../../db/knex')('Tienda').where({ id_dueño: usuario.id_usuario, este_activa: true }).first();
+        if (misTiendas) {
+          usuarioSinPassword.id_tienda = misTiendas.id_tienda;
+        }
       }
     }
 
@@ -103,6 +112,11 @@ class UsuarioService {
         if (barbero) {
           usuarioSinPassword.id_tienda = barbero.id_tienda;
           usuarioSinPassword.id_barbero = barbero.id_barbero;
+        } else if (usuario.rol === 'Dueño') {
+          const misTiendas = await require('../../db/knex')('Tienda').where({ id_dueño: usuario.id_usuario, este_activa: true }).first();
+          if (misTiendas) {
+            usuarioSinPassword.id_tienda = misTiendas.id_tienda;
+          }
         }
       }
       
