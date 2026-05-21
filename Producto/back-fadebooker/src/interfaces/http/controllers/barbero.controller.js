@@ -54,6 +54,11 @@ const BarberoController = {
 
   async obtenerTodos(req, res) {
     try {
+      const { id_tienda } = req.query
+      if (id_tienda) {
+        const barberos = await barberoService.obtenerBarberosPorTienda(id_tienda)
+        return res.json(barberos)
+      }
       const barberos = await barberoService.obtenerTodosLosBarberos()
       res.json(barberos)
     } catch (error) {

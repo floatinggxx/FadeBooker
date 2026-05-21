@@ -24,6 +24,8 @@ export interface LoginResponse {
   nombre: string;
   email: string;
   rol: 'Cliente' | 'Barbero' | 'Dueño' | 'Admin';
+  id_tienda?: number;
+  id_barbero?: number;
   token?: string;
 }
 

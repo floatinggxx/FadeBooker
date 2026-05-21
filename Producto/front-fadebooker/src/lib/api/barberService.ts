@@ -11,6 +11,17 @@ export const barberService = {
     }));
   },
 
+  // Listar barberos por tienda
+  async listBarberosByTienda(tiendaId: number): Promise<Barbero[]> {
+    const response = await api.get<Barbero[]>('/barberos', {
+      params: { id_tienda: tiendaId }
+    });
+    return response.data.map(b => ({
+      ...b,
+      id: b.id_barbero || b.id
+    }));
+  },
+
   // Obtener un barbero por ID con sus servicios
   async getBarberoById(barberoId: number): Promise<BarberoWithServices> {
     const response = await api.get<BarberoWithServices>(`/barberos/${barberoId}`);

@@ -15,6 +15,10 @@ class BarberoService {
     return this.barberoRepository.findByEmail(email)
   }
 
+  async obtenerBarberosPorTienda(id_tienda) {
+    return this.barberoRepository.findByTienda(id_tienda)
+  }
+
   async buscarBarberosPorEspecialidad(especialidad) {
     return this.barberoRepository.findByEspecialidad(especialidad)
   }
