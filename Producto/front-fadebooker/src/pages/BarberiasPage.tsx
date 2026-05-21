@@ -3,8 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import { tiendaService } from '@/lib/api/tiendaService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import TiendaCard from '@/components/ui/TiendaCard';
+import { Tienda } from '@/types';
 import { MapPin, ChevronDown, Search, Navigation, X } from 'lucide-react';
 import { regionesChile } from '@/lib/utils/chileData';
+import { recommendedTiendas, rmFallbackTiendas } from '@/lib/utils/tiendasFallback';
 
 interface SearchableSelectProps {
   options: { label: string; value: string | number }[];
@@ -104,40 +106,53 @@ const BarberiasPage: React.FC = () => {
   const [selectedComuna, setSelectedComuna] = useState('');
   const [search, setSearch] = useState('');
 
-  const { data: tiendas, isLoading, error } = useQuery({
-    queryKey: ['tiendas', selectedComuna],
-    queryFn: () => tiendaService.listTiendas(selectedComuna),
-  });
-
   const selectedRegion = useMemo(() => {
     return regionesChile.find(r => r.id === selectedRegionId);
   }, [selectedRegionId]);
 
+  const isRegionMetropolitana = selectedRegion?.nombre === 'Región Metropolitana de Santiago';
+
+  const { data: tiendas, isLoading, error } = useQuery({
+    queryKey: ['tiendas', selectedComuna],
+    queryFn: () => tiendaService.listTiendas(selectedComuna),
+    enabled: !!selectedComuna && !isRegionMetropolitana,
+  });
+
+  const tiendasData = useMemo(() => {
+    if (!selectedComuna) return recommendedTiendas;
+    if (isRegionMetropolitana) return rmFallbackTiendas;
+    return tiendas || [];
+  }, [selectedComuna, isRegionMetropolitana, tiendas]);
+
   const filteredTiendas = useMemo(() => {
-    let result = tiendas || [];
-    
-    // Si el usuario es Barbero, solo mostrar su barbería
-    if (user?.rol === 'Barbero' && user.id_tienda) {
-      result = result.filter(t => t.id_tienda === user.id_tienda);
+    let result = tiendasData;
+
+    if (selectedComuna) {
+      result = result.filter(t => t.ciudad === selectedComuna);
+    }
+
+    if (!isRegionMetropolitana && user?.rol === 'Barbero' && user.id_tienda) {
+      result = result.filter(t => Number(t.id_tienda) === Number(user.id_tienda));
     }
 
     return result.filter(t => 
       t.nombre_tienda.toLowerCase().includes(search.toLowerCase())
     );
-  }, [tiendas, search, user]);
+  }, [tiendasData, selectedComuna, search, user, isRegionMetropolitana]);
 
   const { data: allTiendas } = useQuery({
     queryKey: ['all-tiendas'],
     queryFn: () => tiendaService.listTiendas(''),
-    enabled: filteredTiendas.length === 0 && !isLoading
+    enabled: !!selectedComuna && !isRegionMetropolitana && filteredTiendas.length === 0 && !isLoading,
   });
 
   const sugerencias = useMemo(() => {
     if (filteredTiendas.length > 0) return [];
+    if (isRegionMetropolitana) return rmFallbackTiendas.slice(0, 2);
     return allTiendas?.slice(0, 2) || [];
-  }, [filteredTiendas, allTiendas]);
+  }, [filteredTiendas, allTiendas, isRegionMetropolitana]);
 
-  if (error) return (
+  if (error && !isRegionMetropolitana) return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-[#E5E7EB]">
         <div className="text-center bg-white p-10 rounded-[3rem] shadow-xl max-w-sm">
             <h2 className="text-3xl font-black text-slate-900 mb-4">Error al cargar datos</h2>
@@ -152,12 +167,14 @@ const BarberiasPage: React.FC = () => {
       <div className="max-w-6xl mx-auto">
         <div className="mb-16 text-center">
           <div className="flex items-center justify-center gap-4 mb-2">
-             <div className="h-12 w-1.5 bg-rose-500 rounded-full"></div>
+             <div className="h-12 w-1.5 bg-[#3366FF] rounded-full"></div>
              <h2 className="text-4xl font-black text-slate-900 tracking-tight">
-               Busca tu peluquería favorita
+               Barberías premium con reserva rápida
              </h2>
           </div>
-          <p className="text-slate-500 font-bold text-lg mb-10 uppercase tracking-tighter">Elije tu ubicación para ver disponibilidad</p>
+          <p className="text-slate-500 font-bold text-lg mb-10 uppercase tracking-tighter">
+            Busca por comuna y encuentra barberías reales y de prueba en todo Santiago.
+          </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             <SearchableSelect 
@@ -186,7 +203,7 @@ const BarberiasPage: React.FC = () => {
           <div>
             <div className="flex items-center gap-3">
                <div className="h-8 w-1 bg-[#3366FF] rounded-full"></div>
-               <h1 className="text-4xl font-black text-slate-900 leading-none">Barberías Disponibles</h1>
+               <h1 className="text-4xl font-black text-slate-900 leading-none">Barberías Premium</h1>
             </div>
             <p className="text-slate-500 mt-4 font-bold text-base uppercase tracking-widest flex items-center gap-2">
               <span className="bg-white px-3 py-1 rounded-full text-[#3366FF] shadow-sm border border-slate-100">
@@ -208,7 +225,7 @@ const BarberiasPage: React.FC = () => {
           </div>
         </div>
 
-        {isLoading ? (
+        {isLoading && !isRegionMetropolitana ? (
           <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {[1,2,3,4,5,6].map(i => (
               <div key={i} className="h-96 bg-white animate-pulse rounded-[3rem] shadow-sm"></div>

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Star } from 'lucide-react';
 import { tiendaService } from '@/lib/api/tiendaService';
 import { PLACEHOLDERS, FALLBACK_URLS } from '@/lib/utils/placeholders';
+import { rmFallbackTiendas } from '@/lib/utils/tiendasFallback';
 
 const TiendaDetailPage: React.FC = () => {
   const { id } = useParams();
@@ -20,13 +21,20 @@ const TiendaDetailPage: React.FC = () => {
     enabled: !!id,
   });
 
+  const fallbackTienda = useMemo(() => {
+    if (!id) return null;
+    return rmFallbackTiendas.find((item) => String(item.id_tienda) === String(id)) || null;
+  }, [id]);
+
   if (loadingTienda || loadingBarberos) return (
     <div className="min-h-screen flex items-center justify-center bg-[#E5E7EB]">
       <div className="w-12 h-12 border-4 border-slate-900 border-t-rose-500 rounded-full animate-spin"></div>
     </div>
   );
   
-  if (!tienda) return (
+  const tiendaData = tienda || fallbackTienda;
+
+  if (!tiendaData) return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-[#E5E7EB]">
       <div className="text-center bg-white p-10 rounded-[3rem] shadow-xl max-w-sm">
         <h2 className="text-3xl font-black text-slate-900 mb-4">Tienda no encontrada</h2>
@@ -36,62 +44,77 @@ const TiendaDetailPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#E5E7EB] pt-12 pb-24 px-6">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-[#F3F4F6] pt-12 pb-24 px-6">
+      <div className="max-w-6xl mx-auto space-y-10">
         {/* Header Shop Section */}
-        <div className="flex flex-col md:flex-row gap-12 mb-16 bg-white p-10 rounded-[3.5rem] shadow-2xl relative overflow-hidden">
-            <div className="w-full md:w-1/2">
-                <img 
-                    src={tienda.foto_portada_url || PLACEHOLDERS.TIENDA} 
-                    alt={tienda.nombre_tienda} 
-                    className="w-full h-96 object-cover rounded-[2.5rem] shadow-2xl"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      if (target.src !== FALLBACK_URLS.TIENDA) {
-                        target.src = FALLBACK_URLS.TIENDA;
-                      }
-                    }}
-                />
+        <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] items-center bg-white p-10 rounded-[3rem] shadow-2xl shadow-slate-200/40">
+          <div className="overflow-hidden rounded-[2.5rem] shadow-2xl">
+            <img
+              src={tiendaData.foto_portada_url || PLACEHOLDERS.TIENDA}
+              alt={tiendaData.nombre_tienda}
+              className="w-full h-full min-h-[420px] object-cover"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (target.src !== FALLBACK_URLS.TIENDA) {
+                  target.src = FALLBACK_URLS.TIENDA;
+                }
+              }}
+            />
+          </div>
+
+          <div className="space-y-8">
+            <div className="flex flex-wrap items-center gap-4">
+              <span className="rounded-full bg-[#2563EB] px-5 py-2 text-xs font-black uppercase tracking-[0.35em] text-white shadow-lg shadow-sky-300/10">
+                StudioDanger
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-black uppercase tracking-[0.25em] text-slate-600">
+                <Star size={14} className="text-amber-400" />
+                {tiendaData.calificacion_promedio?.toFixed(1) || '5.0'}
+              </span>
             </div>
-            <div className="flex-1 flex flex-col justify-center">
-                <div className="flex items-center gap-3 mb-6">
-                    <span className="bg-[#3366FF] text-white px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest shadow-lg shadow-blue-200">
-                        PREMIUM SHOP
-                    </span>
-                    <div className="flex items-center gap-1.5 bg-yellow-50 text-yellow-600 px-4 py-2 rounded-full text-sm font-black border border-yellow-100">
-                        ★ {tienda.calificacion_promedio || 5.0}
-                    </div>
-                </div>
-                <h1 className="text-6xl font-black text-slate-900 mb-6 tracking-tight leading-none">{tienda.nombre_tienda}</h1>
-                <p className="text-slate-500 flex items-center gap-3 text-2xl font-medium mb-8">
-                    <svg className="w-8 h-8 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    </svg>
-                    {tienda.ciudad}, Región Metropolitana
-                </p>
-                <div className="flex flex-wrap gap-4">
-                    <button className="px-10 py-5 bg-slate-900 text-white rounded-3xl font-black shadow-2xl hover:bg-slate-800 active:bg-slate-700 transition-all">
-                        Información
-                    </button>
-                    <button className="px-10 py-5 bg-white border-4 border-slate-100 text-slate-700 rounded-3xl font-black hover:bg-slate-50 active:bg-slate-100 transition-all">
-                        Ubicación
-                    </button>
-                </div>
+
+            <div className="space-y-4">
+              <h1 className="text-5xl font-black tracking-tight text-slate-900">{tiendaData.nombre_tienda}</h1>
+              <p className="text-xl leading-relaxed text-slate-600 max-w-xl">
+                Barbería premium en Quilicura especializada en cortes de diseño, barba premium y atención personalizada con ambiente moderno.
+              </p>
             </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="rounded-[2rem] border border-slate-200 bg-slate-50 p-6">
+                <p className="text-xs uppercase tracking-[0.35em] text-slate-500 font-black">Ubicación</p>
+                <p className="mt-3 text-lg font-black text-slate-900">{tiendaData.ciudad}, Región Metropolitana</p>
+              </div>
+              <div className="rounded-[2rem] border border-slate-200 bg-slate-50 p-6">
+                <p className="text-xs uppercase tracking-[0.35em] text-slate-500 font-black">Horario</p>
+                <p className="mt-3 text-lg font-black text-slate-900">Lun - Vie 09:00 - 19:00</p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-4">
+              <button className="rounded-full bg-slate-900 px-10 py-4 text-base font-black text-white transition hover:bg-slate-800">
+                Información
+              </button>
+              <button className="rounded-full border border-slate-200 bg-white px-10 py-4 text-base font-black text-slate-900 transition hover:bg-slate-50">
+                Ubicación
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Barbers Selection Section */}
-        <div className="mb-12 text-center md:text-left">
+        <section className="space-y-6">
+          <div className="mb-12 text-center md:text-left">
             <div className="flex items-center gap-4 mb-3">
-               <div className="h-10 w-1.5 bg-rose-500 rounded-full"></div>
-               <h2 className="text-4xl font-black text-slate-900">Reserva tu cita</h2>
+              <div className="h-10 w-1.5 bg-rose-500 rounded-full"></div>
+              <h2 className="text-4xl font-black text-slate-900">Reserva tu cita</h2>
             </div>
             <p className="text-slate-500 font-bold text-lg uppercase tracking-tight ml-5">Paso 3: Selecciona tu barbero de confianza</p>
-        </div>
+          </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] items-start">
             {/* "Cualquier Barbero" Card */}
-            <div className="bg-[#3366FF] p-10 rounded-[3.5rem] text-center group hover:scale-[1.02] transition-all cursor-pointer shadow-2xl shadow-blue-200/50 relative overflow-hidden flex flex-col justify-center items-center">
+            <div className="rounded-[3rem] bg-[#3366FF] p-10 text-center group hover:scale-[1.02] transition-all cursor-pointer shadow-2xl shadow-blue-200/50 relative overflow-hidden flex flex-col justify-center items-center">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
                 
                 <div className="w-24 h-24 bg-white/20 text-white rounded-[2rem] flex items-center justify-center text-4xl shadow-xl backdrop-blur-md mb-8 group-hover:rotate-12 transition-transform">
@@ -156,11 +179,14 @@ const TiendaDetailPage: React.FC = () => {
                     </div>
                 ))
             ) : (
-                <div className="col-span-full py-16 text-center text-slate-400 font-bold text-xl italic bg-slate-50 rounded-[3rem] border-4 border-dashed border-slate-200">
-                    Aún no hay barberos registrados en esta tienda.
+                <div className="rounded-[3rem] border border-dashed border-slate-300 bg-white/80 p-12 text-center text-slate-500 shadow-lg shadow-slate-200/30">
+                    <p className="text-base font-black uppercase tracking-[0.35em] text-slate-400 mb-4">Barberos disponibles</p>
+                    <p className="text-xl font-black text-slate-900">Aún no hay barberos registrados en esta tienda.</p>
+                    <p className="mt-4 text-sm leading-relaxed">Revisa otra barbería o vuelve más tarde para conocer los barberos disponibles en StudioDanger.</p>
                 </div>
             )}
-        </div>
+          </div>
+        </section>
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import HomePage from '@/pages/HomePage';
 import BarberiasPage from '@/pages/BarberiasPage';
 import TiendaDetailPage from '@/pages/TiendaDetailPage';
+import StudioDangerPage from '@/pages/StudioDangerPage';
 import BarberDetailPage from '@/pages/BarberDetailPage';
 import MyBookingsPage from '@/pages/MyBookingsPage';
 import BookingPage from '@/pages/BookingPage';
@@ -103,6 +104,7 @@ function App() {
               <Route path="/barber-dashboard" element={<BarberoRoute><BarberDashboardPage /></BarberoRoute>} />
               <Route path="/barbero/:id" element={<BarberDetailPage />} />
               <Route path="/tienda/:id" element={<TiendaDetailPage />} />
+              <Route path="/studiodeanger" element={<StudioDangerPage />} />
               <Route path="/booking/new" element={<PrivateRoute><BookingPage /></PrivateRoute>} />
               <Route path="/bookings" element={<PrivateRoute><MyBookingsPage /></PrivateRoute>} />
               <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />

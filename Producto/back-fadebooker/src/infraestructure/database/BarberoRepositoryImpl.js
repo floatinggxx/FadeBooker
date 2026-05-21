@@ -106,9 +106,6 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
   async findByUsuarioId(id_usuario) {
     return db('Barbero').where({ id_usuario }).first()
   }
-        'Barbero.calificacion_promedio'
-      )
-  }
 
   async findAll() {
     return db('Barbero')

@@ -14,7 +14,7 @@ const TiendaCard: React.FC<TiendaCardProps> = ({ tienda, isSuggested }) => {
   const rating = tienda.calificacion_promedio || 4.9;
 
   return (
-    <article className="group bg-white border-4 border-white hover:border-[#3366FF]/20 rounded-[3rem] overflow-hidden shadow-xl shadow-slate-200/50 hover:shadow-2xl transition-all duration-500 relative flex flex-col">
+    <article className="group bg-white border border-slate-200 hover:border-[#3366FF]/20 rounded-[2.5rem] overflow-hidden shadow-xl shadow-slate-200/40 hover:shadow-2xl transition-all duration-500 relative flex flex-col">
       {/* Badge Suggested */}
       {isSuggested && (
         <div className="absolute top-6 left-6 z-20 flex items-center gap-2 bg-[#3366FF] text-white px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg animate-pulse">
@@ -29,11 +29,11 @@ const TiendaCard: React.FC<TiendaCardProps> = ({ tienda, isSuggested }) => {
       </div>
 
       {/* Image Container */}
-      <Link to={`/tienda/${tienda.id_tienda}`} className="relative h-64 overflow-hidden bg-slate-100 block">
+      <Link to={String(tienda.id_tienda) === '101' ? '/studiodeanger' : `/tienda/${tienda.id_tienda}`} className="relative h-64 overflow-hidden bg-slate-100 block">
         <img 
             src={fotoUrl} 
             alt={tienda.nombre_tienda} 
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               if (target.src !== FALLBACK_URLS.TIENDA) {
@@ -41,7 +41,7 @@ const TiendaCard: React.FC<TiendaCardProps> = ({ tienda, isSuggested }) => {
               }
             }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/35 to-transparent"></div>
       </Link>
 
       {/* Content */}
@@ -70,7 +70,7 @@ const TiendaCard: React.FC<TiendaCardProps> = ({ tienda, isSuggested }) => {
 
         <Link 
             to={`/tienda/${tienda.id_tienda}`} 
-            className="flex items-center justify-between w-full py-5 px-8 bg-slate-900 text-white rounded-[2rem] font-black text-xl hover:bg-rose-500 hover:text-white active:bg-rose-600 active:text-white transition-all group-hover:shadow-2xl translate-z-0"
+            className="flex items-center justify-between w-full py-5 px-8 bg-[#1D4ED8] text-white rounded-[2rem] font-black text-xl hover:bg-[#2563EB] active:bg-[#1E40AF] transition-all group-hover:shadow-2xl translate-z-0"
         >
           VER TIENDA
           <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform" />
