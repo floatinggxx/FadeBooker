@@ -68,41 +68,49 @@ const TiendaConfig: React.FC = () => {
     };
 
     const removeGalleryImage = (index: number) => {
-        setGallery(prev => prev.filter((_, i) => i !== index));
+        if (window.confirm('¿Estás seguro de que deseas eliminar esta imagen de la galería?')) {
+            setGallery(prev => prev.filter((_, i) => i !== index));
+        }
     };
 
     const addImage = () => {
         const url = prompt('Introduce la URL de la imagen:');
         if (url) {
-            setGallery(prev => [...prev, url]);
+            // Validación básica de URL
+            try {
+                new URL(url);
+                setGallery(prev => [...prev, url]);
+            } catch (e) {
+                alert('Por favor, introduce una URL válida.');
+            }
         }
     };
 
-    if (isLoading) return <div className="p-10 text-center font-bold text-slate-400">Cargando datos de la barbería...</div>;
+    if (isLoading) return <div className="p-10 text-center font-bold text-slate-400" role="status">Cargando datos de la barbería...</div>;
 
     return (
-        <div className="bg-white rounded-[3.5rem] shadow-2xl border-8 border-white p-10 animate-fade-in">
+        <section className="bg-white rounded-[3.5rem] shadow-2xl border-8 border-white p-10 animate-fade-in" aria-labelledby="config-heading">
             <div className="flex items-center gap-4 mb-10">
-                <div className="w-1.5 h-10 bg-[#3366FF] rounded-full"></div>
-                <h2 className="text-3xl font-black text-slate-900">Configuración de Barbería</h2>
+                <div className="w-1.5 h-10 bg-[#3366FF] rounded-full" aria-hidden="true"></div>
+                <h2 id="config-heading" className="text-3xl font-black text-slate-900">Configuración de Barbería</h2>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                 {/* Columna Izquierda: Logo y Horarios */}
                 <div className="lg:col-span-1 space-y-8">
-                    <div className="section">
-                        <h4 className="font-black text-slate-900 text-sm uppercase mb-4 flex items-center gap-2">
-                            <ImageIcon size={16} className="text-[#3366FF]" /> Logo Principal
-                        </h4>
-                        <div className="relative group overflow-hidden rounded-[2.5rem] border-4 border-slate-100 shadow-lg">
+                    <div className="section" aria-labelledby="logo-heading">
+                        <h3 id="logo-heading" className="font-black text-slate-900 text-sm uppercase mb-4 flex items-center gap-2">
+                            <ImageIcon size={16} className="text-[#3366FF]" aria-hidden="true" /> Logo Principal
+                        </h3>
+                        <div className="relative group overflow-hidden rounded-[2.5rem] border-4 border-slate-100 shadow-lg" role="img" aria-label="Vista previa del logo de la barbería">
                             <div className="w-full aspect-square bg-slate-100 flex flex-col items-center justify-center">
                                 {tienda?.foto_portada_url ? (
-                                    <img src={tienda.foto_portada_url} alt="Logo" className="w-full h-full object-cover" />
+                                    <img src={tienda.foto_portada_url} alt="Logo de la tienda" className="w-full h-full object-cover" />
                                 ) : (
-                                    <>
-                                        <Camera size={48} className="text-slate-300 mb-4" />
+                                    <div className="text-center">
+                                        <Camera size={48} className="text-slate-300 mb-4 mx-auto" aria-hidden="true" />
                                         <span className="text-slate-400 font-bold text-xs">Sin Logo</span>
-                                    </>
+                                    </div>
                                 )}
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
                                     <button 
@@ -114,44 +122,47 @@ const TiendaConfig: React.FC = () => {
                                                 reset({...tienda, foto_portada_url: url});
                                             }
                                         }}
-                                        className="bg-white text-slate-900 px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest"
+                                        className="bg-white text-slate-900 px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl"
                                     >
-                                        Cambiar
+                                        Cambiar Logo
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-slate-50 p-8 rounded-[2.5rem] border-4 border-white shadow-xl">
-                        <h4 className="font-black text-slate-900 text-sm uppercase mb-6 flex items-center gap-2">
-                            <RefreshCw size={16} className="text-[#3366FF]" /> Horarios de Atención
-                        </h4>
+                    <div className="bg-slate-50 p-8 rounded-[2.5rem] border-4 border-white shadow-xl" aria-labelledby="hours-heading">
+                        <h3 id="hours-heading" className="font-black text-slate-900 text-sm uppercase mb-6 flex items-center gap-2">
+                            <RefreshCw size={16} className="text-[#3366FF]" aria-hidden="true" /> Horarios de Atención
+                        </h3>
                         <div className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-1">
-                                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Apertura</label>
+                                    <label htmlFor="horario_apertura" className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Apertura</label>
                                     <input 
+                                        id="horario_apertura"
                                         type="time"
                                         {...register('horario_apertura')}
-                                        className="w-full p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-600 text-xs"
+                                        className="w-full p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-600 text-xs focus:ring-2 focus:ring-blue-200 outline-none"
                                     />
                                 </div>
                                 <div className="space-y-1">
-                                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Cierre</label>
+                                    <label htmlFor="horario_cierre" className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Cierre</label>
                                     <input 
+                                        id="horario_cierre"
                                         type="time"
                                         {...register('horario_cierre')}
-                                        className="w-full p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-600 text-xs"
+                                        className="w-full p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-600 text-xs focus:ring-2 focus:ring-blue-200 outline-none"
                                     />
                                 </div>
                             </div>
                             
                             <div className="pt-4 border-t border-slate-200">
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Días Laborales</span>
+                                <label htmlFor="dias_laborales" className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Días Laborales</label>
                                 <input 
+                                    id="dias_laborales"
                                     {...register('dias_laborales')}
-                                    className="w-full p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-600 text-xs"
+                                    className="w-full p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-600 text-xs focus:ring-2 focus:ring-blue-200 outline-none"
                                     placeholder="Lunes a Sábado"
                                 />
                             </div>
@@ -162,16 +173,17 @@ const TiendaConfig: React.FC = () => {
                 {/* Columna Derecha: Datos y Galería */}
                 <div className="lg:col-span-2 space-y-10">
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-slate-50/50 p-8 rounded-[2.5rem]">
-                        <h4 className="font-black text-slate-900 text-sm uppercase mb-4 flex items-center gap-2 border-b-2 border-slate-100 pb-4">
-                            <Store size={18} className="text-[#3366FF]" /> Información General
-                        </h4>
+                        <h3 className="font-black text-slate-900 text-sm uppercase mb-4 flex items-center gap-2 border-b-2 border-slate-100 pb-4">
+                            <Store size={18} className="text-[#3366FF]" aria-hidden="true" /> Información General
+                        </h3>
                         <input type="hidden" {...register('foto_portada_url')} />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Nombre de la Barbería</label>
+                                <label htmlFor="nombre_tienda" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Nombre de la Barbería</label>
                                 <div className="relative">
-                                    <Store className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+                                    <Store className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={18} aria-hidden="true" />
                                     <input 
+                                        id="nombre_tienda"
                                         {...register('nombre_tienda', { required: 'El nombre es obligatorio' })}
                                         className="w-full pl-14 pr-6 py-4 bg-white border-2 border-slate-100 focus:border-[#3366FF] rounded-2xl font-bold text-slate-900 outline-none transition-all shadow-sm"
                                         placeholder="Ej. Golden Cuts"
@@ -180,10 +192,11 @@ const TiendaConfig: React.FC = () => {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Ciudad</label>
+                                <label htmlFor="ciudad" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Ciudad</label>
                                 <div className="relative">
-                                    <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+                                    <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={18} aria-hidden="true" />
                                     <input 
+                                        id="ciudad"
                                         {...register('ciudad', { required: 'La ciudad es obligatoria' })}
                                         className="w-full pl-14 pr-6 py-4 bg-white border-2 border-slate-100 focus:border-[#3366FF] rounded-2xl font-bold text-slate-900 outline-none transition-all shadow-sm"
                                         placeholder="Ej. Santiago"
@@ -193,10 +206,11 @@ const TiendaConfig: React.FC = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Dirección</label>
+                            <label htmlFor="direccion" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Dirección</label>
                             <div className="relative">
-                                <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={18} />
+                                <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={18} aria-hidden="true" />
                                 <input 
+                                    id="direccion"
                                     {...register('direccion', { required: 'La dirección es obligatoria' })}
                                     className="w-full pl-14 pr-6 py-4 bg-white border-2 border-slate-100 focus:border-[#3366FF] rounded-2xl font-bold text-slate-900 outline-none transition-all shadow-sm"
                                     placeholder="Av. Principal 123"
@@ -217,45 +231,48 @@ const TiendaConfig: React.FC = () => {
                     </form>
 
                     {/* Galería Section */}
-                    <div className="bg-slate-50/50 p-8 rounded-[2.5rem] border-4 border-white">
+                    <div className="bg-slate-50/50 p-8 rounded-[2.5rem] border-4 border-white" aria-labelledby="gallery-heading">
                         <div className="flex justify-between items-center mb-6 border-b-2 border-slate-100 pb-4">
-                            <h4 className="font-black text-slate-900 text-sm uppercase flex items-center gap-2">
-                                <ImageIcon size={18} className="text-[#3366FF]" /> Galería de Fotos
-                            </h4>
+                            <h3 id="gallery-heading" className="font-black text-slate-900 text-sm uppercase flex items-center gap-2">
+                                <ImageIcon size={18} className="text-[#3366FF]" aria-hidden="true" /> Galería de Fotos
+                            </h3>
                             <button 
                                 onClick={addImage}
+                                aria-label="Añadir nueva foto a la galería"
                                 className="flex items-center gap-2 bg-white text-[#3366FF] px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-sm hover:bg-[#3366FF] hover:text-white transition-all"
                             >
-                                <Plus size={14} /> Añadir Foto
+                                <Plus size={14} aria-hidden="true" /> Añadir Foto
                             </button>
                         </div>
 
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6" role="list">
                             {gallery.map((img, idx) => (
-                                <div key={idx} className="relative group aspect-square rounded-3xl overflow-hidden shadow-md border-4 border-white bg-white">
-                                    <img src={img} alt={`Gallery ${idx}`} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
+                                <div key={idx} role="listitem" className="relative group aspect-square rounded-3xl overflow-hidden shadow-md border-4 border-white bg-white">
+                                    <img src={img} alt={`Imagen de galería ${idx + 1}`} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
                                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                         <button 
                                             onClick={() => removeGalleryImage(idx)}
+                                            aria-label={`Eliminar imagen ${idx + 1}`}
                                             className="bg-white/90 text-rose-500 p-3 rounded-2xl shadow-xl hover:bg-rose-500 hover:text-white transition-all"
                                         >
-                                            <Trash2 size={18} />
+                                            <Trash2 size={18} aria-hidden="true" />
                                         </button>
                                     </div>
                                 </div>
                             ))}
-                            <div 
+                            <button 
                                 onClick={addImage}
-                                className="aspect-square bg-white rounded-3xl border-4 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer hover:border-[#3366FF] transition-all group"
+                                aria-label="Subir nueva foto"
+                                className="aspect-square bg-white rounded-3xl border-4 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer hover:border-[#3366FF] transition-all group w-full"
                             >
-                                <Plus size={32} className="text-slate-200 group-hover:text-[#3366FF] mb-2" />
+                                <Plus size={32} className="text-slate-200 group-hover:text-[#3366FF] mb-2" aria-hidden="true" />
                                 <span className="text-[10px] font-black text-slate-300 group-hover:text-[#3366FF] uppercase">Subir Foto</span>
-                            </div>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     );
 };
 
