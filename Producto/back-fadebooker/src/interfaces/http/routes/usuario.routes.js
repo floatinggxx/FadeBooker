@@ -7,6 +7,8 @@ const { usuarioSchema, loginSchema, updateUsuarioSchema } = require('../../../in
 
 router.post('/register', validateRequest({ body: usuarioSchema }), UsuarioController.register)
 router.post('/login', validateRequest({ body: loginSchema }), UsuarioController.login)
+router.post('/forgot-password', UsuarioController.forgotPassword)
+router.post('/reset-password', UsuarioController.resetPassword)
 router.get('/perfil', authMiddleware, UsuarioController.obtenerPerfil)
 router.put('/perfil', authMiddleware, validateRequest({ body: updateUsuarioSchema }), UsuarioController.actualizarPerfil)
 router.post('/perfil/foto', authMiddleware, UsuarioController.actualizarFoto)

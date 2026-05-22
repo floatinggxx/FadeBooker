@@ -99,6 +99,32 @@ const UsuarioController = {
       console.error('Error al actualizar foto:', error);
       res.status(400).json({ error: error.message || 'Fallo al procesar la imagen' });
     }
+  },
+
+  async forgotPassword(req, res) {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        return res.status(400).json({ error: 'El correo es requerido' });
+      }
+      const result = await usuarioService.solicitarRecuperacionContrasena(email);
+      res.json(result);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+
+  async resetPassword(req, res) {
+    try {
+      const { token, nuevaContrasena } = req.body;
+      if (!token || !nuevaContrasena) {
+        return res.status(400).json({ error: 'Token y nueva contraseña son requeridos' });
+      }
+      const result = await usuarioService.restablecerContrasena(token, nuevaContrasena);
+      res.json(result);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
   }
 }
 

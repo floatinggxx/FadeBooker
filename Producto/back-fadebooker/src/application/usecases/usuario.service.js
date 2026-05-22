@@ -154,6 +154,48 @@ class UsuarioService {
       throw new Error(`Error al procesar la imagen: ${error.message}`);
     }
   }
+
+  async solicitarRecuperacionContrasena(email) {
+    const usuario = await this.usuarioRepository.findByEmail(email);
+    if (!usuario) {
+      // Por seguridad, no informamos si el correo existe o no, 
+      // pero el requerimiento dice "con una validacion si el correo esta registrado"
+      // así que lanzaremos error para que el frontend pueda avisar.
+      throw new Error('El correo electrónico no está registrado');
+    }
+
+    // Generar token de corta duración (1 hora)
+    const token = require('jsonwebtoken').sign(
+      { id: usuario.id_usuario, email: usuario.email, purpose: 'password_reset' },
+      this.tokenManager.secret,
+      { expiresIn: '1h' }
+    );
+
+    const emailService = require('../../infraestructure/notifications/EmailService');
+    await emailService.sendResetPasswordEmail(usuario.email, token);
+    
+    return { mensaje: 'Si el correo existe, recibirá un enlace de recuperación' };
+  }
+
+  async restablecerContrasena(token, nuevaContrasena) {
+    try {
+      const decoded = require('jsonwebtoken').verify(token, this.tokenManager.secret);
+      
+      if (decoded.purpose !== 'password_reset') {
+        throw new Error('Token inválido');
+      }
+
+      const hashedPassword = await this.hasher.hash(nuevaContrasena);
+      await this.usuarioRepository.update(decoded.id, { contrasena: hashedPassword });
+      
+      return { mensaje: 'Contraseña actualizada correctamente' };
+    } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        throw new Error('El enlace ha expirado');
+      }
+      throw new Error('Enlace de recuperación inválido o expirado');
+    }
+  }
 }
 
 module.exports = UsuarioService
