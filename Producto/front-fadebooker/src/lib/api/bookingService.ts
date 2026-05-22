@@ -66,5 +66,11 @@ export const bookingService = {
       const citaDate = new Date(`${cita.fecha} ${cita.hora}`);
       return citaDate > ahora;
     });
+  },
+
+  // Obtener mis citas (alias para listCitas sin parámetros, el backend filtra por JWT)
+  async getMyBookings(): Promise<Cita[]> {
+    const response = await api.get<Cita[]>('/citas');
+    return response.data;
   }
 };

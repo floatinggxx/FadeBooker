@@ -11,6 +11,7 @@ import BarberDetailPage from '@/pages/BarberDetailPage';
 import MyBookingsPage from '@/pages/MyBookingsPage';
 import BookingPage from '@/pages/BookingPage';
 import ProfilePage from '@/pages/ProfilePage';
+import DashboardPage from '@/pages/DashboardPage';
 import HelpPage from '@/pages/HelpPage';
 import PaymentResultPage from '@/pages/PaymentResultPage';
 import BarberDashboardPage from '@/pages/BarberDashboardPage';
@@ -18,16 +19,6 @@ import LoginPage from '@/features/auth/ui/LoginPage';
 import RegisterPage from '@/features/auth/ui/RegisterPage';
 import ForgotPasswordPage from '@/features/auth/ui/ForgotPasswordPage';
 import ResetPasswordPage from '@/features/auth/ui/ResetPasswordPage';
-
-const Dashboard = () => {
-  const { logout, user } = useAuth();
-  return (
-    <div className="p-10">
-      <h1>Bienvenido, {user?.nombre || 'Usuario'}</h1>
-      <button onClick={logout} className="mt-4 bg-red-500 text-white px-4 py-2 rounded">Cerrar Sesión</button>
-    </div>
-  );
-};
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -45,24 +36,40 @@ const BarberoRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+import { Menu, X } from 'lucide-react';
+
 const AppHeader = () => {
   const { isAuthenticated, logout, user } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const location = useLocation();
+
+  // Close menu when location changes
+  React.useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location]);
 
   return (
     <header className="site-header">
       <div className="container header-container">
         <div className="brand">
           <Link to="/" className="brand-logo-link">
-            
             <img src="/images/logo.png" alt="Logo FadeBooker" className="brand-logo-image" />
-        
             <div className="brand-text">
               <span className="brand-title">FadeBooker</span>
               <span className="brand-subtitle">Reserva cortes y gestiona tu estilo.</span>
             </div>
           </Link>
         </div>
-        <div className="header-right">
+
+        {/* Mobile menu button */}
+        <button 
+          className="md:hidden p-2 text-slate-600 hover:text-[#3366FF] transition-colors"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
+          {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+        </button>
+
+        <div className={`header-right ${isMenuOpen ? 'mobile-open' : ''}`}>
           <nav className="header-links">
             <Link to="/" className="link-button">Inicio</Link>
             <Link to="/barberias" className="link-button">Barberías</Link>
@@ -75,12 +82,12 @@ const AppHeader = () => {
                 )}
                 <Link to="/bookings" className="link-button">Citas</Link>
                 <Link to="/profile" className="link-button">Mi perfil</Link>
-                <button onClick={logout} className="button button-secondary">Cerrar sesión</button>
+                <button onClick={logout} className="button button-secondary w-full md:w-auto">Cerrar sesión</button>
               </>
             ) : (
               <>
-                <Link to="/login" className="button button-primary">Ingresar</Link>
-                <Link to="/register" className="button button-secondary">Registrarme</Link>
+                <Link to="/login" className="button button-primary w-full md:w-auto">Ingresar</Link>
+                <Link to="/register" className="button button-secondary w-full md:w-auto">Registrarme</Link>
               </>
             )}
           </nav>
@@ -104,7 +111,7 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
-              <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+              <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
               <Route path="/barber-dashboard" element={<BarberoRoute><BarberDashboardPage /></BarberoRoute>} />
               <Route path="/barbero/:id" element={<BarberDetailPage />} />
               <Route path="/tienda/:id" element={<TiendaDetailPage />} />

@@ -14,4 +14,21 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Global error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (!error.response) {
+      // Error de red o servidor caído
+      console.error('Network Error: El backend no responde');
+      return Promise.reject({
+        ...error,
+        message: 'No se pudo conectar con el servidor. Por favor, verifica tu conexión a internet o asegúrate de que el servicio de FadeBooker esté activo.',
+        isNetworkError: true
+      });
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;

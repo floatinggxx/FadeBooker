@@ -6,6 +6,7 @@ class UsuarioRepositoryImpl {
   }
 
   async create(data) {
+<<<<<<< Updated upstream
     // Para Azure SQL, es más seguro usar returning o manejar el resultado de insert
     const result = await this.db('Usuario')
       .insert(data)
@@ -18,6 +19,12 @@ class UsuarioRepositoryImpl {
     }
     
     return result
+=======
+    const [result] = await this.db('Usuario').insert(data).returning('id_usuario')
+    // 🛡️ Manejo robusto para MSSQL/Tedious que a veces retorna el objeto o el valor
+    const id = (result && typeof result === 'object') ? result.id_usuario : result
+    return id
+>>>>>>> Stashed changes
   }
 
   async findById(id) {

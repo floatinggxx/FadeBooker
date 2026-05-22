@@ -146,6 +146,61 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: flex-end;
 }
 
+/* Responsividad de la Navbar */
+@media (max-width: 768px) {
+  .brand-subtitle {
+    display: none;
+  }
+
+  .header-right {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+    display: none;
+    flex-direction: column;
+    z-index: 20;
+    transform-origin: top;
+    animation: slideDown 250ms ease-out forwards;
+  }
+
+  .header-right.mobile-open {
+    display: flex;
+  }
+
+  .header-links {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .link-button {
+    justify-content: flex-start;
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .link-button:hover {
+    background-color: #f8fafc;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .link-button,
 .button {
   display: inline-flex;

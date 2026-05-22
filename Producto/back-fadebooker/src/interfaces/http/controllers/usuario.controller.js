@@ -13,7 +13,10 @@ const UsuarioController = {
     try {
       console.log(`[DEBUG] Intentando registrar usuario: ${req.body.email}`);
       const user = await usuarioService.registrar(req.body)
+<<<<<<< Updated upstream
       console.log(`[DEBUG] Usuario registrado exitosamente: ${req.body.email}`);
+=======
+>>>>>>> Stashed changes
       res.status(201).json({
         status: 'success',
         message: 'Usuario registrado correctamente',
@@ -21,7 +24,10 @@ const UsuarioController = {
       })
     } catch (error) {
       if (error.name === 'ZodError') {
+<<<<<<< Updated upstream
         console.warn(`[WARN] Error de validación al registrar: ${error.message}`);
+=======
+>>>>>>> Stashed changes
         const safeErrors = Array.isArray(error.errors) ? error.errors : [];
         const errorDetails = safeErrors.map(err => {
           const path = (err && Array.isArray(err.path)) ? err.path.join('.') : '';
@@ -38,7 +44,10 @@ const UsuarioController = {
           }))
         })
       }
+<<<<<<< Updated upstream
       console.error(`[ERROR] Fallo crítico al registrar: ${error.message}`);
+=======
+>>>>>>> Stashed changes
       res.status(400).json({ 
         status: 'error',
         message: error.message || '',
@@ -84,6 +93,7 @@ const UsuarioController = {
         message: error.message || '',
         errors: []
       })
+<<<<<<< Updated upstream
     }
   },
 
@@ -124,6 +134,8 @@ const UsuarioController = {
       res.json(result);
     } catch (error) {
       res.status(400).json({ error: error.message });
+=======
+>>>>>>> Stashed changes
     }
   }
 }
