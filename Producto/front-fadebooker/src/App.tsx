@@ -16,6 +16,8 @@ import PaymentResultPage from '@/pages/PaymentResultPage';
 import BarberDashboardPage from '@/pages/BarberDashboardPage';
 import LoginPage from '@/features/auth/ui/LoginPage';
 import RegisterPage from '@/features/auth/ui/RegisterPage';
+import ForgotPasswordPage from '@/features/auth/ui/ForgotPasswordPage';
+import ResetPasswordPage from '@/features/auth/ui/ResetPasswordPage';
 
 const Dashboard = () => {
   const { logout, user } = useAuth();
@@ -100,6 +102,8 @@ function App() {
             <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
               <Route path="/barber-dashboard" element={<BarberoRoute><BarberDashboardPage /></BarberoRoute>} />
               <Route path="/barbero/:id" element={<BarberDetailPage />} />

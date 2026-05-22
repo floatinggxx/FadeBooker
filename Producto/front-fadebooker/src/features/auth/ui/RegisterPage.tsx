@@ -404,9 +404,9 @@ const RegisterPage: React.FC = () => {
             {isRegisteringTienda ? 'Registrar Tienda y Usuario' : 'Registrar'}
           </button>
 
-          <div className="form-footnote">
-            <span>¿Ya tienes cuenta?</span>
-            <Link to="/login" className="link-alt">Inicia sesión</Link>
+          <div className="flex justify-center items-center gap-1 mt-6 text-sm">
+            <span className="text-slate-500">¿Ya tienes cuenta?</span>
+            <Link to="/login" style={{ color: '#3366FF', fontWeight: 700 }}>Inicia sesión</Link>
           </div>
         </form>
       </div>

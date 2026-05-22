@@ -170,33 +170,20 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: none;
 }
 
-.button-primary:active {
-  background-color: #b02332;
+.button-primary {
+  background-color: #3366FF;
   color: white;
-}
-
-.button-secondary:active {
-  background-color: #d1d5db;
-  color: var(--color-primary-900);
-}
-
-.button-blue:active {
-  background-color: #1a44bc;
-  color: white;
-}
-
-.link-button:hover {
-  color: var(--color-accent);
-  border-color: rgba(230,57,70,0.2);
-}
-
-.button-secondary:hover {
-  background-color: #e2e4e8;
-  color: var(--color-primary-900);
+  border: none;
+  box-shadow: 0 10px 25px rgba(51, 102, 255, 0.2);
 }
 
 .button-primary:hover {
-  background-color: #c62839;
+  background-color: #2b55d6;
+  color: white;
+}
+
+.button-primary:active {
+  background-color: #e63946;
   color: white;
 }
 

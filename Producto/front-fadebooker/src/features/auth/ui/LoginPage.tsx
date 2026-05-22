@@ -81,11 +81,17 @@ const LoginPage: React.FC = () => {
             {errors.password && <span className="error-message">{errors.password.message}</span>}
           </div>
 
+          <div className="flex justify-end mb-4">
+            <Link to="/forgot-password" style={{ fontSize: '0.875rem', color: '#3366FF', fontWeight: 600 }}>
+              ¿Olvidaste tu contraseña?
+            </Link>
+          </div>
+
           <button type="submit" className="button button-primary button-glow">Entrar</button>
           
-          <div className="form-footnote">
-            <span>¿Aún no tienes cuenta?</span>
-            <Link to="/register" className="link-alt">Regístrate</Link>
+          <div className="flex justify-center items-center gap-1 mt-6 text-sm">
+            <span className="text-slate-500">¿Aún no tienes cuenta?</span>
+            <Link to="/register" style={{ color: '#3366FF', fontWeight: 700 }}>Regístrate</Link>
           </div>
         </form>
       </div>
