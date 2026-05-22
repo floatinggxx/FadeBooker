@@ -174,7 +174,7 @@ const BarberDetailPage: React.FC = () => {
                     className="group bg-[#3366FF] hover:bg-[#2952CC] active:bg-[#1E3D99] text-white p-8 rounded-[2rem] shadow-xl border-4 border-transparent hover:border-white/20 transition-all flex flex-col items-center justify-center gap-2"
                   >
                     <span className="text-2xl font-black tracking-tight group-hover:scale-105 transition-transform">
-                      {s.servicio?.nombre}
+                      {s.servicio?.nombre_servicio || s.servicio?.nombre}
                     </span>
                     <span className="text-blue-100 font-bold opacity-80">
                       {new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(s.precio || s.servicio?.precioBase || 0)}
@@ -274,7 +274,7 @@ const BarberDetailPage: React.FC = () => {
                   <div className="flex gap-4">
                     <span className="font-bold text-slate-900 min-w-[120px]">Servicio:</span>
                     <span className="text-slate-600 font-medium">
-                      {selectedService?.servicio?.nombre} ({new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(selectedService?.precio || 0)})
+                      {selectedService?.servicio?.nombre_servicio || selectedService?.servicio?.nombre} ({new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(selectedService?.precio || 0)})
                     </span>
                   </div>
                   <div className="flex gap-4">

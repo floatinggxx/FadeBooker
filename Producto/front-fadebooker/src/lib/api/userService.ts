@@ -53,5 +53,12 @@ export const userService = {
       contrasenaNueva
     });
     return response.data;
+  },
+
+  async uploadFoto(base64Image: string): Promise<{ fotoUrl: string }> {
+    const response = await api.post<{ fotoUrl: string }>('/usuarios/perfil/foto', {
+      image: base64Image
+    });
+    return response.data;
   }
 };

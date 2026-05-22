@@ -52,16 +52,30 @@ const TiendaConfig: React.FC = () => {
         if (!user?.id_tienda) return;
         setIsSaving(true);
         try {
-            // Incluir galería en el update
+            // 🛡️ Limpieza estricta: No enviar campos de solo lectura o PK
+            // Esto evita errores de Azure SQL al intentar actualizar IDENTITY o columnas protegidas
+            const { 
+                id_tienda, 
+                id_dueño, 
+                createdAt, 
+                updatedAt, 
+                calificacion_promedio, 
+                este_activa,
+                horarios_json, // Evitar si no está mapeado
+                ...cleanData 
+            } = data as any;
+
             const updateData = {
-                ...data,
+                ...cleanData,
                 galeria: JSON.stringify(gallery)
             };
+
             await tiendaService.updateTienda(user.id_tienda, updateData);
-            alert('¡Datos de la barbería actualizados!');
-        } catch (error) {
+            alert('¡Datos de la barbería actualizados correctamente!');
+        } catch (error: any) {
             console.error('Error updating tienda:', error);
-            alert('Error al guardar cambios');
+            const errorMsg = error.response?.data?.error || error.message || 'Error desconocido';
+            alert(`Error al guardar cambios: ${errorMsg}`);
         } finally {
             setIsSaving(false);
         }
@@ -95,7 +109,7 @@ const TiendaConfig: React.FC = () => {
                 <h2 id="config-heading" className="text-3xl font-black text-slate-900">Configuración de Barbería</h2>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-3 gap-12">
                 {/* Columna Izquierda: Logo y Horarios */}
                 <div className="lg:col-span-1 space-y-8">
                     <div className="section" aria-labelledby="logo-heading">
@@ -172,7 +186,7 @@ const TiendaConfig: React.FC = () => {
 
                 {/* Columna Derecha: Datos y Galería */}
                 <div className="lg:col-span-2 space-y-10">
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-slate-50/50 p-8 rounded-[2.5rem]">
+                    <div className="space-y-6 bg-slate-50/50 p-8 rounded-[2.5rem]">
                         <h3 className="font-black text-slate-900 text-sm uppercase mb-4 flex items-center gap-2 border-b-2 border-slate-100 pb-4">
                             <Store size={18} className="text-[#3366FF]" aria-hidden="true" /> Información General
                         </h3>
@@ -228,7 +242,7 @@ const TiendaConfig: React.FC = () => {
                                 {isSaving ? 'GUARDANDO...' : 'GUARDAR CAMBIOS'}
                             </button>
                         </div>
-                    </form>
+                    </div>
 
                     {/* Galería Section */}
                     <div className="bg-slate-50/50 p-8 rounded-[2.5rem] border-4 border-white" aria-labelledby="gallery-heading">
@@ -271,7 +285,7 @@ const TiendaConfig: React.FC = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </section>
     );
 };

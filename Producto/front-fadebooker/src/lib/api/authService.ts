@@ -14,6 +14,8 @@ export const authService = {
       nombre: usuario.nombre,
       email: usuario.email,
       rol: usuario.rol,
+      id_tienda: usuario.id_tienda,
+      id_barbero: usuario.id_barbero,
       token
     };
   },

@@ -9,5 +9,6 @@ router.post('/register', validateRequest({ body: usuarioSchema }), UsuarioContro
 router.post('/login', validateRequest({ body: loginSchema }), UsuarioController.login)
 router.get('/perfil', authMiddleware, UsuarioController.obtenerPerfil)
 router.put('/perfil', authMiddleware, validateRequest({ body: updateUsuarioSchema }), UsuarioController.actualizarPerfil)
+router.post('/perfil/foto', authMiddleware, UsuarioController.actualizarFoto)
 
 module.exports = router

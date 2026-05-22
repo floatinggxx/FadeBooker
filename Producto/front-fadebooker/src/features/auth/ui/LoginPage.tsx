@@ -23,7 +23,14 @@ const LoginPage: React.FC = () => {
     try {
       const resp = await authService.login(data.email, data.password);
       if (resp?.token) {
-        login({ id: resp.id, nombre: resp.nombre, email: resp.email, rol: resp.rol }, resp.token);
+        login({ 
+          id: resp.id, 
+          nombre: resp.nombre, 
+          email: resp.email, 
+          rol: resp.rol,
+          id_tienda: resp.id_tienda,
+          id_barbero: resp.id_barbero
+        }, resp.token);
         navigate(from, { replace: true });
       } else {
         alert('Respuesta inválida del servidor');

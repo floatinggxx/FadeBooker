@@ -19,30 +19,36 @@ const validateRequest = (schema) => {
       next();
     } catch (error) {
       if (error instanceof z.ZodError) {
-        console.warn(`[VALIDATION-MIDDLEWARE] Zod Error: ${error.message}`);
-        // 🛡️ Súper defensivo para evitar crash de .map y soportar tanto Power Apps como React
-        const issues = error.errors || error.issues || [];
-        const safeErrors = Array.isArray(issues) ? issues : [];
+        console.warn(`[VALIDATION-MIDDLEWARE] Zod Error in ${req.method} ${req.originalUrl}:`, error.errors);
         
-        const errorDetails = safeErrors.map(err => {
-          const path = (err && Array.isArray(err.path)) ? err.path.join('.') : '';
-          const msg = (err && err.message) ? err.message : 'Error desconocido';
-          return path ? `${path}: ${msg}` : msg;
-        }).join(', ');
+        // 🛡️ Súper defensivo para evitar crash de .map
+        // En algunas versiones de Zod, los errores están en .errors o .issues
+        const issues = error.issues || error.errors || [];
+        
+        const errorDetails = Array.isArray(issues) 
+          ? issues.map(err => {
+              const path = (err && Array.isArray(err.path)) ? err.path.join('.') : '';
+              const msg = (err && err.message) ? err.message : 'Error desconocido';
+              return path ? `${path}: ${msg}` : msg;
+            }).join(', ')
+          : 'Error de validación desconocido';
         
         return res.status(400).json({
           status: 'error',
           message: `Error de validación: ${errorDetails}`,
-          errors: safeErrors.map(err => ({
-            path: (err && Array.isArray(err.path)) ? err.path.join('.') : '',
-            message: (err && err.message) ? err.message : 'Error desconocido'
-          }))
+          errors: Array.isArray(issues) 
+            ? issues.map(err => ({
+                path: (err && Array.isArray(err.path)) ? err.path.join('.') : '',
+                message: (err && err.message) ? err.message : 'Error desconocido'
+              }))
+            : []
         });
       }
       
+      console.error(`[VALIDATION-MIDDLEWARE] Unexpected Error:`, error);
       return res.status(400).json({
         status: 'error',
-        message: 'Error de validación',
+        message: 'Error de validación inesperado',
         errors: [{ message: error.message }]
       });
     }

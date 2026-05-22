@@ -68,16 +68,93 @@ class CitaRepositoryImpl {
   }
 
   async findByCliente(id_cliente) {
-    return this.db('Cita').where({ id_cliente }).orderBy('fecha_hora_inicio', 'desc').select()
+    return this.db('Cita as c')
+      .leftJoin('Barbero as b', 'c.id_barbero', 'b.id_barbero')
+      .leftJoin('Usuario as u', 'b.id_usuario', 'u.id_usuario')
+      .leftJoin('Servicio as s', 'c.id_servicio', 's.id_servicio')
+      .where('c.id_cliente', id_cliente)
+      .select(
+        'c.*',
+        'u.nombre as barbero_nombre',
+        'u.apellido as barbero_apellido',
+        's.nombre_servicio as servicio_nombre'
+      )
+      .orderBy('c.fecha_hora_inicio', 'desc')
   }
 
-  async findByBarbero(id_barbero, fecha = null) {
-    const query = this.db('Cita').where({ id_barbero })
+  async findByBarbero(id_barbero, fecha = null, period = 'day') {
+    const query = this.db('Cita as c')
+      .leftJoin('Usuario as u_c', 'c.id_cliente', 'u_c.id_usuario')
+      .leftJoin('Servicio as s', 'c.id_servicio', 's.id_servicio')
+      .where('c.id_barbero', id_barbero)
+    
     if (fecha) {
-      const fechaLimpia = fecha.split('T')[0]
-      query.whereRaw('CAST(fecha_hora_inicio AS DATE) = ?', [fechaLimpia])
+      const fechaLimpia = (typeof fecha === 'string') ? fecha.split('T')[0] : new Date(fecha).toISOString().split('T')[0];
+      query.whereRaw('CAST(c.fecha_hora_inicio AS DATE) = ?', [fechaLimpia])
+    } else {
+      if (period === 'day') {
+        query.whereRaw('CAST(c.fecha_hora_inicio AS DATE) = CAST(GETDATE() AS DATE)');
+      } else if (period === 'week') {
+        query.whereRaw('c.fecha_hora_inicio >= DATEADD(day, -7, GETDATE())');
+      } else if (period === 'month') {
+        query.whereRaw('c.fecha_hora_inicio >= DATEADD(month, -1, GETDATE())');
+      }
     }
-    return query.orderBy('fecha_hora_inicio', 'desc').select()
+
+    return query.select(
+      'c.*',
+      'u_c.nombre as cliente_nombre',
+      'u_c.apellido as cliente_apellido',
+      's.nombre_servicio as servicio_nombre'
+    ).orderBy('c.fecha_hora_inicio', 'desc')
+  }
+
+  async findByTienda(id_tienda, fecha = null, period = 'day') {
+    const query = this.db('Cita as c')
+      .leftJoin('Usuario as u_c', 'c.id_cliente', 'u_c.id_usuario')
+      .leftJoin('Barbero as b', 'c.id_barbero', 'b.id_barbero')
+      .leftJoin('Usuario as u_b', 'b.id_usuario', 'u_b.id_usuario')
+      .leftJoin('Servicio as s', 'c.id_servicio', 's.id_servicio')
+      .where('c.id_tienda', id_tienda)
+    
+    if (fecha) {
+      const fechaLimpia = (typeof fecha === 'string') ? fecha.split('T')[0] : new Date(fecha).toISOString().split('T')[0];
+      query.whereRaw('CAST(c.fecha_hora_inicio AS DATE) = ?', [fechaLimpia])
+    } else {
+      if (period === 'day') {
+        query.whereRaw('CAST(c.fecha_hora_inicio AS DATE) = CAST(GETDATE() AS DATE)');
+      } else if (period === 'week') {
+        query.whereRaw('c.fecha_hora_inicio >= DATEADD(day, -7, GETDATE())');
+      } else if (period === 'month') {
+        query.whereRaw('c.fecha_hora_inicio >= DATEADD(month, -1, GETDATE())');
+      }
+    }
+
+    return query.select(
+      'c.*',
+      'u_c.nombre as cliente_nombre',
+      'u_c.apellido as cliente_apellido',
+      'u_b.nombre as barbero_nombre',
+      'u_b.apellido as barbero_apellido',
+      's.nombre_servicio as servicio_nombre'
+    ).orderBy('c.fecha_hora_inicio', 'desc')
+  }
+
+  async findAll() {
+    return this.db('Cita as c')
+      .leftJoin('Usuario as u_c', 'c.id_cliente', 'u_c.id_usuario')
+      .leftJoin('Barbero as b', 'c.id_barbero', 'b.id_barbero')
+      .leftJoin('Usuario as u_b', 'b.id_usuario', 'u_b.id_usuario')
+      .leftJoin('Servicio as s', 'c.id_servicio', 's.id_servicio')
+      .select(
+        'c.*',
+        'u_c.nombre as cliente_nombre',
+        'u_c.apellido as cliente_apellido',
+        'u_b.nombre as barbero_nombre',
+        'u_b.apellido as barbero_apellido',
+        's.nombre_servicio as servicio_nombre'
+      )
+      .orderBy('c.fecha_hora_inicio', 'desc')
   }
 
   async getStats(id_barbero, period = 'day') {
@@ -115,7 +192,7 @@ class CitaRepositoryImpl {
 
     const solapamientos = await this.db('Cita')
       .where('id_barbero', id_barbero)
-      .whereIn('estado', ['Confirmada', 'Pendiente'])
+      .whereIn('estado', ['confirmada', 'no_presentado', 'completada'])
       .where(function() {
         this.where(function() {
           this.where('fecha_hora_inicio', '>=', inicioStr)
@@ -141,6 +218,16 @@ class CitaRepositoryImpl {
 
   async update(id, data) {
     return this.db('Cita').where({ id_cita: id }).update(data)
+  }
+
+  async autoCompletarCitasVencidas() {
+    return this.db('Cita')
+      .where('estado', 'confirmada')
+      .whereRaw('DATEADD(minute, duracion_minutos, fecha_hora_inicio) < GETDATE()')
+      .update({
+        estado: 'completada',
+        updatedAt: this.db.raw('GETDATE()')
+      });
   }
 
   async delete(id) {
@@ -200,6 +287,64 @@ class CitaRepositoryImpl {
         'Tienda.nombre_tienda'
       )
       .first()
+  }
+
+  /**
+   * Obtiene estadísticas para el dashboard
+   */
+  async getDashboardStats(id_tienda) {
+    const hoy = new Date();
+    const hoyISO = hoy.toISOString().split('T')[0];
+
+    // 1. Ingresos de hoy (confirmadas o finalizadas)
+    const ingresos = await this.db('Cita')
+      .where('id_tienda', id_tienda)
+      .whereRaw("CONVERT(DATE, fecha_hora_inicio) = ?", [hoyISO])
+      .whereIn('estado', ['confirmada', 'finalizado', 'completada'])
+      .sum('monto_total as total');
+
+    // 2. Servicios de hoy
+    const serviciosCount = await this.db('Cita')
+      .where('id_tienda', id_tienda)
+      .whereRaw("CONVERT(DATE, fecha_hora_inicio) = ?", [hoyISO])
+      .count('id_cita as total');
+
+    // 3. Próxima cita
+    const proxima = await this.db('Cita')
+      .join('Usuario as cliente', 'Cita.id_cliente', '=', 'cliente.id_usuario')
+      .join('Servicio', 'Cita.id_servicio', '=', 'Servicio.id_servicio')
+      .where('Cita.id_tienda', id_tienda)
+      .where('Cita.fecha_hora_inicio', '>=', hoy.toISOString())
+      .where('Cita.estado', 'confirmada')
+      .orderBy('Cita.fecha_hora_inicio', 'asc')
+      .select(
+        'Cita.fecha_hora_inicio',
+        'cliente.nombre as cliente_nombre',
+        'Servicio.nombre_servicio'
+      )
+      .first();
+
+    return {
+      ingresosHoy: ingresos[0].total || 0,
+      serviciosHoy: serviciosCount[0].total || 0,
+      proximaCita: proxima || null
+    };
+  }
+
+  /**
+   * Sincroniza estados de citas antiguas
+   */
+  async syncStatuses() {
+    const ahora = new Date();
+    const haceUnaHora = new Date(ahora.getTime() - (60 * 60 * 1000));
+
+    // Citas que pasaron hace más de una hora y siguen como 'confirmada' -> 'completada'
+    const actualizados = await this.db('Cita')
+      .where('estado', 'confirmada')
+      .where('fecha_hora_inicio', '<', haceUnaHora.toISOString())
+      .update({ estado: 'completada' }); // Cambiamos a 'completada' que es el estado permitido por el CHECK constraint
+
+    return actualizados;
   }
 }
 

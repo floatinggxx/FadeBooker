@@ -35,8 +35,13 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
           // Opcionalmente actualizar el rol si era cliente
           await trx('Usuario').where({ id_usuario }).update({ rol: 'Barbero' })
         } else {
-          const [newUserId] = await trx('Usuario').insert(usuarioData)
-          id_usuario = newUserId.id_usuario || newUserId
+          const result = await trx('Usuario').insert(usuarioData).returning('id_usuario')
+          if (result && Array.isArray(result) && result.length > 0) {
+            const id = result[0]
+            id_usuario = typeof id === 'object' ? id.id_usuario : id
+          } else {
+            id_usuario = result
+          }
         }
       }
 
@@ -51,10 +56,17 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
         activo: 1
       }
 
-      const [id_barbero] = await trx('Barbero').insert(barberoData)
+      const barberoResult = await trx('Barbero').insert(barberoData).returning('id_barbero')
+      let id_barbero = null
+      if (barberoResult && Array.isArray(barberoResult) && barberoResult.length > 0) {
+        const id = barberoResult[0]
+        id_barbero = typeof id === 'object' ? id.id_barbero : id
+      } else {
+        id_barbero = barberoResult
+      }
       
       await trx.commit()
-      return id_barbero.id_barbero || id_barbero
+      return id_barbero
     } catch (error) {
       await trx.rollback()
       throw error
@@ -82,7 +94,7 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
         `${fecha} 00:00:00`,
         `${fecha} 23:59:59`
       ])
-      .whereIn('estado', ['confirmada', 'en_progreso'])
+      .whereIn('estado', ['confirmada', 'en_progreso', 'completada'])
       .select('id_cita', 'fecha_hora_inicio', 'duracion_minutos', 'estado')
   }
 

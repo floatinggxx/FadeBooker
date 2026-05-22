@@ -1,17 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
 import { barberoService } from '../services/barberoService';
 
-export const useBarberoDashboard = (idBarbero: number, period: 'day' | 'week' | 'month' = 'day') => {
+export const useBarberoDashboard = (idBarbero: number, period: 'day' | 'week' | 'month' = 'day', idTienda?: number) => {
   const statsQuery = useQuery({
-    queryKey: ['barbero-stats', idBarbero, period],
-    queryFn: () => barberoService.getBarberoStats(idBarbero, period),
-    enabled: !!idBarbero,
+    queryKey: ['dashboard-stats', idBarbero, idTienda, period],
+    queryFn: () => idTienda 
+      ? barberoService.getTiendaStats(idTienda)
+      : barberoService.getBarberoStats(idBarbero, period),
+    enabled: !!idBarbero || !!idTienda,
   });
 
   const bookingsQuery = useQuery({
-    queryKey: ['barbero-bookings', idBarbero],
-    queryFn: () => barberoService.getBarberoBookings(idBarbero),
-    enabled: !!idBarbero,
+    queryKey: ['barbero-bookings', idBarbero, idTienda, period],
+    queryFn: () => idTienda 
+      ? barberoService.getTiendaBookings(idTienda, undefined, period)
+      : barberoService.getBarberoBookings(idBarbero, undefined, period),
+    enabled: !!idBarbero || !!idTienda,
   });
 
   const infoQuery = useQuery({

@@ -38,14 +38,14 @@ export const bookingService = {
   },
 
   // Actualizar estado de una cita
-  async cambiarEstadoCita(citaId: number, estado: 'pendiente' | 'confirmada' | 'completada' | 'cancelada'): Promise<Cita> {
-    const response = await api.put<Cita>(`/citas/${citaId}`, { estado });
+  async cambiarEstadoCita(citaId: number, estado: string): Promise<any> {
+    const response = await api.put(`/citas/${citaId}/estado`, { estado });
     return response.data;
   },
 
   // Cancelar una cita
-  async cancelarCita(citaId: number): Promise<Cita> {
-    const response = await api.put<Cita>(`/citas/${citaId}`, { estado: 'cancelada' });
+  async cancelarCita(citaId: number): Promise<any> {
+    const response = await api.put(`/citas/${citaId}/estado`, { estado: 'cancelada' });
     return response.data;
   },
 

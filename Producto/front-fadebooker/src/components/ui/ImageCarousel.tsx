@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FALLBACK_URLS } from '@/lib/utils/placeholders';
+import { PLACEHOLDERS, FALLBACK_URLS } from '@/lib/utils/placeholders';
 
 interface ImageCarouselProps {
   images?: Array<{ src: string; alt: string; caption?: string }>;
@@ -9,19 +9,19 @@ const defaultSlides = [
   {
     src: '/images/slider-1.jpg',
     alt: 'Barbería con estilo moderno',
-    fallback: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=1200',
+    fallback: '/images/slider-1.jpg',
     caption: 'Explora barberías premium cerca de ti con resultados profesionales.'
   },
   {
     src: '/images/slider-2.jpg',
     alt: 'Reserva tu cita fácilmente',
-    fallback: 'https://images.unsplash.com/photo-1599351474290-288d8460d689?q=80&w=1200',
+    fallback: '/images/slider-2.jpg',
     caption: 'Agenda tus citas con rapidez y mantén tu rutina de estilo bajo control.'
   },
   {
     src: '/images/slider-3.jpg',
     alt: 'Cortes profesionales',
-    fallback: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?q=80&w=1200',
+    fallback: '/images/slider-3.jpg',
     caption: 'Encuentra cortes y servicios adaptados a tu estilo con un solo clic.'
   }
 ];

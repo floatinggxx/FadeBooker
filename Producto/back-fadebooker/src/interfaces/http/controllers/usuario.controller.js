@@ -85,6 +85,20 @@ const UsuarioController = {
         errors: []
       })
     }
+  },
+
+  async actualizarFoto(req, res) {
+    try {
+      const { image } = req.body; // Se espera base64
+      if (!image) {
+        return res.status(400).json({ error: 'No se proporcionó ninguna imagen' });
+      }
+      const result = await usuarioService.actualizarFoto(req.user.id, image);
+      res.json(result);
+    } catch (error) {
+      console.error('Error al actualizar foto:', error);
+      res.status(400).json({ error: error.message || 'Fallo al procesar la imagen' });
+    }
   }
 }
 

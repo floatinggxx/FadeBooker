@@ -1,12 +1,15 @@
-// URL de respaldo (Unsplash) para asegurar una experiencia premium inmediata
-export const FALLBACK_URLS = {
-  TIENDA: 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=1200&auto=format&fit=crop',
-  BARBERO: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?q=80&w=1200&auto=format&fit=crop',
-  AVATAR: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=1200&auto=format&fit=crop',
+/**
+ * Placeholder images using local assets as per instructions.
+ */
+export const PLACEHOLDERS = {
+  TIENDA: '/images/slider-1.jpg',
+  BARBERO: '/images/barber-placeholder.jpg',
+  AVATAR: '/images/barber-placeholder.jpg',
 };
 
-export const PLACEHOLDERS = {
-  TIENDA: FALLBACK_URLS.TIENDA, // Usamos fallback como base hasta tener locales
-  BARBERO: FALLBACK_URLS.BARBERO,
-  AVATAR: FALLBACK_URLS.AVATAR,
+// Mantener FALLBACK_URLS por compatibilidad pero apuntando a locales
+export const FALLBACK_URLS = {
+  TIENDA: PLACEHOLDERS.TIENDA,
+  BARBERO: PLACEHOLDERS.BARBERO,
+  AVATAR: PLACEHOLDERS.AVATAR,
 };

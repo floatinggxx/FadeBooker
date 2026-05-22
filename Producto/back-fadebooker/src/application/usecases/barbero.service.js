@@ -44,29 +44,29 @@ class BarberoService {
     
     const slots = [];
     const inicio = 9; // 09:00
-    const fin = 18;   // 18:00
+    const fin = 21;   // Extender a 21:00 para más flexibilidad
     
     for (let hora = inicio; hora < fin; hora++) {
       for (let min of ['00', '30']) {
-        const horaStr = `${hora.toString().padStart(2, '0')}:${min}:00`;
-        const slotKey = `${hora.toString().padStart(2, '0')}:${min}`;
+        const slotHora = hora;
+        const slotMin = parseInt(min);
+        const slotDate = new Date(`${fecha}T${slotHora.toString().padStart(2, '0')}:${min}:00`);
+        const slotTime = slotDate.getTime();
         
-        const ocupado = citas.some(cita => {
-          let citaHora = '';
-          if (cita.fecha_hora_inicio instanceof Date) {
-            citaHora = cita.fecha_hora_inicio.toTimeString().substring(0, 5);
-          } else if (typeof cita.fecha_hora_inicio === 'string') {
-            const timePart = cita.fecha_hora_inicio.includes('T') 
-              ? cita.fecha_hora_inicio.split('T')[1] 
-              : cita.fecha_hora_inicio.split(' ')[1];
-            citaHora = timePart ? timePart.substring(0, 5) : '';
-          }
-          return citaHora === slotKey;
+        // Un slot de 30 min está ocupado si alguna cita se solapa con él
+        const citaOcupante = citas.find(cita => {
+          const citaInicio = new Date(cita.fecha_hora_inicio).getTime();
+          const citaFin = citaInicio + (cita.duracion_minutos || 30) * 60000;
+          const slotFin = slotTime + 30 * 60000;
+
+          // Solapamiento: (SlotInicio < CitaFin) AND (SlotFin > CitaInicio)
+          return (slotTime < citaFin) && (slotFin > citaInicio);
         });
 
         slots.push({
-          hora: horaStr,
-          disponible: !ocupado
+          hora: `${hora.toString().padStart(2, '0')}:${min}:00`,
+          disponible: !citaOcupante,
+          detalle: citaOcupante ? `Cita ${citaOcupante.estado}` : null
         });
       }
     }

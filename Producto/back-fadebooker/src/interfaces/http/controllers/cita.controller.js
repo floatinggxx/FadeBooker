@@ -1,10 +1,12 @@
 const CitaRepository = require('../../../infraestructure/database/CitaRepositoryImpl');
 const ServicioRepository = require('../../../infraestructure/database/ServicioRepositoryImpl');
+const UsuarioRepository = require('../../../infraestructure/database/UsuarioRepositoryImpl');
 const CitaService = require('../../../application/usecases/cita.service');
 
 const citaRepository = new CitaRepository();
 const servicioRepository = new ServicioRepository();
-const citaService = new CitaService(citaRepository, servicioRepository);
+const usuarioRepository = new UsuarioRepository();
+const citaService = new CitaService(citaRepository, servicioRepository, usuarioRepository);
 
 const CitaController = {
   async crear(req, res) {
@@ -12,7 +14,18 @@ const CitaController = {
       const citaId = await citaService.crearCita(req.body)
       res.status(201).json({ id: citaId, mensaje: 'Cita creada exitosamente' })
     } catch (error) {
-      res.status(400).json({ error: error.message })
+      console.error('Error al crear cita:', error);
+      // Limpiar errores de base de datos para no exponer SQL en la respuesta
+      let message = error.message;
+      if (message.includes('DECLARE') || message.includes('INSERT INTO')) {
+        // Buscar el mensaje después del error custom si existe
+        if (message.includes('- ')) {
+           message = message.split('- ').pop();
+        } else {
+           message = 'Error de base de datos al procesar la reserva';
+        }
+      }
+      res.status(400).json({ error: message })
     }
   },
 
@@ -20,9 +33,13 @@ const CitaController = {
     try {
       const { id } = req.params
       const { estado, motivo_cancelacion } = req.body
+      
+      console.log(`[CitaController] Cambiando estado de cita ID=${id} a "${estado}"`);
+      
       await citaService.actualizarEstado(id, estado, motivo_cancelacion)
       res.json({ mensaje: `Cita actualizada a estado: ${estado}` })
     } catch (error) {
+      console.error(`[CitaController] Error al cambiar estado:`, error.message);
       res.status(400).json({ error: error.message })
     }
   },
@@ -47,24 +64,25 @@ const CitaController = {
 
   async listar(req, res) {
     try {
-      const { clienteId, barberoId, fecha } = req.query
-      if (clienteId && barberoId) {
-        return res.status(400).json({ error: 'No puede especificarse clienteId y barberoId al mismo tiempo.' })
+      const { clienteId, barberoId, tiendaId, fecha, period } = req.query
+      
+      // Sincronizar estados antes de listar (pasar de confirmada a completada si ya pasó 1 hora)
+      try {
+        await citaRepository.autoCompletarCitasVencidas();
+      } catch (syncErr) {
+        console.error('[CitaController] Error en sincronización de estados:', syncErr.message);
       }
 
       let citas
       if (clienteId !== undefined) {
         const id = parseInt(clienteId, 10)
-        if (Number.isNaN(id)) {
-          return res.status(400).json({ error: 'clienteId debe ser un número válido.' })
-        }
         citas = await citaService.obtenerCitasPorCliente(id)
       } else if (barberoId !== undefined) {
         const id = parseInt(barberoId, 10)
-        if (Number.isNaN(id)) {
-          return res.status(400).json({ error: 'barberoId debe ser un número válido.' })
-        }
-        citas = await citaService.obtenerCitasPorBarbero(id, fecha)
+        citas = await citaService.obtenerCitasPorBarbero(id, fecha, period)
+      } else if (tiendaId !== undefined) {
+        const id = parseInt(tiendaId, 10)
+        citas = await citaService.obtenerCitasPorTienda(id, fecha, period)
       } else {
         citas = await citaService.obtenerTodasCitas()
       }

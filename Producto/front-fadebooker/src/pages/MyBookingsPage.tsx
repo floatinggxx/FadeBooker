@@ -6,7 +6,7 @@ import BookingsSection from '@/components/organisms/BookingsSection';
 
 const MyBookingsPage: React.FC = () => {
   const { user } = useAuth();
-  const userId = user ? Number(user.id) : undefined;
+  const userId = user ? Number(user.id || user.id_usuario) : undefined;
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['my-bookings', userId],
@@ -29,11 +29,13 @@ const MyBookingsPage: React.FC = () => {
   return sortedAppointments && sortedAppointments.length ? (
     <BookingsSection
       bookings={sortedAppointments.map((c: any) => ({
-        id: c.id,
-        fecha: c.fecha,
-        hora: c.hora,
-        barberoName: c.barbero?.nombre || 'No especificado',
-        servicioName: c.servicio?.servicio?.nombre || c.servicio?.nombre || 'Sin datos',
+        id: c.id_cita || c.id,
+        fecha: c.fecha_hora_inicio ? c.fecha_hora_inicio.split('T')[0] : c.fecha,
+        hora: c.fecha_hora_inicio ? c.fecha_hora_inicio.split('T')[1].substring(0, 5) : c.hora,
+        barberoName: (c.barbero_nombre && c.barbero_apellido) 
+          ? `${c.barbero_nombre} ${c.barbero_apellido}` 
+          : c.barbero_nombre || (c.barbero?.nombre || 'No especificado'),
+        servicioName: c.servicio_nombre || (c.servicio?.servicio?.nombre || c.servicio?.nombre || 'Sin datos'),
         estado: c.estado,
         notas: c.notas,
       }))}

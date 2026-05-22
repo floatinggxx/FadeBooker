@@ -136,6 +136,24 @@ class UsuarioService {
     const { contrasena, ...usuarioSinPassword } = actualizado;
     return usuarioSinPassword;
   }
+
+  async actualizarFoto(id, base64Image) {
+    const CloudinaryService = require('../../infraestructure/storage/CloudinaryService');
+    
+    try {
+      // Subir a Cloudinary
+      const result = await CloudinaryService.uploadImage(base64Image, 'fadebooker/perfiles');
+      
+      // Actualizar en BD
+      await this.usuarioRepository.update(id, { fotoUrl: result.secure_url });
+      
+      return { fotoUrl: result.secure_url };
+    } catch (error) {
+      console.error('--- ERROR EN USUARIO SERVICE (UPLOAD FOTO) ---');
+      console.error(error);
+      throw new Error(`Error al procesar la imagen: ${error.message}`);
+    }
+  }
 }
 
 module.exports = UsuarioService

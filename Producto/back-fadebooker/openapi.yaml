@@ -477,7 +477,7 @@ paths:
               properties:
                 estado:
                   type: string
-                  enum: [Pendiente, Confirmada, Cancelada, Completada]
+                  enum: [confirmada, cancelada, completada, no_presentado]
                 motivo_cancelacion:
                   type: string
       responses:

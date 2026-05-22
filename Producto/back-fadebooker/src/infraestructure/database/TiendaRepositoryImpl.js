@@ -51,12 +51,19 @@ class TiendaRepositoryImpl extends TiendaRepository {
    */
   async create(data) {
     try {
-      const [id] = await db('Tienda').insert({
-        ...data,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      })
-      return id.id_tienda || id
+      const result = await db('Tienda')
+        .insert({
+          ...data,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        })
+        .returning('id_tienda')
+      
+      if (result && Array.isArray(result) && result.length > 0) {
+        const id = result[0]
+        return typeof id === 'object' ? id.id_tienda : id
+      }
+      return result
     } catch (error) {
       throw error
     }

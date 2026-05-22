@@ -6,8 +6,15 @@ class ServicioRepositoryImpl {
   }
 
   async create(data) {
-    const [id] = await this.db('Servicio').insert(data)
-    return id.id_servicio || id
+    const result = await this.db('Servicio')
+      .insert(data)
+      .returning('id_servicio')
+    
+    if (result && Array.isArray(result) && result.length > 0) {
+      const id = result[0]
+      return typeof id === 'object' ? id.id_servicio : id
+    }
+    return result
   }
 
   async findById(id) {
