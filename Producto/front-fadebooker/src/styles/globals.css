@@ -208,7 +208,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .button-glow {
-  box-shadow: 0 0 0 1px rgba(230,57,70,0.14), 0 18px 45px rgba(230,57,70,0.2);
+  box-shadow: 0 4px 12px rgba(51, 102, 255, 0.1);
 }
 
 .app-main {
