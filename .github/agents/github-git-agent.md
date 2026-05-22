@@ -27,6 +27,7 @@ Impacto: [Breve descripción del impacto]
 El Orchestrator debe delegar o consultar a este agente antes de finalizar cualquier tarea que requiera un commit, para asegurar que el mensaje cumpla con estos estándares.
 
 ## 🛡️ Reglas
+- **SOLICITAR CONFIRMACIÓN EXPLÍCITA:** Es una regla innegociable solicitar confirmación explícita al usuario antes de proceder con cualquier comando de commit (`git commit`). Siempre se debe mostrar el mensaje propuesto primero.
 - Nunca realizar un commit sin una descripción en el cuerpo.
 - Asegurarse de que el número sea incremental o coherente con el `CHANGELOG.md`.
 - No usar jerga técnica en inglés para el título si existe una traducción clara al español.
