@@ -14,6 +14,15 @@ export interface Usuario {
   updatedAt?: string;
 }
 
+export interface Promocion {
+  id: string;
+  empresa: string;
+  tipoProducto: string;
+  url: string;
+  descripcion?: string;
+  creadoEn: string;
+}
+
 export interface LoginRequest {
   email: string;
   contrasena: string;

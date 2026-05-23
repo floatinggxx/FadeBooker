@@ -15,6 +15,7 @@ import DashboardPage from '@/pages/DashboardPage';
 import HelpPage from '@/pages/HelpPage';
 import PaymentResultPage from '@/pages/PaymentResultPage';
 import BarberDashboardPage from '@/pages/BarberDashboardPage';
+import PromocionesPage from '@/pages/PromocionesPage';
 import LoginPage from '@/features/auth/ui/LoginPage';
 import RegisterPage from '@/features/auth/ui/RegisterPage';
 import ForgotPasswordPage from '@/features/auth/ui/ForgotPasswordPage';
@@ -76,9 +77,12 @@ const AppHeader = () => {
             {isAuthenticated ? (
               <>
                 {(user?.rol === 'Barbero' || user?.rol === 'Dueño') && (
-                  <Link to="/barber-dashboard" className="link-button text-[#3366FF] font-black">
-                    {user?.rol === 'Dueño' ? 'Panel Dueño' : 'Panel Barbero'}
-                  </Link>
+                  <>
+                    <Link to="/barber-dashboard" className="link-button text-[#3366FF] font-black">
+                      {user?.rol === 'Dueño' ? 'Panel Dueño' : 'Panel Barbero'}
+                    </Link>
+                    <Link to="/promociones" className="link-button">Promociones</Link>
+                  </>
                 )}
                 <Link to="/bookings" className="link-button">Citas</Link>
                 <Link to="/profile" className="link-button">Mi perfil</Link>
@@ -113,6 +117,7 @@ function App() {
               <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
               <Route path="/barber-dashboard" element={<BarberoRoute><BarberDashboardPage /></BarberoRoute>} />
+              <Route path="/promociones" element={<BarberoRoute><PromocionesPage /></BarberoRoute>} />
               <Route path="/barbero/:id" element={<BarberDetailPage />} />
               <Route path="/tienda/:id" element={<TiendaDetailPage />} />
               <Route path="/studiodeanger" element={<StudioDangerPage />} />
