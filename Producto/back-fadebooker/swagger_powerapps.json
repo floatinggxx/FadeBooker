@@ -51,11 +51,7 @@
     "/health": {
       "get": {
         "summary": "Verificar estado de la API",
-<<<<<<< Updated upstream
-        
-=======
         "security": [],
->>>>>>> Stashed changes
         "responses": {
           "200": {
             "description": "API operativa"
@@ -70,11 +66,7 @@
         "tags": [
           "Usuarios"
         ],
-<<<<<<< Updated upstream
-        
-=======
         "security": [],
->>>>>>> Stashed changes
         "responses": {
           "201": {
             "description": "Usuario registrado exitosamente",
@@ -105,11 +97,7 @@
         "tags": [
           "Usuarios"
         ],
-<<<<<<< Updated upstream
-        
-=======
         "security": [],
->>>>>>> Stashed changes
         "responses": {
           "200": {
             "description": "Login exitoso",
@@ -1324,15 +1312,12 @@
       }
     }
   },
-<<<<<<< Updated upstream
-=======
   "swagger": "2.0",
   "host": "fadebooker-backend-ok.azurewebsites.net",
   "basePath": "/api",
   "schemes": [
     "https"
   ],
->>>>>>> Stashed changes
   "definitions": {
     "RegisterResponse": {
       "type": "object",

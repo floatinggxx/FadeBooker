@@ -18,6 +18,8 @@ Todos los agentes deben adherirse estrictamente a estas reglas:
 - **Docker First:** El backend debe ejecutarse sobre `node:20-alpine` para garantizar consistencia.
 - **Mercado Pago v2:** Migración obligatoria a SDK v2 para toda lógica de pagos.
 - **Anti-Duplicación:** Estricta vigilancia contra SyntaxErrors por duplicación de bloques.
+- **Limpieza de Conflictos:** Prohibido dejar marcadores de conflicto (`<<<<<<<`, `=======`, `>>>>>>>`) en el código. Siempre resolver antes de reportar éxito.
+- **Validación Pre-Commit:** Verificar que el código sea sintácticamente válido antes de realizar commits o sugerir arranques de servidor.
 
 ---
 

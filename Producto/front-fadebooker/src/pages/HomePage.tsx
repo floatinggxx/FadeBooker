@@ -25,7 +25,7 @@ const HomePage: React.FC = () => {
             <h2 className="section-highlight">¿Listo para tu primer corte?</h2>
             <p>{isAuthenticated ? 'Continúa gestionando tus citas y descubre nuevas barberías con tu sesión activa.' : 'Regístrate ahora y descubre barberías, perfiles y reservas con una experiencia visual moderna.'}</p>
           </div>
-          <div className="hero-actions">
+          <div className="hero-actions mt-6">
             {!isAuthenticated ? (
               <ButtonLink to="/register" variant="primary" className="hover:text-white active:text-white">Crear cuenta</ButtonLink>
             ) : (

@@ -27,7 +27,6 @@
 ### 2. Frontend React (Feature-Based Architecture)
 **Decisión:** Sustituimos Atomic Design por Feature-Based Architecture para reducir fatiga de niveles de carpetas y alinearnos directamente con dominios del negocio.
 
-<<<<<<< HEAD
 **Estructura:**
 ```
 src/

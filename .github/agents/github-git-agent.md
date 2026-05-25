@@ -28,6 +28,8 @@ El Orchestrator debe delegar o consultar a este agente antes de finalizar cualqu
 
 ## 🛡️ Reglas
 - **SOLICITAR CONFIRMACIÓN EXPLÍCITA:** Es una regla innegociable solicitar confirmación explícita al usuario antes de proceder con cualquier comando de commit (`git commit`). Siempre se debe mostrar el mensaje propuesto primero.
+- **AUDITORÍA DE CONFLICTOS:** Antes de realizar un commit, se debe verificar que no existan marcadores de conflicto residuales (`<<<<<<<`, `=======`, `>>>>>>>`) en los archivos que se van a trackear.
+- **INTEGRIDAD DE CÓDIGO:** Nunca realizar un commit si se detectan errores sintácticos obvios causados por procesos de merge/stash fallidos.
 - Nunca realizar un commit sin una descripción en el cuerpo.
 - Asegurarse de que el número sea incremental o coherente con el `CHANGELOG.md`.
 - No usar jerga técnica en inglés para el título si existe una traducción clara al español.
