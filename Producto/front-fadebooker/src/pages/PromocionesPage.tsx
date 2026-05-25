@@ -5,7 +5,7 @@ import PromocionesManager from '@/features/barbero/ui/PromocionesManager';
 const PromocionesPage: React.FC = () => {
   const { user } = useAuth();
 
-  if (!user || (user.rol !== 'Barbero' && user.rol !== 'Dueño')) {
+  if (!user || (user.rol !== 'Barbero' && user.rol !== 'Dueño' && user.rol !== 'Proveedor')) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
         <div className="bg-white rounded-[3.5rem] p-12 shadow-2xl border-8 border-white max-w-xl text-center">

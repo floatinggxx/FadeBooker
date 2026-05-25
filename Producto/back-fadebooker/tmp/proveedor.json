@@ -1,0 +1,7 @@
+{
+  "nombre": "ProveedorCLI",
+  "apellido": "Cuatro",
+  "email": "proveedor-cli@example.local",
+  "contrasena": "Secret123!",
+  "rol": "Proveedor"
+}

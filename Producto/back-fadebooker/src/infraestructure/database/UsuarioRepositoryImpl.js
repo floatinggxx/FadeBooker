@@ -6,31 +6,18 @@ class UsuarioRepositoryImpl {
   }
 
   async create(data) {
-<<<<<<< Updated upstream
-    // 🛡️ Manejo robusto para Azure SQL (MSSQL/Tedious)
+    // Manejo robusto para Azure SQL (MSSQL/Tedious) y otros adaptadores
     const result = await this.db('Usuario')
       .insert(data)
       .returning('id_usuario')
-    
-    // Knex suele retornar un array con los IDs insertados en PostgreSQL/MSSQL
-    if (result && Array.isArray(result) && result.length > 0) {
-      const inserted = result[0]
-      return (inserted && typeof inserted === 'object') ? inserted.id_usuario : inserted
-    }
-    
-    return result
-=======
-    const result = await this.db('Usuario')
-      .insert(data)
-      .returning('id_usuario');
 
+    // Knex puede devolver diferentes formatos según el cliente (array o objeto)
     if (Array.isArray(result) && result.length > 0) {
-      const idPayload = result[0];
-      return (idPayload && typeof idPayload === 'object') ? idPayload.id_usuario : idPayload;
+      const idPayload = result[0]
+      return (idPayload && typeof idPayload === 'object') ? idPayload.id_usuario : idPayload
     }
 
-    return result;
->>>>>>> Stashed changes
+    return result
   }
 
   async findById(id) {

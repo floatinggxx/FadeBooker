@@ -15,7 +15,7 @@ type FormData = {
   telefono: string;
   contrasena: string; 
   contrasenaConfirm: string;
-  rol: 'Cliente' | 'Barbero' | 'Dueño';
+  rol: 'Cliente' | 'Barbero' | 'Dueño' | 'Proveedor';
   especialidad?: string;
   id_tienda?: number;
   servicios?: number[];
@@ -245,6 +245,9 @@ const RegisterPage: React.FC = () => {
             </label>
             <label className="radio-option">
               <input type="radio" value="Barbero" {...register('rol')} /> Barbero
+            </label>
+            <label className="radio-option">
+              <input type="radio" value="Proveedor" {...register('rol')} /> Proveedor
             </label>
           </div>
 

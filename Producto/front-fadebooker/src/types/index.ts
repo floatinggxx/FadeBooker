@@ -7,7 +7,7 @@ export interface Usuario {
   email: string;
   telefono?: string; // Agregado
   contrasena?: string;
-  rol: 'Cliente' | 'Barbero' | 'Dueño' | 'Admin';
+  rol: 'Cliente' | 'Barbero' | 'Dueño' | 'Proveedor' | 'Admin';
   id_tienda?: number; // Agregado para barberos
   id_barbero?: number; // Agregado para barberos
   createdAt?: string;
@@ -32,7 +32,7 @@ export interface LoginResponse {
   id: string;
   nombre: string;
   email: string;
-  rol: 'Cliente' | 'Barbero' | 'Dueño' | 'Admin';
+  rol: 'Cliente' | 'Barbero' | 'Dueño' | 'Proveedor' | 'Admin';
   id_tienda?: number;
   id_barbero?: number;
   token?: string;
@@ -44,7 +44,7 @@ export interface RegisterRequest {
   email: string;
   telefono?: string;
   contrasena: string;
-  rol: 'Cliente' | 'Barbero' | 'Dueño';
+  rol: 'Cliente' | 'Barbero' | 'Dueño' | 'Proveedor';
   especialidad?: string;
   anos_experiencia?: number;
   id_tienda?: number;

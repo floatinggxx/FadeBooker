@@ -40,6 +40,16 @@ const BarberoRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+const ProviderRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, user } = useAuth();
+  const location = useLocation();
+
+  if (!isAuthenticated) return <Navigate to="/login" replace state={{ from: location }} />;
+  if (user?.rol !== 'Barbero' && user?.rol !== 'Dueño' && user?.rol !== 'Proveedor') return <Navigate to="/" replace />;
+
+  return <>{children}</>;
+};
+
 import { Menu, X } from 'lucide-react';
 
 const AppHeader = () => {
@@ -84,8 +94,10 @@ const AppHeader = () => {
                     <Link to="/barber-dashboard" className="link-button text-[#3366FF] font-black">
                       {user?.rol === 'Dueño' ? 'Panel Dueño' : 'Panel Barbero'}
                     </Link>
-                    <Link to="/promociones" className="link-button">Promociones</Link>
                   </>
+                )}
+                {(user?.rol === 'Barbero' || user?.rol === 'Dueño' || user?.rol === 'Proveedor') && (
+                  <Link to="/promociones" className="link-button">Promociones</Link>
                 )}
                 <Link to="/bookings" className="link-button">Citas</Link>
                 <Link to="/profile" className="link-button">Mi perfil</Link>
@@ -109,7 +121,6 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-<<<<<<< Updated upstream
       <NotificationProvider>
         <AuthProvider>
           <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
@@ -123,10 +134,11 @@ function App() {
                   <Route path="/reset-password" element={<ResetPasswordPage />} />
                   <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
                   <Route path="/barber-dashboard" element={<BarberoRoute><BarberDashboardPage /></BarberoRoute>} />
-                  <Route path="/promociones" element={<BarberoRoute><PromocionesPage /></BarberoRoute>} />
+                  <Route path="/promociones" element={<ProviderRoute><PromocionesPage /></ProviderRoute>} />
                   <Route path="/barbero/:id" element={<BarberDetailPage />} />
                   <Route path="/tienda/:id" element={<TiendaDetailPage />} />
                   <Route path="/studiodeanger" element={<StudioDangerPage />} />
+                  <Route path="/studiodeanger/reservar" element={<StudioDangerBookingPage />} />
                   <Route path="/booking/new" element={<PrivateRoute><BookingPage /></PrivateRoute>} />
                   <Route path="/bookings" element={<PrivateRoute><MyBookingsPage /></PrivateRoute>} />
                   <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
@@ -144,38 +156,6 @@ function App() {
           </BrowserRouter>
         </AuthProvider>
       </NotificationProvider>
-=======
-      <AuthProvider>
-        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <AppHeader />
-          <main className="app-main">
-            <Routes>
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-              <Route path="/reset-password" element={<ResetPasswordPage />} />
-              <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
-              <Route path="/barber-dashboard" element={<BarberoRoute><BarberDashboardPage /></BarberoRoute>} />
-              <Route path="/promociones" element={<BarberoRoute><PromocionesPage /></BarberoRoute>} />
-              <Route path="/barbero/:id" element={<BarberDetailPage />} />
-              <Route path="/tienda/:id" element={<TiendaDetailPage />} />
-              <Route path="/studiodeanger" element={<StudioDangerPage />} />
-              <Route path="/studiodeanger/reservar" element={<StudioDangerBookingPage />} />
-              <Route path="/booking/new" element={<PrivateRoute><BookingPage /></PrivateRoute>} />
-              <Route path="/bookings" element={<PrivateRoute><MyBookingsPage /></PrivateRoute>} />
-              <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
-              <Route path="/barberias" element={<BarberiasPage />} />
-              <Route path="/pago-exitoso" element={<PaymentResultPage />} />
-              <Route path="/pago-fallido" element={<PaymentResultPage />} />
-              <Route path="/pago-pendiente" element={<PaymentResultPage />} />
-              <Route path="/ayuda" element={<HelpPage />} />
-              <Route path="/" element={<HomePage />} />
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-          </main>
-        </BrowserRouter>
-      </AuthProvider>
->>>>>>> Stashed changes
     </QueryClientProvider>
   );
 }

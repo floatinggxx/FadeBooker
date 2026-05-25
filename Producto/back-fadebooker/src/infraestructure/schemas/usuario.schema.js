@@ -5,7 +5,7 @@ const usuarioSchema = z.object({
   apellido: z.string().max(100).optional().default(''),
   email: z.string().email(),
   telefono: z.string().max(20).optional(),
-  rol: z.enum(['Cliente', 'Barbero', 'Dueño', 'Administrador']),
+  rol: z.enum(['Cliente', 'Barbero', 'Dueño', 'Proveedor', 'Administrador']),
   contrasena: z.string().min(6),
   id_tienda: z.number().int().optional(),
   especialidad: z.string().max(100).optional(),
