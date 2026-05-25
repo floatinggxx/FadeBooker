@@ -1,110 +1,122 @@
-# 🎭 FadeBooker - Plataforma de Gestión de Citas para Barberías
+# FadeBooker
 
-**Versión:** 1.3.0  
-**Última actualización:** 12 de mayo de 2026  
-**Estado:** 🚀 Desarrollo (Consolidación Backend + Feature-Based React)
+Manual de instalación y despliegue para el proyecto FadeBooker.
 
----
+## Requisitos
 
-## 🏛️ La Ley del Proyecto (Estándares Innegociables)
+- Node.js 18 o superior.
+- npm 10 o superior.
+- Git.
+- Base de datos Azure SQL Server o instancia SQL Server accesible.
+- Docker es opcional para despliegue local.
 
-### 1. Backend (Arquitectura Hexagonal)
-- **Patrón:** Hexagonal (Ports & Adapters) + Repository Pattern.
-- **Inyección de Dependencias:** Obligatoria en Use Cases y Controladores.
-- **Validación:** Zod para esquemas de entrada.
-- **Self-healing Aware:** Detección de fallos en servicios externos y manejo de reintentos elegantes.
+## Estructura principal
 
-### 2. Frontend React (Feature-Based Architecture)
-- **Arquitectura:** Feature Slices (Prohibido Atomic Design).
-- **Estructura:** Cada feature contiene su propio `api/`, `components/`, `hooks/`, `types/` y `utils/`.
-- **Estado:** React Query (asíncrono) + Zustand (global local).
+- `Producto/back-fadebooker/`: Backend Node.js con API REST.
+- `Producto/front-fadebooker/`: Frontend React con Vite.
 
-### 3. Integración Power Platform
-- **Conectores:** Custom Connectors basados en **Swagger 2.0**.
-- **Sincronización:** `swagger_powerapps.json` como referencia única para Power Apps.
+## Instalación local
 
-### 4. Seguridad y Resiliencia
-- **Auth:** JWT (24h) obligatorio.
-- **Auditoría:** Registro de errores críticos en tabla `LogErrores`.
+1. Clonar el repositorio:
 
----
-
-## 📌 Visión General
-
-FadeBooker es una plataforma "Marketplace" diseñada para modernizar el agendamiento de servicios de barbería. Conecta a clientes con barberos y barberías locales, permitiendo una gestión fluida de citas, pagos y reseñas.
-
-### 🏗️ Arquitectura del Sistema
-
-- **Frontend:** React.js / Vite (Integrado en Power Pages)
-- **Backend:** Node.js + Express (Arquitectura Hexagonal)
-- **Base de Datos:** Azure SQL Server (Esquema 3NF)
-- **Infraestructura:** Azure Storage / Cloudinary / Docker
-
----
-
-## 📂 Estructura del Proyecto
-
-```
-FadeBooker/
-├── .github/                 # Configuración de Agentes Copilot
-├── Documentación/           # Especificaciones, Diccionario, Diagramas ER
-├── Gestión/                 # Planificación, EDT, Matriz de Riesgos
-├── Producto/
-│   ├── back-fadebooker/     # Backend (API REST)
-│   └── pages-fadebooker/    # Frontend (React + Power Pages)
-├── CONFIGURACION_ENTORNOS.md
-├── DOCUMENTACION_INDICE.md
-├── QUICK_START_REACT.md
-└── RESUMEN_EJECUTIVO_REACT.md
+```bash
+git clone <repositorio> FadeBooker
+cd FadeBooker
 ```
 
----
+2. Instalar dependencias del backend:
 
-## 🤖 Sistema de Agentes
+```bash
+cd Producto/back-fadebooker
+npm install
+```
 
-El desarrollo de FadeBooker está coordinado por un equipo de agentes especializados para garantizar calidad y consistencia:
+3. Instalar dependencias del frontend:
 
-- **Frontend Agent:** Implementación de UI/UX en React y componentes de integración.
-- **Backend Agent:** Desarrollo de lógica de negocio, APIs y servicios externos.
-- **Database Agent:** Diseño y optimización del esquema SQL Server.
-- **Security Agent:** Auditoría de código, estándares de OWASP y seguridad de datos.
-- **Documentation Agent:** Mantenimiento de especificaciones y guías técnicas.
-- **Diagram Agent:** Visualización de arquitectura y flujos de procesos.
-- **Orchestrator Agent:** Coordinación global y validación de alineación entre módulos.
+```bash
+cd ../front-fadebooker
+npm install
+```
 
----
+## Configuración de entorno
 
-## 🛠️ Tecnologías Principales
+1. Copiar archivo de ejemplo del backend:
 
-- **Runtime:** Node.js 18+ (Express 5.2.1)
-- **Frontend:** React 18, Tailwind CSS, Lucide React
-- **ORM/Query Builder:** Knex.js (SQL Server via `tedious`)
-- **Document Processing:** xlsx, docx, mammoth, pdf-parse
-- **API:** RESTful (OpenAPI 3.0)
-- **Seguridad:** JWT, Bcrypt, RBAC
-- **Almacenamiento:** Cloudinary (Imágenes y simulación)
+```bash
+cd ../back-fadebooker
+copy .env.example .env
+```
 
----
+2. Editar `.env` con los valores de la base de datos y servicios:
 
-## 🚀 Quick Start
+- `DB_SERVER`
+- `DB_NAME`
+- `DB_USER`
+- `DB_PASSWORD`
+- `PORT`
+- `NODE_ENV`
+- `MP_ACCESS_TOKEN`
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
+- `EMAIL_HOST`
+- `EMAIL_PORT`
+- `EMAIL_USER`
+- `EMAIL_PASS`
+- `FRONTEND_URL`
 
-1. **Requisitos:** Git, Node.js v18+, Docker (opcional).
-2. **Configuración:** Ver [CONFIGURACION_ENTORNOS.md](./CONFIGURACION_ENTORNOS.md)
-3. **Frontend:** [QUICK_START_REACT.md](./QUICK_START_REACT.md)
-4. **Backend:** [Producto/back-fadebooker/SETUP.md](./Producto/back-fadebooker/SETUP.md)
+3. En el frontend, si se usa la API local, no es necesario modificar nada. Si se ejecuta en otro servidor, crear o actualizar el archivo `.env` en `Producto/front-fadebooker/` con:
 
----
+```bash
+VITE_API_BASE_URL=http://localhost:3000/api
+VITE_API_URL=http://localhost:3000/api
+```
 
-## 📚 Documentación
+## Ejecutar localmente
 
-Para una guía detallada de todos los documentos disponibles, consulta el [Índice de Documentación](./DOCUMENTACION_INDICE.md).
+### Backend
 
-- [Especificación de BD](./Documentación/ESPECIFICACION_BD.md)
-- [Guía de Integración React](./Producto/pages-fadebooker/REACT_INTEGRATION_GUIDE.md)
-- [Manual de Backend](./Producto/back-fadebooker/BACKEND.md)
+```bash
+cd Producto/back-fadebooker
+npm start
+```
 
----
+El backend quedará disponible en `http://localhost:3000`.
 
-## 📄 Licencia
+### Frontend
 
-Este proyecto es propiedad de la organización FadeBooker. Todos los derechos reservados.
+```bash
+cd Producto/front-fadebooker
+npm run dev
+```
+
+El frontend quedará disponible en `http://localhost:5173`.
+
+## Despliegue con Docker
+
+### Backend
+
+```bash
+cd Producto/back-fadebooker
+docker build -t fadebooker-backend .
+docker run -d -p 3000:3000 --env-file .env fadebooker-backend
+```
+
+### Frontend
+
+```bash
+cd Producto/front-fadebooker
+docker build -t fadebooker-frontend .
+docker run -d -p 4173:4173 fadebooker-frontend
+```
+
+## Verificación
+
+- Backend: `http://localhost:3000/api/health`
+- Frontend: `http://localhost:5173`
+
+## Notas finales
+
+- El backend usa `dotenv` para cargar variables desde `.env`.
+- La configuración de la base de datos está en `Producto/back-fadebooker/src/config/knexfile.js`.
+- El frontend consume la API usando `import.meta.env.VITE_API_BASE_URL`.
