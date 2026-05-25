@@ -19,5 +19,6 @@ router.get('/:id/disponibilidad/:fecha', BarberoController.obtenerDisponibilidad
 router.put('/:id', validateRequest({ body: BarberoSchema.partial() }), BarberoController.actualizar)
 router.put('/:id/horario', BarberoController.actualizarHorario)
 router.delete('/:id', BarberoController.eliminar)
+router.post('/:id/foto', BarberoController.actualizarFoto)
 
 module.exports = router

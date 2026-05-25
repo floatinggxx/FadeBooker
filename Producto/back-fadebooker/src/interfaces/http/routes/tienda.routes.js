@@ -10,5 +10,6 @@ router.get('/ciudad/:ciudad', TiendaController.buscarPorCiudad)
 router.post('/', TiendaController.crear)
 router.put('/:id', TiendaController.actualizar)
 router.delete('/:id', TiendaController.eliminar)
+router.post('/:id/foto', TiendaController.actualizarFoto)
 
 module.exports = router

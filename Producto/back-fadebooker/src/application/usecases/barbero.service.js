@@ -132,6 +132,19 @@ class BarberoService {
   async obtenerDuracionServicioBarbero(id_barbero, id_servicio) {
     return this.barberoRepository.getDuracionServicio(id_barbero, id_servicio)
   }
+
+  async actualizarFoto(id, base64Image) {
+    const CloudinaryService = require('../../infraestructure/storage/CloudinaryService');
+    try {
+      const result = await CloudinaryService.uploadImage(base64Image, 'fadebooker/barberos');
+      await this.barberoRepository.update(id, { fotoUrl: result.secure_url });
+      return { fotoUrl: result.secure_url };
+    } catch (error) {
+      console.error('--- ERROR EN BARBERO SERVICE (UPLOAD FOTO) ---');
+      console.error(error);
+      throw new Error(`Error al procesar la imagen del barbero: ${error.message}`);
+    }
+  }
 }
 
 module.exports = BarberoService

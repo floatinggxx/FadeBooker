@@ -171,6 +171,25 @@ const BarberoController = {
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
+  },
+
+  /**
+   * POST /api/barberos/:id/foto
+   * Sube una foto del barbero a Cloudinary
+   */
+  async actualizarFoto(req, res) {
+    try {
+      const { id } = req.params
+      const { image } = req.body
+      if (!image) {
+        return res.status(400).json({ status: 'error', message: 'La imagen es requerida' })
+      }
+      const result = await barberoService.actualizarFoto(id, image)
+      return res.json(result)
+    } catch (error) {
+      console.error('Error al actualizar foto de barbero:', error)
+      return res.status(400).json({ status: 'error', message: error.message })
+    }
   }
 }
 

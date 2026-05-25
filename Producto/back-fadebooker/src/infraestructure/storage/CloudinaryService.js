@@ -30,12 +30,17 @@ class CloudinaryService {
         folder: folder,
         use_filename: true,
         unique_filename: true,
-        resource_type: 'auto'
+        resource_type: 'image' // Forzamos image para evitar desajustes con el preset
       };
 
-      // Si hay un preset en el env, lo usamos para asegurar compatibilidad
+      // Nota: En subidas firmadas (con API Key/Secret), el preset es opcional.
+      // Si el preset 'fadebooker_uploads' da error 400 por no existir, 
+      // la subida fallará.
       if (process.env.CLOUDINARY_UPLOAD_PRESET) {
-        options.upload_preset = process.env.CLOUDINARY_UPLOAD_PRESET;
+        options.upload_preset = process.env.CLOUDINARY_UPLOAD_PRESET.trim();
+        console.log(`[CloudinaryService] Usando preset: ${options.upload_preset} para resource_type: image`);
+      } else {
+        console.warn('[CloudinaryService] ADVERTENCIA: CLOUDINARY_UPLOAD_PRESET no definido en .env');
       }
 
       const result = await cloudinary.uploader.upload(filePath, options);

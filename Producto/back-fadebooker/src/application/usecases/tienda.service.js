@@ -40,6 +40,19 @@ class TiendaService {
   async eliminarTienda(id) {
     return await this.tiendaRepository.delete(id)
   }
+
+  async actualizarFoto(id, base64Image) {
+    const CloudinaryService = require('../../infraestructure/storage/CloudinaryService');
+    try {
+      const result = await CloudinaryService.uploadImage(base64Image, 'fadebooker/tiendas');
+      await this.tiendaRepository.update(id, { fotoUrl: result.secure_url });
+      return { fotoUrl: result.secure_url };
+    } catch (error) {
+      console.error('--- ERROR EN TIENDA SERVICE (UPLOAD FOTO) ---');
+      console.error(error);
+      throw new Error(`Error al procesar la imagen de la tienda: ${error.message}`);
+    }
+  }
 }
 
 module.exports = TiendaService

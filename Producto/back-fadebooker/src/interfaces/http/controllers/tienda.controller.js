@@ -112,6 +112,25 @@ const TiendaController = {
     } catch (error) {
       res.status(400).json({ error: error.message })
     }
+  },
+
+  /**
+   * POST /api/tiendas/:id/foto
+   * Sube una foto de la tienda a Cloudinary
+   */
+  async actualizarFoto(req, res) {
+    try {
+      const { id } = req.params
+      const { image } = req.body
+      if (!image) {
+        return res.status(400).json({ status: 'error', message: 'La imagen es requerida' })
+      }
+      const result = await tiendaService.actualizarFoto(id, image)
+      return res.json(result)
+    } catch (error) {
+      console.error('Error al actualizar foto de tienda:', error)
+      return res.status(400).json({ status: 'error', message: error.message })
+    }
   }
 }
 
