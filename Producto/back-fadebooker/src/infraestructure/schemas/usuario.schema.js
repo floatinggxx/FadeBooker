@@ -7,7 +7,6 @@ const usuarioSchema = z.object({
   telefono: z.string().max(20).optional(),
   rol: z.enum(['Cliente', 'Barbero', 'Dueño', 'Administrador']),
   contrasena: z.string().min(6),
-  // Campos opcionales para cuando el rol es Barbero
   id_tienda: z.number().int().optional(),
   especialidad: z.string().max(100).optional(),
   anos_experiencia: z.number().int().optional(),

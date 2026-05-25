@@ -1,19 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Star, MapPin, Clock, Phone } from 'lucide-react';
+import { STUDIO_DANGER_BARBERS } from '@/lib/data/studioDangerData';
+import { PLACEHOLDERS, FALLBACK_URLS } from '@/lib/utils/placeholders';
 
 const StudioDangerPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-24">
-      <section className="relative overflow-hidden bg-[#0F172A] text-white pt-24 pb-24">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(14,165,233,0.18),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.15),_transparent_35%)]" />
+      <section className="relative overflow-hidden bg-[#07112B] text-white pt-24 pb-24">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.22),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(239,68,68,0.14),_transparent_30%)]" />
         <div className="container relative z-10 grid gap-12 lg:grid-cols-[1.1fr_0.9fr] items-center">
           <div className="space-y-8 max-w-2xl">
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm uppercase tracking-[0.35em] text-sky-300 font-black">
+            <span className="inline-flex items-center gap-2 rounded-full bg-[#1C2A54]/80 px-4 py-2 text-sm uppercase tracking-[0.35em] text-[#60A5FA] font-black border border-[#1E3A8A]">
               PREMIUM SHOP
             </span>
 
-            <h1 className="text-5xl lg:text-6xl font-black tracking-tight leading-tight">
+            <h1 className="text-5xl lg:text-6xl font-black tracking-tight leading-tight text-white">
               StudioDanger
             </h1>
             <p className="max-w-xl text-lg text-slate-300 leading-relaxed">
@@ -23,13 +25,13 @@ const StudioDangerPage: React.FC = () => {
             <div className="grid gap-4 sm:grid-cols-2">
               <Link
                 to="/tienda/101"
-                className="inline-flex items-center justify-center rounded-[2rem] bg-sky-500 px-10 py-5 text-lg font-black text-white shadow-2xl shadow-sky-500/20 transition hover:bg-sky-600"
+                className="inline-flex items-center justify-center rounded-[2rem] bg-gradient-to-r from-[#2563EB] via-[#3366FF] to-[#EF4444] px-10 py-5 text-lg font-black text-white shadow-2xl shadow-[#3366FF]/20 transition hover:from-[#1D4ED8] hover:to-[#DC2626]"
               >
                 Ver perfil
               </Link>
               <Link
                 to="/barberias"
-                className="inline-flex items-center justify-center rounded-[2rem] border border-slate-200 bg-white/90 px-10 py-5 text-lg font-black text-slate-900 shadow-lg transition hover:bg-white"
+                className="inline-flex items-center justify-center rounded-[2rem] border border-[#3B82F6] bg-white/10 px-10 py-5 text-lg font-black text-white shadow-lg transition hover:bg-white/15"
               >
                 Explorar barberías
               </Link>
@@ -86,6 +88,54 @@ const StudioDangerPage: React.FC = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="container mt-16">
+        <div className="grid gap-10">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-sm uppercase tracking-[0.35em] text-slate-500 font-black">Barberos disponibles</p>
+              <h2 className="mt-3 text-4xl font-black text-slate-900">Conoce a los barberos premium de StudioDanger</h2>
+            </div>
+            <Link
+              to="/studiodeanger/reservar"
+              className="inline-flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#2563EB] to-[#EF4444] px-8 py-4 text-base font-black text-white shadow-2xl shadow-[#2563EB]/25 transition hover:brightness-110"
+            >
+              Ver disponibilidad
+              <ArrowRight size={18} />
+            </Link>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {STUDIO_DANGER_BARBERS.map((barber) => (
+              <div key={barber.id} className="rounded-[2.5rem] border border-slate-200 bg-white p-8 shadow-xl transition hover:-translate-y-1 hover:shadow-2xl">
+                <div className="mb-6 overflow-hidden rounded-[2.5rem] bg-slate-100 h-72">
+                  <img
+                    src={barber.foto_perfil_url}
+                    alt={`${barber.nombre} ${barber.apellido}`}
+                    className="h-full w-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      if (target.src !== FALLBACK_URLS.BARBERO) {
+                        target.src = FALLBACK_URLS.BARBERO;
+                      }
+                    }}
+                  />
+                </div>
+                <div className="space-y-4 text-center">
+                  <div>
+                    <p className="text-2xl font-black text-slate-900">{barber.nombre} {barber.apellido}</p>
+                    <p className="mt-2 text-sm uppercase tracking-[0.35em] text-slate-500 font-black">{barber.especialidad}</p>
+                  </div>
+                  <div className="inline-flex items-center gap-2 rounded-full bg-[#3366FF]/10 px-4 py-2 text-sm font-black text-[#3366FF]">
+                    <Star size={16} /> {barber.calificacion.toFixed(1)}
+                  </div>
+                  <p className="text-slate-500 leading-relaxed">{barber.descripcion}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

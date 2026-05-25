@@ -5,6 +5,7 @@ import { Star } from 'lucide-react';
 import { tiendaService } from '@/lib/api/tiendaService';
 import { PLACEHOLDERS, FALLBACK_URLS } from '@/lib/utils/placeholders';
 import { rmFallbackTiendas } from '@/lib/utils/tiendasFallback';
+import { STUDIO_DANGER_BARBERS } from '@/lib/data/studioDangerData';
 
 const TiendaDetailPage: React.FC = () => {
   const { id } = useParams();
@@ -32,6 +33,8 @@ const TiendaDetailPage: React.FC = () => {
     </div>
   );
   
+  const isStudioDangerFallback = id === '101' && Array.isArray(barberos) && barberos.length === 0;
+  const barberosToRender = isStudioDangerFallback ? STUDIO_DANGER_BARBERS : barberos || [];
   const tiendaData = tienda || fallbackTienda;
 
   if (!tiendaData) return (
@@ -130,14 +133,21 @@ const TiendaDetailPage: React.FC = () => {
                    Disponibilidad Inmediata
                 </div>
 
-                <button className="w-full py-6 bg-white text-[#3366FF] rounded-[2rem] font-black text-xl hover:bg-rose-500 hover:text-white active:bg-rose-600 active:text-white transition-all shadow-xl">
-                    Seleccionar
-                </button>
+                <Link
+                  to="/studiodeanger/reservar"
+                  className="w-full py-6 bg-white text-[#3366FF] rounded-[2rem] font-black text-xl hover:bg-rose-500 hover:text-white active:bg-rose-600 active:text-white transition-all shadow-xl"
+                >
+                    Ver disponibilidad
+                </Link>
             </div>
 
             {/* List of Barbers */}
-            {barberos && barberos.length > 0 ? (
-                barberos.map(barbero => (
+            {barberosToRender && barberosToRender.length > 0 ? (
+                barberosToRender.map((barbero) => {
+                  const bookingLink = isStudioDangerFallback
+                    ? `/studiodeanger/reservar?barberoId=${barbero.id_barbero || barbero.id}`
+                    : `/barbero/${barbero.id_barbero || barbero.id}`;
+                  return (
                     <div key={barbero.id_barbero || barbero.id} className="bg-white border-4 border-white p-8 rounded-[3.5rem] text-center shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:border-[#3366FF]/20 transition-all group relative flex flex-col">
                         <div className="absolute top-6 right-6 flex items-center gap-1.5 bg-white/90 backdrop-blur-md text-slate-900 px-4 py-2 rounded-2xl text-xs font-black border border-slate-100 shadow-xl z-10 transition-transform group-hover:scale-110">
                            <Star size={14} className="text-yellow-500 fill-yellow-500" />
@@ -171,13 +181,14 @@ const TiendaDetailPage: React.FC = () => {
                         </div>
 
                         <Link 
-                            to={`/barbero/${barbero.id_barbero || barbero.id}`} 
+                            to={bookingLink} 
                             className="block w-full py-6 bg-slate-900 text-white rounded-[2rem] font-black text-xl hover:bg-[#3366FF] hover:text-white active:bg-blue-700 active:text-white transition-all shadow-xl shadow-slate-200 hover:shadow-blue-200 hover:-translate-y-2 active:translate-y-0"
                         >
-                            Ver Perfil
+                            Ver disponibilidad
                         </Link>
                     </div>
-                ))
+                  );
+                })
             ) : (
                 <div className="rounded-[3rem] border border-dashed border-slate-300 bg-white/80 p-12 text-center text-slate-500 shadow-lg shadow-slate-200/30">
                     <p className="text-base font-black uppercase tracking-[0.35em] text-slate-400 mb-4">Barberos disponibles</p>

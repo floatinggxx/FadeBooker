@@ -6,6 +6,7 @@ class UsuarioRepositoryImpl {
   }
 
   async create(data) {
+<<<<<<< Updated upstream
     // 🛡️ Manejo robusto para Azure SQL (MSSQL/Tedious)
     const result = await this.db('Usuario')
       .insert(data)
@@ -18,6 +19,18 @@ class UsuarioRepositoryImpl {
     }
     
     return result
+=======
+    const result = await this.db('Usuario')
+      .insert(data)
+      .returning('id_usuario');
+
+    if (Array.isArray(result) && result.length > 0) {
+      const idPayload = result[0];
+      return (idPayload && typeof idPayload === 'object') ? idPayload.id_usuario : idPayload;
+    }
+
+    return result;
+>>>>>>> Stashed changes
   }
 
   async findById(id) {
