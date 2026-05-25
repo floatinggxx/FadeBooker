@@ -23,18 +23,32 @@ class CloudinaryService {
    */
   static async uploadImage(filePath, folder = 'fadebooker_uploads') {
     try {
-      const result = await cloudinary.uploader.upload(filePath, {
+      console.log(`[CloudinaryService] Intentando subir a carpeta: ${folder}`);
+      console.log(`[CloudinaryService] Cloud Name: ${cloudinary.config().cloud_name}`);
+      
+      const options = {
         folder: folder,
         use_filename: true,
         unique_filename: true,
         resource_type: 'auto'
-      });
+      };
+
+      // Si hay un preset en el env, lo usamos para asegurar compatibilidad
+      if (process.env.CLOUDINARY_UPLOAD_PRESET) {
+        options.upload_preset = process.env.CLOUDINARY_UPLOAD_PRESET;
+      }
+
+      const result = await cloudinary.uploader.upload(filePath, options);
+      console.log(`[CloudinaryService] Subida exitosa: ${result.secure_url}`);
       return result;
     } catch (error) {
       console.error('--- CLOUDINARY UPLOAD ERROR ---');
-      console.error(error);
+      console.error('Config:', {
+        cloud_name: cloudinary.config().cloud_name,
+        api_key: cloudinary.config().api_key ? '***' + cloudinary.config().api_key.slice(-4) : 'MISSING'
+      });
+      console.error('Error Details:', error);
       
-      // Lanzar el mensaje de error real para facilitar el diagnóstico
       const errorMessage = error.message || 'Error desconocido al subir a Cloudinary';
       throw new Error(`Fallo al subir la imagen a Cloudinary: ${errorMessage}`);
     }

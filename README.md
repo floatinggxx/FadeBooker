@@ -1,23 +1,38 @@
-# FadeBooker
+# 🎭 FadeBooker
 
-Manual de instalación y despliegue para el proyecto FadeBooker.
+Plataforma de gestión de citas para servicios de barbería y fotografía relacional.
 
-## Requisitos
+## 🚀 Estado del Proyecto
+- **Backend:** 98% completo (Node.js + Arquitectura Hexagonal).
+- **Frontend:** En migración a **Feature-Based Architecture** (React + Tailwind + Bootstrap).
+- **Infraestructura:** Desplegado en Azure (App Service + SQL Server).
 
-- Node.js 18 o superior.
-- npm 10 o superior.
-- Git.
-- Base de datos Azure SQL Server o instancia SQL Server accesible.
-- Docker es opcional para despliegue local.
+## 🛠️ Tecnologías Principales
+- **Backend:** Node.js, Express, Knex.js, Zod, JWT.
+- **Frontend:** React 18, Vite, Tailwind CSS, Lucide React.
+- **Servicios:** Cloudinary (Imágenes), Mercado Pago (Pagos), Azure (Cloud).
 
-## Estructura principal
+## 📂 Estructura del Proyecto
+- `Producto/back-fadebooker/`: API REST siguiendo Arquitectura Hexagonal.
+- `Producto/front-fadebooker/`: Cliente web React (Vite).
+- `Documentación/`: Documentación técnica consolidada, diagramas ER y flujos.
 
-- `Producto/back-fadebooker/`: Backend Node.js con API REST.
-- `Producto/front-fadebooker/`: Frontend React con Vite.
+## ⚙️ Configuración del Backend (.env)
+Para el correcto funcionamiento de Cloudinary y la base de datos:
+```env
+DB_SERVER=...
+CLOUDINARY_CLOUD_NAME=fadebooker
+CLOUDINARY_UPLOAD_PRESET=fadebooker_uploads
+...
+```
 
-## Instalación local
+## 🔗 Enlaces del Ecosistema
+- **API Health:** [https://fadebooker-backend-ok.azurewebsites.net/api/health](https://fadebooker-backend-ok.azurewebsites.net/api/health)
+- **Documentación API:** [Indice de Endpoints](Documentación/md-fuente/INDICE_ENDPOINTS.md)
+- **Estado de Agentes:** [.github/AGENTS.md](.github/AGENTS.md)
 
-1. Clonar el repositorio:
+---
+*Este proyecto es parte del ecosistema FadeBooker para la automatización de barberías y servicios fotográficos.*
 
 ```bash
 git clone <repositorio> FadeBooker
