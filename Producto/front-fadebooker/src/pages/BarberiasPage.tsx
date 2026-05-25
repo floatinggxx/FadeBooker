@@ -6,7 +6,6 @@ import TiendaCard from '@/components/ui/TiendaCard';
 import { Tienda } from '@/types';
 import { MapPin, ChevronDown, Search, Navigation, X } from 'lucide-react';
 import { regionesChile } from '@/lib/utils/chileData';
-import { recommendedTiendas, rmFallbackTiendas } from '@/lib/utils/tiendasFallback';
 
 interface SearchableSelectProps {
   options: { label: string; value: string | number }[];
@@ -115,14 +114,12 @@ const BarberiasPage: React.FC = () => {
   const { data: tiendas, isLoading, error } = useQuery({
     queryKey: ['tiendas', selectedComuna],
     queryFn: () => tiendaService.listTiendas(selectedComuna),
-    enabled: !!selectedComuna && !isRegionMetropolitana,
+    enabled: true, // Siempre cargamos desde la base de datos
   });
 
   const tiendasData = useMemo(() => {
-    if (!selectedComuna) return recommendedTiendas;
-    if (isRegionMetropolitana) return rmFallbackTiendas;
     return tiendas || [];
-  }, [selectedComuna, isRegionMetropolitana, tiendas]);
+  }, [tiendas]);
 
   const filteredTiendas = useMemo(() => {
     let result = tiendasData;
@@ -131,26 +128,24 @@ const BarberiasPage: React.FC = () => {
       result = result.filter(t => t.ciudad === selectedComuna);
     }
 
-    if (!isRegionMetropolitana && user?.rol === 'Barbero' && user.id_tienda) {
+    if (user?.rol === 'Barbero' && user.id_tienda) {
       result = result.filter(t => Number(t.id_tienda) === Number(user.id_tienda));
     }
 
     return result.filter(t => 
       t.nombre_tienda.toLowerCase().includes(search.toLowerCase())
     );
-  }, [tiendasData, selectedComuna, search, user, isRegionMetropolitana]);
-
-  const { data: allTiendas } = useQuery({
-    queryKey: ['all-tiendas'],
-    queryFn: () => tiendaService.listTiendas(''),
-    enabled: !!selectedComuna && !isRegionMetropolitana && filteredTiendas.length === 0 && !isLoading,
-  });
+  }, [tiendasData, selectedComuna, search, user]);
 
   const sugerencias = useMemo(() => {
     if (filteredTiendas.length > 0) return [];
-    if (isRegionMetropolitana) return rmFallbackTiendas.slice(0, 2);
-    return allTiendas?.slice(0, 2) || [];
-  }, [filteredTiendas, allTiendas, isRegionMetropolitana]);
+    
+    // Si no hay resultados, mostramos hasta 3 tiendas reales con mejor calificación
+    return [...tiendasData]
+      .filter(t => t.este_activa)
+      .sort((a, b) => (Number(b.calificacion_promedio) || 0) - (Number(a.calificacion_promedio) || 0))
+      .slice(0, 3);
+  }, [tiendasData, filteredTiendas]);
 
   if (error && !isRegionMetropolitana) return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-[#E5E7EB]">
@@ -273,7 +268,7 @@ const BarberiasPage: React.FC = () => {
                         <div className="flex-1 h-[2px] bg-slate-100 ml-4"></div>
                     </div>
                     
-                    <div className="grid gap-8 grid-cols-1 md:grid-cols-2">
+                    <div className="grid gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                         {sugerencias.map(tienda => (
                             <TiendaCard key={tienda.id_tienda} tienda={tienda} isSuggested={true} />
                         ))}

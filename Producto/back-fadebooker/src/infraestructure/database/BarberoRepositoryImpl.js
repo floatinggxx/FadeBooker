@@ -102,6 +102,12 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
     return db('Barbero')
       .leftJoin('Usuario', 'Barbero.id_usuario', '=', 'Usuario.id_usuario')
       .where({ 'Barbero.id_tienda': id_tienda, 'Barbero.activo': true })
+      .whereExists(function() {
+        this.select('*')
+          .from('ServicioBarbero')
+          .whereRaw('ServicioBarbero.id_barbero = Barbero.id_barbero')
+          .where('ServicioBarbero.disponible', true)
+      })
       .orderBy('Usuario.nombre')
       .select(
         'Barbero.id_barbero',
@@ -123,6 +129,12 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
     return db('Barbero')
       .leftJoin('Usuario', 'Barbero.id_usuario', '=', 'Usuario.id_usuario')
       .where({ 'Barbero.activo': true })
+      .whereExists(function() {
+        this.select('*')
+          .from('ServicioBarbero')
+          .whereRaw('ServicioBarbero.id_barbero = Barbero.id_barbero')
+          .where('ServicioBarbero.disponible', true)
+      })
       .orderBy('Usuario.nombre')
       .select(
         'Barbero.*',

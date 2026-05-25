@@ -2,17 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { tiendaService } from '@/lib/api/tiendaService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
+import { useNotification } from '@/context/NotificationContext';
 import { Store, MapPin, Camera, Save, RefreshCw, Image as ImageIcon, Plus, Trash2, Clock } from 'lucide-react';
 import { Tienda } from '@/types';
 
 const TiendaConfig: React.FC = () => {
     const { user } = useAuth();
+    const { showNotification } = useNotification();
     const [tienda, setTienda] = useState<Tienda | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+    const [isUploadingGallery, setIsUploadingGallery] = useState(false);
     const [gallery, setGallery] = useState<string[]>([]);
 
-    const { register, handleSubmit, reset } = useForm<Partial<Tienda>>();
+    const { register, handleSubmit, reset, setValue } = useForm<Partial<Tienda>>();
 
     useEffect(() => {
         const fetchTienda = async () => {
@@ -71,32 +75,64 @@ const TiendaConfig: React.FC = () => {
             };
 
             await tiendaService.updateTienda(user.id_tienda, updateData);
-            alert('¡Datos de la barbería actualizados correctamente!');
+            showNotification('¡Datos de la barbería actualizados correctamente!', 'success');
         } catch (error: any) {
             console.error('Error updating tienda:', error);
-            const errorMsg = error.response?.data?.error || error.message || 'Error desconocido';
-            alert(`Error al guardar cambios: ${errorMsg}`);
+            const errorMsg = error.response?.data?.message || error.response?.data?.error || error.message || 'Error desconocido';
+            showNotification(`Error al guardar cambios: ${errorMsg}`, 'error');
         } finally {
             setIsSaving(false);
         }
     };
 
+    const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || !user?.id_tienda) return;
+
+        setIsUploadingLogo(true);
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+            try {
+                const result = await tiendaService.updateTiendaPhoto(user.id_tienda!, reader.result as string);
+                setTienda(prev => prev ? { ...prev, foto_portada_url: result.fotoUrl } : null);
+                setValue('foto_portada_url', result.fotoUrl);
+                showNotification('Logo actualizado correctamente', 'success');
+            } catch (error: any) {
+                console.error('Error uploading logo:', error);
+                const errorMsg = error.response?.data?.message || error.response?.data?.error || error.message || 'Error de servicio';
+                showNotification(`No se pudo subir el logo. ${errorMsg}`, 'error');
+            } finally {
+                setIsUploadingLogo(false);
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || !user?.id_tienda) return;
+
+        setIsUploadingGallery(true);
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+            try {
+                const result = await tiendaService.updateTiendaGallery(user.id_tienda!, reader.result as string);
+                setGallery(prev => [...prev, result.fotoUrl]);
+                showNotification('Imagen añadida a la galería', 'success');
+            } catch (error: any) {
+                console.error('Error uploading gallery image:', error);
+                const errorMsg = error.response?.data?.message || error.response?.data?.error || error.message || 'Error de servicio';
+                showNotification(`Error al subir imagen a la galería. ${errorMsg}`, 'error');
+            } finally {
+                setIsUploadingGallery(false);
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+
     const removeGalleryImage = (index: number) => {
         if (window.confirm('¿Estás seguro de que deseas eliminar esta imagen de la galería?')) {
             setGallery(prev => prev.filter((_, i) => i !== index));
-        }
-    };
-
-    const addImage = () => {
-        const url = prompt('Introduce la URL de la imagen:');
-        if (url) {
-            // Validación básica de URL
-            try {
-                new URL(url);
-                setGallery(prev => [...prev, url]);
-            } catch (e) {
-                alert('Por favor, introduce una URL válida.');
-            }
         }
     };
 
@@ -129,17 +165,19 @@ const TiendaConfig: React.FC = () => {
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
                                     <button 
                                         type="button"
-                                        onClick={() => {
-                                            const url = prompt('URL del Logo:', tienda?.foto_portada_url || '');
-                                            if (url !== null) {
-                                                setTienda(prev => prev ? {...prev, foto_portada_url: url} : null);
-                                                reset({...tienda, foto_portada_url: url});
-                                            }
-                                        }}
-                                        className="bg-white text-slate-900 px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl"
+                                        onClick={() => document.getElementById('logo-upload')?.click()}
+                                        disabled={isUploadingLogo}
+                                        className="bg-white text-slate-900 px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl flex items-center gap-2"
                                     >
-                                        Cambiar Logo
+                                        {isUploadingLogo ? <RefreshCw className="animate-spin" size={14} /> : 'Cambiar Logo'}
                                     </button>
+                                    <input 
+                                        id="logo-upload"
+                                        type="file"
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={handleLogoUpload}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -251,12 +289,21 @@ const TiendaConfig: React.FC = () => {
                                 <ImageIcon size={18} className="text-[#3366FF]" aria-hidden="true" /> Galería de Fotos
                             </h3>
                             <button 
-                                onClick={addImage}
+                                onClick={() => document.getElementById('gallery-upload')?.click()}
+                                disabled={isUploadingGallery}
                                 aria-label="Añadir nueva foto a la galería"
-                                className="flex items-center gap-2 bg-white text-[#3366FF] px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-sm hover:bg-[#3366FF] hover:text-white transition-all"
+                                className="flex items-center gap-2 bg-white text-[#3366FF] px-4 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-sm hover:bg-[#3366FF] hover:text-white transition-all disabled:opacity-50"
                             >
-                                <Plus size={14} aria-hidden="true" /> Añadir Foto
+                                {isUploadingGallery ? <RefreshCw className="animate-spin" size={14} /> : <Plus size={14} aria-hidden="true" />}
+                                {isUploadingGallery ? 'SUBIENDO...' : 'Añadir Foto'}
                             </button>
+                            <input 
+                                id="gallery-upload"
+                                type="file"
+                                className="hidden"
+                                accept="image/*"
+                                onChange={handleGalleryUpload}
+                            />
                         </div>
 
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-6" role="list">
@@ -275,12 +322,19 @@ const TiendaConfig: React.FC = () => {
                                 </div>
                             ))}
                             <button 
-                                onClick={addImage}
+                                onClick={() => document.getElementById('gallery-upload')?.click()}
+                                disabled={isUploadingGallery}
                                 aria-label="Subir nueva foto"
-                                className="aspect-square bg-white rounded-3xl border-4 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer hover:border-[#3366FF] transition-all group w-full"
+                                className="aspect-square bg-white rounded-3xl border-4 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer hover:border-[#3366FF] transition-all group w-full disabled:opacity-50"
                             >
-                                <Plus size={32} className="text-slate-200 group-hover:text-[#3366FF] mb-2" aria-hidden="true" />
-                                <span className="text-[10px] font-black text-slate-300 group-hover:text-[#3366FF] uppercase">Subir Foto</span>
+                                {isUploadingGallery ? (
+                                    <RefreshCw size={32} className="animate-spin text-[#3366FF]" />
+                                ) : (
+                                    <>
+                                        <Plus size={32} className="text-slate-200 group-hover:text-[#3366FF] mb-2" aria-hidden="true" />
+                                        <span className="text-[10px] font-black text-slate-300 group-hover:text-[#3366FF] uppercase">Subir Foto</span>
+                                    </>
+                                )}
                             </button>
                         </div>
                     </div>

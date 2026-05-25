@@ -37,6 +37,20 @@ const TiendaController = {
   },
 
   /**
+   * GET /api/tiendas/:id/resenas
+   * Obtiene todas las reseñas de una tienda
+   */
+  async obtenerResenas(req, res) {
+    try {
+      const { id } = req.params
+      const resenas = await tiendaService.getResenas(id)
+      res.json(resenas)
+    } catch (error) {
+      res.status(400).json({ error: error.message })
+    }
+  },
+
+  /**
    * GET /api/tiendas/:id
    * Obtiene una tienda por su ID
    */
@@ -129,6 +143,25 @@ const TiendaController = {
       return res.json(result)
     } catch (error) {
       console.error('Error al actualizar foto de tienda:', error)
+      return res.status(400).json({ status: 'error', message: error.message })
+    }
+  },
+
+  /**
+   * POST /api/tiendas/:id/galeria
+   * Sube una foto a la galería de la tienda
+   */
+  async actualizarGaleria(req, res) {
+    try {
+      const { id } = req.params
+      const { image } = req.body
+      if (!image) {
+        return res.status(400).json({ status: 'error', message: 'La imagen es requerida' })
+      }
+      const result = await tiendaService.actualizarGaleria(id, image)
+      return res.json(result)
+    } catch (error) {
+      console.error('Error al actualizar galería de tienda:', error)
       return res.status(400).json({ status: 'error', message: error.message })
     }
   }

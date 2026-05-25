@@ -73,6 +73,9 @@ class UsuarioService {
 
     const token = this.tokenManager.sign({ id: usuario.id_usuario, email: usuario.email });
 
+    // Actualizar último login
+    await this.usuarioRepository.update(usuario.id_usuario, { ultimo_login: new Date() });
+
     // Quitar contraseña de la respuesta
     const { contrasena: _, ...usuarioSinPassword } = usuario
 

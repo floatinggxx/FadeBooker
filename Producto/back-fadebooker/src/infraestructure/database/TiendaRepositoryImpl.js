@@ -96,6 +96,24 @@ class TiendaRepositoryImpl extends TiendaRepository {
       .update({ este_activa: false, updatedAt: new Date() })
     return deleted > 0
   }
+
+  /**
+   * Obtiene las reseñas de una tienda
+   * @param {number} id_tienda - ID de la tienda
+   * @returns {Promise<Array>} Lista de reseñas
+   */
+  async getResenas(id_tienda) {
+    return db('Reseña')
+      .join('Usuario', 'Reseña.id_cliente', '=', 'Usuario.id_usuario')
+      .where('Reseña.id_tienda', id_tienda)
+      .select(
+        'Reseña.*',
+        'Usuario.nombre',
+        'Usuario.apellido',
+        'Usuario.foto_perfil_url'
+      )
+      .orderBy('Reseña.fecha_resena', 'desc')
+  }
 }
 
 module.exports = TiendaRepositoryImpl

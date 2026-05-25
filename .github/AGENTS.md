@@ -16,6 +16,7 @@ Todos los agentes deben adherirse estrictamente a estas reglas:
 - **Power Platform Sync:** Mantener `swagger_powerapps.json` bajo estándar **Swagger 2.0**.
 - **Log de Errores:** Auditoría obligatoria en `LogErrores`.
 - **Docker First:** El backend debe ejecutarse sobre `node:20-alpine` para garantizar consistencia.
+- **SSOT (Single Source of Truth):** Todas las barberías, barberos y servicios mostrados en el frontend DEBEN ser reales y provenir de la base de datos Azure SQL. Los fallbacks estáticos están prohibidos.
 - **Mercado Pago v2:** Migración obligatoria a SDK v2 para toda lógica de pagos.
 - **Anti-Duplicación:** Estricta vigilancia contra SyntaxErrors por duplicación de bloques.
 - **Limpieza de Conflictos:** Prohibido dejar marcadores de conflicto (`<<<<<<<`, `=======`, `>>>>>>>`) en el código. Si un agente detecta estos marcadores, DEBE resolverlos antes de realizar cualquier otra tarea. Es la prioridad #1.

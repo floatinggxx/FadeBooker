@@ -20,6 +20,11 @@ export const tiendaService = {
     return response.data;
   },
 
+  getResenasByTienda: async (id: string | number): Promise<any[]> => {
+    const response = await axios.get(`${API_URL}/tiendas/${id}/resenas`);
+    return response.data;
+  },
+
   listCiudades: async (): Promise<string[]> => {
     // Podríamos tener un endpoint específico o deducirlo de las tiendas
     const response = await axios.get(`${API_URL}/tiendas`);
@@ -30,6 +35,16 @@ export const tiendaService = {
 
   updateTienda: async (id: string | number, data: Partial<Tienda>): Promise<Tienda> => {
     const response = await axios.put(`${API_URL}/tiendas/${id}`, data);
+    return response.data;
+  },
+
+  updateTiendaPhoto: async (id: string | number, image: string): Promise<{ fotoUrl: string }> => {
+    const response = await axios.post(`${API_URL}/tiendas/${id}/foto`, { image });
+    return response.data;
+  },
+
+  updateTiendaGallery: async (id: string | number, image: string): Promise<{ fotoUrl: string }> => {
+    const response = await axios.post(`${API_URL}/tiendas/${id}/galeria`, { image });
     return response.data;
   }
 };

@@ -11,6 +11,7 @@ import TiendaDetailPage from '@/pages/TiendaDetailPage';
 import StudioDangerPage from '@/pages/StudioDangerPage';
 import StudioDangerBookingPage from '@/pages/StudioDangerBookingPage';
 import BarberDetailPage from '@/pages/BarberDetailPage';
+import UniversalBookingPage from '@/pages/UniversalBookingPage';
 import MyBookingsPage from '@/pages/MyBookingsPage';
 import BookingPage from '@/pages/BookingPage';
 import ProfilePage from '@/pages/ProfilePage';
@@ -140,7 +141,7 @@ function App() {
                   <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
                   <Route path="/barber-dashboard" element={<BarberoRoute><BarberDashboardPage /></BarberoRoute>} />
                   <Route path="/promociones" element={<ProviderRoute><PromocionesPage /></ProviderRoute>} />
-                  <Route path="/barbero/:id" element={<BarberDetailPage />} />
+                  <Route path="/barbero/:id" element={<UniversalBookingPage />} />
                   <Route path="/tienda/:id" element={<TiendaDetailPage />} />
                   <Route path="/studiodeanger" element={<StudioDangerPage />} />
                   <Route path="/studiodeanger/reservar" element={<StudioDangerBookingPage />} />

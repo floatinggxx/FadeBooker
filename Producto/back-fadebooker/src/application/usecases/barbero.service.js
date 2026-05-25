@@ -107,6 +107,29 @@ class BarberoService {
   }
 
   /**
+   * NUEVO (v1.5.0): Actualiza la foto de un barbero (Cloudinary)
+   * @param {number} id - ID del barbero
+   * @param {string} base64Image - Imagen en formato base64
+   */
+  async actualizarFoto(id, base64Image) {
+    try {
+      const CloudinaryService = require('../../infraestructure/storage/CloudinaryService');
+      const result = await CloudinaryService.uploadImage(base64Image, 'fadebooker/barberos');
+      
+      await this.barberoRepository.actualizar(id, { 
+        foto_perfil_url: result.secure_url 
+      });
+
+      return {
+        status: 'success',
+        fotoUrl: result.secure_url
+      };
+    } catch (error) {
+      throw new Error(`Error al subir foto de barbero: ${error.message}`);
+    }
+  }
+
+  /**
    * NUEVO (v1.1.0): Verifica si un barbero puede hacer un servicio específico
    * @param {number} id_barbero - ID del barbero
    * @param {number} id_servicio - ID del servicio

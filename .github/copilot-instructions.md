@@ -27,6 +27,11 @@
 ### 2. Frontend React (Feature-Based Architecture)
 **Decisión:** Sustituimos Atomic Design por Feature-Based Architecture para reducir fatiga de niveles de carpetas y alinearnos directamente con dominios del negocio.
 
+**Reglas de Datos (SSOT):**
+- **Prohibición de Datos Estáticos:** Está estrictamente prohibido el uso de archivos de "fallback" o "datos falsos" (ej: `tiendasFallback.ts`) para mostrar entidades de negocio (Tiendas, Barberos, Servicios).
+- **Base de Datos como Única Fuente de Verdad:** Todas las barberías y barberos mostrados en el frontend DEBEN provenir de la base de datos Azure SQL. Si no hay datos en la BD, se debe mostrar un estado vacío (Empty State) informativo, nunca datos simulados.
+- **Limpieza de Rastro:** Cualquier componente que use datos hardcodeados debe ser refactorizado inmediatamente para usar React Query y el servicio de API correspondiente.
+
 **Enfoque Híbrido:**
 - **Tailwind CSS:** Para nuevas interfaces y utilidades rápidas (configurado en `tailwind.config.ts`).
 - **Bootstrap 5:** Clases heredadas y componentes de `react-bootstrap` presentes en la base de código. Se permite la coexistencia, pero se prefiere Tailwind para nuevas features.

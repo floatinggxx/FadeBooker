@@ -1,14 +1,15 @@
-import React, { useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import React, { useMemo, useState } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Star } from 'lucide-react';
+import { Star, MapPin, Clock, Camera, MessageSquare, ChevronRight, Scissors } from 'lucide-react';
 import { tiendaService } from '@/lib/api/tiendaService';
 import { PLACEHOLDERS, FALLBACK_URLS } from '@/lib/utils/placeholders';
-import { rmFallbackTiendas } from '@/lib/utils/tiendasFallback';
-import { STUDIO_DANGER_BARBERS } from '@/lib/data/studioDangerData';
+import { clsx } from 'clsx';
 
 const TiendaDetailPage: React.FC = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<'servicios' | 'galeria' | 'comentarios'>('servicios');
   
   const { data: tienda, isLoading: loadingTienda } = useQuery({
     queryKey: ['tienda', id],
@@ -22,183 +23,345 @@ const TiendaDetailPage: React.FC = () => {
     enabled: !!id,
   });
 
-  const fallbackTienda = useMemo(() => {
-    if (!id) return null;
-    return rmFallbackTiendas.find((item) => String(item.id_tienda) === String(id)) || null;
-  }, [id]);
+  const { data: resenas, isLoading: loadingResenas } = useQuery({
+    queryKey: ['tienda-resenas', id],
+    queryFn: () => tiendaService.getResenasByTienda(Number(id)),
+    enabled: !!id && activeTab === 'comentarios',
+  });
 
   if (loadingTienda || loadingBarberos) return (
-    <div className="min-h-screen flex items-center justify-center bg-[#E5E7EB]">
-      <div className="w-12 h-12 border-4 border-slate-900 border-t-rose-500 rounded-full animate-spin"></div>
+    <div className="min-h-screen flex items-center justify-center bg-[#0F172A]">
+      <div className="w-16 h-16 border-4 border-slate-700 border-t-sky-500 rounded-full animate-spin"></div>
     </div>
   );
   
-  const isStudioDangerFallback = id === '101' && Array.isArray(barberos) && barberos.length === 0;
-  const barberosToRender = isStudioDangerFallback ? STUDIO_DANGER_BARBERS : barberos || [];
-  const tiendaData = tienda || fallbackTienda;
+  const barberosToRender = barberos || [];
+  const tiendaData = tienda;
 
   if (!tiendaData) return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-[#E5E7EB]">
-      <div className="text-center bg-white p-10 rounded-[3rem] shadow-xl max-w-sm">
-        <h2 className="text-3xl font-black text-slate-900 mb-4">Tienda no encontrada</h2>
-        <Link to="/barberias" className="text-rose-500 font-bold hover:underline">Volver a la búsqueda</Link>
+    <div className="min-h-screen flex items-center justify-center p-6 bg-[#0F172A]">
+      <div className="text-center bg-slate-900 border border-slate-800 p-12 rounded-[3.5rem] shadow-2xl max-w-sm">
+        <h2 className="text-4xl font-black text-white mb-6">Error 404</h2>
+        <p className="text-slate-400 mb-8 font-medium">No hemos podido encontrar la barbería solicitada.</p>
+        <Link to="/barberias" className="inline-flex items-center gap-2 bg-sky-500 text-white px-8 py-3 rounded-full font-black hover:bg-sky-400 transition-all">
+          VOLVER <ChevronRight size={18} />
+        </Link>
       </div>
     </div>
   );
 
+  // Parse gallery
+  let galeria: string[] = [];
+  if (tiendaData.galeria) {
+    try {
+      galeria = typeof tiendaData.galeria === 'string' ? JSON.parse(tiendaData.galeria) : tiendaData.galeria;
+    } catch (e) {
+      galeria = [];
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-[#F3F4F6] pt-12 pb-24 px-6">
-      <div className="max-w-6xl mx-auto space-y-10">
-        {/* Header Shop Section */}
-        <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] items-center bg-white p-10 rounded-[3rem] shadow-2xl shadow-slate-200/40">
-          <div className="overflow-hidden rounded-[2.5rem] shadow-2xl">
-            <img
-              src={tiendaData.foto_portada_url || PLACEHOLDERS.TIENDA}
-              alt={tiendaData.nombre_tienda}
-              className="w-full h-full min-h-[420px] object-cover"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                if (target.src !== FALLBACK_URLS.TIENDA) {
-                  target.src = FALLBACK_URLS.TIENDA;
-                }
-              }}
-            />
-          </div>
-
-          <div className="space-y-8">
-            <div className="flex flex-wrap items-center gap-4">
-              <span className="rounded-full bg-[#2563EB] px-5 py-2 text-xs font-black uppercase tracking-[0.35em] text-white shadow-lg shadow-sky-300/10">
-                StudioDanger
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-black uppercase tracking-[0.25em] text-slate-600">
-                <Star size={14} className="text-amber-400" />
-                {tiendaData.calificacion_promedio?.toFixed(1) || '5.0'}
-              </span>
-            </div>
-
-            <div className="space-y-4">
-              <h1 className="text-5xl font-black tracking-tight text-slate-900">{tiendaData.nombre_tienda}</h1>
-              <p className="text-xl leading-relaxed text-slate-600 max-w-xl">
-                Barbería premium en Quilicura especializada en cortes de diseño, barba premium y atención personalizada con ambiente moderno.
-              </p>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-[2rem] border border-slate-200 bg-slate-50 p-6">
-                <p className="text-xs uppercase tracking-[0.35em] text-slate-500 font-black">Ubicación</p>
-                <p className="mt-3 text-lg font-black text-slate-900">{tiendaData.ciudad}, Región Metropolitana</p>
+    <div className="min-h-screen bg-[#F8FAFC]">
+      {/* Hero Section - Inspired by StudioDanger Reference */}
+      <section className="relative overflow-hidden bg-[#07112B] text-white pt-20 pb-32">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.15),_transparent_40%),radial-gradient(circle_at_bottom_right,_rgba(239,68,68,0.1),_transparent_40%)]" />
+        <div className="container relative z-10">
+          <div className="grid gap-12 lg:grid-cols-[1fr_1fr] items-center">
+            <div className="space-y-8 animate-fade-in">
+              <div className="flex flex-wrap items-center gap-4">
+                <span className="inline-flex items-center gap-2 rounded-full bg-sky-500/10 border border-sky-500/20 px-5 py-2 text-xs font-black uppercase tracking-[0.35em] text-sky-400">
+                  BARBERÍA PREMIUM
+                </span>
+                <span className="inline-flex items-center gap-2 rounded-full bg-white/5 px-4 py-2 text-sm font-black uppercase tracking-[0.25em] text-slate-300 border border-white/10">
+                  <Star size={14} className={Number(tiendaData.calificacion_promedio) > 0 ? "text-amber-400 fill-amber-400" : "text-slate-500"} />
+                  {Number(tiendaData.calificacion_promedio) > 0 
+                    ? tiendaData.calificacion_promedio?.toFixed(1) 
+                    : <span className="text-[10px] text-slate-400">SIN IDENTIFICAR</span>
+                  }
+                </span>
               </div>
-              <div className="rounded-[2rem] border border-slate-200 bg-slate-50 p-6">
-                <p className="text-xs uppercase tracking-[0.35em] text-slate-500 font-black">Horario</p>
-                <p className="mt-3 text-lg font-black text-slate-900">Lun - Vie 09:00 - 19:00</p>
+
+              <div className="space-y-6">
+                <h1 className="text-6xl font-black tracking-tight text-white leading-tight">
+                  {tiendaData.nombre_tienda}
+                </h1>
+                <p className="text-xl leading-relaxed text-slate-400 max-w-xl">
+                  {tiendaData.nombre_tienda} redefine el estilo tradicional con técnicas modernas y atención personalizada de primer nivel.
+                </p>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-[2.5rem] bg-white/5 p-7 border border-white/10 backdrop-blur-md">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-sky-500/20 rounded-xl text-sky-400"><MapPin size={20} /></div>
+                    <span className="text-xs uppercase tracking-[0.35em] text-slate-500 font-black">Ubicación</span>
+                  </div>
+                  <p className="text-lg font-bold text-white mb-1">{tiendaData.direccion}</p>
+                  <p className="text-slate-400 font-medium">{tiendaData.ciudad}, Chile</p>
+                </div>
+                <div className="rounded-[2.5rem] bg-white/5 p-7 border border-white/10 backdrop-blur-md">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-rose-500/20 rounded-xl text-rose-400"><Clock size={20} /></div>
+                    <span className="text-xs uppercase tracking-[0.35em] text-slate-500 font-black">Horario</span>
+                  </div>
+                  <p className="text-lg font-bold text-white mb-1">Lun - Sáb</p>
+                  <p className="text-slate-400 font-medium">09:00 - 19:00</p>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-5 pt-4">
+                <button 
+                  onClick={() => setActiveTab('comentarios')}
+                  className={clsx(
+                    "rounded-full px-10 py-5 text-base font-black transition-all flex items-center gap-3",
+                    activeTab === 'comentarios' ? "bg-white text-slate-900 shadow-2xl" : "bg-white/5 text-white border border-white/10 hover:bg-white/10"
+                  )}
+                >
+                  <MessageSquare size={20} /> Comentarios
+                </button>
+                <button 
+                  onClick={() => setActiveTab('galeria')}
+                  className={clsx(
+                    "rounded-full px-10 py-5 text-base font-black transition-all flex items-center gap-3",
+                    activeTab === 'galeria' ? "bg-white text-slate-900 shadow-2xl" : "bg-white/5 text-white border border-white/10 hover:bg-white/10"
+                  )}
+                >
+                  <Camera size={20} /> Galería
+                </button>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-4">
-              <button className="rounded-full bg-slate-900 px-10 py-4 text-base font-black text-white transition hover:bg-slate-800">
-                Información
-              </button>
-              <button className="rounded-full border border-slate-200 bg-white px-10 py-4 text-base font-black text-slate-900 transition hover:bg-slate-50">
-                Ubicación
-              </button>
+            <div className="relative rounded-[3.5rem] overflow-hidden shadow-2xl border-8 border-white/5 group">
+              <img
+                src={tiendaData.foto_portada_url || PLACEHOLDERS.TIENDA}
+                alt={tiendaData.nombre_tienda}
+                className="w-full h-[550px] object-cover transition-transform duration-700 group-hover:scale-105"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  if (target.src !== FALLBACK_URLS.TIENDA) {
+                    target.src = FALLBACK_URLS.TIENDA;
+                  }
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+              <div className="absolute bottom-10 left-10">
+                <p className="text-white font-black text-2xl drop-shadow-lg">Explora nuestra experiencia</p>
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Barbers Selection Section */}
-        <section className="space-y-6">
-          <div className="mb-12 text-center md:text-left">
-            <div className="flex items-center gap-4 mb-3">
-              <div className="h-10 w-1.5 bg-rose-500 rounded-full"></div>
-              <h2 className="text-4xl font-black text-slate-900">Reserva tu cita</h2>
-            </div>
-            <p className="text-slate-500 font-bold text-lg uppercase tracking-tight ml-5">Paso 3: Selecciona tu barbero de confianza</p>
+      {/* Navigation Tabs Bar */}
+      <div className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm animate-fade-in">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex gap-10 overflow-x-auto no-scrollbar py-1">
+            <button 
+              onClick={() => { setActiveTab('servicios'); document.getElementById('main-content')?.scrollIntoView({ behavior: 'smooth' }); }}
+              className={clsx(
+                "py-6 text-sm font-black uppercase tracking-[0.2em] relative transition-colors shrink-0",
+                activeTab === 'servicios' ? "text-sky-600" : "text-slate-400 hover:text-slate-600"
+              )}
+            >
+              Barberos y Reserva
+              {activeTab === 'servicios' && <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-sky-600 rounded-full" />}
+            </button>
+            <button 
+              onClick={() => setActiveTab('galeria')}
+              className={clsx(
+                "py-6 text-sm font-black uppercase tracking-[0.2em] relative transition-colors shrink-0",
+                activeTab === 'galeria' ? "text-sky-600" : "text-slate-400 hover:text-slate-600"
+              )}
+            >
+              Galería
+              {activeTab === 'galeria' && <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-sky-600 rounded-full" />}
+            </button>
+            <button 
+              onClick={() => setActiveTab('comentarios')}
+              className={clsx(
+                "py-6 text-sm font-black uppercase tracking-[0.2em] relative transition-colors shrink-0",
+                activeTab === 'comentarios' ? "text-sky-600" : "text-slate-400 hover:text-slate-600"
+              )}
+            >
+              Comentarios
+              {activeTab === 'comentarios' && <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-sky-600 rounded-full" />}
+            </button>
           </div>
-
-          <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] items-start">
-            {/* "Cualquier Barbero" Card */}
-            <div className="rounded-[3rem] bg-[#3366FF] p-10 text-center group hover:scale-[1.02] transition-all cursor-pointer shadow-2xl shadow-blue-200/50 relative overflow-hidden flex flex-col justify-center items-center">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-                
-                <div className="w-24 h-24 bg-white/20 text-white rounded-[2rem] flex items-center justify-center text-4xl shadow-xl backdrop-blur-md mb-8 group-hover:rotate-12 transition-transform">
-                   ⚡
-                </div>
-                
-                <div className="flex-1">
-                   <h3 className="text-3xl font-black text-white mb-2 leading-tight">Cualquier Barbero</h3>
-                   <p className="text-blue-100/80 text-sm font-bold uppercase tracking-widest mb-10">Asignación automática</p>
-                </div>
-                
-                <div className="w-full py-5 bg-white/10 text-white rounded-[2rem] font-black text-xs uppercase tracking-widest border border-white/20 mb-8 backdrop-blur-sm">
-                   Disponibilidad Inmediata
-                </div>
-
-                <Link
-                  to="/studiodeanger/reservar"
-                  className="w-full py-6 bg-white text-[#3366FF] rounded-[2rem] font-black text-xl hover:bg-rose-500 hover:text-white active:bg-rose-600 active:text-white transition-all shadow-xl"
-                >
-                    Ver disponibilidad
-                </Link>
-            </div>
-
-            {/* List of Barbers */}
-            {barberosToRender && barberosToRender.length > 0 ? (
-                barberosToRender.map((barbero) => {
-                  const bookingLink = isStudioDangerFallback
-                    ? `/studiodeanger/reservar?barberoId=${barbero.id_barbero || barbero.id}`
-                    : `/barbero/${barbero.id_barbero || barbero.id}`;
-                  return (
-                    <div key={barbero.id_barbero || barbero.id} className="bg-white border-4 border-white p-8 rounded-[3.5rem] text-center shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:border-[#3366FF]/20 transition-all group relative flex flex-col">
-                        <div className="absolute top-6 right-6 flex items-center gap-1.5 bg-white/90 backdrop-blur-md text-slate-900 px-4 py-2 rounded-2xl text-xs font-black border border-slate-100 shadow-xl z-10 transition-transform group-hover:scale-110">
-                           <Star size={14} className="text-yellow-500 fill-yellow-500" />
-                           {barbero.calificacion || barbero.calificacion_promedio || 4.9}
-                        </div>
-                        
-                        <div className="w-48 h-48 rounded-[3rem] overflow-hidden mx-auto mb-8 shadow-2xl shadow-slate-300/50 relative group-hover:rotate-2 transition-all duration-500 bg-slate-50">
-                             <img 
-                                src={barbero.foto_perfil_url || barbero.foto || PLACEHOLDERS.BARBERO} 
-                                alt={barbero.nombre} 
-                                className="w-full h-full object-cover"
-                                onError={(e) => {
-                                    const target = e.target as HTMLImageElement;
-                                    if (target.src !== FALLBACK_URLS.BARBERO) {
-                                      target.src = FALLBACK_URLS.BARBERO;
-                                    }
-                                }}
-                             />
-                        </div>
-                        
-                        <div className="flex-1">
-                            <h3 className="text-3xl font-black text-slate-900 mb-1 leading-tight group-hover:text-[#3366FF] transition-colors">
-                                {barbero.nombre} {barbero.apellido}
-                            </h3>
-                            <p className="text-slate-400 font-bold uppercase tracking-tighter text-xs mb-8">{barbero.especialidad || 'MÁSTER BARBERO'}</p>
-                        </div>
-                        
-                        <div className="flex items-center justify-center gap-3 mb-10 bg-[#E8F1FF] text-[#3366FF] py-5 px-4 rounded-[2.2rem] font-black text-[12px] uppercase tracking-tighter border-2 border-blue-50/50 shadow-inner min-h-[72px]">
-                           <div className="w-2.5 h-2.5 bg-[#3366FF] rounded-full animate-pulse shadow-[0_0_10px_rgba(51,102,255,0.5)] shrink-0"></div>
-                           <span className="leading-tight">Disponible 09 a 18 hrs</span>
-                        </div>
-
-                        <Link 
-                            to={bookingLink} 
-                            className="block w-full py-6 bg-slate-900 text-white rounded-[2rem] font-black text-xl hover:bg-[#3366FF] hover:text-white active:bg-blue-700 active:text-white transition-all shadow-xl shadow-slate-200 hover:shadow-blue-200 hover:-translate-y-2 active:translate-y-0"
-                        >
-                            Ver disponibilidad
-                        </Link>
-                    </div>
-                  );
-                })
-            ) : (
-                <div className="rounded-[3rem] border border-dashed border-slate-300 bg-white/80 p-12 text-center text-slate-500 shadow-lg shadow-slate-200/30">
-                    <p className="text-base font-black uppercase tracking-[0.35em] text-slate-400 mb-4">Barberos disponibles</p>
-                    <p className="text-xl font-black text-slate-900">Aún no hay barberos registrados en esta tienda.</p>
-                    <p className="mt-4 text-sm leading-relaxed">Revisa otra barbería o vuelve más tarde para conocer los barberos disponibles en StudioDanger.</p>
-                </div>
-            )}
-          </div>
-        </section>
+        </div>
       </div>
+
+      <main id="main-content" className="max-w-7xl mx-auto px-6 py-16 space-y-24">
+        
+        {/* Content Switcher based on Tabs */}
+        {activeTab === 'servicios' && (
+          <section className="animate-fade-in-up">
+            <div className="mb-12">
+              <div className="flex items-center gap-4 mb-3">
+                <div className="h-10 w-2 bg-sky-500 rounded-full shadow-[0_0_15px_rgba(14,165,233,0.5)]"></div>
+                <h2 className="text-4xl font-black text-slate-900 tracking-tight">Selecciona tu barbero</h2>
+              </div>
+              <p className="text-slate-500 font-bold text-lg uppercase tracking-widest ml-6">Elige el profesional que mejor se adapte a tu estilo</p>
+            </div>
+
+            <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] items-start">
+              {/* "Cualquier Barbero" Card */}
+              <div className="rounded-[3.5rem] bg-gradient-to-br from-[#2563EB] to-[#1E3A8A] p-12 text-center group hover:scale-[1.02] transition-all cursor-pointer shadow-3xl shadow-blue-500/20 relative overflow-hidden flex flex-col justify-center items-center h-full min-h-[500px]">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl opacity-50"></div>
+                  
+                  <div className="w-28 h-28 bg-white text-blue-600 rounded-[2.5rem] flex items-center justify-center text-5xl shadow-2xl mb-10 group-hover:rotate-12 transition-transform duration-500">
+                     ✨
+                  </div>
+                  
+                  <h3 className="text-4xl font-black text-white mb-4 tracking-tight">Próxima Disponibilidad</h3>
+                  <p className="text-blue-100/70 text-base font-bold uppercase tracking-[0.25em] mb-12">Asignación automática inteligente</p>
+                  
+                  <button
+                    onClick={() => {
+                      if (barberosToRender.length > 0) {
+                        navigate(`/barbero/${barberosToRender[0].id_barbero || barberosToRender[0].id}`);
+                      } else {
+                        alert("No hay barberos registrados actualmente.");
+                      }
+                    }}
+                    className="w-full py-8 bg-white text-blue-700 rounded-[2.5rem] font-black text-2xl hover:bg-slate-50 active:scale-95 transition-all shadow-2xl"
+                  >
+                      BUSCAR TURNO AHORA
+                  </button>
+              </div>
+
+              {/* List of Barbers - Grid for more responsiveness */}
+              <div className="grid gap-8 sm:grid-cols-2">
+                {barberosToRender && barberosToRender.length > 0 ? (
+                    barberosToRender.map((barbero) => (
+                      <div key={barbero.id_barbero || barbero.id} className="bg-white p-8 rounded-[3.5rem] text-center shadow-xl shadow-slate-200/50 hover:shadow-2xl border-2 border-transparent hover:border-sky-500/10 transition-all group flex flex-col">
+                          <div className="relative w-44 h-44 rounded-[3rem] overflow-hidden mx-auto mb-8 shadow-2xl bg-slate-50 border-4 border-white transition-transform group-hover:scale-105 duration-500">
+                               <img 
+                                  src={barbero.foto_perfil_url || barbero.foto || PLACEHOLDERS.BARBERO} 
+                                  alt={barbero.nombre} 
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                      const target = e.target as HTMLImageElement;
+                                      if (target.src !== FALLBACK_URLS.BARBERO) {
+                                        target.src = FALLBACK_URLS.BARBERO;
+                                      }
+                                  }}
+                               />
+                               <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md text-slate-900 px-3 py-1.5 rounded-2xl text-[10px] font-black shadow-lg border border-slate-100 flex items-center gap-1">
+                                 <Star size={12} className={Number(barbero.calificacion || barbero.calificacion_promedio) > 0 ? "text-yellow-500 fill-yellow-500" : "text-slate-300"} />
+                                 {Number(barbero.calificacion || barbero.calificacion_promedio) > 0 
+                                   ? (barbero.calificacion || barbero.calificacion_promedio).toFixed(1) 
+                                   : "S/I"
+                                 }
+                               </div>
+                          </div>
+                          
+                          <div className="flex-1 space-y-2">
+                              <h3 className="text-2xl font-black text-slate-900 leading-tight">
+                                  {barbero.nombre} {barbero.apellido}
+                              </h3>
+                              <p className="text-slate-400 font-black uppercase tracking-widest text-[10px] pb-6">{barbero.especialidad || 'MÁSTER BARBERO'}</p>
+                          </div>
+                          
+                          <Link 
+                              to={`/barbero/${barbero.id_barbero || barbero.id}`} 
+                              className="w-full py-5 bg-slate-950 text-white rounded-[2rem] font-black text-lg hover:bg-sky-600 transition-all shadow-lg hover:shadow-sky-500/30 text-center uppercase tracking-wider"
+                          >
+                              Reservar
+                          </Link>
+                      </div>
+                    ))
+                ) : (
+                    <div className="sm:col-span-2 rounded-[3.5rem] border-4 border-dashed border-rose-200 bg-rose-50/30 p-16 text-center text-rose-500 shadow-xl shadow-rose-100/20">
+                        <Scissors size={48} className="mx-auto mb-6 text-rose-400 opacity-50" />
+                        <h3 className="text-2xl font-black text-rose-900 mb-4 tracking-tight">Sin profesionales disponibles</h3>
+                        <p className="text-slate-600 font-medium max-w-sm mx-auto leading-relaxed">
+                            No hay barberos con servicios configurados actualmente en esta tienda. Por favor, revisa otras sedes.
+                        </p>
+                    </div>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Gallery Tab Content */}
+        {activeTab === 'galeria' && (
+          <section className="animate-fade-in-up">
+            <div className="mb-12">
+              <div className="flex items-center gap-4 mb-3">
+                <div className="h-10 w-2 bg-sky-500 rounded-full"></div>
+                <h2 className="text-4xl font-black text-slate-900">Nuestra Galería</h2>
+              </div>
+              <p className="text-slate-500 font-bold text-lg uppercase tracking-widest ml-6">El arte del recorte plasmado en cada detalle</p>
+            </div>
+            
+            {galeria.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {galeria.map((img, idx) => (
+                  <div key={idx} className="aspect-square rounded-[2rem] overflow-hidden shadow-lg border-2 border-white hover:-translate-y-2 transition-transform duration-500">
+                    <img src={img} alt={`Galería ${idx}`} className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-[4rem] bg-slate-100 p-24 text-center border-4 border-dashed border-slate-200">
+                <Camera size={64} className="mx-auto mb-6 text-slate-300" />
+                <p className="text-2xl font-black text-slate-400 uppercase tracking-widest">Galería pronto disponible</p>
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* Comments Tab Content */}
+        {activeTab === 'comentarios' && (
+          <section className="animate-fade-in-up">
+            <div className="mb-12">
+              <div className="flex items-center gap-4 mb-3">
+                <div className="h-10 w-2 bg-sky-500 rounded-full"></div>
+                <h2 className="text-4xl font-black text-slate-900">Reseñas de Clientes</h2>
+              </div>
+              <p className="text-slate-500 font-bold text-lg uppercase tracking-widest ml-6">Lo que dicen sobre {tiendaData.nombre_tienda}</p>
+            </div>
+
+            <div className="grid gap-8 md:grid-cols-2">
+              {resenas && resenas.length > 0 ? (
+                resenas.map((resena: any) => (
+                  <div key={resena.id_resena} className="bg-white p-10 rounded-[3rem] shadow-xl shadow-slate-200/40 border border-slate-100">
+                    <div className="flex gap-1 text-amber-400 mb-6">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} size={20} fill={i < resena.puntuacion ? "currentColor" : "none"} className={i < resena.puntuacion ? "text-amber-400" : "text-slate-200"} />
+                      ))}
+                    </div>
+                    <p className="text-slate-600 text-lg leading-relaxed italic mb-8">
+                      "{resena.comentario}"
+                    </p>
+                    <div className="flex items-center gap-4">
+                      {resena.foto_perfil_url ? (
+                        <img src={resena.foto_perfil_url} className="w-14 h-14 rounded-2xl object-cover" alt={resena.nombre} />
+                      ) : (
+                        <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center font-black text-slate-400">
+                          {resena.nombre?.[0]}{resena.apellido?.[0]}
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-black text-slate-900">{resena.nombre} {resena.apellido}</p>
+                        <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">
+                          {new Date(resena.fecha_resena).toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="md:col-span-2 rounded-[3.5rem] bg-slate-50 p-16 text-center border-4 border-dashed border-slate-200">
+                  <p className="text-2xl font-black text-slate-400 uppercase tracking-widest mb-4">Aún no hay reseñas</p>
+                  <p className="text-slate-500 font-medium max-w-sm mx-auto">Esta barbería todavía no recibe comentarios de clientes.</p>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+      </main>
     </div>
   );
 };

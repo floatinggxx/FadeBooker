@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useBarberoDashboard } from '../hooks/useBarberoDashboard';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
+import { useNotification } from '@/context/NotificationContext';
 import { TrendingUp, Calendar, Scissors, DollarSign, Clock, Plus, LayoutDashboard, Store, Users, Search, Filter, X, CheckCircle, XCircle, Info, Phone } from 'lucide-react';
 import BarberoManualBooking from './BarberoManualBooking';
 import TiendaConfig from './TiendaConfig';
@@ -10,6 +11,7 @@ import { bookingService } from '@/lib/api/bookingService';
 
 const BarberoDashboard: React.FC = () => {
     const { user } = useAuth();
+    const { showNotification } = useNotification();
     const [period, setPeriod] = useState<'day' | 'week' | 'month'>('day');
     const [showManualBooking, setShowManualBooking] = useState(false);
     const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
@@ -42,12 +44,13 @@ const BarberoDashboard: React.FC = () => {
 
     const handleUpdateStatus = async (id: number, nuevoEstado: string) => {
         if (!id) {
-            alert("ID de cita no válido");
+            showNotification("ID de cita no válido", "error");
             return;
         }
         setIsUpdating(true);
         try {
             await bookingService.cambiarEstadoCita(id, nuevoEstado);
+            showNotification(`Cita ${nuevoEstado} correctamente`, "success");
             setSelectedBooking(null);
             refetch();
         } catch (err: any) {
@@ -55,7 +58,7 @@ const BarberoDashboard: React.FC = () => {
             // Capturar mensaje del backend (validateRequest o error explícito)
             const errorData = err.response?.data;
             const msg = errorData?.error || errorData?.message || err.message || "Error al actualizar el estado";
-            alert(msg);
+            showNotification(msg, "error");
         } finally {
             setIsUpdating(false);
         }
