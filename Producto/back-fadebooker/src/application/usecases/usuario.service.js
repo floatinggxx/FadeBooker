@@ -185,6 +185,18 @@ class UsuarioService {
         throw new Error('Token inválido');
       }
 
+      // 1. Buscar usuario para validar contraseña antigua
+      const usuario = await this.usuarioRepository.findById(decoded.id);
+      if (!usuario) {
+        throw new Error('Usuario no encontrado');
+      }
+
+      // 2. Validar que la nueva contraseña no sea igual a la antigua
+      const esIgual = await this.hasher.compare(nuevaContrasena, usuario.contrasena);
+      if (esIgual) {
+        throw new Error('La nueva contraseña no puede ser igual a la anterior');
+      }
+
       const hashedPassword = await this.hasher.hash(nuevaContrasena);
       await this.usuarioRepository.update(decoded.id, { contrasena: hashedPassword });
       
@@ -193,7 +205,10 @@ class UsuarioService {
       if (error.name === 'TokenExpiredError') {
         throw new Error('El enlace ha expirado');
       }
-      throw new Error('Enlace de recuperación inválido o expirado');
+      if (error.message === 'La nueva contraseña no puede ser igual a la anterior') {
+        throw error;
+      }
+      throw new Error(error.message || 'Enlace de recuperación inválido o expirado');
     }
   }
 }

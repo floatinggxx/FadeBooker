@@ -50,6 +50,11 @@ const ProviderRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+const HomePageWrapper = () => {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <DashboardPage /> : <HomePage />;
+};
+
 import { Menu, X } from 'lucide-react';
 
 const AppHeader = () => {
@@ -147,7 +152,7 @@ function App() {
                   <Route path="/pago-fallido" element={<PaymentResultPage />} />
                   <Route path="/pago-pendiente" element={<PaymentResultPage />} />
                   <Route path="/ayuda" element={<HelpPage />} />
-                  <Route path="/" element={<HomePage />} />
+                  <Route path="/" element={<HomePageWrapper />} />
                   <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
               </main>

@@ -31,8 +31,12 @@ class CloudinaryService {
       });
       return result;
     } catch (error) {
-      console.error('Error uploading image to Cloudinary:', error);
-      throw new Error('Fallo al subir la imagen a Cloudinary');
+      console.error('--- CLOUDINARY UPLOAD ERROR ---');
+      console.error(error);
+      
+      // Lanzar el mensaje de error real para facilitar el diagnóstico
+      const errorMessage = error.message || 'Error desconocido al subir a Cloudinary';
+      throw new Error(`Fallo al subir la imagen a Cloudinary: ${errorMessage}`);
     }
   }
 

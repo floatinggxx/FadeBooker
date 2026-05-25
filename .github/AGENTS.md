@@ -18,8 +18,11 @@ Todos los agentes deben adherirse estrictamente a estas reglas:
 - **Docker First:** El backend debe ejecutarse sobre `node:20-alpine` para garantizar consistencia.
 - **Mercado Pago v2:** Migración obligatoria a SDK v2 para toda lógica de pagos.
 - **Anti-Duplicación:** Estricta vigilancia contra SyntaxErrors por duplicación de bloques.
-- **Limpieza de Conflictos:** Prohibido dejar marcadores de conflicto (`<<<<<<<`, `=======`, `>>>>>>>`) en el código. Siempre resolver antes de reportar éxito.
+- **Limpieza de Conflictos:** Prohibido dejar marcadores de conflicto (`<<<<<<<`, `=======`, `>>>>>>>`) en el código. Si un agente detecta estos marcadores, DEBE resolverlos antes de realizar cualquier otra tarea. Es la prioridad #1.
+- **Validación de Entorno (Compatibilidad):** Asegurar que el entorno local coincida con `.env.example`. Nunca subir archivos `.env` reales al repositorio.
+- **Auto-Sanación de Dependencias:** En caso de errores `MODULE_NOT_FOUND` después de una sincronización, el agente tiene permiso (y obligación) de sugerir/ejecutar la limpieza de `node_modules` y una re-instalación limpia (`npm install`).
 - **Validación Pre-Commit:** Verificar que el código sea sintácticamente válido antes de realizar commits o sugerir arranques de servidor.
+- **Rutas Relativas:** Evitar el uso de rutas absolutas de Windows (ej. `C:\Users\...`) en la documentación; usar rutas relativas al workspace para garantizar compatibilidad entre Linux/Windows.
 
 ---
 
@@ -50,7 +53,16 @@ Para entender la estructura completa del proyecto, ver: [CODEBASE_STRUCTURE.md](
 
 ---
 
-## 🚀 Estado Actual del Proyecto
+## �️ Herramientas y Skills Compartidas
+
+- [**Check Compatibility**](skills/check-compatibility.md): Protocolo de verificación de entorno y dependencias.
+- [**Merge Mastery**](skills/merge-mastery.md): Guía de resolución de conflictos en Arquitectura Hexagonal y Feature-Based.
+- [**Node Version Manager**](skills/node-version-manager.md): Manejo de versiones compatibles de Node.js.
+- [**Backend Setup Automation**](skills/backend-setup-automation.md): Automatización de reparaciones de entorno.
+
+---
+
+## �🚀 Estado Actual del Proyecto
 
 **Hito Actual:** 5.9 - Integración Frontend-Backend inicial.
 

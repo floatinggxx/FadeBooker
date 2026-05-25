@@ -30,7 +30,7 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, open, onToggle }) =
         onMouseLeave={() => setHover(false)}
         style={{
           width: '100%',
-          padding: '1.25rem',
+          padding: '1.5rem',
           background: hover ? 'rgba(230, 57, 70, 0.08)' : '#ffffff',
           border: 'none',
           textAlign: 'left',
@@ -38,12 +38,12 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, open, onToggle }) =
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          gap: '1rem',
+          gap: '1.5rem',
           flexWrap: 'wrap',
           transition: 'all 0.2s ease',
           fontWeight: 600,
           color: '#0f3460',
-          fontSize: '1rem',
+          fontSize: '1.1rem',
         }}
       >
         <span style={{ flex: 1, minWidth: 0, textAlign: 'left', lineHeight: '1.4' }}>{question}</span>
@@ -72,12 +72,12 @@ const FAQItem: React.FC<FAQItemProps> = ({ question, answer, open, onToggle }) =
         <div
           className="faq-answer"
           style={{
-            padding: '0 1.25rem 1.25rem 1.25rem',
+            padding: '1.25rem 1.75rem 1.75rem 1.75rem',
             borderTop: '1px solid #e63946',
             animation: 'slideDown 0.3s ease',
           }}
         >
-          <p style={{ color: '#4b5563', lineHeight: '1.6', margin: '0' }}>{answer}</p>
+          <p style={{ color: '#4b5563', lineHeight: '1.8', margin: '0', fontSize: '1rem' }}>{answer}</p>
         </div>
       )}
     </div>

@@ -27,58 +27,16 @@
 ### 2. Frontend React (Feature-Based Architecture)
 **Decisión:** Sustituimos Atomic Design por Feature-Based Architecture para reducir fatiga de niveles de carpetas y alinearnos directamente con dominios del negocio.
 
-**Estructura:**
-```
-src/
-├── features/              # Rebanadas verticales por dominio del negocio
-│   ├── auth/              # Feature: Autenticación y Autorización
-│   │   ├── ui/            # Páginas/componentes específicos (LoginPage, RegisterPage)
-│   │   ├── hooks/         # useAuthContext, useAuth
-│   │   ├── services/      # authService (llamadas a API)
-│   │   └── types/         # Tipos locales si aplica
-│   ├── bookings/          # Feature: Gestión de Citas (Future)
-│   ├── barbers/           # Feature: Gestión de Barberos (Future)
-│   └── profile/           # Feature: Perfil de Usuario (Future)
-│
-├── components/            # Componentes compartidos reutilizables
-│   ├── atoms/             # Componentes base: Button, Text, Heading
-│   ├── molecules/         # Componentes compuestos: FeatureCard, BookingCard
-│   ├── organisms/         # Secciones complejas: HeroSection, BarberSearchSection
-│   ├── ui/                # Componentes UI genéricos: ImageCarousel, BarberCard
-│   └── booking/           # Componentes específicos de booking (transición a feature/bookings)
-│
-├── pages/                 # Páginas principales (ruteadas)
-│   ├── HomePage.tsx
-│   ├── BarberiasPage.tsx
-│   ├── ProfilePage.tsx
-│   ├── MyBookingsPage.tsx
-│   └── ...
-│
-├── lib/                   # Utilidades compartidas
-│   ├── api/               # Servicios de API (authService, barberService, bookingService, userService)
-│   ├── hooks/             # Hooks reutilizables
-│   └── utils/             # Funciones auxiliares
-│
-├── styles/                # Estilos globales
-│   └── globals.css        # Paleta, animaciones, clases base
-│
-├── types/                 # Tipos TypeScript compartidos
-│   └── index.ts
-│
-├── App.tsx                # Root component + routing
-└── main.tsx               # Entry point
-```
-
-**Gestión de Estado:**
-- **React Query:** Sincronización con servidor (API caching, refetching automático).
-- **Context API:** AuthContext para usuario/token (alternativa a Redux para simplificar).
-- **localStorage:** Persistencia de sesión (token, user data).
+**Enfoque Híbrido:**
+- **Tailwind CSS:** Para nuevas interfaces y utilidades rápidas (configurado en `tailwind.config.ts`).
+- **Bootstrap 5:** Clases heredadas y componentes de `react-bootstrap` presentes en la base de código. Se permite la coexistencia, pero se prefiere Tailwind para nuevas features.
 
 **Reglas:**
 - Cada feature es autónoma: contiene su lógica de negocio, componentes y servicios.
 - Los componentes compartidos (`components/atoms`, `molecules`, `organisms`) no dependen de features específicas.
 - Las páginas (`pages/`) son vistas composables que pueden usar features y componentes compartidos.
 - Los servicios de API (`lib/api/`) son agnósticos a React (no usan hooks).
+- **Prohibición de Conflictos:** No se permiten marcadores de conflicto de Git. Si se encuentran, resolver inmediatamente.
 
 **Estilo:**
 - Tailwind CSS para utilidades (ya integrado en `globals.css` via `@tailwind`).

@@ -1,28 +1,57 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import ProfileDetailRow from '../molecules/ProfileDetailRow';
-import { Camera, User, Loader2 } from 'lucide-react';
+import { Camera, User, Loader2, Save, X, Phone, Mail, UserIcon } from 'lucide-react';
 import { useNotification } from '@/context/NotificationContext';
 
 interface ProfileSectionProps {
   name: string;
+  firstName: string;
+  lastName: string;
   email: string;
+  phone: string;
   role: string;
   createdAt: string;
   fotoUrl?: string;
-  onUpdate: () => void;
+  isUpdating?: boolean;
+  onUpdate: (data: { nombre: string; apellido: string; telefono: string }) => Promise<void>;
   onUploadPhoto: (file: string) => Promise<void>;
 }
 
-const ProfileSection: React.FC<ProfileSectionProps> = ({ name, email, role, createdAt, fotoUrl, onUpdate, onUploadPhoto }) => {
+const ProfileSection: React.FC<ProfileSectionProps> = ({ 
+  name, 
+  firstName, 
+  lastName, 
+  email, 
+  phone, 
+  role, 
+  createdAt, 
+  fotoUrl, 
+  isUpdating: isUpdatingExternal,
+  onUpdate, 
+  onUploadPhoto 
+}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState({
+    nombre: firstName,
+    apellido: lastName,
+    telefono: phone
+  });
   const { showNotification } = useNotification();
+
+  useEffect(() => {
+    setEditData({
+      nombre: firstName,
+      apellido: lastName,
+      telefono: phone
+    });
+  }, [firstName, lastName, phone]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validar tipo de archivo
     if (!file.type.startsWith('image/')) {
       showNotification('Por favor selecciona una imagen válida.', 'warning');
       return;
@@ -45,7 +74,17 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ name, email, role, crea
     reader.readAsDataURL(file);
   };
 
-  // Usar un placeholder robusto (data URI de un SVG de usuario si el archivo no existe)
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await onUpdate(editData);
+      setIsEditing(false);
+      showNotification('Información actualizada correctamente.', 'success');
+    } catch (error: any) {
+      showNotification(error.response?.data?.error || 'Error al actualizar información', 'error');
+    }
+  };
+
   const placeholderImg = "https://ui-avatars.com/api/?name=" + encodeURIComponent(name) + "&background=random&size=256";
 
   return (
@@ -62,6 +101,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ name, email, role, crea
               <div className="w-48 h-48 rounded-full overflow-hidden border-8 border-slate-50 shadow-xl relative bg-slate-100">
                 {fotoUrl ? (
                   <img 
+                    key={fotoUrl}
                     src={fotoUrl} 
                     alt={name} 
                     className="w-full h-full object-cover" 
@@ -106,14 +146,87 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ name, email, role, crea
 
         <div className="profile-details col-span-2">
           <div className="profile-card card-surface h-full">
-            <ProfileDetailRow label="Nombre Completo" value={name} />
-            <ProfileDetailRow label="Correo Electrónico" value={email} />
-            <ProfileDetailRow label="Miembro desde" value={createdAt ? new Date(createdAt).toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'} />
-            <div className="mt-8 pt-8 border-t-2 border-slate-50">
-              <button onClick={onUpdate} className="button button-accent button-glow w-full md:w-auto">
-                Actualizar Información
-              </button>
-            </div>
+            {!isEditing ? (
+              <>
+                <ProfileDetailRow label="Nombre Completo" value={name} />
+                <ProfileDetailRow label="Correo Electrónico" value={email} />
+                <ProfileDetailRow label="Teléfono" value={phone || 'No especificado'} />
+                <ProfileDetailRow label="Miembro desde" value={createdAt ? new Date(createdAt).toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'} />
+                
+                <div className="mt-8 pt-8 border-t-2 border-slate-50">
+                  <button 
+                    onClick={() => setIsEditing(true)} 
+                    className="button button-accent button-glow w-full md:w-auto"
+                  >
+                    Actualizar Información
+                  </button>
+                </div>
+              </>
+            ) : (
+              <form onSubmit={handleUpdate} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                      <UserIcon size={16} /> Nombre
+                    </label>
+                    <input
+                      type="text"
+                      value={editData.nombre}
+                      onChange={(e) => setEditData({ ...editData, nombre: e.target.value })}
+                      className="w-full p-3 rounded-xl border-2 border-slate-100 focus:border-[#3366FF] outline-none transition-all"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                      <UserIcon size={16} /> Apellido
+                    </label>
+                    <input
+                      type="text"
+                      value={editData.apellido}
+                      onChange={(e) => setEditData({ ...editData, apellido: e.target.value })}
+                      className="w-full p-3 rounded-xl border-2 border-slate-100 focus:border-[#3366FF] outline-none transition-all"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                    <Phone size={16} /> Teléfono
+                  </label>
+                  <input
+                    type="tel"
+                    value={editData.telefono}
+                    onChange={(e) => setEditData({ ...editData, telefono: e.target.value })}
+                    placeholder="+56 9 ..."
+                    className="w-full p-3 rounded-xl border-2 border-slate-100 focus:border-[#3366FF] outline-none transition-all"
+                  />
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                  <button 
+                    type="submit" 
+                    disabled={isUpdatingExternal}
+                    className="button button-primary flex items-center justify-center gap-2 flex-1"
+                  >
+                    {isUpdatingExternal ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
+                    Guardar Cambios
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      setIsEditing(false);
+                      setEditData({ nombre: firstName, apellido: lastName, telefono: phone });
+                    }}
+                    className="button button-secondary flex items-center justify-center gap-2 flex-1"
+                  >
+                    <X size={20} />
+                    Cancelar
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       </div>

@@ -41,22 +41,16 @@ const ProfilePage: React.FC = () => {
   return (
     <ProfileSection
       name={`${data?.nombre || user?.nombre || 'No registrado'} ${data?.apellido || user?.apellido || ''}`}
+      firstName={data?.nombre || user?.nombre || ''}
+      lastName={data?.apellido || user?.apellido || ''}
       email={data?.email || user?.email || 'No registrado'}
+      phone={data?.telefono || user?.telefono || ''}
       role={data?.rol || user?.rol || 'Cliente'}
       fotoUrl={data?.fotoUrl || user?.fotoUrl}
       createdAt={data?.createdAt || user?.createdAt || ''}
-      onUpdate={() => {
-        const nuevoNombre = prompt('Nuevo nombre:', data?.nombre || user?.nombre || '');
-        const nuevoApellido = prompt('Nuevo apellido:', data?.apellido || user?.apellido || '');
-        const nuevoTelefono = prompt('Nuevo teléfono:', data?.telefono || user?.telefono || '');
-        
-        if (nuevoNombre || nuevoApellido || nuevoTelefono) {
-          mutation.mutate({ 
-            nombre: nuevoNombre || data?.nombre, 
-            apellido: nuevoApellido || data?.apellido,
-            telefono: nuevoTelefono || data?.telefono
-          });
-        }
+      isUpdating={mutation.isPending}
+      onUpdate={async (newData) => {
+        await mutation.mutateAsync(newData);
       }}
       onUploadPhoto={async (base64) => {
         await photoMutation.mutateAsync(base64);
