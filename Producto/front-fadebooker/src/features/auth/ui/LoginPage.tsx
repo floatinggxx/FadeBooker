@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { authService } from '@/lib/api/authService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import { Eye, EyeOff } from 'lucide-react';
+import { useNotification } from '@/context/NotificationContext';
 
 type FormData = { email: string; password: string };
 
@@ -11,6 +12,7 @@ const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
   const { login, isAuthenticated } = useAuth();
+  const { showNotification } = useNotification();
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as { from?: { pathname?: string } })?.from?.pathname || '/dashboard';
@@ -31,12 +33,13 @@ const LoginPage: React.FC = () => {
           id_tienda: resp.id_tienda,
           id_barbero: resp.id_barbero
         }, resp.token);
+        showNotification(`¡Bienvenido de nuevo, ${resp.nombre}!`, 'success');
         navigate(from, { replace: true });
       } else {
-        alert('Respuesta inválida del servidor');
+        showNotification('Respuesta inválida del servidor', 'error');
       }
     } catch (err: any) {
-      alert(err?.response?.data?.message || err?.response?.data?.error || 'Error en login');
+      showNotification(err?.response?.data?.message || err?.response?.data?.error || 'Error en login', 'error');
     }
   };
 

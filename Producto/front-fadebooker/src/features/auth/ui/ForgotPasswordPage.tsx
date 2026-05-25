@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import api from '@/lib/api';
+import { useNotification } from '@/context/NotificationContext';
 
 type FormData = { email: string };
 
@@ -9,14 +10,17 @@ const ForgotPasswordPage: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+  const { showNotification } = useNotification();
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
       await api.post('/usuarios/forgot-password', { email: data.email });
       setIsSubmitted(true);
+      showNotification('Si el correo está registrado, recibirás un enlace de recuperación.', 'success');
     } catch (err: any) {
-      alert(err?.response?.data?.message || err?.response?.data?.error || 'Error al solicitar recuperación');
+      const errorMessage = err?.response?.data?.message || err?.response?.data?.error || 'Error al solicitar recuperación';
+      showNotification(errorMessage, 'error');
     } finally {
       setLoading(false);
     }

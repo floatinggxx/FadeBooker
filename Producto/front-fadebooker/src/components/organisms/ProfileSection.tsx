@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import ProfileDetailRow from '../molecules/ProfileDetailRow';
 import { Camera, User, Loader2 } from 'lucide-react';
+import { useNotification } from '@/context/NotificationContext';
 
 interface ProfileSectionProps {
   name: string;
@@ -15,6 +16,7 @@ interface ProfileSectionProps {
 const ProfileSection: React.FC<ProfileSectionProps> = ({ name, email, role, createdAt, fotoUrl, onUpdate, onUploadPhoto }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const { showNotification } = useNotification();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -22,7 +24,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ name, email, role, crea
 
     // Validar tipo de archivo
     if (!file.type.startsWith('image/')) {
-      alert('Por favor selecciona una imagen válida.');
+      showNotification('Por favor selecciona una imagen válida.', 'warning');
       return;
     }
 
@@ -31,10 +33,11 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({ name, email, role, crea
     reader.onloadend = async () => {
       try {
         await onUploadPhoto(reader.result as string);
+        showNotification('Foto de perfil actualizada correctamente.', 'success');
       } catch (error: any) {
         console.error('Error al subir foto:', error);
         const detail = error.response?.data?.error || error.message || "";
-        alert(`No se pudo subir la foto. ${detail}`);
+        showNotification(`No se pudo subir la foto. ${detail}`, 'error');
       } finally {
         setIsUploading(false);
       }

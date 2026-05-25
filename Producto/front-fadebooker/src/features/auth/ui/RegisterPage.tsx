@@ -4,7 +4,8 @@ import { authService } from '@/lib/api/authService';
 import { tiendaService } from '@/lib/api/tiendaService';
 import { serviceService } from '@/lib/api/serviceService';
 import { useNavigate, Link } from 'react-router-dom';
-import { Eye, EyeOff, Scissors, Store, Briefcase, Plus, AlertCircle, Info, Clock } from 'lucide-react';
+import { Eye, EyeOff, Scissors, Store, Briefcase, Plus, AlertCircle, Info, Clock, Check } from 'lucide-react';
+import { useNotification } from '@/context/NotificationContext';
 import { Tienda, Servicio } from '@/types';
 
 type FormData = { 
@@ -59,6 +60,7 @@ const RegisterPage: React.FC = () => {
   });
   
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
   const password = watch('contrasena');
   const rol = watch('rol');
 
@@ -129,10 +131,10 @@ const RegisterPage: React.FC = () => {
       }
 
       await authService.register(registerData);
-      alert('Registro exitoso. Por favor inicia sesión.');
+      showNotification('Registro exitoso. ¡Bienvenido a FadeBooker!', 'success');
       navigate('/login');
     } catch (err: any) {
-      alert(err?.response?.data?.message || err?.response?.data?.error || 'Error en registro');
+      showNotification(err?.response?.data?.message || err?.response?.data?.error || 'Error en registro', 'error');
     }
   };
 

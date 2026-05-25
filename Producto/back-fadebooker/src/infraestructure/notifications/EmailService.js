@@ -44,11 +44,17 @@ class EmailService {
 
     if (this.transporter) {
       try {
+        console.log(`[EmailService] Intentando enviar correo a ${email} usando ${process.env.EMAIL_USER}...`);
         await this.transporter.sendMail(mailOptions);
         console.log(`[EmailService] Correo de recuperación enviado a ${email}`);
         return true;
       } catch (error) {
-        console.error(`[EmailService] Error enviando correo:`, error);
+        console.error(`[EmailService] Error crítico detallado:`, {
+          message: error.message,
+          code: error.code,
+          command: error.command,
+          response: error.response
+        });
         throw new Error('No se pudo enviar el correo de recuperación');
       }
     } else {
