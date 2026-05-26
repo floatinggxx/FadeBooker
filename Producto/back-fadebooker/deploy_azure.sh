@@ -36,8 +36,21 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-# 4. Reinicio de la Web App para aplicar cambios
-echo -e "${YELLOW}🔄 Paso 4: Reiniciando la Web App en Azure para refrescar el código...${NC}"
+# 4. Configuración de Variables de Entorno (SMTP, MP y URLs)
+echo -e "${YELLOW}⚙️  Paso 4: Sincronizando configuración de correo, pagos y URLs en Azure...${NC}"
+az webapp config appsettings set --name fadebooker-backend-ok --resource-group FadeBooker --settings \
+  EMAIL_HOST="smtp.gmail.com" \
+  EMAIL_PORT="587" \
+  EMAIL_USER="fadebooker@gmail.com" \
+  EMAIL_PASS="swuzpmvoftysdgss" \
+  EMAIL_SECURE="false" \
+  FRONTEND_URL="https://fadebooker.azurewebsites.net" \
+  BACKEND_URL="https://fadebooker-backend-ok.azurewebsites.net" \
+  MP_PUBLIC_KEY="TEST-0e031eb2-170a-4392-948f-f31b9bedc7a6" \
+  MP_ACCESS_TOKEN="TEST-5665486996902898-051416-609148471955da2954d129d9f4de93f2-1101313361"
+
+# 5. Reinicio de la Web App para aplicar cambios
+echo -e "${YELLOW}🔄 Paso 5: Reiniciando la Web App en Azure para refrescar el código...${NC}"
 az webapp restart --name fadebooker-backend-ok --resource-group FadeBooker
 if [ $? -ne 0 ]; then
     echo -e "${RED}❌ Error al reiniciar la Web App. Verifica el nombre del recurso.${NC}"

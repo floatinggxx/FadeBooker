@@ -18,6 +18,7 @@ const BarberoDashboard: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'dashboard' | 'tienda' | 'equipo' | 'servicios'>('dashboard');
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
     const [isUpdating, setIsUpdating] = useState(false);
     // Obtenemos el ID del barbero desde el objeto de usuario (inyectado en login/perfil)
     const idBarbero = user?.id_barbero; 
@@ -25,7 +26,7 @@ const BarberoDashboard: React.FC = () => {
     // Solo enviamos idTienda si el usuario es Dueño para que el hook use el endpoint de tienda
     const idTienda = user?.rol === 'Dueño' ? user?.id_tienda : undefined;
 
-    const { stats, bookings, info, isLoading, refetch } = useBarberoDashboard(idBarbero as number, period, idTienda as number);
+    const { stats, bookings, info, isLoading, refetch } = useBarberoDashboard(idBarbero as number, period, idTienda as number, selectedDate);
 
     const filteredBookings = useMemo(() => {
         if (!bookings) return [];
@@ -178,7 +179,10 @@ const BarberoDashboard: React.FC = () => {
                                         {['day', 'week', 'month'].map((p) => (
                                             <button 
                                                 key={p}
-                                                onClick={() => setPeriod(p as any)}
+                                                onClick={() => {
+                                                    setPeriod(p as any);
+                                                    if (p === 'day') setSelectedDate(new Date().toISOString().split('T')[0]);
+                                                }}
                                                 aria-pressed={period === p}
                                                 className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${period === p ? 'bg-[#3366FF] text-white' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}`}
                                             >
@@ -250,9 +254,14 @@ const BarberoDashboard: React.FC = () => {
                                             <option value="cancelada">Cancelada</option>
                                         </select>
                                     </div>
-                                    <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-2xl">
-                                        <Calendar size={20} className="text-[#3366FF] ml-2" aria-hidden="true" />
-                                        <span className="font-black text-slate-900 mr-2">{new Date().toLocaleDateString('es-CL', { day: 'numeric', month: 'long' })}</span>
+                                    <div className="flex items-center gap-2 bg-slate-50 p-2 pl-4 rounded-2xl">
+                                        <Calendar size={20} className="text-[#3366FF]" aria-hidden="true" />
+                                        <input 
+                                            type="date"
+                                            value={selectedDate}
+                                            onChange={(e) => setSelectedDate(e.target.value)}
+                                            className="bg-transparent border-none font-black text-slate-900 text-sm focus:ring-0 outline-none cursor-pointer"
+                                        />
                                     </div>
                                 </div>
                             </div>

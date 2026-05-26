@@ -1,6 +1,6 @@
 # 🚀 Backend Consolidado - FadeBooker
 
-**Versión Actual:** 2.2 (Producción Lista - 95% Completado)
+**Versión Actual:** 2.3 (Producción Lista - 98% Completado)
 **Estado:** ✅ Estable - Sincronizado con PowerApps (Swagger 2.0)
 **Tecnologías:** Node.js (Express 5.2.1), Knex.js 3.2.9, Azure SQL Server (T-SQL), Jest 29.7.0.
 
@@ -10,10 +10,10 @@
 
 El sistema implementa **Clean Architecture** para asegurar la separación de responsabilidades:
 
-- **Domain Layer:** Entidades de negocio (9 modelos) e interfaces de repositorios.
-- **Application Layer:** Casos de uso y servicios de aplicación.
-- **Infrastructure Layer:** Implementaciones de bases de datos (Knex Repositories), almacenamiento (Cloudinary), pagos (Stripe) y reportes (exceljs).
-- **Interface Layer:** Controladores HTTP y rutas (33+ endpoints).
+- **Domain Layer:** Entidades de negocio (10 modelos) e interfaces de repositorios.
+- **Application Layer:** Casos de uso y servicios de aplicación. Incluye lógica de fidelización (puntos por cita) y recuperación de contraseñas.
+- **Infrastructure Layer:** Implementaciones de bases de datos (Knex Repositories), almacenamiento (Cloudinary), pagos (Mercado Pago SDK v2) y reportes (exceljs).
+- **Interface Layer:** Controladores HTTP optimizados con arrow functions y rutas (35+ endpoints).
 
 ### 📁 Estructura de Carpetas (src/)
 - `application/usecases/`: Lógica de aplicación (Servicios y Casos de Uso).
@@ -25,21 +25,24 @@ El sistema implementa **Clean Architecture** para asegurar la separación de res
 
 ---
 
-## 🔌 API Endpoints (33+ operacionales)
+## 🔌 API Endpoints (35+ operacionales)
 
 ### Usuarios & Autenticación
-- `POST /api/usuarios/register`: Registro de nuevos usuarios.
+- `POST /api/usuarios/register`: Registro de nuevos usuarios (Roles: Cliente, Barbero, Dueño, Proveedor).
 - `POST /api/usuarios/login`: Autenticación con JWT.
-- `GET /api/usuarios/:id`: Perfil de usuario.
+- `POST /api/usuarios/forgot-password`: Solicitar recuperación de contraseña.
+- `POST /api/usuarios/reset-password`: Restablecer contraseña con token.
+- `GET /api/usuarios/perfil`: Perfil del usuario autenticado.
 
 ### Barberos & Tiendas
-- `GET /api/barberos`: Listado completo con filtros por especialidad.
+- `GET /api/barberos`: Listado completo con filtros por especialidad y calificación (soporte para medias estrellas).
 - `GET /api/barberos/:id/servicios`: Servicios específicos que ofrece un barbero.
 - `POST /api/barberos/:id/servicios`: Vinculación de nuevos servicios.
 
 ### Citas (Agendamiento)
 - `POST /api/citas`: Agendamiento con validación de disponibilidad del barbero y tienda.
-- `PUT /api/citas/:id/estado`: Cambio de estado (Confirmada, Cancelada, Completada).
+- `PUT /api/citas/:id/estado`: Cambio de estado. Al completar, se otorgan 50 puntos de fidelidad.
+- `POST /api/citas/:id/review`: Crear reseña con puntuación decimal (1.0 - 5.0).
 
 ### Simulación de Estilos (Cloudinary)
 - `POST /api/upload/signature`: Firma segura para subida de fotos.

@@ -169,7 +169,8 @@
 <a name='L104'></a><a href='#L104'>104</a>
 <a name='L105'></a><a href='#L105'>105</a>
 <a name='L106'></a><a href='#L106'>106</a>
-<a name='L107'></a><a href='#L107'>107</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -275,7 +276,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const ClienteRepository = <span class="cstat-no" title="statement not covered" >require('../../../infraestructure/database/ClienteRepositoryImpl')</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const ClienteRepository = <span class="cstat-no" title="statement not covered" >require('../../../infraestructure/database/ClienteRepositoryImpl')</span>
 const ClienteService = <span class="cstat-no" title="statement not covered" >require('../../../application/usecases/cliente.service')</span>
 &nbsp;
 const clienteRepository = <span class="cstat-no" title="statement not covered" >new ClienteRepository()</span>
@@ -330,7 +332,7 @@ const ClienteController = <span class="cstat-no" title="statement not covered" >
 <span class="fstat-no" title="function not covered" >  as</span>ync buscarPorTelefono(req, res) {
 <span class="cstat-no" title="statement not covered" >    try {</span>
       const { telefono } = <span class="cstat-no" title="statement not covered" >req.params</span>
-      const cliente = <span class="cstat-no" title="statement not covered" >await ClienteService.buscarClientePorTelefono(telefono)</span>
+      const cliente = <span class="cstat-no" title="statement not covered" >await clienteService.buscarClientePorTelefono(telefono)</span>
 <span class="cstat-no" title="statement not covered" >      if (!cliente) {</span>
 <span class="cstat-no" title="statement not covered" >        return res.status(404).json({ error: 'Cliente no encontrado' })</span>
       }
@@ -342,7 +344,7 @@ const ClienteController = <span class="cstat-no" title="statement not covered" >
 &nbsp;
 <span class="fstat-no" title="function not covered" >  as</span>ync obtenerTodos(req, res) {
 <span class="cstat-no" title="statement not covered" >    try {</span>
-      const clientes = <span class="cstat-no" title="statement not covered" >await ClienteService.obtenerTodosLosClientes()</span>
+      const clientes = <span class="cstat-no" title="statement not covered" >await clienteService.obtenerTodosLosClientes()</span>
 <span class="cstat-no" title="statement not covered" >      res.json(clientes)</span>
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >      res.status(400).json({ error: error.message })</span>
@@ -352,7 +354,7 @@ const ClienteController = <span class="cstat-no" title="statement not covered" >
 <span class="fstat-no" title="function not covered" >  as</span>ync actualizar(req, res) {
 <span class="cstat-no" title="statement not covered" >    try {</span>
       const { id } = <span class="cstat-no" title="statement not covered" >req.params</span>
-      const cliente = <span class="cstat-no" title="statement not covered" >await ClienteService.actualizarCliente(id, req.body)</span>
+      const cliente = <span class="cstat-no" title="statement not covered" >await clienteService.actualizarCliente(id, req.body)</span>
 <span class="cstat-no" title="statement not covered" >      res.json(cliente)</span>
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >      res.status(400).json({ error: error.message })</span>
@@ -362,7 +364,7 @@ const ClienteController = <span class="cstat-no" title="statement not covered" >
 <span class="fstat-no" title="function not covered" >  as</span>ync eliminar(req, res) {
 <span class="cstat-no" title="statement not covered" >    try {</span>
       const { id } = <span class="cstat-no" title="statement not covered" >req.params</span>
-<span class="cstat-no" title="statement not covered" >      await ClienteService.eliminarCliente(id)</span>
+<span class="cstat-no" title="statement not covered" >      await clienteService.eliminarCliente(id)</span>
 <span class="cstat-no" title="statement not covered" >      res.json({ mensaje: 'Cliente eliminado' })</span>
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >      res.status(400).json({ error: error.message })</span>
@@ -373,7 +375,7 @@ const ClienteController = <span class="cstat-no" title="statement not covered" >
 <span class="cstat-no" title="statement not covered" >    try {</span>
       const { id } = <span class="cstat-no" title="statement not covered" >req.params</span>
       const { puntos } = <span class="cstat-no" title="statement not covered" >req.body</span>
-<span class="cstat-no" title="statement not covered" >      await ClienteService.actualizarPuntosCliente(id, puntos)</span>
+<span class="cstat-no" title="statement not covered" >      await clienteService.actualizarPuntosCliente(id, puntos)</span>
 <span class="cstat-no" title="statement not covered" >      res.json({ mensaje: 'Puntos actualizados' })</span>
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >      res.status(400).json({ error: error.message })</span>
@@ -381,14 +383,15 @@ const ClienteController = <span class="cstat-no" title="statement not covered" >
   }
 }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >module.exports = ClienteController</span></pre></td></tr></table></pre>
+<span class="cstat-no" title="statement not covered" >module.exports = ClienteController</span>
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-14T21:47:39.860Z
+                at 2026-05-26T17:19:04.755Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

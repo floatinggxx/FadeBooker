@@ -1,4 +1,5 @@
 const { enviarReserva } = require('../../infraestructure/automation/PowerAutomateService');
+const resenaRepo = require('../../infraestructure/database/ResenaRepositoryImpl');
 
 class CitaService {
   constructor(citaRepository, servicioRepository, usuarioRepository) {
@@ -90,6 +91,34 @@ class CitaService {
     return id_cita;
   }
 
+  async crearResena(id_cita, resenaData) {
+    // 1. Validar que la cita existe y está completada
+    const cita = await this.citaRepository.findById(id_cita)
+    if (!cita) {
+      throw new Error('Cita no encontrada')
+    }
+    
+    if (cita.estado.toLowerCase() !== 'completada') {
+      throw new Error('Solo se pueden dejar reseñas en citas completadas')
+    }
+    
+    // 2. Validar que no exista ya una reseña para esta cita
+    const resenaExistente = await resenaRepo.getByCitaId(id_cita)
+    if (resenaExistente) {
+      throw new Error('Ya has dejado una reseña para esta cita')
+    }
+    
+    // 3. Crear reseña vinculando automáticamente datos de la cita
+    return await resenaRepo.create({
+      id_cita,
+      id_cliente: cita.id_cliente,
+      id_barbero: cita.id_barbero,
+      id_tienda: cita.id_tienda,
+      puntuacion: resenaData.puntuacion,
+      comentario: resenaData.comentario
+    })
+  }
+
   async actualizarEstado(id, estado, motivo = null) {
     // Validación: No se puede completar una cita que no ha ocurrido
     if (estado.toLowerCase() === 'completada') {
@@ -109,6 +138,24 @@ class CitaService {
 
     const dataUpdate = { estado }
     const result = await this.citaRepository.update(id, dataUpdate)
+
+    if (estado.toLowerCase() === 'completada') {
+      try {
+        const cita = await this.citaRepository.findById(id);
+        if (cita && cita.id_cliente) {
+          const usuario = await this.usuarioRepository.findById(cita.id_cliente);
+          if (usuario) {
+            // Regla: 1 punto por cada 10 unidades de dinero gastado, mínimo 50 puntos
+            const puntosGanados = Math.max(50, Math.floor((cita.monto_total || 0) / 10));
+            const nuevosPuntos = (usuario.puntosLealtad || 0) + puntosGanados;
+            await this.usuarioRepository.update(cita.id_cliente, { puntosLealtad: nuevosPuntos });
+            console.log(`[Puntos] Usuario ${cita.id_cliente} ganó ${puntosGanados} puntos. Total: ${nuevosPuntos}`);
+          }
+        }
+      } catch (error) {
+        console.error('Error al actualizar puntos de lealtad:', error.message);
+      }
+    }
 
     if (estado.toLowerCase() === 'confirmada') {
       try {

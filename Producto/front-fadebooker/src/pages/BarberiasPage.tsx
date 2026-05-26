@@ -50,9 +50,24 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({ options, value, onC
         <div className="absolute left-6 text-[#3366FF] group-hover:scale-110 transition-transform">
           {icon}
         </div>
-        <span className="truncate">{selectedLabel || placeholder}</span>
-        <div className="absolute right-6 text-slate-300">
-          <ChevronDown size={24} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+        <span className="pr-10 truncate">{selectedLabel || placeholder}</span>
+        <div className="absolute right-6 flex items-center gap-2">
+          {value && (
+            <div 
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange('');
+                setIsOpen(false);
+              }}
+              className="text-slate-400 hover:text-red-500 transition-all p-1.5 hover:bg-red-50 rounded-full cursor-pointer"
+              title="Limpiar selección"
+            >
+              <X size={20} />
+            </div>
+          )}
+          <div className="text-slate-300">
+            <ChevronDown size={24} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+          </div>
         </div>
       </button>
 
@@ -63,11 +78,19 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({ options, value, onC
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#3366FF] transition-colors" size={24} />
               <input
                 autoFocus
-                className="w-full p-5 pl-16 bg-slate-50 border-2 border-transparent focus:border-blue-100 rounded-[1.8rem] outline-none font-bold text-slate-700 h-[80px] text-xl transition-all"
+                className="w-full p-5 pl-16 pr-14 bg-slate-50 border-2 border-transparent focus:border-blue-100 rounded-[1.8rem] outline-none font-bold text-slate-700 h-[80px] text-xl transition-all"
                 placeholder="Escribe para buscar..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
+              {search && (
+                <button 
+                  onClick={() => setSearch('')}
+                  className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-300 hover:text-red-500 transition-colors"
+                >
+                  <X size={24} />
+                </button>
+              )}
             </div>
           </div>
           <div className="max-h-64 overflow-y-auto custom-scrollbar">
@@ -212,11 +235,20 @@ const BarberiasPage: React.FC = () => {
             <input 
               type="text"
               placeholder="Buscar por nombre..."
-              className="w-full p-5 pl-14 bg-white border-4 border-transparent rounded-[2rem] focus:border-[#3366FF] focus:ring-0 transition-all shadow-lg font-bold text-slate-700 h-[72px]"
+              className="w-full p-5 pl-14 pr-14 bg-white border-4 border-transparent rounded-[2rem] focus:border-[#3366FF] focus:ring-0 transition-all shadow-lg font-bold text-slate-700 h-[72px]"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
             <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#3366FF] transition-colors" size={24} />
+            {search && (
+              <button 
+                onClick={() => setSearch('')}
+                className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-red-500 transition-colors"
+                title="Limpiar búsqueda"
+              >
+                <X size={24} />
+              </button>
+            )}
           </div>
         </div>
 

@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/37</span>
+                <span class='fraction'>0/32</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>0/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/37</span>
+                <span class='fraction'>0/32</span>
             </div>
         
             
@@ -202,17 +202,7 @@
 <a name='L137'></a><a href='#L137'>137</a>
 <a name='L138'></a><a href='#L138'>138</a>
 <a name='L139'></a><a href='#L139'>139</a>
-<a name='L140'></a><a href='#L140'>140</a>
-<a name='L141'></a><a href='#L141'>141</a>
-<a name='L142'></a><a href='#L142'>142</a>
-<a name='L143'></a><a href='#L143'>143</a>
-<a name='L144'></a><a href='#L144'>144</a>
-<a name='L145'></a><a href='#L145'>145</a>
-<a name='L146'></a><a href='#L146'>146</a>
-<a name='L147'></a><a href='#L147'>147</a>
-<a name='L148'></a><a href='#L148'>148</a>
-<a name='L149'></a><a href='#L149'>149</a>
-<a name='L150'></a><a href='#L150'>150</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L140'></a><a href='#L140'>140</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -222,7 +212,11 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -316,30 +310,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -371,7 +351,11 @@
 const crypto = <span class="cstat-no" title="statement not covered" >require('crypto');</span>
 const cloudinaryConfig = <span class="cstat-no" title="statement not covered" >require('../../config/cloudinary.config');</span>
 &nbsp;
-const HairstyleService = <span class="cstat-no" title="statement not covered" >{</span>
+class HairstyleService {
+<span class="fstat-no" title="function not covered" >  co</span>nstructor(cloudinaryConfig) {
+<span class="cstat-no" title="statement not covered" >    this.cloudinaryConfig = cloudinaryConfig;</span>
+  }
+&nbsp;
   /**
    * Genera una firma segura para permitir que el frontend suba fotos a Cloudinary
    * sin exponer el API Secret del servidor.
@@ -383,7 +367,7 @@ const HairstyleService = <span class="cstat-no" title="statement not covered" >{
 <span class="fstat-no" title="function not covered" >  ge</span>nerateUploadSignature(params = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
 <span class="cstat-no" title="statement not covered" >    try {</span>
       // Verificar que Cloudinary esté configurado
-<span class="cstat-no" title="statement not covered" >      if (!cloudinaryConfig.isConfigured) {</span>
+<span class="cstat-no" title="statement not covered" >      if (!this.cloudinaryConfig.isConfigured) {</span>
 <span class="cstat-no" title="statement not covered" >        throw new Error('Cloudinary no está configurado. Por favor, configura las variables de entorno CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, y CLOUDINARY_API_SECRET en el archivo .env');</span>
       }
 &nbsp;
@@ -393,7 +377,7 @@ const HairstyleService = <span class="cstat-no" title="statement not covered" >{
       // Parámetros a firmar (deben coincidir con los que use el frontend)
       const signParams = <span class="cstat-no" title="statement not covered" >{</span>
         folder: folder,
-        upload_preset: cloudinaryConfig.uploadPreset,
+        upload_preset: this.cloudinaryConfig.uploadPreset,
         timestamp: timestamp
       };
       
@@ -406,22 +390,22 @@ const HairstyleService = <span class="cstat-no" title="statement not covered" >{
       // Firmar usando SHA-1
       const signature = <span class="cstat-no" title="statement not covered" >crypto</span>
         .createHash('sha1')
-        .update(paramsToSign + cloudinaryConfig.apiSecret)
+        .update(paramsToSign + this.cloudinaryConfig.apiSecret)
         .digest('hex');
       
 <span class="cstat-no" title="statement not covered" >      return {</span>
         success: true,
         signature,
         timestamp,
-        cloudName: cloudinaryConfig.cloudName,
-        apiKey: cloudinaryConfig.apiKey,
-        uploadPreset: cloudinaryConfig.uploadPreset,
+        cloudName: this.cloudinaryConfig.cloudName,
+        apiKey: this.cloudinaryConfig.apiKey,
+        uploadPreset: this.cloudinaryConfig.uploadPreset,
         folder: folder
       };
     } catch (error) {
 <span class="cstat-no" title="statement not covered" >      throw new Error(`Error generando firma de subida: ${error.message}`);</span>
     }
-  },
+  }
 &nbsp;
   /**
    * Genera una URL transformada que simula un corte de pelo usando overlays.
@@ -442,7 +426,7 @@ const HairstyleService = <span class="cstat-no" title="statement not covered" >{
 <span class="fstat-no" title="function not covered" >  ge</span>nerateHairstyleSimulation(params = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
 <span class="cstat-no" title="statement not covered" >    try {</span>
       // Verificar que Cloudinary esté configurado
-<span class="cstat-no" title="statement not covered" >      if (!cloudinaryConfig.isConfigured) {</span>
+<span class="cstat-no" title="statement not covered" >      if (!this.cloudinaryConfig.isConfigured) {</span>
 <span class="cstat-no" title="statement not covered" >        throw new Error('Cloudinary no está configurado. Por favor, configura las variables de entorno CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, y CLOUDINARY_API_SECRET en el archivo .env');</span>
       }
 &nbsp;
@@ -464,50 +448,36 @@ const HairstyleService = <span class="cstat-no" title="statement not covered" >{
         mohicano: 'cortes/mohicano',
         buzzcut: 'cortes/buzzcut'
       };
+&nbsp;
+      const overlay = <span class="cstat-no" title="statement not covered" >styleMap[styleId];</span>
       
-      // Validar que el estilo existe
-<span class="cstat-no" title="statement not covered" >      if (!styleMap[styleId]) {</span>
-        const validStyles = <span class="cstat-no" title="statement not covered" >Object.keys(styleMap).join(', ');</span>
-<span class="cstat-no" title="statement not covered" >        throw new Error(`Estilo de corte no válido: ${styleId}. Estilos válidos: ${validStyles}`);</span>
+<span class="cstat-no" title="statement not covered" >      if (!overlay) {</span>
+<span class="cstat-no" title="statement not covered" >        throw new Error(`El estilo '${styleId}' no es válido. Opciones: ${Object.keys(styleMap).join(', ')}`);</span>
       }
-      
-      const overlayPath = <span class="cstat-no" title="statement not covered" >styleMap[styleId];</span>
-      
-      // Construir la transformación de Cloudinary
-      // Sintaxis: c_scale,h_400,w_400,g_faces para centrar en rostros
-      // l_layerName para agregar overlay
-      const transformations = <span class="cstat-no" title="statement not covered" >[</span>
-        'c_fill',           // crop fill (llenar el espacio)
-        'h_400',            // altura
-        'w_400',            // ancho
-        'g_faces',          // gravity: faces (centrar en rostro)
-        'q_auto',           // calidad automática
-        'f_auto'            // formato automático
-      ];
-      
-      // Agregar overlay del corte
-<span class="cstat-no" title="statement not covered" >      transformations.push(`l_${overlayPath.replace(/\//g, ':')}`); </span> // layer (overlay)
-<span class="cstat-no" title="statement not covered" >      transformations.push('fl_layer_apply'); </span>                        // aplicar capa
-<span class="cstat-no" title="statement not covered" >      transformations.push('g_gravity,x_0,y_0'); </span>                     // posicionar overlay
-      
-      // Construir la URL completa de Cloudinary
-      const baseUrl = <span class="cstat-no" title="statement not covered" >`https://res.cloudinary.com/${cloudinaryConfig.cloudName}/image/upload`;</span>
-      const transformString = <span class="cstat-no" title="statement not covered" >transformations.join('/');</span>
-      const simulatedImageUrl = <span class="cstat-no" title="statement not covered" >`${baseUrl}/${transformString}/${publicId}.jpg`;</span>
-      
+&nbsp;
+      /**
+       * Generamos la URL de transformación:
+       * 1. Detectamos el rostro (g_face)
+       * 2. Ajustamos el overlay al rostro (u_overlay, w_1.3, flags_region_relative)
+       * 3. Ajustamos posición vertical (y_-0.1) para que el pelo quede arriba del rostro
+       */
+      const baseUrl = <span class="cstat-no" title="statement not covered" >`https://res.cloudinary.com/${this.cloudinaryConfig.cloudName}/image/upload`;</span>
+      const transformations = <span class="cstat-no" title="statement not covered" >`g_face,u_${overlay.replace(/\//g, ':')},w_1.3,fl_region_relative,y_-0.1`;</span>
+      const simulatedImageUrl = <span class="cstat-no" title="statement not covered" >`${baseUrl}/${transformations}/${publicId}`;</span>
+&nbsp;
 <span class="cstat-no" title="statement not covered" >      return {</span>
         success: true,
         simulatedImageUrl,
         styleId,
         publicId,
-        overlay: overlayPath,
+        overlay,
         message: 'Simulación de corte generada exitosamente'
       };
     } catch (error) {
-<span class="cstat-no" title="statement not covered" >      throw new Error(`Error generando simulación de corte: ${error.message}`);</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(`Error generando simulación de peinado: ${error.message}`);</span>
     }
   }
-};
+}
 &nbsp;
 <span class="cstat-no" title="statement not covered" >module.exports = HairstyleService;</span>
 &nbsp;</pre></td></tr></table></pre>
@@ -517,7 +487,7 @@ const HairstyleService = <span class="cstat-no" title="statement not covered" >{
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-04-21T19:07:19.436Z
+                at 2026-05-26T17:19:04.755Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -488,6 +488,59 @@ paths:
       tags:
         - Citas
 
+  /citas/{id}/resena:
+    post:
+      operationId: createResena
+      summary: Crear una reseña para una cita
+      description: |
+        Permite al cliente dejar una reseña una vez que la cita ha sido completada.
+        La puntuación debe ser entre 1.0 y 5.0 (soporta decimales).
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la cita
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - puntuacion
+              properties:
+                puntuacion:
+                  type: number
+                  format: float
+                  minimum: 1
+                  maximum: 5
+                  example: 4.5
+                comentario:
+                  type: string
+                  example: "Excelente servicio!"
+      responses:
+        '201':
+          description: Reseña creada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  id_resena:
+                    type: integer
+        '400':
+          description: Error en la validación o cita no completada
+        '404':
+          description: Cita no encontrada
+      tags:
+        - Reseñas
+
   /pagos/crear:
     post:
       operationId: crearPago
@@ -829,6 +882,57 @@ paths:
                 $ref: '#/components/schemas/LoginResponse'
         '401':
           description: Credenciales inválidas
+      tags:
+        - Usuarios
+
+  /usuarios/forgot-password:
+    post:
+      operationId: forgotPassword
+      summary: Solicitar recuperación de contraseña
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Correo de recuperación enviado (si el usuario existe)
+        '400':
+          description: Correo inválido
+      tags:
+        - Usuarios
+
+  /usuarios/reset-password:
+    post:
+      operationId: resetPassword
+      summary: Restablecer contraseña con token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - nuevaContrasena
+              properties:
+                token:
+                  type: string
+                nuevaContrasena:
+                  type: string
+                  minLength: 6
+      responses:
+        '200':
+          description: Contraseña actualizada exitosamente
+        '400':
+          description: Token inválido o expirado
       tags:
         - Usuarios
 
@@ -1196,7 +1300,7 @@ components:
           type: string
         rol:
           type: string
-          enum: [Cliente, Barbero, Dueño, Administrador]
+          enum: [Cliente, Barbero, Dueño, Administrador, Proveedor]
         id_tienda:
           type: integer
           nullable: true
@@ -1226,7 +1330,7 @@ components:
           type: string
         rol:
           type: string
-          enum: [Cliente, Barbero, Dueño]
+          enum: [Cliente, Barbero, Dueño, Proveedor]
         especialidad:
           type: string
           description: Solo si rol es Barbero o Dueño
@@ -1251,11 +1355,6 @@ components:
               type: string
             ciudad:
               type: string
-        servicios:
-          type: array
-          items:
-            type: integer
-          description: Lista de IDs de servicios, solo si rol es Barbero
 
     Tienda:
       type: object

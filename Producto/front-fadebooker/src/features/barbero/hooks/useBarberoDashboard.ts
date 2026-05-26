@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { barberoService } from '../services/barberoService';
 
-export const useBarberoDashboard = (idBarbero: number, period: 'day' | 'week' | 'month' = 'day', idTienda?: number) => {
+export const useBarberoDashboard = (idBarbero: number, period: 'day' | 'week' | 'month' = 'day', idTienda?: number, selectedDate?: string) => {
   const statsQuery = useQuery({
-    queryKey: ['dashboard-stats', idBarbero, idTienda, period],
+    queryKey: ['dashboard-stats', idBarbero, idTienda, period, selectedDate],
     queryFn: () => idTienda 
       ? barberoService.getTiendaStats(idTienda)
       : barberoService.getBarberoStats(idBarbero, period),
@@ -11,10 +11,10 @@ export const useBarberoDashboard = (idBarbero: number, period: 'day' | 'week' | 
   });
 
   const bookingsQuery = useQuery({
-    queryKey: ['barbero-bookings', idBarbero, idTienda, period],
+    queryKey: ['barbero-bookings', idBarbero, idTienda, period, selectedDate],
     queryFn: () => idTienda 
-      ? barberoService.getTiendaBookings(idTienda, undefined, period)
-      : barberoService.getBarberoBookings(idBarbero, undefined, period),
+      ? barberoService.getTiendaBookings(idTienda, selectedDate, period)
+      : barberoService.getBarberoBookings(idBarbero, selectedDate, period),
     enabled: !!idBarbero || !!idTienda,
   });
 

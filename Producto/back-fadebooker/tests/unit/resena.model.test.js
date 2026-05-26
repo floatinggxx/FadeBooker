@@ -15,7 +15,7 @@ describe('Reseña Model', () => {
         id_cliente: 5,
         id_barbero: 3,
         id_tienda: 2,
-        puntuacion: 5,
+        puntuacion: 4.5, // 👈 Actualizado a media estrella
         comentario: 'Excelente servicio',
         fecha_resena: '2026-04-14',
         createdAt: '2026-04-14T00:00:00Z'
@@ -28,7 +28,7 @@ describe('Reseña Model', () => {
       expect(resena.id_cliente).toBe(5)
       expect(resena.id_barbero).toBe(3)
       expect(resena.id_tienda).toBe(2)
-      expect(resena.puntuacion).toBe(5)
+      expect(resena.puntuacion).toBe(4.5) // 👈 Validando media estrella
       expect(resena.comentario).toBe('Excelente servicio')
       expect(resena.fecha_resena).toBe('2026-04-14')
     })

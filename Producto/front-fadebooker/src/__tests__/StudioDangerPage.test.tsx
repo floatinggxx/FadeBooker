@@ -13,7 +13,7 @@ describe('StudioDangerPage', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: /StudioDanger/i })).toBeInTheDocument();
     expect(screen.getAllByText(/Av\. Las Torres 152/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/09:00 - 20:00/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/09:00 - 19:00/i).length).toBeGreaterThan(0);
     expect(screen.getByRole('link', { name: /Ver disponibilidad/i })).toBeInTheDocument();
   });
 });

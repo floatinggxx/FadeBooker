@@ -60,6 +60,24 @@ const TiendaDetailPage: React.FC = () => {
     }
   }
 
+  // Helper to format time (handles strings like "19:30:00" or Date objects that show up as "1970...")
+  const formatTime = (time: any) => {
+    if (!time) return '';
+    if (typeof time === 'string') {
+      // If it's a full ISO string from a Date object starting with 1970
+      if (time.startsWith('1970-01-01')) {
+        return time.substring(11, 16) + ' hrs';
+      }
+      // If it's just "HH:mm:ss"
+      return time.substring(0, 5) + ' hrs';
+    }
+    // If it's a Date object
+    if (time instanceof Date) {
+      return time.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }) + ' hrs';
+    }
+    return time;
+  };
+
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Hero Section - Inspired by StudioDanger Reference */}
@@ -110,7 +128,7 @@ const TiendaDetailPage: React.FC = () => {
                       : 'Lunes a Sábado'}
                   </p>
                   <p className="text-slate-400 font-medium">
-                    {tiendaData.horario_apertura ? tiendaData.horario_apertura.substring(0, 5) : '10:00'} - {tiendaData.horario_cierre ? tiendaData.horario_cierre.substring(0, 5) : '20:00'}
+                    {formatTime(tiendaData.horario_apertura || '10:00')} - {formatTime(tiendaData.horario_cierre || '20:00')}
                   </p>
                 </div>
               </div>
@@ -334,9 +352,23 @@ const TiendaDetailPage: React.FC = () => {
                 resenas.map((resena: any) => (
                   <div key={resena.id_resena} className="bg-white p-10 rounded-[3rem] shadow-xl shadow-slate-200/40 border border-slate-100">
                     <div className="flex gap-1 text-amber-400 mb-6">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} size={20} fill={i < resena.puntuacion ? "currentColor" : "none"} className={i < resena.puntuacion ? "text-amber-400" : "text-slate-200"} />
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <div key={star} className="relative">
+                          {/* Estrella de fondo (gris) */}
+                          <Star size={20} className="text-slate-200" />
+                          
+                          {/* Estrella rellena (amber) con clipping para half stars */}
+                          <div 
+                            className="absolute top-0 left-0 overflow-hidden text-amber-400"
+                            style={{ 
+                              width: `${Math.max(0, Math.min(100, (resena.puntuacion - (star - 1)) * 100))}%` 
+                            }}
+                          >
+                            <Star size={20} fill="currentColor" />
+                          </div>
+                        </div>
                       ))}
+                      <span className="ml-2 text-slate-400 font-black text-sm">{resena.puntuacion}</span>
                     </div>
                     <p className="text-slate-600 text-lg leading-relaxed italic mb-8">
                       "{resena.comentario}"

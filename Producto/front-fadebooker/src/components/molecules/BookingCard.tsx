@@ -1,9 +1,10 @@
-import React from 'react';
-import { Calendar, User, Scissors, Info, CheckCircle2, XCircle, Clock, CreditCard } from 'lucide-react';
+import React, { useState } from 'react';
+import { Calendar, User, Scissors, Info, CheckCircle2, XCircle, Clock, CreditCard, Star } from 'lucide-react';
 import { clsx } from 'clsx';
 import { pagoService } from '@/lib/api/pagoService';
 import { useNotification } from '@/context/NotificationContext';
 import { parseError } from '@/lib/utils/errorParser';
+import ReviewModal from './ReviewModal';
 
 interface BookingCardProps {
   dateTime: string;
@@ -27,7 +28,9 @@ const BookingCard: React.FC<BookingCardProps> = ({
   id
 }) => {
   const { showNotification } = useNotification();
-  const [isProcessing, setIsProcessing] = React.useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [isReviewed, setIsReviewed] = useState(false);
 
   const handlePayNow = async () => {
     if (!id) return;
@@ -141,8 +144,35 @@ const BookingCard: React.FC<BookingCardProps> = ({
               {isProcessing ? 'Procesando...' : 'Pagar Ahora'}
             </button>
           )}
+
+          {status && status.toLowerCase() === 'completada' && !isBarberoView && !isReviewed && (
+            <button
+              onClick={() => setShowReviewModal(true)}
+              className="w-full flex items-center justify-center gap-2 bg-amber-400 text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-amber-100 hover:bg-amber-500 transition-all hover:scale-105"
+            >
+              <Star size={16} className="fill-white" />
+              Valorar Servicio
+            </button>
+          )}
+
+          {isReviewed && (
+             <div className="flex items-center gap-2 text-emerald-600 font-bold text-xs uppercase tracking-widest">
+               <CheckCircle2 size={16} />
+               ¡Reseña Enviada!
+             </div>
+          )}
         </div>
       </div>
+
+      {id && (
+        <ReviewModal 
+          isOpen={showReviewModal}
+          onClose={() => setShowReviewModal(false)}
+          onSuccess={() => setIsReviewed(true)}
+          bookingId={id}
+          barberName={barberName}
+        />
+      )}
 
       {/* Indicador lateral sutil */}
       <div className={clsx(

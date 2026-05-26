@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/18</span>
+                <span class='fraction'>0/23</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/18</span>
+                <span class='fraction'>0/23</span>
             </div>
         
             
@@ -82,12 +82,22 @@
 <a name='L17'></a><a href='#L17'>17</a>
 <a name='L18'></a><a href='#L18'>18</a>
 <a name='L19'></a><a href='#L19'>19</a>
-<a name='L20'></a><a href='#L20'>20</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -105,6 +115,7 @@
 const router = <span class="cstat-no" title="statement not covered" >express.Router()</span>
 const BarberoController = <span class="cstat-no" title="statement not covered" >require('../controllers/barbero.controller')</span>
 const validateRequest = <span class="cstat-no" title="statement not covered" >require('../middlewares/validateRequest')</span>
+const authMiddleware = <span class="cstat-no" title="statement not covered" >require('../middlewares/auth.middleware')</span>
 const { BarberoSchema } = <span class="cstat-no" title="statement not covered" >require('../../../infraestructure/schemas/barbero.schema')</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >router.post('/', validateRequest({ body: BarberoSchema }), BarberoController.crear)</span>
@@ -112,13 +123,17 @@ const { BarberoSchema } = <span class="cstat-no" title="statement not covered" >
 <span class="cstat-no" title="statement not covered" >router.get('/especialidad/:especialidad', BarberoController.buscarPorEspecialidad)</span>
 <span class="cstat-no" title="statement not covered" >router.get('/email/:email', BarberoController.obtenerPorEmail)</span>
 <span class="cstat-no" title="statement not covered" >router.get('/:id', BarberoController.obtenerPorId)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/:id/stats', BarberoController.obtenerStats)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/:id/citas', BarberoController.obtenerCitas)</span>
 <span class="cstat-no" title="statement not covered" >router.get('/:id/servicios', BarberoController.obtenerServicios)</span>
-<span class="cstat-no" title="statement not covered" >router.post('/:id/servicios', BarberoController.agregarServicio)</span>
-<span class="cstat-no" title="statement not covered" >router.delete('/:id/servicios/:id_servicio', BarberoController.eliminarServicio)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/:id/servicios', authMiddleware, BarberoController.agregarServicio)</span>
+<span class="cstat-no" title="statement not covered" >router.delete('/:id/servicios/:id_servicio', authMiddleware, BarberoController.eliminarServicio)</span>
+<span class="cstat-no" title="statement not covered" >router.get('/:id/disponibilidad', BarberoController.obtenerDisponibilidad)</span>
 <span class="cstat-no" title="statement not covered" >router.get('/:id/disponibilidad/:fecha', BarberoController.obtenerDisponibilidad)</span>
-<span class="cstat-no" title="statement not covered" >router.put('/:id', validateRequest({ body: BarberoSchema.partial() }), BarberoController.actualizar)</span>
-<span class="cstat-no" title="statement not covered" >router.put('/:id/horario', BarberoController.actualizarHorario)</span>
-<span class="cstat-no" title="statement not covered" >router.delete('/:id', BarberoController.eliminar)</span>
+<span class="cstat-no" title="statement not covered" >router.put('/:id', authMiddleware, validateRequest({ body: BarberoSchema.partial() }), BarberoController.actualizar)</span>
+<span class="cstat-no" title="statement not covered" >router.put('/:id/horario', authMiddleware, BarberoController.actualizarHorario)</span>
+<span class="cstat-no" title="statement not covered" >router.delete('/:id', authMiddleware, BarberoController.eliminar)</span>
+<span class="cstat-no" title="statement not covered" >router.post('/:id/foto', authMiddleware, BarberoController.actualizarFoto)</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >module.exports = router</span></pre></td></tr></table></pre>
 
@@ -127,7 +142,7 @@ const { BarberoSchema } = <span class="cstat-no" title="statement not covered" >
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-05-14T21:47:39.860Z
+                at 2026-05-26T17:19:04.755Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

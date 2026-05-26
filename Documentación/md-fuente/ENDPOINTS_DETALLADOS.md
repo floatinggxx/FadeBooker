@@ -1,8 +1,8 @@
 # 📋 FadeBooker Backend - Documentación Detallada de Endpoints
 
-**Versión:** 1.10.0  
-**Última actualización:** 29 de Abril de 2026  
-**Base URL:** `http://localhost:3000/api`
+**Versión:** 1.11.0  
+**Última actualización:** 26 de Mayo de 2026  
+**Base URL:** `https://fadebooker-backend-ok.azurewebsites.net/api`
 
 ---
 
@@ -66,7 +66,7 @@ POST http://localhost:3000/api/usuarios/register
   "nombre": "string",
   "apellido": "string",
   "telefono": "string",
-  "rol": "string (Cliente|Barbero|Dueño|Administrador)"
+  "rol": "string (Cliente|Barbero|Dueño|Administrador|Proveedor)"
 }
 ```
 
@@ -148,6 +148,52 @@ POST http://localhost:3000/api/usuarios/login
   "error": "Credenciales inválidas"
 }
 ```
+
+### 3️⃣ Recuperar Contraseña
+
+**Endpoint:** `POST /api/usuarios/forgot-password`
+
+**Descripción:** Solicita un correo para restablecer la contraseña.
+
+**Body:**
+```json
+{
+  "email": "usuario@example.com"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "status": "success",
+  "message": "Si el usuario existe, se enviará un correo de recuperación."
+}
+```
+
+### 4️⃣ Restablecer Contraseña
+
+**Endpoint:** `POST /api/usuarios/reset-password`
+
+**Descripción:** Cambia la contraseña usando el token recibido por correo.
+
+**Body:**
+```json
+{
+  "token": "eyJhbG...",
+  "nuevaContrasena": "Nueva123!"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "status": "success",
+  "message": "Contraseña actualizada exitosamente"
+}
+```
+
+---
+
 
 ---
 

@@ -10,9 +10,11 @@ class UsuarioService {
     
     userData.contrasena = await this.hasher.hash(userData.contrasena);
     
-    // Si hay una tienda nueva, el usuario se registra como Dueño
-    if (tienda_nueva) {
-      userData.rol = 'Dueño';
+    // Si hay una tienda nueva o viene como Proveedor, el usuario se registra como Dueño/Proveedor
+    if (tienda_nueva || userData.rol === 'Proveedor') {
+      if (!userData.rol || userData.rol === 'Cliente') {
+        userData.rol = 'Dueño';
+      }
     }
 
     const id_usuario = await this.usuarioRepository.create(userData);
@@ -32,8 +34,8 @@ class UsuarioService {
       });
     }
 
-    // Si el rol es Barbero o Dueño, crear la entidad Barbero y sus servicios
-    if (userData.rol === 'Barbero' || userData.rol === 'Dueño') {
+    // Si el rol es Barbero, Dueño o Proveedor, crear la entidad Barbero y sus servicios
+    if (userData.rol === 'Barbero' || userData.rol === 'Dueño' || userData.rol === 'Proveedor') {
       const BarberoRepository = require('../../infraestructure/database/BarberoRepositoryImpl');
       const barberoRepo = new BarberoRepository();
       
@@ -79,15 +81,15 @@ class UsuarioService {
     // Quitar contraseña de la respuesta
     const { contrasena: _, ...usuarioSinPassword } = usuario
 
-    // Si es barbero o dueño, incluir id_tienda
-    if (usuario.rol === 'Barbero' || usuario.rol === 'Dueño') {
+    // Si es barbero, dueño o proveedor, incluir id_tienda
+    if (usuario.rol === 'Barbero' || usuario.rol === 'Dueño' || usuario.rol === 'Proveedor') {
       const BarberoRepository = require('../../infraestructure/database/BarberoRepositoryImpl');
       const barberoRepo = new BarberoRepository();
       const barbero = await barberoRepo.findByUsuarioId(usuario.id_usuario);
       if (barbero) {
         usuarioSinPassword.id_tienda = barbero.id_tienda;
         usuarioSinPassword.id_barbero = barbero.id_barbero;
-      } else if (usuario.rol === 'Dueño') {
+      } else if (usuario.rol === 'Dueño' || usuario.rol === 'Proveedor') {
         const TiendaRepository = require('../../infraestructure/database/TiendaRepositoryImpl');
         const tiendaRepo = new TiendaRepository();
         const tiendas = await tiendaRepo.findAll({ id_dueño: usuario.id_usuario });
@@ -107,15 +109,15 @@ class UsuarioService {
     if (usuario) {
       const { contrasena, ...usuarioSinPassword } = usuario
       
-      // Si es barbero o dueño, incluir id_tienda e id_barbero
-      if (usuario.rol === 'Barbero' || usuario.rol === 'Dueño') {
+      // Si es barbero, dueño o proveedor, incluir id_tienda e id_barbero
+      if (usuario.rol === 'Barbero' || usuario.rol === 'Dueño' || usuario.rol === 'Proveedor') {
         const BarberoRepository = require('../../infraestructure/database/BarberoRepositoryImpl');
         const barberoRepo = new BarberoRepository();
         const barbero = await barberoRepo.findByUsuarioId(usuario.id_usuario);
         if (barbero) {
           usuarioSinPassword.id_tienda = barbero.id_tienda;
           usuarioSinPassword.id_barbero = barbero.id_barbero;
-        } else if (usuario.rol === 'Dueño') {
+        } else if (usuario.rol === 'Dueño' || usuario.rol === 'Proveedor') {
           const misTiendas = await require('../../db/knex')('Tienda').where({ id_dueño: usuario.id_usuario, este_activa: true }).first();
           if (misTiendas) {
             usuarioSinPassword.id_tienda = misTiendas.id_tienda;

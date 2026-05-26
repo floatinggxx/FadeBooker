@@ -78,5 +78,11 @@ export const bookingService = {
   async getMyBookings(): Promise<Cita[]> {
     const response = await api.get<Cita[]>('/citas');
     return response.data;
+  },
+
+  // Dejar una reseña
+  async dejarResena(citaId: number, data: { puntuacion: number, comentario: string }): Promise<any> {
+    const response = await api.post(`/citas/${citaId}/resena`, data);
+    return response.data;
   }
 };

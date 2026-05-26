@@ -1,8 +1,8 @@
 # 🤖 AGENTS.md - Registro Central de Agentes FadeBooker
 
 **Última actualización:** 26 de mayo de 2026  
-**Versión:** 1.5.1  
-**Estado:** Producción Azure (v1.11.0) - Despliegue Limpio & Mercado Pago Activo
+**Versión:** 9.6.0 (Hito Consolidado)
+**Estado:** Producción Azure (v1.11.0) - Puntos de Fidelidad & Reseñas con Decimales Activas
 
 ---
 
@@ -10,6 +10,8 @@
 
 Todos los agentes deben adherirse estrictamente a estas reglas:
 - **Arquitectura Hexagonal:** Obligatoria en backend con inyección de dependencias.
+- **Decimales en Reseñas:** Las valoraciones soportan medios puntos (1.0 - 5.0) y el promedio acumulado se calcula como decimal.
+- **Fidelización:** Las citas completadas otorgan +50 puntos de fidelidad en la tabla Perfil.
 - **Despliegue Limpio:** Los scripts de despliegue (`deploy_azure.sh`) deben usar `--no-cache` para garantizar integridad en producción.
 - **SSOT de Versión:** La versión del API en `openapi.yaml`, `package.json` y `AGENTS.md` debe estar sincronizada (Actual: 1.11.0).
 - **Exposición de Swagger:** `swagger_powerapps.json` debe estar expuesto vía endpoint para consumo externo de Power Platform.

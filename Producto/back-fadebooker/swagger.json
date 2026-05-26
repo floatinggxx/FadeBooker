@@ -2,663 +2,70 @@
   "openapi": "3.0.0",
   "info": {
     "title": "FadeBooker API",
-    "description": "Sistema de gestión de citas para barberías - Marketplace de barbería. \n\n**Autenticación:** Use el header Authorization con el valor Bearer <token>.",
-    "version": "1.11.0"
+    "description": "Sistema de gestión de citas para barberías - Marketplace de barbería\n\n**Versión:** 1.11.0 (Refactorización técnica y Fase 3)\n\n**Base URL:** `https://fadebooker-backend-ok.azurewebsites.net/api`\n\n**Cambios principales (v1.11.0):**\n- Autenticación JWT integrada y campo contrasena.\n- Endpoints de Citas (Agendamiento) validados.\n- Health Check para despliegue en Azure.\n- Servicios vinculados directamente con Barberos.\n",
+    "version": "1.11.0",
+    "contact": {
+      "name": "FadeBooker Team",
+      "email": "team@fadebooker.com"
+    },
+    "license": {
+      "name": "MIT"
+    }
   },
   "servers": [
     {
       "url": "https://fadebooker-backend-ok.azurewebsites.net/api",
-      "description": "Production server (Azure)"
+      "description": "Production server"
     },
     {
       "url": "http://localhost:3000/api",
-      "description": "Local development server"
-    }
-  ],
-  "tags": [
-    {
-      "name": "Usuarios",
-      "description": "Gestión de cuentas y autenticación"
-    },
-    {
-      "name": "Clientes",
-      "description": "Operaciones CRUD para clientes"
-    },
-    {
-      "name": "Barberos",
-      "description": "Gestión de barberos y su disponibilidad"
-    },
-    {
-      "name": "Servicios",
-      "description": "Catálogo base de servicios"
-    },
-    {
-      "name": "Citas",
-      "description": "Agendamiento y control de estados"
-    },
-    {
-      "name": "Hairstyle",
-      "description": "Simulación de cortes y gestión de imágenes"
-    },
-    {
-      "name": "Reportes",
-      "description": "Generación de reportes administrativos"
+      "description": "Development server"
     }
   ],
   "paths": {
     "/health": {
       "get": {
-        "summary": "Verificar estado de la API",
+        "operationId": "getHealth",
+        "summary": "Health Check",
+        "description": "Verifica que la API esté activa y responde correctamente. Es vital para el monitoreo en Azure App Service.",
         "responses": {
           "200": {
             "description": "API operativa",
             "content": {
               "application/json": {
-                "example": {
-                  "status": "ok",
-                  "timestamp": "2026-04-29T10:30:00Z",
-                  "message": "FadeBooker API is running"
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get_health"
-      }
-    },
-    "/usuarios/register": {
-      "post": {
-        "summary": "Registrar nuevo usuario",
-        "tags": [
-          "Usuarios"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UsuarioRegistro"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Usuario registrado exitosamente",
-            "content": {
-              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Usuario"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Email ya registrado o datos inválidos"
-          }
-        },
-        "operationId": "post_usuarios_register"
-      }
-    },
-    "/usuarios/login": {
-      "post": {
-        "summary": "Autenticar usuario",
-        "tags": [
-          "Usuarios"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Login exitoso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Credenciales inválidas"
-          }
-        },
-        "operationId": "post_usuarios_login"
-      }
-    },
-    "/usuarios/perfil": {
-      "get": {
-        "summary": "Obtener perfil del usuario autenticado",
-        "tags": [
-          "Usuarios"
-        ],
-        "responses": {
-          "200": {
-            "description": "Perfil del usuario",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Usuario"
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get_usuarios_perfil"
-      },
-      "put": {
-        "summary": "Actualizar perfil del usuario autenticado",
-        "tags": [
-          "Usuarios"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UsuarioUpdate"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Perfil actualizado",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Usuario"
-                }
-              }
-            }
-          }
-        },
-        "operationId": "put_usuarios_perfil"
-      }
-    },
-    "/clientes": {
-      "get": {
-        "summary": "Listar todos los clientes",
-        "tags": [
-          "Clientes"
-        ],
-        "responses": {
-          "200": {
-            "description": "Lista de clientes",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Cliente"
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "environment": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
                   }
                 }
               }
             }
           }
         },
-        "operationId": "get_clientes"
-      },
-      "post": {
-        "summary": "Crear un nuevo cliente",
         "tags": [
-          "Clientes"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ClienteInput"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Cliente creado"
-          },
-          "400": {
-            "description": "Datos inválidos"
-          }
-        },
-        "operationId": "post_clientes"
-      }
-    },
-    "/clientes/buscar": {
-      "get": {
-        "summary": "Buscar clientes por nombre",
-        "tags": [
-          "Clientes"
-        ],
-        "parameters": [
-          {
-            "name": "nombre",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Resultados de búsqueda",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Cliente"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get_clientes_buscar"
-      }
-    },
-    "/clientes/telefono/{telefono}": {
-      "get": {
-        "summary": "Buscar cliente por teléfono",
-        "tags": [
-          "Clientes"
-        ],
-        "parameters": [
-          {
-            "name": "telefono",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Cliente"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "No encontrado"
-          }
-        },
-        "operationId": "get_clientes_telefono_telefono"
-      }
-    },
-    "/clientes/email/{email}": {
-      "get": {
-        "summary": "Obtener cliente por email",
-        "tags": [
-          "Clientes"
-        ],
-        "parameters": [
-          {
-            "name": "email",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Cliente"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "No encontrado"
-          }
-        },
-        "operationId": "get_clientes_email_email"
-      }
-    },
-    "/clientes/{id}": {
-      "get": {
-        "summary": "Obtener cliente por ID",
-        "tags": [
-          "Clientes"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Cliente"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "No encontrado"
-          }
-        },
-        "operationId": "get_clientes_id"
-      },
-      "put": {
-        "summary": "Actualizar cliente",
-        "tags": [
-          "Clientes"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ClienteUpdate"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Actualizado"
-          }
-        },
-        "operationId": "put_clientes_id"
-      },
-      "delete": {
-        "summary": "Eliminar cliente",
-        "tags": [
-          "Clientes"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Eliminado"
-          }
-        },
-        "operationId": "delete_clientes_id"
-      }
-    },
-    "/clientes/{id}/puntos": {
-      "put": {
-        "summary": "Actualizar puntos de fidelidad",
-        "tags": [
-          "Clientes"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "puntos": {
-                    "type": "integer"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Puntos actualizados"
-          }
-        },
-        "operationId": "put_clientes_id_puntos"
-      }
-    },
-    "/barberos": {
-      "get": {
-        "summary": "Obtener todos los barberos",
-        "tags": [
-          "Barberos"
-        ],
-        "responses": {
-          "200": {
-            "description": "Lista de barberos",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Barbero"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get_barberos"
-      },
-      "post": {
-        "summary": "Crear un nuevo barbero",
-        "tags": [
-          "Barberos"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BarberoInput"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Barbero creado"
-          }
-        },
-        "operationId": "post_barberos"
-      }
-    },
-    "/barberos/especialidad/{especialidad}": {
-      "get": {
-        "summary": "Buscar barberos por especialidad",
-        "tags": [
-          "Barberos"
-        ],
-        "parameters": [
-          {
-            "name": "especialidad",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Barbero"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get_barberos_especialidad_especialidad"
-      }
-    },
-    "/barberos/email/{email}": {
-      "get": {
-        "summary": "Obtener barbero por email",
-        "tags": [
-          "Barberos"
-        ],
-        "parameters": [
-          {
-            "name": "email",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Barbero"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "No encontrado"
-          }
-        },
-        "operationId": "get_barberos_email_email"
-      }
-    },
-    "/barberos/{id}": {
-      "get": {
-        "summary": "Obtener detalles del barbero",
-        "tags": [
-          "Barberos"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Barbero"
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get_barberos_id"
-      },
-      "put": {
-        "summary": "Actualizar barbero",
-        "tags": [
-          "Barberos"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BarberoUpdate"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Actualizado"
-          }
-        },
-        "operationId": "put_barberos_id"
-      },
-      "delete": {
-        "summary": "Eliminar barbero",
-        "tags": [
-          "Barberos"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Eliminado"
-          }
-        },
-        "operationId": "delete_barberos_id"
+          "Sistema"
+        ]
       }
     },
     "/barberos/{id}/servicios": {
       "get": {
-        "summary": "Listar servicios de un barbero",
-        "tags": [
-          "Barberos"
-        ],
+        "operationId": "getBarberoServicios",
+        "summary": "Obtener servicios de un barbero",
+        "description": "Retorna todos los servicios que puede ofrecer un barbero específico.\n\n**Nuevo en v1.10.0:** Reemplaza la búsqueda por tienda con búsqueda por barbero\n",
         "parameters": [
           {
             "name": "id",
@@ -666,12 +73,13 @@
             "required": true,
             "schema": {
               "type": "integer"
-            }
+            },
+            "description": "ID del barbero"
           }
         ],
         "responses": {
           "200": {
-            "description": "Lista de servicios ofrecidos",
+            "description": "Lista de servicios del barbero",
             "content": {
               "application/json": {
                 "schema": {
@@ -682,17 +90,19 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Barbero no encontrado"
           }
         },
-        "operationId": "get_barberos_id_servicios"
-      }
-    },
-    "/barberos/{id}/horario": {
-      "put": {
-        "summary": "Actualizar horario de atención",
         "tags": [
-          "Barberos"
-        ],
+          "ServicioBarbero"
+        ]
+      },
+      "post": {
+        "operationId": "addServicioToBarbero",
+        "summary": "Agregar servicio a un barbero",
+        "description": "Asigna un servicio específico a un barbero con opción de override de precio y duración.\n\n**Nuevo en v1.10.0:** Permite que dueños de tiendas/admins asignen servicios a barberos\n",
         "parameters": [
           {
             "name": "id",
@@ -700,7 +110,8 @@
             "required": true,
             "schema": {
               "type": "integer"
-            }
+            },
+            "description": "ID del barbero"
           }
         ],
         "requestBody": {
@@ -708,29 +119,379 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/HorarioBarbero"
+                "$ref": "#/components/schemas/ServicioBarberoCreate"
               }
             }
           }
         },
         "responses": {
-          "200": {
-            "description": "Horario actualizado"
+          "201": {
+            "description": "Servicio agregado exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id_servicio_barbero": {
+                      "type": "integer"
+                    },
+                    "mensaje": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "409": {
+            "description": "Barbero ya tiene este servicio"
           }
         },
-        "operationId": "put_barberos_id_horario"
+        "tags": [
+          "ServicioBarbero"
+        ]
       }
     },
-    "/barberos/{id}/disponibilidad/{fecha}": {
-      "get": {
-        "summary": "Consultar disponibilidad en fecha específica",
-        "tags": [
-          "Barberos"
-        ],
+    "/barberos/{id}/servicios/{id_servicio}": {
+      "delete": {
+        "operationId": "removeServicioFromBarbero",
+        "summary": "Remover servicio de un barbero",
+        "description": "Elimina la relación entre un servicio y un barbero específico.\n\n**Nuevo en v1.10.0:** Permite que dueños/admins remuevan servicios de barberos\n",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID del barbero"
+          },
+          {
+            "name": "id_servicio",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID del servicio"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Servicio removido exitosamente"
+          },
+          "404": {
+            "description": "Relación no encontrada"
+          }
+        },
+        "tags": [
+          "ServicioBarbero"
+        ]
+      }
+    },
+    "/servicios/{id}/barberos": {
+      "get": {
+        "operationId": "getBarberosByServicio",
+        "summary": "Obtener barberos que hacen un servicio",
+        "description": "Retorna todos los barberos que pueden ofrecer un servicio específico.\n\n**Nuevo en v1.10.0:** Útil para listar barberos disponibles para un servicio\n",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID del servicio"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de barberos que ofrecen el servicio",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BarberoServicio"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Servicio no encontrado"
+          }
+        },
+        "tags": [
+          "ServicioBarbero"
+        ]
+      }
+    },
+    "/servicios/{id_barbero}/{id_servicio}/precio": {
+      "get": {
+        "operationId": "getServicioPrecioEfectivo",
+        "summary": "Obtener precio efectivo del servicio para un barbero",
+        "description": "Retorna el precio a cobrar considerando overrides de precio por barbero.\n\n**Lógica (v1.10.0):**\n```\nIF ServicioBarbero.precio_barbero IS NOT NULL\n  THEN precio_efectivo = ServicioBarbero.precio_barbero\nELSE\n  precio_efectivo = Servicio.precio_base\n```\n",
+        "parameters": [
+          {
+            "name": "id_barbero",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID del barbero"
+          },
+          {
+            "name": "id_servicio",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID del servicio"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Precio efectivo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id_barbero": {
+                      "type": "integer"
+                    },
+                    "id_servicio": {
+                      "type": "integer"
+                    },
+                    "precio_base": {
+                      "type": "number",
+                      "format": "decimal"
+                    },
+                    "precio_barbero": {
+                      "type": "number",
+                      "format": "decimal",
+                      "nullable": true
+                    },
+                    "precio_efectivo": {
+                      "type": "number",
+                      "format": "decimal"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Relación no encontrada"
+          }
+        },
+        "tags": [
+          "ServicioBarbero"
+        ]
+      }
+    },
+    "/servicios/{id_barbero}/{id_servicio}/duracion": {
+      "get": {
+        "operationId": "getServicioDuracionEfectiva",
+        "summary": "Obtener duración efectiva del servicio para un barbero",
+        "description": "Retorna la duración a usar considerando overrides de duración por barbero.\n\n**Lógica (v1.10.0):**\n```\nIF ServicioBarbero.tiempo_servicio_minutos IS NOT NULL\n  THEN duracion_efectiva = ServicioBarbero.tiempo_servicio_minutos\nELSE\n  duracion_efectiva = Servicio.duracion_minutos\n```\n",
+        "parameters": [
+          {
+            "name": "id_barbero",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID del barbero"
+          },
+          {
+            "name": "id_servicio",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID del servicio"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Duración efectiva",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id_barbero": {
+                      "type": "integer"
+                    },
+                    "id_servicio": {
+                      "type": "integer"
+                    },
+                    "duracion_base": {
+                      "type": "integer",
+                      "description": "duracion_minutos"
+                    },
+                    "tiempo_servicio_minutos": {
+                      "type": "integer",
+                      "nullable": true
+                    },
+                    "duracion_efectiva": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Relación no encontrada"
+          }
+        },
+        "tags": [
+          "ServicioBarbero"
+        ]
+      }
+    },
+    "/citas": {
+      "post": {
+        "operationId": "agendarCita",
+        "summary": "Agendar cita",
+        "description": "Crea una nueva cita con validaciones completas.\n\n**Validaciones (v1.10.0):**\n1. Cliente existe y activo\n2. Barbero existe y activo\n3. Servicio existe y activo\n4. **NUEVO:** Barbero PUEDE HACER el servicio (existe en ServicioBarbero)\n5. Fecha es en futuro\n6. Barbero disponible (sin solapamientos)\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id_cliente",
+                  "id_barbero",
+                  "id_servicio",
+                  "fecha_hora_inicio",
+                  "pago_abono",
+                  "metodo_pago"
+                ],
+                "properties": {
+                  "id_cliente": {
+                    "type": "integer",
+                    "description": "ID del cliente"
+                  },
+                  "id_barbero": {
+                    "type": "integer",
+                    "description": "ID del barbero"
+                  },
+                  "id_servicio": {
+                    "type": "integer",
+                    "description": "ID del servicio"
+                  },
+                  "fecha_hora_inicio": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Fecha y hora de inicio"
+                  },
+                  "pago_abono": {
+                    "type": "number",
+                    "format": "decimal",
+                    "description": "Monto de abono (mínimo 20% del total)"
+                  },
+                  "metodo_pago": {
+                    "type": "string",
+                    "enum": [
+                      "efectivo",
+                      "tarjeta",
+                      "transferencia"
+                    ]
+                  },
+                  "notas": {
+                    "type": "string",
+                    "description": "Notas adicionales (opcional)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cita agendada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id_cita": {
+                      "type": "integer"
+                    },
+                    "id_cliente": {
+                      "type": "integer"
+                    },
+                    "id_barbero": {
+                      "type": "integer"
+                    },
+                    "id_servicio": {
+                      "type": "integer"
+                    },
+                    "fecha_hora_inicio": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "duracion_minutos": {
+                      "type": "integer",
+                      "description": "Heredada de ServicioBarbero o Servicio"
+                    },
+                    "monto_total": {
+                      "type": "number",
+                      "format": "decimal",
+                      "description": "Heredado de ServicioBarbero o Servicio"
+                    },
+                    "pago_abono": {
+                      "type": "number",
+                      "format": "decimal"
+                    },
+                    "estado": {
+                      "type": "string",
+                      "default": "confirmada"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validación fallida",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Citas"
+        ]
+      }
+    },
+    "/citas/disponibilidad": {
+      "get": {
+        "operationId": "verificarDisponibilidad",
+        "summary": "Verificar disponibilidad de un barbero",
+        "description": "Comprueba si un barbero está libre en un rango de tiempo específico.\n",
+        "parameters": [
+          {
+            "name": "idBarbero",
+            "in": "query",
             "required": true,
             "schema": {
               "type": "integer"
@@ -738,262 +499,60 @@
           },
           {
             "name": "fecha",
-            "in": "path",
+            "in": "query",
             "required": true,
             "schema": {
               "type": "string",
               "format": "date"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Horarios libres",
-            "content": {
-              "application/json": {
-                "example": {
-                  "id_barbero": 1,
-                  "fecha": "2026-05-15",
-                  "disponibilidad": [
-                    {
-                      "inicio": "09:00",
-                      "fin": "10:00"
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get_barberos_id_disponibilidad_fecha"
-      }
-    },
-    "/servicios": {
-      "get": {
-        "summary": "Obtener catálogo de servicios base",
-        "tags": [
-          "Servicios"
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Servicio"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get_servicios"
-      },
-      "post": {
-        "summary": "Crear nuevo servicio base",
-        "tags": [
-          "Servicios"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ServicioInput"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Servicio creado"
-          }
-        },
-        "operationId": "post_servicios"
-      }
-    },
-    "/servicios/buscar": {
-      "get": {
-        "summary": "Buscar servicios por nombre",
-        "tags": [
-          "Servicios"
-        ],
-        "parameters": [
+            },
+            "example": "2026-05-20"
+          },
           {
-            "name": "nombre",
+            "name": "hora",
             "in": "query",
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "example": "15:30"
+          },
+          {
+            "name": "duracion",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Duración en minutos"
           }
         ],
         "responses": {
           "200": {
+            "description": "Resultado de disponibilidad",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Servicio"
+                  "type": "object",
+                  "properties": {
+                    "disponible": {
+                      "type": "boolean"
+                    }
                   }
                 }
               }
             }
           }
         },
-        "operationId": "get_servicios_buscar"
-      }
-    },
-    "/servicios/tienda/{id_tienda}": {
-      "get": {
-        "summary": "Obtener servicios por tienda (DEPRECADO)",
-        "tags": [
-          "Servicios"
-        ],
-        "deprecated": true,
-        "parameters": [
-          {
-            "name": "id_tienda",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Use /barberos/{id}/servicios en su lugar"
-          }
-        },
-        "operationId": "get_servicios_tienda_id_tienda"
-      }
-    },
-    "/servicios/{id}": {
-      "get": {
-        "summary": "Obtener detalles del servicio",
-        "tags": [
-          "Servicios"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Servicio"
-                }
-              }
-            }
-          }
-        },
-        "operationId": "get_servicios_id"
-      },
-      "put": {
-        "summary": "Actualizar servicio",
-        "tags": [
-          "Servicios"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ServicioUpdate"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Actualizado"
-          }
-        },
-        "operationId": "put_servicios_id"
-      },
-      "delete": {
-        "summary": "Eliminar servicio",
-        "tags": [
-          "Servicios"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Eliminado"
-          }
-        },
-        "operationId": "delete_servicios_id"
-      }
-    },
-    "/citas": {
-      "post": {
-        "summary": "Agendar nueva cita",
         "tags": [
           "Citas"
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CitaInput"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Cita agendada",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CitaResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Conflicto de horario o datos inválidos"
-          }
-        },
-        "operationId": "post_citas"
+        ]
       }
     },
     "/citas/{id}": {
       "get": {
+        "operationId": "getCitaById",
         "summary": "Obtener detalles de una cita",
-        "tags": [
-          "Citas"
-        ],
+        "description": "Retorna información completa de una cita incluyendo:\n- Datos del cliente y barbero\n- Información del servicio\n- Detalles de la tienda\n\n**Nuevo en v1.10.0:** Incluye información de precios/duraciones efectivas\n",
         "parameters": [
           {
             "name": "id",
@@ -1001,54 +560,33 @@
             "required": true,
             "schema": {
               "type": "integer"
-            }
+            },
+            "description": "ID de la cita"
           }
         ],
         "responses": {
           "200": {
+            "description": "Detalles de la cita",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CitaResponse"
+                  "$ref": "#/components/schemas/CitaDetallada"
                 }
               }
             }
           },
           "404": {
-            "description": "No encontrada"
+            "description": "Cita no encontrada"
           }
         },
-        "operationId": "get_citas_id"
+        "tags": [
+          "Citas"
+        ]
       },
-      "delete": {
-        "summary": "Eliminar/Cancelar cita físicamente",
-        "tags": [
-          "Citas"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Eliminada"
-          }
-        },
-        "operationId": "delete_citas_id"
-      }
-    },
-    "/citas/{id}/estado": {
       "put": {
-        "summary": "Cambiar estado de la cita",
-        "tags": [
-          "Citas"
-        ],
+        "operationId": "updateCitaEstado",
+        "summary": "Actualizar estado de cita",
+        "description": "Cambia el estado de una cita y permite agregar motivo de cancelación.\n",
         "parameters": [
           {
             "name": "id",
@@ -1065,6 +603,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "estado"
+                ],
                 "properties": {
                   "estado": {
                     "type": "string",
@@ -1074,6 +615,9 @@
                       "completada",
                       "no_presentado"
                     ]
+                  },
+                  "motivo_cancelacion": {
+                    "type": "string"
                   }
                 }
               }
@@ -1083,17 +627,97 @@
         "responses": {
           "200": {
             "description": "Estado actualizado"
+          },
+          "400": {
+            "description": "Validación fallida"
           }
         },
-        "operationId": "put_citas_id_estado"
+        "tags": [
+          "Citas"
+        ]
+      }
+    },
+    "/citas/{id}/resena": {
+      "post": {
+        "operationId": "createResena",
+        "summary": "Crear una reseña para una cita",
+        "description": "Permite al cliente dejar una reseña una vez que la cita ha sido completada.\nLa puntuación debe ser entre 1.0 y 5.0 (soporta decimales).\n",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID de la cita"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "puntuacion"
+                ],
+                "properties": {
+                  "puntuacion": {
+                    "type": "number",
+                    "format": "float",
+                    "minimum": 1,
+                    "maximum": 5,
+                    "example": 4.5
+                  },
+                  "comentario": {
+                    "type": "string",
+                    "example": "Excelente servicio!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Reseña creada exitosamente",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "id_resena": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error en la validación o cita no completada"
+          },
+          "404": {
+            "description": "Cita no encontrada"
+          }
+        },
+        "tags": [
+          "Reseñas"
+        ]
       }
     },
     "/pagos/crear": {
       "post": {
+        "operationId": "crearPago",
         "summary": "Crear preferencia de pago para una cita",
-        "tags": [
-          "Pagos"
-        ],
+        "description": "Genera la preferencia de Mercado Pago y devuelve la URL de checkout.",
         "requestBody": {
           "required": true,
           "content": {
@@ -1122,15 +746,16 @@
             "description": "Error interno"
           }
         },
-        "operationId": "post_pagos_crear"
+        "tags": [
+          "Pagos"
+        ]
       }
     },
     "/pagos/webhook": {
       "post": {
+        "operationId": "pagoWebhook",
         "summary": "Webhook de Mercado Pago",
-        "tags": [
-          "Pagos"
-        ],
+        "description": "Recibe notificaciones de pagos y actualiza el estado del pago y la cita correspondiente.",
         "requestBody": {
           "required": true,
           "content": {
@@ -1149,15 +774,15 @@
             "description": "Error interno"
           }
         },
-        "operationId": "post_pagos_webhook"
+        "tags": [
+          "Pagos"
+        ]
       }
     },
     "/pagos/cita/{id_cita}": {
       "get": {
+        "operationId": "getPagosPorCita",
         "summary": "Obtener pagos asociados a una cita",
-        "tags": [
-          "Pagos"
-        ],
         "parameters": [
           {
             "name": "id_cita",
@@ -1189,56 +814,423 @@
             "description": "No encontrado"
           }
         },
-        "operationId": "get_pagos_cita_id_cita"
+        "tags": [
+          "Pagos"
+        ]
       }
     },
-    "/hairstyle/signature": {
-      "post": {
-        "summary": "Generar firma para Cloudinary",
-        "tags": [
-          "Hairstyle"
-        ],
+    "/servicios": {
+      "get": {
+        "operationId": "getServicios",
+        "summary": "Obtener todos los servicios",
+        "description": "Retorna lista completa de servicios disponibles",
         "responses": {
           "200": {
+            "description": "Lista de servicios",
             "content": {
               "application/json": {
-                "example": {
-                  "signature": "...",
-                  "timestamp": 12345678,
-                  "apiKey": "..."
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Servicio"
+                  }
                 }
               }
             }
           }
         },
-        "operationId": "post_hairstyle_signature"
+        "tags": [
+          "Servicios"
+        ]
+      },
+      "post": {
+        "operationId": "createServicio",
+        "summary": "Crear nuevo servicio",
+        "description": "Solo para administradores",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServicioCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Servicio creado"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          }
+        },
+        "tags": [
+          "Servicios"
+        ]
       }
     },
-    "/hairstyle/simulate": {
-      "post": {
-        "summary": "Simular corte de pelo",
-        "tags": [
-          "Hairstyle"
+    "/servicios/buscar": {
+      "get": {
+        "operationId": "buscarServicios",
+        "summary": "Buscar servicios por nombre",
+        "parameters": [
+          {
+            "name": "nombre",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
+        "responses": {
+          "200": {
+            "description": "Resultados de búsqueda",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Servicio"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Servicios"
+        ]
+      }
+    },
+    "/servicios/barbero/{id_barbero}": {
+      "get": {
+        "operationId": "getServiciosByBarbero",
+        "summary": "Obtener servicios de un barbero (vía servicios)",
+        "parameters": [
+          {
+            "name": "id_barbero",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de servicios"
+          }
+        },
+        "tags": [
+          "Servicios"
+        ]
+      }
+    },
+    "/servicios/{id}": {
+      "get": {
+        "operationId": "getServicioById",
+        "summary": "Obtener servicio específico",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalles del servicio",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Servicio"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Servicios"
+        ]
+      },
+      "put": {
+        "operationId": "updateServicio",
+        "summary": "Actualizar servicio",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ServicioUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Servicio actualizado"
+          }
+        },
+        "tags": [
+          "Servicios"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteServicio",
+        "summary": "Eliminar servicio",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Servicio eliminado"
+          }
+        },
+        "tags": [
+          "Servicios"
+        ]
+      }
+    },
+    "/barberos": {
+      "get": {
+        "operationId": "getBarberos",
+        "summary": "Obtener todos los barberos",
+        "description": "Retorna lista de barberos activos",
+        "responses": {
+          "200": {
+            "description": "Lista de barberos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Barbero"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Barberos"
+        ]
+      },
+      "post": {
+        "operationId": "createBarbero",
+        "summary": "Crear nuevo barbero",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BarberoCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Barbero creado"
+          }
+        },
+        "tags": [
+          "Barberos"
+        ]
+      }
+    },
+    "/barberos/{id}": {
+      "get": {
+        "operationId": "getBarberoById",
+        "summary": "Obtener detalles de un barbero",
+        "description": "Retorna información del barbero incluyendo:\n- Datos personales\n- Especialidad\n- Calificación promedio\n- Total de reseñas\n",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalles del barbero",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Barbero"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Barberos"
+        ]
+      },
+      "put": {
+        "operationId": "updateBarbero",
+        "summary": "Actualizar barbero",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BarberoUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Barbero actualizado"
+          }
+        },
+        "tags": [
+          "Barberos"
+        ]
+      },
+      "delete": {
+        "operationId": "deleteBarbero",
+        "summary": "Eliminar barbero",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Barbero eliminado"
+          }
+        },
+        "tags": [
+          "Barberos"
+        ]
+      }
+    },
+    "/usuarios/register": {
+      "post": {
+        "operationId": "registerUser",
+        "summary": "Registrar nuevo usuario",
+        "description": "Crea un nuevo usuario y su perfil base.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioRegistro"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Usuario registrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Datos inválidos"
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ]
+      }
+    },
+    "/usuarios/login": {
+      "post": {
+        "operationId": "loginUser",
+        "summary": "Iniciar sesión",
+        "description": "Autentica un usuario y retorna un token JWT.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login exitoso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Credenciales inválidas"
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ]
+      }
+    },
+    "/usuarios/forgot-password": {
+      "post": {
+        "operationId": "forgotPassword",
+        "summary": "Solicitar recuperación de contraseña",
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "email"
+                ],
                 "properties": {
-                  "publicId": {
-                    "type": "string"
-                  },
-                  "styleId": {
+                  "email": {
                     "type": "string",
-                    "enum": [
-                      "degradado",
-                      "clasico",
-                      "moderno",
-                      "mohicano",
-                      "buzzcut"
-                    ]
+                    "format": "email"
                   }
                 }
               }
@@ -1247,268 +1239,414 @@
         },
         "responses": {
           "200": {
-            "content": {
-              "application/json": {
-                "example": {
-                  "success": true,
-                  "simulatedImageUrl": "https://..."
+            "description": "Correo de recuperación enviado (si el usuario existe)"
+          },
+          "400": {
+            "description": "Correo inválido"
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ]
+      }
+    },
+    "/usuarios/reset-password": {
+      "post": {
+        "operationId": "resetPassword",
+        "summary": "Restablecer contraseña con token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "token",
+                  "nuevaContrasena"
+                ],
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  },
+                  "nuevaContrasena": {
+                    "type": "string",
+                    "minLength": 6
+                  }
                 }
               }
             }
           }
         },
-        "operationId": "post_hairstyle_simulate"
+        "responses": {
+          "200": {
+            "description": "Contraseña actualizada exitosamente"
+          },
+          "400": {
+            "description": "Token inválido o expirado"
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ]
       }
     },
-    "/reportes/citas": {
+    "/usuarios/perfil": {
       "get": {
-        "summary": "Generar reporte de citas (Excel)",
-        "tags": [
-          "Reportes"
-        ],
-        "parameters": [
+        "operationId": "getMyProfile",
+        "summary": "Obtener perfil propio",
+        "security": [
           {
-            "name": "fechaInicio",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date"
-            }
-          },
-          {
-            "name": "fechaFin",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date"
-            }
+            "bearerAuth": []
           }
         ],
         "responses": {
           "200": {
-            "description": "Reporte generado",
+            "description": "Perfil del usuario",
             "content": {
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+              "application/json": {
                 "schema": {
-                  "type": "string",
-                  "format": "binary"
+                  "$ref": "#/components/schemas/Usuario"
                 }
               }
             }
           }
         },
+        "tags": [
+          "Usuarios"
+        ]
+      },
+      "put": {
+        "operationId": "updateMyProfile",
+        "summary": "Actualizar perfil propio",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
           }
         ],
-        "operationId": "get_reportes_citas"
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Perfil actualizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usuario"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Usuarios"
+        ]
       }
     }
   },
   "components": {
-    "securitySchemes": {
-      "BearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
-      }
-    },
     "schemas": {
-      "Usuario": {
+      "ServicioBarbero": {
         "type": "object",
         "properties": {
-          "id_usuario": {
+          "id_servicio_barbero": {
+            "type": "integer",
+            "description": "ID de la relación"
+          },
+          "id_servicio": {
             "type": "integer"
           },
-          "email": {
-            "type": "string"
-          },
-          "nombre": {
-            "type": "string"
-          },
-          "apellido": {
-            "type": "string"
-          },
-          "rol": {
-            "type": "string"
-          },
-          "estado": {
-            "type": "boolean"
-          }
-        }
-      },
-      "UsuarioRegistro": {
-        "type": "object",
-        "required": [
-          "email",
-          "contrasena",
-          "nombre",
-          "apellido",
-          "rol"
-        ],
-        "properties": {
-          "email": {
-            "type": "string"
-          },
-          "contrasena": {
-            "type": "string"
-          },
-          "nombre": {
-            "type": "string"
-          },
-          "apellido": {
-            "type": "string"
-          },
-          "telefono": {
-            "type": "string"
-          },
-          "rol": {
-            "type": "string",
-            "enum": [
-              "Cliente",
-              "Barbero",
-              "Dueño",
-              "Administrador"
-            ]
-          }
-        },
-        "example": {
-          "email": "nuevo_cliente@example.com",
-          "contrasena": "Password123!",
-          "nombre": "Juan",
-          "apellido": "Perez",
-          "telefono": "+56912345678",
-          "rol": "Cliente"
-        }
-      },
-      "UsuarioUpdate": {
-        "type": "object",
-        "properties": {
-          "nombre": {
-            "type": "string"
-          },
-          "apellido": {
-            "type": "string"
-          },
-          "telefono": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "contrasena": {
-            "type": "string"
-          }
-        },
-        "example": {
-          "nombre": "Juan",
-          "apellido": "Gomez",
-          "telefono": "+56999999999",
-          "email": "juan.gomez@example.com"
-        }
-      },
-      "LoginRequest": {
-        "type": "object",
-        "required": [
-          "email",
-          "contrasena"
-        ],
-        "properties": {
-          "email": {
-            "type": "string"
-          },
-          "contrasena": {
-            "type": "string"
-          }
-        },
-        "example": {
-          "email": "admin@fadebooker.com",
-          "contrasena": "Admin2026!"
-        }
-      },
-      "LoginResponse": {
-        "type": "object",
-        "properties": {
-          "id_usuario": {
+          "id_barbero": {
             "type": "integer"
           },
-          "token": {
-            "type": "string",
+          "nombre_servicio": {
+            "type": "string"
+          },
+          "descripcion": {
+            "type": "string"
+          },
+          "duracion_minutos": {
+            "type": "integer",
+            "description": "Duración estándar del servicio"
+          },
+          "precio_base": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "precio_barbero": {
+            "type": "number",
+            "format": "decimal",
+            "nullable": true,
+            "description": "Override de precio para este barbero"
+          },
+          "tiempo_servicio_minutos": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Override de duración para este barbero"
+          },
+          "precio": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Precio efectivo (heredado)"
+          },
+          "duracion": {
+            "type": "integer",
+            "description": "Duración efectiva (heredada)"
+          }
+        }
+      },
+      "ServicioBarberoCreate": {
+        "type": "object",
+        "required": [
+          "id_servicio"
+        ],
+        "properties": {
+          "id_servicio": {
+            "type": "integer",
+            "description": "ID del servicio a asignar"
+          },
+          "precio_barbero": {
+            "type": "number",
+            "format": "decimal",
+            "nullable": true,
+            "description": "Precio override (opcional, usa precio_base si no se proporciona)"
+          },
+          "tiempo_servicio_minutos": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Duración override en minutos (opcional)"
+          }
+        }
+      },
+      "BarberoServicio": {
+        "type": "object",
+        "properties": {
+          "id_barbero": {
+            "type": "integer"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "apellido": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "especialidad": {
+            "type": "string"
+          },
+          "calificacion_promedio": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "precio_barbero": {
+            "type": "number",
+            "format": "decimal",
             "nullable": true
           },
-          "rol": {
-            "type": "string"
+          "tiempo_servicio_minutos": {
+            "type": "integer",
+            "nullable": true
           }
         }
       },
-      "Cliente": {
+      "CitaDetallada": {
         "type": "object",
         "properties": {
+          "id_cita": {
+            "type": "integer"
+          },
           "id_cliente": {
             "type": "integer"
           },
-          "nombre": {
+          "cliente_nombre": {
             "type": "string"
           },
-          "apellido": {
+          "cliente_email": {
             "type": "string"
           },
-          "email": {
-            "type": "string"
-          },
-          "telefono": {
-            "type": "string"
-          },
-          "puntos_acumulados": {
+          "id_barbero": {
             "type": "integer"
+          },
+          "barbero_nombre": {
+            "type": "string"
+          },
+          "barbero_email": {
+            "type": "string"
+          },
+          "id_servicio": {
+            "type": "integer"
+          },
+          "nombre_servicio": {
+            "type": "string"
+          },
+          "fecha_hora_inicio": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "duracion_minutos": {
+            "type": "integer",
+            "description": "Obtenida de ServicioBarbero o Servicio"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "confirmada",
+              "cancelada",
+              "completada",
+              "no_presentado"
+            ]
+          },
+          "monto_total": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Obtenido de ServicioBarbero o Servicio"
+          },
+          "pago_abono": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "id_tienda": {
+            "type": "integer"
+          },
+          "nombre_tienda": {
+            "type": "string"
           }
         }
       },
-      "ClienteInput": {
+      "PagoCrear": {
         "type": "object",
         "required": [
-          "id_usuario",
-          "nombre",
-          "apellido",
-          "email"
+          "id_cita"
         ],
         "properties": {
-          "id_usuario": {
+          "id_cita": {
             "type": "integer"
-          },
-          "nombre": {
-            "type": "string"
-          },
-          "apellido": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "telefono": {
-            "type": "string"
           }
-        },
-        "example": {
-          "id_usuario": 10,
-          "nombre": "Carlos",
-          "apellido": "Garcia",
-          "email": "carlos.g@example.com",
-          "telefono": "987654321"
         }
       },
-      "ClienteUpdate": {
+      "PagoResponse": {
         "type": "object",
         "properties": {
-          "nombre": {
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "preference_id": {
+            "type": "string"
+          }
+        }
+      },
+      "PagoDetalle": {
+        "type": "object",
+        "properties": {
+          "id_pago": {
+            "type": "integer"
+          },
+          "id_cita": {
+            "type": "integer"
+          },
+          "monto_pagado": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "metodo_pago": {
             "type": "string"
           },
-          "apellido": {
+          "estado_pago": {
             "type": "string"
           },
-          "telefono": {
+          "referencia_transaccion": {
             "type": "string"
+          },
+          "fecha_pago": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Servicio": {
+        "type": "object",
+        "properties": {
+          "id_servicio": {
+            "type": "integer"
+          },
+          "nombre_servicio": {
+            "type": "string"
+          },
+          "descripcion": {
+            "type": "string"
+          },
+          "duracion_minutos": {
+            "type": "integer"
+          },
+          "precio_base": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "activo": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ServicioCreate": {
+        "type": "object",
+        "required": [
+          "nombre_servicio",
+          "duracion_minutos",
+          "precio_base"
+        ],
+        "properties": {
+          "nombre_servicio": {
+            "type": "string"
+          },
+          "descripcion": {
+            "type": "string"
+          },
+          "duracion_minutos": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "precio_base": {
+            "type": "number",
+            "format": "decimal",
+            "minimum": 0
+          }
+        }
+      },
+      "ServicioUpdate": {
+        "type": "object",
+        "properties": {
+          "nombre_servicio": {
+            "type": "string"
+          },
+          "descripcion": {
+            "type": "string"
+          },
+          "duracion_minutos": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "precio_base": {
+            "type": "number",
+            "format": "decimal",
+            "minimum": 0
           },
           "activo": {
             "type": "boolean"
@@ -1521,32 +1659,6 @@
           "id_barbero": {
             "type": "integer"
           },
-          "nombre": {
-            "type": "string"
-          },
-          "apellido": {
-            "type": "string"
-          },
-          "especialidad": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "calificacion_promedio": {
-            "type": "number"
-          }
-        }
-      },
-      "BarberoInput": {
-        "type": "object",
-        "required": [
-          "id_usuario",
-          "id_tienda",
-          "nombre",
-          "email"
-        ],
-        "properties": {
           "id_usuario": {
             "type": "integer"
           },
@@ -1572,283 +1684,397 @@
             "type": "integer"
           },
           "tarifa_base": {
-            "type": "number"
-          }
-        },
-        "example": {
-          "id_usuario": 5,
-          "id_tienda": 1,
-          "nombre": "Marcos",
-          "apellido": "Trim",
-          "email": "marcos.barber@example.com",
-          "telefono": "5551234",
-          "especialidad": "Degradados y Barba",
-          "anos_experiencia": 4,
-          "tarifa_base": 15000
-        }
-      },
-      "BarberoUpdate": {
-        "type": "object",
-        "properties": {
-          "nombre": {
-            "type": "string"
+            "type": "number",
+            "format": "decimal"
           },
-          "especialidad": {
-            "type": "string"
+          "calificacion_promedio": {
+            "type": "number",
+            "format": "decimal",
+            "minimum": 0,
+            "maximum": 5
           },
-          "tarifa_base": {
-            "type": "number"
+          "total_resenas": {
+            "type": "integer"
           },
           "activo": {
             "type": "boolean"
           }
         }
       },
-      "HorarioBarbero": {
+      "BarberoCreate": {
+        "type": "object",
+        "required": [
+          "id_usuario",
+          "id_tienda",
+          "nombre",
+          "apellido"
+        ],
+        "properties": {
+          "id_usuario": {
+            "type": "integer"
+          },
+          "id_tienda": {
+            "type": "integer"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "apellido": {
+            "type": "string"
+          },
+          "telefono": {
+            "type": "string"
+          },
+          "especialidad": {
+            "type": "string"
+          },
+          "anos_experiencia": {
+            "type": "integer"
+          },
+          "tarifa_base": {
+            "type": "number",
+            "format": "decimal"
+          }
+        }
+      },
+      "BarberoUpdate": {
         "type": "object",
         "properties": {
-          "horario": {
+          "id_tienda": {
+            "type": "integer"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "apellido": {
+            "type": "string"
+          },
+          "telefono": {
+            "type": "string"
+          },
+          "especialidad": {
+            "type": "string"
+          },
+          "anos_experiencia": {
+            "type": "integer"
+          },
+          "tarifa_base": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "activo": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Usuario": {
+        "type": "object",
+        "properties": {
+          "id_usuario": {
+            "type": "integer"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "apellido": {
+            "type": "string"
+          },
+          "telefono": {
+            "type": "string"
+          },
+          "rol": {
+            "type": "string",
+            "enum": [
+              "Cliente",
+              "Barbero",
+              "Dueño",
+              "Administrador",
+              "Proveedor"
+            ]
+          },
+          "id_tienda": {
+            "type": "integer",
+            "nullable": true
+          },
+          "estado": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UsuarioRegistro": {
+        "type": "object",
+        "required": [
+          "email",
+          "contrasena",
+          "nombre",
+          "apellido",
+          "rol"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "contrasena": {
+            "type": "string",
+            "minLength": 6
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "apellido": {
+            "type": "string"
+          },
+          "telefono": {
+            "type": "string"
+          },
+          "rol": {
+            "type": "string",
+            "enum": [
+              "Cliente",
+              "Barbero",
+              "Dueño",
+              "Proveedor"
+            ]
+          },
+          "especialidad": {
+            "type": "string",
+            "description": "Solo si rol es Barbero o Dueño"
+          },
+          "anos_experiencia": {
+            "type": "integer",
+            "description": "Años de experiencia, solo si rol es Barbero o Dueño"
+          },
+          "id_tienda": {
+            "type": "integer",
+            "description": "ID de la tienda, solo si rol es Barbero"
+          },
+          "servicios": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "IDs de los servicios que ofrece el barbero"
+          },
+          "tienda_nueva": {
             "type": "object",
-            "additionalProperties": {
-              "type": "object",
-              "nullable": true,
-              "properties": {
-                "inicio": {
-                  "type": "string",
-                  "example": "09:00"
-                },
-                "fin": {
-                  "type": "string",
-                  "example": "18:00"
-                }
+            "description": "Datos para crear una tienda nueva si el usuario es Dueño",
+            "properties": {
+              "nombre_tienda": {
+                "type": "string"
+              },
+              "direccion": {
+                "type": "string"
+              },
+              "ciudad": {
+                "type": "string"
               }
             }
           }
         }
       },
-      "Servicio": {
+      "Tienda": {
         "type": "object",
         "properties": {
-          "id_servicio": {
+          "id_tienda": {
             "type": "integer"
           },
-          "nombre_servicio": {
-            "type": "string"
-          },
-          "descripcion": {
-            "type": "string"
-          },
-          "duracion_minutos": {
+          "id_dueño": {
             "type": "integer"
           },
-          "precio_base": {
-            "type": "number"
-          }
-        }
-      },
-      "ServicioInput": {
-        "type": "object",
-        "required": [
-          "nombre_servicio",
-          "duracion_minutos",
-          "precio_base"
-        ],
-        "properties": {
-          "nombre_servicio": {
+          "nombre_tienda": {
             "type": "string"
           },
-          "descripcion": {
+          "direccion": {
             "type": "string"
           },
-          "duracion_minutos": {
-            "type": "integer"
-          },
-          "precio_base": {
-            "type": "number"
-          }
-        }
-      },
-      "ServicioUpdate": {
-        "type": "object",
-        "properties": {
-          "nombre_servicio": {
+          "ciudad": {
             "type": "string"
           },
-          "duracion_minutos": {
-            "type": "integer"
-          },
-          "precio_base": {
-            "type": "number"
-          }
-        }
-      },
-      "ServicioBarbero": {
-        "type": "object",
-        "properties": {
-          "id_servicio": {
-            "type": "integer"
-          },
-          "nombre_servicio": {
+          "codigo_postal": {
             "type": "string"
           },
-          "precio_barbero": {
+          "telefono_tienda": {
+            "type": "string"
+          },
+          "email_tienda": {
+            "type": "string"
+          },
+          "horario_apertura": {
+            "type": "string"
+          },
+          "horario_cierre": {
+            "type": "string"
+          },
+          "dias_laborales": {
+            "type": "string"
+          },
+          "foto_portada_url": {
+            "type": "string"
+          },
+          "calificacion_promedio": {
             "type": "number",
-            "nullable": true
+            "format": "decimal"
           },
-          "tiempo_servicio_minutos": {
-            "type": "integer",
-            "nullable": true
-          },
-          "precio_base": {
-            "type": "number"
+          "este_activa": {
+            "type": "boolean"
           }
         }
       },
-      "CitaInput": {
+      "TiendaCreate": {
         "type": "object",
         "required": [
-          "id_cliente",
-          "id_barbero",
-          "id_servicio",
-          "fecha_hora_inicio"
+          "nombre_tienda",
+          "direccion",
+          "ciudad"
         ],
         "properties": {
-          "id_cliente": {
-            "type": "integer"
-          },
-          "id_barbero": {
-            "type": "integer"
-          },
-          "id_servicio": {
-            "type": "integer"
-          },
-          "fecha_hora_inicio": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "pago_abono": {
-            "type": "number"
-          },
-          "metodo_pago": {
+          "nombre_tienda": {
             "type": "string"
           },
-          "notas": {
+          "direccion": {
+            "type": "string"
+          },
+          "ciudad": {
+            "type": "string"
+          },
+          "codigo_postal": {
+            "type": "string"
+          },
+          "telefono_tienda": {
+            "type": "string"
+          },
+          "email_tienda": {
+            "type": "string"
+          },
+          "horario_apertura": {
+            "type": "string"
+          },
+          "horario_cierre": {
+            "type": "string"
+          },
+          "dias_laborales": {
+            "type": "string"
+          },
+          "foto_portada_url": {
             "type": "string"
           }
-        },
-        "example": {
-          "id_cliente": 1,
-          "id_barbero": 2,
-          "id_servicio": 1,
-          "fecha_hora_inicio": "2026-05-20T15:00:00Z",
-          "pago_abono": 5000,
-          "metodo_pago": "Transferencia",
-          "notas": "Corte degradado con barba"
         }
       },
-      "CitaResponse": {
+      "UsuarioUpdate": {
         "type": "object",
         "properties": {
-          "id_cita": {
-            "type": "integer"
-          },
-          "id_cliente": {
-            "type": "integer"
-          },
-          "fecha_hora_inicio": {
+          "email": {
             "type": "string",
-            "format": "date-time"
+            "format": "email"
           },
-          "estado": {
+          "contrasena": {
+            "type": "string",
+            "minLength": 6
+          },
+          "nombre": {
             "type": "string"
           },
-          "monto_total": {
-            "type": "number"
+          "apellido": {
+            "type": "string"
+          },
+          "telefono": {
+            "type": "string"
           }
-        },
-        "example": {
-          "id_cita": 101,
-          "id_cliente": 1,
-          "fecha_hora_inicio": "2026-05-20T15:00:00Z",
-          "estado": "confirmada",
-          "monto_total": 15000
         }
       },
-      "PagoCrear": {
+      "LoginRequest": {
         "type": "object",
         "required": [
-          "id_cita"
+          "email",
+          "contrasena"
         ],
         "properties": {
-          "id_cita": {
-            "type": "integer"
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "contrasena": {
+            "type": "string"
           }
-        },
-        "example": {
-          "id_cita": 1,
-          "monto": 15000,
-          "descripcion": "Pago por servicio de barbería - Corte degradado",
-          "email_cliente": "cliente@example.com"
         }
       },
-      "PagoResponse": {
+      "LoginResponse": {
         "type": "object",
         "properties": {
-          "url": {
-            "type": "string",
-            "format": "uri"
+          "usuario": {
+            "$ref": "#/components/schemas/Usuario"
           },
-          "preference_id": {
+          "token": {
             "type": "string"
           }
-        },
-        "example": {
-          "id_pago": "123456789",
-          "init_point": "https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=123456789",
-          "status": "pending"
         }
       },
-      "PagoDetalle": {
+      "ErrorResponse": {
         "type": "object",
+        "required": [
+          "error"
+        ],
         "properties": {
-          "id_pago": {
-            "type": "integer"
-          },
-          "id_cita": {
-            "type": "integer"
-          },
-          "monto_pagado": {
-            "type": "number"
-          },
-          "metodo_pago": {
-            "type": "string"
-          },
-          "estado_pago": {
-            "type": "string"
-          },
-          "referencia_transaccion": {
-            "type": "string"
-          },
-          "fecha_pago": {
+          "error": {
             "type": "string",
-            "format": "date-time"
+            "description": "Mensaje de error descriptivo",
+            "example": "Validación fallida"
           }
-        },
-        "example": {
-          "id_pago": 1,
-          "id_cita": 1,
-          "monto": 15000,
-          "estado": "approved",
-          "fecha_creacion": "2026-05-20T14:30:00Z",
-          "fecha_actualizacion": "2026-05-20T14:35:00Z",
-          "referencia_mp": "123456789"
         }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   },
-  "security": [
+  "tags": [
     {
-      "BearerAuth": []
+      "name": "Usuarios",
+      "description": "Gestión de usuarios y autenticación"
+    },
+    {
+      "name": "ServicioBarbero",
+      "description": "NUEVO (v1.10.0) - Gestión de servicios por barbero. Reemplaza la búsqueda por tienda."
+    },
+    {
+      "name": "Citas",
+      "description": "Agendamiento de citas. ACTUALIZADO (v1.10.0): Validación de ServicioBarbero incluida."
+    },
+    {
+      "name": "Servicios",
+      "description": "Catálogo de servicios"
+    },
+    {
+      "name": "Barberos",
+      "description": "Gestión de barberos"
     }
-  ]
+  ],
+  "x-info": {
+    "version": "1.10.0",
+    "lastUpdated": "2026-04-16",
+    "changes": [
+      {
+        "name": "ServicioBarbero Refactor",
+        "description": "Relación Servicio ↔ Barbero en lugar de Servicio ↔ Tienda",
+        "endpoints": [
+          6,
+          "GET /api/barberos/:id/servicios",
+          "POST /api/barberos/:id/servicios",
+          "DELETE /api/barberos/:id/servicios/:id_servicio",
+          "GET /api/servicios/:id/barberos",
+          "GET /api/servicios/:id_barbero/:id_servicio/precio",
+          "GET /api/servicios/:id_barbero/:id_servicio/duracion"
+        ]
+      }
+    ]
+  }
 }

@@ -36,15 +36,47 @@ const TiendaConfig: React.FC = () => {
                     const data = await tiendaService.getTiendaById(user.id_tienda);
                     
                     // Formatear datos para el formulario (defaults 10:00 - 20:00)
+                    // 🛡️ Manejo robusto de formatos de hora (SQL TIME vs String)
+                    const formatTime = (timeInput: any) => {
+                        if (!timeInput) return null;
+                        
+                        // Si ya es un string de formato HH:mm...
+                        if (typeof timeInput === 'string' && timeInput.length === 5 && timeInput.includes(':')) {
+                            return timeInput;
+                        }
+
+                        // Si es un string de formato HH:mm:ss...
+                        if (typeof timeInput === 'string') {
+                            return timeInput.substring(0, 5);
+                        }
+                        
+                        // Si es un objeto Date
+                        if (timeInput instanceof Date) {
+                            return timeInput.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', hour12: false });
+                        }
+
+                        // Fallback: tratar de convertir a string
+                        const str = String(timeInput);
+                        if (str.includes(':')) {
+                            return str.substring(0, 5);
+                        }
+
+                        return null;
+                    };
+
                     const formattedData = {
                         ...data,
-                        horario_apertura: data.horario_apertura ? data.horario_apertura.substring(0, 5) : '10:00',
-                        horario_cierre: data.horario_cierre ? data.horario_cierre.substring(0, 5) : '20:00',
+                        horario_apertura: formatTime(data.horario_apertura) || '10:00',
+                        horario_cierre: formatTime(data.horario_cierre) || '20:00',
                         dias_laborales: data.dias_laborales || 'Lunes, Martes, Miércoles, Jueves, Viernes, Sábado'
                     };
 
                     setTienda(formattedData);
                     reset(formattedData);
+                    
+                    // Asegurar que los campos se actualicen explícitamente para navegadores caprichosos
+                    setValue('horario_apertura', formattedData.horario_apertura);
+                    setValue('horario_cierre', formattedData.horario_cierre);
                     
                     if (formattedData.dias_laborales) {
                         setSelectedDays(formattedData.dias_laborales.split(',').map(d => d.trim()));
@@ -106,6 +138,10 @@ const TiendaConfig: React.FC = () => {
             };
 
             await tiendaService.updateTienda(user.id_tienda, updateData);
+            
+            // 🔄 Actualizar estado local para reflejar los datos guardados inmediatamente
+            setTienda(prev => prev ? { ...prev, ...updateData } : null);
+            
             showNotification('¡Datos de la barbería actualizados correctamente!', 'success');
         } catch (error: any) {
             console.error('Error updating tienda:', error);
@@ -239,28 +275,43 @@ const TiendaConfig: React.FC = () => {
                         </h3>
                         
                         <div className="space-y-6">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <label htmlFor="horario_apertura" className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> Abre a las
-                                    </label>
-                                    <input 
-                                        id="horario_apertura"
-                                        type="time"
-                                        {...register('horario_apertura')}
-                                        className="w-full p-4 bg-white border-2 border-slate-100 rounded-[1.5rem] font-black text-slate-700 text-lg focus:ring-4 focus:ring-blue-100 focus:border-[#3366FF] outline-none transition-all"
-                                    />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                {/* Entrada */}
+                                <div className="bg-white p-6 rounded-[2.5rem] border-2 border-slate-100 shadow-sm flex items-center justify-between group hover:border-[#3366FF] hover:shadow-xl transition-all duration-300">
+                                    <div className="flex items-center gap-5">
+                                        <div className="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center text-green-500 shadow-inner">
+                                            <Clock size={28} />
+                                        </div>
+                                        <div>
+                                            <label htmlFor="horario_apertura" className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1 block">Entrada</label>
+                                            <input 
+                                                id="horario_apertura"
+                                                type="time"
+                                                step="600"
+                                                {...register('horario_apertura')}
+                                                className="bg-transparent font-black text-slate-800 text-3xl outline-none focus:text-[#3366FF] transition-colors w-full min-w-[140px]"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <label htmlFor="horario_cierre" className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div> Cierra a las
-                                    </label>
-                                    <input 
-                                        id="horario_cierre"
-                                        type="time"
-                                        {...register('horario_cierre')}
-                                        className="w-full p-4 bg-white border-2 border-slate-100 rounded-[1.5rem] font-black text-slate-700 text-lg focus:ring-4 focus:ring-blue-100 focus:border-[#3366FF] outline-none transition-all"
-                                    />
+
+                                {/* Salida */}
+                                <div className="bg-white p-6 rounded-[2.5rem] border-2 border-slate-100 shadow-sm flex items-center justify-between group hover:border-[#3366FF] hover:shadow-xl transition-all duration-300">
+                                    <div className="flex items-center gap-5">
+                                        <div className="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center text-red-500 shadow-inner">
+                                            <Clock size={28} />
+                                        </div>
+                                        <div>
+                                            <label htmlFor="horario_cierre" className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1 block">Salida</label>
+                                            <input 
+                                                id="horario_cierre"
+                                                type="time"
+                                                step="600"
+                                                {...register('horario_cierre')}
+                                                className="bg-transparent font-black text-slate-800 text-3xl outline-none focus:text-[#3366FF] transition-colors w-full min-w-[140px]"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 

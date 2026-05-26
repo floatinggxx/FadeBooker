@@ -1,24 +1,25 @@
 # 🗄️ Database Consolidado - FadeBooker
 
 **Motor:** Azure SQL Server (fadebooker-server.database.windows.net)
-**Versión Schema:** 1.1.0 (Refactor ServicioBarbero)
+**Versión Schema:** 1.11.0 (Review Decimals & Points)
 **Estado:** ✅ ACTIVA y normalizada (3NF)
 
 ---
 
-## 📊 Modelo de Datos (10 Entidades)
+## 📊 Modelo de Datos (11 Entidades)
 
 | Tabla | Propósito | Relaciones Clave |
 |-------|-----------|------------------|
-| **Usuario** | Base p/ Auth | Cliente (1:1), Barbero (1:1) |
+| **Usuario** | Base p/ Auth | Cliente (1:1), Barbero (1:1), Puntos Fidelidad |
 | **Tienda** | Ubicaciones | Admin (FK Usuario), Barberos (1:N) |
 | **Barbero** | Prestadores | Tienda (FK), Servicios (via ServicioBarbero) |
 | **Servicio** | Catálogo | Base para precios y duración |
 | **ServicioBarbero** | **(v1.1.0)** | M2M entre Barberos y Servicios con overrides |
 | **Cita** | Reservas | Cliente, Barbero, Servicio, Tienda |
 | **Pago** | Transacciones | Cita (1:1) |
-| **Reseña** | Calidad | Cita, Cliente, Barbero |
+| **Reseña** | Calidad | Cita, Cliente, Barbero (Puntuación decimal) |
 | **AuditoriaSeguridad** | Seguridad | Logs de acciones sensibles (Nueva v1.1.0) |
+| **LogErrores** | Monitoreo | Registro de fallos críticos |
 
 ---
 
