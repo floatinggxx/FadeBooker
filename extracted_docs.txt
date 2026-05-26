@@ -1,0 +1,1646 @@
+--- PDF CONTENT (RUBRICA) ---
+ 
+Subdirección de Diseño Instruccional 
+Subdirección de Evaluación de Resultados de Aprendizaje 
+2024 
+ 1 
+Evaluación Parcial N° 2 
+Estado de avance 2 
+Estudiante 
+ 
+Sigla Nombre Asignatura Tiempo Asignado % Ponderación 
+TPY1101 Taller Aplicado de Programación 5 semanas /40 minutos  35% 
+ 
+1. Situación Evaluativa:  
+ Ejecución práctica  X Entrega de 
+encargo  X Presentación  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Subdirección de Diseño Instruccional 
+Subdirección de Evaluación de Resultados de Aprendizaje 
+2024 
+ 2 
+2. Instrucciones  
+Descripción general de la evaluación 
+ 
+La evaluación parcial 2 corresponde a una entrega de encargo con pres entación del estado de avance de la oportunidad o problema 
+que se está trabajando, debe incluir detalle de metodología de d esarrollo, patrones de diseño, arquitectura, lenguaje de 
+programación, detalles de la configuración de servidor, aspectos de integración necesarios,  plan de pruebas a ejecutar; todo esto 
+debidamente acordado con el/la docente guía.   
+ 
+ El propósito de esta evaluación es evaluar los siguientes Indicadores de Logro: 
+ 
+o IL2.1 Elabora documentos para diseñar la solución al problema planteado, empleando diversas técnicas y herramientas que 
+definan las características y funcionalidades que tendrá el producto final. 
+o IL2.2 Genera ambiente de prueba para el desarrollo del producto que permita replicar el ambiente de producción.   
+o IL2.3 Desarrolla solución dis eñada utilizando tecnologías adecuadas al problema planteado aplicando distintas técnicas que 
+permitan un producto funcional, de calidad y seguro.   
+ 
+ Esta evaluación consiste en una entrega de encargo con presentación y tiene un 35% de ponderación sobre la nota final de la 
+asignatura.  
+ El encargo y presentación se realiza en equipos de 3 integrantes, la instrucción será dada la semana 5 y los/las estudiantes deberán 
+entregar su informe la semana 11, durante la semana 11 y 12 deberán defender su trabajo (el/la docente asignará horario y día), 
+contarán con un tiempo 40 minutos para la presentación. Se realiza en Taller de Alto Computo.   
+ La distribución de los porcentajes de las situaciones evaluativas que componen esta evaluación es la siguiente: 
+ 
+Evaluación Porcentaje dentro de la 
+asignatura 
+Tipo de situación 
+evaluativa 
+Distribución de 
+porcentajes 
+Evaluación Parcial N° 2 35% A Encargo 40% 
+B Presentación 60% 
+ 
+ 
+ 
+Subdirección de Diseño Instruccional 
+Subdirección de Evaluación de Resultados de Aprendizaje 
+2024 
+ 3 
+Instrucciones Específicas 
+El (Encargo) informe “Estado de avance 2” deberá volver a contener los puntos detallados en la Evaluación 1 y en este encargo agregar 
+los siguientes puntos en su desarrollo: 
+ 
+o Elaboración de diagramas  y documentos pertinentes que permitan dar forma a la problemática a resolver, acorde a la 
+metodología a seguir y las tecnologías previstas a utilizar. Estos diagramas y documentos deben establecer los lineamientos de 
+forma clara y precisa y que faciliten el desarrollo eficiente y eficaz de la solución del proyecto.  
+1. Elabora documentos para diseñar la solución al problema planteado, empleando diversas técnicas y herramientas que definan las  
+características y funcionalidades que tendrá el producto final. 
+ 
+o Detalle de la configuración de servido de producción con instrucciones de carga de lenguajes, bibliotecas y herramientas 
+necesarias para la creación del código. 
+ 
+2. Creación de configuración que cumpla con las especificaciones del diseño para un ambiente de pruebas. Esto incluye pruebas 
+operativas, de validación y verificación, así como actividades para garantizar que el ambiente esté correctamente configurado , 
+siguiendo las mejores prácticas de la industria. 
+ 
+o Documentación de estados de avance de entregas parciales, certificación del avance del producto de software. 
+ 
+3. Demostración con evidencia procedimientos detallados para realizar una copia de seguridad de la base de datos de producción en 
+el entorno de pruebas. Configura con éxito el servidor (Cloud) para que refleje la configuración del servidor de producción y realiza la 
+instalación de los lenguajes de programación, bibliotecas y herramientas necesarios que se utilizan en el servidor de producción. 
+ 
+o Documentación de Pruebas realizadas, según Plan de pruebas definido y acordado en atención a estándares de calidad 
+vigentes en la industria. 
+ 
+4. Desarrolla solución diseñada utilizando tecnologías adecuadas al problema planteado aplicando distintas técnicas que permitan 
+un producto funcional, de calidad y seguro. 
+ 
+ 
+Subdirección de Diseño Instruccional 
+Subdirección de Evaluación de Resultados de Aprendizaje 
+2024 
+ 4 
+ 
+La (presentación) defensa del Estado de avance 2 debe incluir los siguientes apartados: 
+ 
+o Resumen y contexto de lo evidenciado en evaluación 1. 
+o Defensa oral de los aspectos desarrollados en el encargo para ello, deberá mostrar avance de desarrollo de software, según 
+Plan de proyecto acordado con docente.    
+  
+1. Demuestra dominio sobre la creación de la configuración que cumpla con las especificaciones del diseño para un ambiente de 
+pruebas. Esto incluye pruebas operativas, de validación y verificación, así como actividades para garantizar que el ambiente esté 
+correctamente configurado, siguiendo las mejores prácticas de la industria, fundamentando con argumentos coherentes y propios de 
+la disciplina. 
+2. Demuestra dominio sobre el desarrollo de la solución diseñada utilizando tecnologías adecuadas al problema planteado aplic ando 
+distintas técnicas que permitan un producto funcional, de calidad y seguro, fundamentando con argumentos coherentes y propios de 
+la disciplina. 
+o Justificación de funcionalidades y entregables cerrados y aprobados por docente guía. 
+o Presentación de pruebas ejecutadas incluyendo aceptación del docente guía. 
+o Presentación formal de estado de avance (gráfica, tablas, KPI u otros) 
+o Conclusiones 
+o Lecciones aprendidas. 
+ 
+Aspectos Formales 
+ 
+o Encargo/ Informe/Producto:  
+ 
+A) Portada con identificación del proyecto y los/las estudiantes. 
+B) Agenda/índice. 
+C) Breve introducción. 
+D) Desarrollo evaluación parcial 1 (incluir). 
+ 
+Subdirección de Diseño Instruccional 
+Subdirección de Evaluación de Resultados de Aprendizaje 
+2024 
+ 5 
+E) Desarrollo evaluación parcial 2. 
+ 
+Para su entrega, en la fecha asignada deberá:  
+ 
+1. Comprimir y enviar en el formato que se indica : EP_SIGLACURSO_númerogrupo_seccion.rar 
+              Ejemplo: EP_ TPY1101_1_002D.rar 
+2. Además, en un archivo txt se debe incluir el nombre completo de cada integrante, con el siguiente formato: Formato: 
+Grupo_numerodegrupo.txt    Ejemplo: Grupo_2.txt  /este archivo contiene los nombres completos de cada integrante. 
+3. Puede recurrir al uso de cualquier herramienta de Diseño de procesos, de Gestión de Proyectos. 
+4. Puede usar las herramientas de Microsoft Office disponibles como Word, Excel, PowerPoint, u otro. 
+ 
+o Presentación /Defensa: 
+ 
+A) Documento en formato PowerP oint o equivalente de apoyo, no debe  tener errores ortográficos  (Utilizar formato 
+proporcionado por docente) 
+B) Portada con identificación del proyecto y de los integrantes 
+C) Agenda 
+D) Descripción y contexto general del proyecto 
+E) Documentos asociados 
+Deberá considerar: 
+ 
+1. Defensa y presentación utilizando un lenguaje técnico y especializado (30 minutos), respuesta a preguntas (10 minutos). 
+2. Utilizar lenguaje formal y acorde a la disciplina en todo momento. 
+3. Distribución de tiempos de presentación y trabajo de manera equitativa 
+4. Las preguntas pueden realizarse a cualquier integrante del equipo. 
+ 
+Aunque el desarrollo del encargo es de carácter grupal, la calificación es individual y dependerá del desempeño individual de cada 
+integrante. 
+  
+ 
+Subdirección de Diseño Instruccional 
+Subdirección de Evaluación de Resultados de Aprendizaje 
+2024 
+ 6 
+3. Pauta de Evaluación 
+Tipo de Pauta: (Rúbrica, Escala de Valoración, Pauta de cotejo) 
+ 
+Categoría % logro Descripción niveles de logro 
+Muy buen desempeño 100% Demuestra un desempeño destacado, evidenciando el logro de todos los aspectos evaluados en el indicador.  
+Buen desempeño 80% Demuestra un alto desempeño del indicador, presentando pequeñas omisiones, dificultades y/o errores.  
+Desempeño aceptable  60% Demuestra un desempeño competente, evidenciando el logro de los elementos básicos del indicador, pero con 
+omisiones, dificultades o errores. 
+Desempeño incipiente  30% Presenta importantes omisiones, dificultades o errores en el desempeño, que no permiten evidenciar los 
+elementos básicos del logro del indicador, por lo que no puede ser considerado competente.  
+Desempeño no logrado 0% Presenta ausencia o incorrecto desempeño. 
+ 
+Indicador de Evaluación 
+Categorías de Respuesta Ponderación 
+Indicador de 
+Evaluación 
+Muy buen 
+desempeño 
+100% 
+Buen desempeño 
+80% 
+Desempeño aceptable 
+60% 
+Desempeño 
+incipiente 
+30% 
+Desempeño no 
+logrado 
+0% 
+Dimensión encargo 
+1. Elabora documentos 
+para diseñar la solución al 
+problema planteado, 
+empleando diversas 
+técnicas y herramientas 
+que definan las 
+características y 
+funcionalidades que 
+tendrá el producto final. 
+Elabora todos los 
+diagramas y 
+documentos 
+pertinentes que 
+permiten dar forma a 
+la problemática a 
+resolver, acorde a la 
+metodología a  seguir 
+y las tecnologías 
+previstas a utilizar.  
+Elabora la mayoría de 
+los diagramas y 
+documentos 
+pertinentes que 
+permiten dar forma a la 
+problemática a 
+resolver, acorde a la 
+metodología a  seguir y 
+las tecnologías 
+previstas a utilizar.  
+Elabora la mayoría de 
+los diagramas y 
+documentos, pero 
+estos no son 
+totalmente 
+pertinentes por lo 
+cual permiten 
+parcialmente dar 
+forma a la 
+problemática a 
+Elabora diagramas y 
+documentos, pero 
+estos no son 
+pertinentes por lo 
+cual NO permiten  dar 
+forma a la 
+problemática a 
+resolver. 
+No elabora 
+diagramas y 
+documentos 
+para diseñar la 
+solución al 
+problema 
+planteado. 
+ 
+5% 
+ 
+Subdirección de Diseño Instruccional 
+Subdirección de Evaluación de Resultados de Aprendizaje 
+2024 
+ 7 
+Estos diagramas y 
+documentos 
+establecen los 
+lineamientos de 
+forma clara y precisa y 
+facilitan el desarrollo 
+eficiente y eficaz de la 
+solución del 
+proyecto.  
+Estos diagramas y 
+documentos 
+establecen los 
+lineamientos y facilitan 
+el desarrollo eficiente y 
+eficaz de la solución del 
+proyecto.  
+resolver, acorde a la 
+metodología a  seguir 
+y las tecnologías 
+previstas a utilizar.  
+2. Crea una configuración 
+que cumpla con las 
+especificaciones del 
+diseño para un ambiente 
+de pruebas. Esto incluye 
+pruebas operativas, de 
+validación y verificación, 
+así como actividades para 
+garantizar que el 
+ambiente esté 
+correctamente 
+configurado, siguiendo 
+las mejores prácticas de 
+la industria. 
+Crea una 
+configuración que 
+permite tener un 
+ambiente de pruebas 
+que sigue totalmente 
+las especificaciones 
+dadas en el diseño 
+acordado 
+anteriormente, 
+considerando 
+pruebas 
+operacionales, 
+pruebas de validación 
+y verificación como 
+también la ejecución 
+de actividades que 
+permitan verificar que 
+el ambiente ha sido 
+configurado 
+adecuadamente, 
+siguiendo las buenas 
+prácticas de la 
+industria 
+Crea una configuración 
+que permite tener un 
+ambiente de pruebas 
+que sigue parcialmente 
+las especificaciones 
+dadas en el diseño 
+considerando pruebas 
+operacionales, pruebas 
+de validación y 
+verificación como 
+también la ejecución de 
+actividades que 
+permitan verif icar que 
+el ambiente ha sido 
+configurado 
+adecuadamente, 
+siguiendo las buenas  
+prácticas de la 
+industria. 
+Crea una 
+configuración que 
+permite tener un 
+ambiente de pruebas 
+que no es 
+comprobable la 
+autoría y/o uso total o 
+parcial de las 
+especificaciones 
+dadas e n el diseño 
+considerando 
+pruebas 
+operacionales, 
+pruebas de validación 
+y verificación como 
+también la ejecución 
+de actividades que 
+permitan verificar que 
+el ambiente ha sido 
+configurado 
+adecuadamente, 
+siguiendo las buenas 
+prácticas de la 
+industria. 
+Crea una  
+configuración que 
+permite tener un 
+ambiente de pruebas 
+que sigue totalmente 
+las especificaciones 
+dadas en el diseño 
+considerando 
+pruebas 
+operacionales, 
+pruebas de validación 
+y verificación como 
+también la ejecución 
+de actividades que 
+permitan verificar que 
+el ambiente ha sido 
+configurado 
+adecuadamente, pero 
+no sigue buenas 
+prácticas de la 
+industria. 
+No crea ni 
+documenta 
+ambiente de 
+desarrollo del 
+producto de 
+software. 
+15% 
+ 
+Subdirección de Diseño Instruccional 
+Subdirección de Evaluación de Resultados de Aprendizaje 
+2024 
+ 8 
+3. Demuestra 
+procedimientos 
+detallados para realizar 
+una copia de seguridad 
+de la base de datos de 
+producción en el entorno 
+de pruebas. Configura 
+con éxito el servidor (web 
+u otro) para que refleje la 
+configuración del 
+servidor de producción y 
+realiza la ins talación de 
+los lenguajes de 
+programación, 
+bibliotecas y 
+herramientas necesarios 
+que se utilizan en el 
+servidor de producción. 
+ 
+Evidencia 
+Procedimientos 
+detallados para: 
+1.- Lograr una copia 
+de seguridad de base 
+de datos de 
+producción en el 
+entorno de pruebas 
+2.- Lograr la 
+configuración del 
+servidor (web u otro) 
+para que refleje la 
+configuración del 
+servidor de 
+producción 
+3.- Lograr la 
+instalación de 
+lenguajes de 
+programación 
+necesarios, 
+bibliotecas y 
+herramientas que se 
+usarán en servidor de 
+producción. 
+Evidencia parcialmente 
+Procedimientos 
+detallados para: 
+1.- Lograr una copia de 
+seguridad de base de 
+datos de producción en 
+el entorno de pruebas 
+2.- Lograr la 
+configuración del 
+servidor (web u otro) 
+para que refleje la 
+configuración del 
+servidor de producción 
+3.- Lograr la instalación 
+de lenguajes de 
+programación 
+necesarios, bibliotecas 
+y herramientas que se 
+usarán en servidor de 
+producción 
+Evidencia 
+parcialmente y con 
+algunos errores  
+Procedimientos para: 
+1.- Lograr una copia 
+de seguridad de base 
+de datos de 
+producción en el 
+entorno de pruebas 
+2.- Lograr la 
+configuración del 
+servidor (web u otro) 
+para que refleje la 
+configuración del 
+servidor de 
+producción 
+3.- Lograr la 
+instalación de 
+lenguajes de 
+programación 
+necesarios, 
+bibliotecas y 
+herramientas que se 
+usarán en servidor de 
+producción. 
+Evidencia 
+escasamente y con 
+errores 
+Procedimientos para: 
+1.- Lograr una copia 
+de seguridad de base 
+de datos de 
+producción en el 
+entorno de pruebas 
+2.- Lograr la 
+configuración del 
+servidor (web u otro) 
+para que refleje la 
+configuración del 
+servidor de 
+producción 
+3.- Lograr la 
+instalación de 
+lenguajes de 
+programación 
+necesarios, 
+bibliotecas y 
+herramientas que se 
+usarán en servidor de 
+producción. 
+No evidencia 
+procedimiento
+s. 
+10% 
+4. Desarrolla solución 
+diseñada utilizando 
+tecnologías adecuadas al 
+problema planteado 
+aplicando distintas 
+técnicas que permitan un 
+producto funcional, de 
+calidad y seguro. 
+ 
+Crea el código fuente 
+del software 
+utilizando patrón de 
+arquitectura definida 
+recurriendo a las 
+buenas prácticas de 
+programación 
+vigentes en la 
+industria, cumpliendo 
+con todas las 
+funcionalidades de 
+Crea el código fuente 
+del software utilizando 
+patrón de arquitec tura 
+definida recurriendo a 
+las buenas prácticas de 
+programación vigentes 
+en la industria, 
+cumpliendo con la 
+mayoría de las 
+funcionalidades de 
+negocio definidas en 
+Crea el código fuente 
+del software 
+utilizando patrón de 
+arquitectura definida 
+recurriendo a las 
+buenas prácticas de 
+programación 
+vigentes en la 
+industria, cumpliendo  
+parcialmente con las 
+funcionalidades de 
+Crea el código fuente 
+del software 
+utilizando 
+arquitectura, patrón 
+de arquitectura 
+definida recurriendo a 
+las buenas prácticas 
+de programación 
+vigentes en la 
+industria, cumpliendo 
+parcialmente y con 
+Crea código, 
+pero no 
+representa 
+funcionalidade
+s básicas de los 
+requerimiento
+s del cliente y 
+tampoco 
+considera 
+aspectos 
+10% 
+ 
+Subdirección de Diseño Instruccional 
+Subdirección de Evaluación de Resultados de Aprendizaje 
+2024 
+ 9 
+negocio definidas en 
+atención a los 
+requerimientos 
+funcionales 
+aprobados. 
+ 
+ 
+atención a los 
+requerimientos 
+funcionales aprobados. 
+ 
+negocio definidas en 
+atención a los 
+requerimientos 
+funcionales 
+aprobados. 
+errores las 
+funcionalidades de 
+negocio definidas en 
+atención a los 
+requerimientos 
+funcionales 
+aprobado. 
+tecnológicos 
+definidos. 
+Porcentaje encargo 40% 
+Dimensión presentación 
+1. Demuestra dominio 
+sobre la creación de la 
+configuración que 
+cumpla con las 
+especificaciones del 
+diseño para un ambiente 
+de pruebas. Esto incluye 
+pruebas operativas, de 
+validación y verificación, 
+así como actividades para 
+garantizar que el 
+ambiente esté 
+correctamente 
+configurado, siguiendo 
+las mejores prácticas de 
+la industria , 
+fundamentando con 
+argumentos coherentes y 
+propios de la disciplina. 
+Demuestra un 
+dominio completo y 
+profundo sobre la 
+creación de la 
+configuración que 
+cumpla con las 
+especificaciones del 
+diseño para un 
+ambiente de pruebas, 
+fundamentando con 
+argumentos 
+coherentes y propios 
+de la disciplina. 
+Demuestra dominio 
+sobre la creación de la 
+configuración que 
+cumpla con las 
+especificaciones del 
+diseño para un 
+ambiente de pruebas , 
+aunque faltan al gunos 
+argumentos coherentes 
+y propios de la 
+disciplina. 
+Demuestra dominio 
+sobre la creación de la 
+configuración que 
+cumpla con las 
+especificaciones del 
+diseño para un 
+ambiente de pruebas,  
+aunque los 
+argumentos son 
+superficiales o 
+parcialmente 
+desarrollados. 
+Demuestra dominio 
+del tema, aunque con 
+errores relevantes  
+sobre la creación de la 
+configuración que 
+cumpla con las 
+especificaciones del 
+diseño para un 
+ambiente de pruebas, 
+los argumentos son 
+superficiales o 
+parcialmente 
+desarrollados. 
+No demuestra 
+conocimiento 
+sobre la 
+creación de la 
+configuración 
+que cumpla 
+con las 
+especificacion
+es del diseño 
+para un 
+ambiente de 
+pruebas. Los 
+argumentos 
+son 
+inexistentes o 
+totalmente 
+erróneos, con 
+uso 
+inadecuado de 
+terminología. 
+30% 
+2. Demuestra dominio 
+sobre el desarrollo de la 
+solución diseñada 
+utilizando tecnologías 
+adecuadas al problema 
+planteado aplicando 
+distintas técnicas que 
+permitan un producto 
+Demuestra un 
+dominio completo y 
+profundo sobre el 
+desarrollo de la 
+solución diseñada 
+utilizando tecnologías 
+adecuadas al 
+problema planteado 
+Demuestra dominio 
+sobre el desarrollo de la 
+solución diseñada 
+utilizando tecnologías 
+adecuadas al problema 
+planteado aplicando 
+distintas técnicas que 
+permitan un producto 
+Demuestra dominio 
+sobre el desarrollo de 
+la solución diseñada 
+utilizando tecnologías 
+adecuadas al 
+problema planteado 
+aplicando dist intas 
+técnicas que permitan 
+Demuestra dominio 
+del tema, aunque con 
+errores relevantes  
+sobre el desarrollo de 
+la solución diseñada 
+utilizando tecnologías 
+adecuadas al 
+problema planteado 
+No demuestra 
+conocimiento 
+sobre el 
+desarrollo de 
+la solución 
+diseñada 
+utilizando 
+tecnologías. 
+30% 
+ 
+Subdirección de Diseño Instruccional 
+Subdirección de Evaluación de Resultados de Aprendizaje 
+2024 
+ 10 
+ 
+funcional, de calidad y 
+seguro, fundamentando 
+con argumentos 
+coherentes y propios d e 
+la disciplina. 
+aplicando distintas 
+técnicas que permitan 
+un producto 
+funcional, de calidad y 
+seguro, recursos y 
+plazos definidos para 
+las actividades , 
+fundamentando con 
+argumentos 
+coherentes y propios 
+de la disciplina. 
+funcional, de calidad y 
+seguro, aunque faltan 
+algunos argumentos 
+coherentes y propios de 
+la disciplina. 
+un producto 
+funcional, de calidad y 
+seguro,  aunque los 
+argumentos son 
+superficiales o 
+parcialmente 
+desarrollados. 
+aplicando distintas 
+técnicas que permitan 
+un producto 
+funcional, de calidad y 
+seguro, los 
+argumentos son 
+superficiales o 
+parcialmente 
+desarrollados. 
+Los 
+argumentos 
+son 
+inexistentes o 
+totalmente 
+erróneos, con 
+uso 
+inadecuado de 
+terminología. 
+Porcentaje presentación 100% 
+Total 100% 
+
+
+--- DOCX CONTENT (INFORME) ---
+	
+
+
+
+
+
+
+
+Asignatura:	Taller aplicado de programación - TPY1101
+Grupo: 		5
+Integrantes:	Mauricio Tapia
+		Steve Lázaro
+		Fernanda González
+		Nicolás Vallejos
+Contenido
+
+Ficha del documento
+
+
+Integrantes
+
+
+1. INTRODUCCIÓN Y EQUIPO
+1.1. Resumen Ejecutivo
+FadeBooker es una plataforma tecnológica integral diseñada para modernizar la gestión de reservas en peluquerías y barberías, dando respuesta a una problemática real identificada por un integrante del equipo que se desempeña activamente en el rubro. La solución se diferencia de las alternativas existentes mediante la incorporación de un módulo de simulación de cortes con inteligencia artificial, que permite a los clientes visualizar diferentes estilos antes de reservar, reduciendo la incertidumbre y mejorando significativamente la experiencia de usuario.
+La plataforma se estructura en dos componentes principales. Por un lado, una aplicación web desarrollada con React, Vite y TypeScript bajo un enfoque Single Page Application (SPA), que permite a los clientes visualizar barberías cercanas, consultar disponibilidad en tiempo real, realizar reservas con pago de abono y simular cortes mediante inteligencia artificial.
+Complementariamente, el sistema incorpora una aplicación administrativa desarrollada con Power Apps para la gestión de reservas, disponibilidad y clientes por parte de barberos y administradores.
+Por otro lado, el sistema cuenta con un backend desarrollado en Node.js, encargado de gestionar la lógica de negocio, autenticación, reservas y pagos, conectado a Azure SQL server , garantizando integridad transaccional y consistencia de los datos mediante transacciones controladas con Knex.js.
+El sistema fue diseñado utilizando una arquitectura hexagonal (Ports & Adapters), permitiendo separar la lógica de negocio de la infraestructura externa y facilitando la mantenibilidad, testabilidad y escalabilidad del software. Además, el frontend React se organiza mediante una arquitectura basada en funcionalidades (Feature-Based Architecture), alineando la estructura del código con los dominios del negocio.
+Tanto el frontend como el backend son desplegados en Microsoft Azure utilizando Azure App Service, permitiendo una arquitectura escalable, centralizada y de fácil mantenimiento. La solución adopta un enfoque híbrido que combina desarrollo tradicional (React, Node.js y Azure SQL Database) con herramientas low-code del ecosistema Microsoft, como Power Apps y Power Automate, integradas mediante conectores personalizados basados en Swagger/OpenAPI.
+El valor diferencial del proyecto se sustenta en tres pilares clave:
+Simulación de cortes con inteligencia artificial, que permite al cliente visualizar diferentes estilos antes de decidir, acompañado de un mensaje de alerta que informa sobre la naturaleza referencial de la simulación.
+Sistema de pago de garantía con retención configurable (entre el 30% y el 100% del valor de la reserva), diseñado para reducir significativamente el ausentismo.
+Arquitectura de bajo costo operativo, que mantiene los gastos cercanos a cero mediante el uso estratégico de capas gratuitas de Azure, SQL Server Developer Edition y créditos para estudiantes.
+
+1.2. Identificación del Equipo
+El equipo de trabajo está conformado por cuatro integrantes, cada uno con roles específicos que permiten cubrir de manera integral todas las áreas del desarrollo: análisis, diseño, implementación, aseguramiento de la calidad y gestión del proyecto.
+
+2. CONTEXTO Y PROBLEMÁTICA (IL 1.1)
+2.1. Descripción de la Problemática
+En la actualidad, la mayoría de las peluquerías y barberías en Chile operan con sistemas de reserva manuales. WhatsApp, llamadas telefónicas, atención por orden de llegada o, en el mejor de los casos, aplicaciones no especializadas son las herramientas utilizadas para gestionar las citas. Esta realidad, lejos de ser excepcional, constituye la norma en el rubro y genera múltiples ineficiencias que afectan tanto a los negocios como a los clientes.
+Gestión de reservas: El uso de WhatsApp y llamadas telefónicas como principal canal de agendamiento provoca la pérdida de citas cuando los barberos se encuentran atendiendo y no pueden responder, o cuando los mensajes se pierden entre múltiples conversaciones. La atención por orden de llegada, por su parte, genera aglomeraciones en los locales y largas esperas que terminan frustrando a los clientes, muchos de los cuales optan por abandonar el lugar sin recibir el servicio.
+Disponibilidad en tiempo real: La ausencia de visibilidad en tiempo real de la disponibilidad de los barberos constituye otro problema crítico. Al no existir un sistema centralizado, es común que dos clientes reserven el mismo horario con el mismo profesional, generando conflictos y malestar tanto para los trabajadores como para los usuarios. Esta falta de organización también impide que los clientes puedan comparar precios, servicios y horarios disponibles entre diferentes barberías antes de tomar una decisión.
+Ausentismo: El ausentismo —conocido en la industria como "no-show"— es quizás el problema más costoso para los barberos. Cuando un cliente reserva una hora y no se presenta sin previo aviso, el profesional pierde ese tiempo valioso y el ingreso asociado. Dado que actualmente no existe un mecanismo de penalización, como una abono o garantía, los clientes cancelan a último minuto o simplemente no asisten sin ninguna consecuencia económica, afectando directamente la rentabilidad del negocio.
+Historial de clientes: La falta de historial de clientes representa otra carencia significativa. Los barberos no tienen registro de cortes anteriores, ni de las preferencias de cada cliente, ni de fotos de referencia que les permitan ofrecer un servicio más personalizado y consistente. Cada visita comienza desde cero, sin aprovechar el conocimiento acumulado de atenciones previas, lo que dificulta la fidelización y la construcción de relaciones de confianza a largo plazo.
+Falta de especialización: Finalmente, no existe en el mercado una aplicación enfocada específicamente en las necesidades de las barberías y peluquerías. Las soluciones existentes son genéricas, pensadas para todo tipo de negocios de servicios, y no incorporan funcionalidades específicas del rubro como la simulación de cortes mediante inteligencia artificial, la gestión de insumos profesionales, o sistemas de fidelización adaptados al contexto de la estética masculina.
+Oportunidad de mercado: La oportunidad de mercado es significativa. Según datos del gremio, las peluquerías que implementan sistemas de reserva online aumentan sus ingresos en un 30% y reducen el ausentismo en un 40%. El equipo ha identificado esta oportunidad gracias a que uno de sus integrantes trabaja actualmente en una barbería, lo que ha permitido validar de primera mano los dolores del rubro y asegurar que la solución propuesta responda a necesidades reales y no solo a supuestos teóricos.
+Adicionalmente, durante la fase inicial del proyecto se identificaron limitaciones en el uso exclusivo de plataformas low-code, especialmente en aspectos relacionados con personalización avanzada, control de la lógica de negocio e integración de funcionalidades complejas. Debido a esto, se adoptó una arquitectura híbrida que combina desarrollo tradicional mediante React, Node.js y Azure SQL Database con herramientas low-code del ecosistema Microsoft, como Power Apps y Power Automate, aprovechando las fortalezas de ambos enfoques.
+2.2. Análisis Causa-Efecto
+Para comprender las raíces del problema y abordarlo de manera integral, se ha elaborado un diagrama de Ishikawa (espina de pescado) que organiza las causas en seis categorías principales. Este análisis permite visualizar la multicausalidad de la problemática y orientar la solución hacia los puntos críticos.
+Diagrama de Ishikawa: Causas de la ineficiencia en la gestión de citas de barberías
+
+Análisis causa-efecto
+Análisis por categoría:
+Métodos: Las causas identificadas en esta categoría se centran en las prácticas actuales de gestión de citas. La dependencia de reservas por WhatsApp y llamadas telefónicas genera una alta tasa de pérdida de comunicaciones, especialmente cuando los barberos están atendiendo. La atención exclusivamente por orden de llegada provoca aglomeraciones y tiempos de espera prolongados. El uso de agendas en papel, que no se sincronizan entre barberos, facilita las sobre-reservas. Finalmente, la proliferación de aplicaciones no especializadas no logra cubrir las necesidades específicas del rubro.
+Personal: Las causas relacionadas con el personal derivan de la falta de herramientas adecuadas. Los barberos, al estar ocupados atendiendo, no pueden responder consultas de reservas en tiempo real. La ausencia de un sistema automatizado provoca el olvido en la confirmación de citas. Además, la gestión simultánea de múltiples canales de comunicación (WhatsApp, llamadas, atención presencial) genera confusión, errores y duplicación de esfuerzos.
+Tecnología: La ausencia de un sistema centralizado constituye la causa principal en esta categoría. Esta falta de infraestructura tecnológica impide la visualización de disponibilidad en tiempo real para los clientes, limita las aplicaciones existentes a soluciones genéricas no especializadas, y excluye la integración con sistemas de pago electrónico que permitan cobrar abonos de garantía.
+Clientes: Las causas relacionadas con los clientes se derivan de la flexibilidad excesiva del sistema actual. Las cancelaciones de último minuto sin penalización económica, el ausentismo sin consecuencias (no-show), y la búsqueda de alternativas cuando la espera es demasiado larga o la respuesta es tardía, afectan directamente la rentabilidad y estabilidad del negocio.
+Procesos: La falta de procesos definidos y sistematizados contribuye significativamente a la ineficiencia. La ausencia de seguimiento de citas, la inexistencia de un historial de clientes que permita personalizar servicios, la complejidad para reprogramar citas, y la falta de un mecanismo de feedback post-servicio, impiden la mejora continua y la fidelización de clientes.
+Pagos: Finalmente, las causas relacionadas con los pagos evidencian una brecha crítica en la profesionalización del rubro. La limitación al efectivo como único medio de pago, la ausencia de una abono que garantice la reserva, la dificultad para gestionar pagos anticipados, y la falta de integración electrónica, constituyen causas fundamentales del ausentismo y la inestabilidad financiera.
+2.3. Estado del Arte y Homologación
+Para el desarrollo de FadeBooker, se realizó un análisis exhaustivo de las plataformas líderes en gestión de citas, identificando funcionalidades críticas, oportunidades de innovación y brechas no cubiertas por las soluciones existentes. Este análisis permite posicionar el proyecto en el mercado y justificar su valor diferencial.
+2.3.1. Análisis de Plataformas Similares
+
+2.3.2. Hallazgos Relevantes para FadeBooker
+A partir de esta investigación, se han identificado los siguientes puntos estratégicos que orientan el desarrollo de FadeBooker:
+Integración de contenido educativo: Inspirados en AgendaPro y su iniciativa "La Academia", se considera relevante incorporar una sección de ayuda y tutoriales dentro de la plataforma. Esto no solo facilita la adopción tecnológica por parte de los barberos, sino que también agrega valor al servicio ofrecido.
+Modelo de negocio e innovación: Mientras que Reservio destaca por ofrecer una versión gratuita y AgendaPro por su alto impacto en ventas, FadeBooker se diferenciará mediante la simulación de cortes con inteligencia artificial, una funcionalidad que ninguna de las plataformas analizadas posee actualmente. Este factor constituye el principal valor agregado del proyecto.
+Gestión financiera profesional: Al igual que Weibook y Reservo, es mandatorio incluir un historial de cobros y pagos online para profesionalizar la administración de la barbería. FadeBooker incorpora un sistema de retención de abono configurable (entre 30% y 100% del valor del servicio) que reduce el ausentismo y garantiza el compromiso del cliente.
+Comunicación directa: Observando la importancia de las notificaciones en todos los competidores analizados, se reafirma el uso de Power Automate para el envío de recordatorios automáticos y ejecución de procesos asíncronos integrados con el backend mediante conectores personalizados basados en Swagger/OpenAPI.
+
+
+
+2.3.3. Posicionamiento de FadeBooker
+
+2.3.4. Conclusión del Análisis
+El análisis de estado del arte evidencia que ninguna de las plataformas evaluadas ofrece una solución integral que combine:
+Especialización en el rubro de barberías y peluquerías
+Simulación de cortes mediante inteligencia artificial
+Sistema de pagos con retención de garantía configurable
+Herramientas de gestión específicas para barberos (agenda, ganancias)
+Accesibilidad económica para pequeños negocios
+FadeBooker se posiciona precisamente en esta brecha, ofreciendo una plataforma que integra estas funcionalidades mediante una arquitectura hexagonal desacoplada, backend centralizado en Node.js, frontend React organizado por funcionalidades y herramientas low-code integradas mediante conectores personalizados, manteniendo costos operativos reducidos gracias al uso estratégico de servicios cloud gratuitos y créditos académicos, respondiendo a las necesidades reales del mercado identificadas a través de la experiencia de un integrante del equipo que trabaja activamente en el rubro.
+2.4. Situación Inicial
+Para comprender el impacto de la solución propuesta, es fundamental analizar el proceso actual sin el software. A continuación, se presenta el diagrama de flujo que representa la situación inicial (As-Is) y una descripción detallada de cada etapa, identificando los puntos críticos donde se generan pérdidas.
+2.4.1. Diagrama de Flujo del Proceso Actual (As-Is)
+
+Diagrama de Flujo del Proceso Actual
+
+2.4.2. Descripción del Proceso Actual
+El flujo actual comienza cuando un cliente necesita un corte de pelo. Ante esta necesidad, el cliente busca una barbería en Google o por recomendación de conocidos. Una vez identificada una posible barbería, procede a contactar mediante llamada telefónica o mensaje de WhatsApp.
+Primer punto crítico: Si los barberos no contestan —situación que ocurre con frecuencia cuando están atendiendo clientes—, el cliente no logra realizar su reserva y busca otra opción. Este escenario genera una pérdida de venta inmediata sin que el negocio tenga oportunidad de retener al cliente.
+Segundo punto crítico: Si logran contactar, el barbero debe revisar su agenda mental o en papel para verificar la disponibilidad. Este proceso manual es propenso a errores y omisiones. Si no hay horario disponible, nuevamente el cliente busca otra opción y se pierde la venta. Si hay disponibilidad, el cliente reserva verbalmente, sin recibir ningún tipo de comprobante, confirmación formal o mecanismo de garantía.
+Tercer punto crítico: Llega el día de la cita. En este punto, el cliente puede decidir no asistir. Dado que no existe un pago anticipado ni una abono de garantía, el cliente no tiene incentivo para cumplir con la reserva. Si el cliente no se presenta —situación que ocurre con frecuencia— el barbero pierde el tiempo valioso que destinó a esa cita y el ingreso asociado, sin ninguna compensación.
+Cuarto punto crítico: Si el cliente asiste, paga en efectivo y recibe el servicio. Sin embargo, al finalizar la atención, no queda ningún registro del corte realizado, ni de las preferencias del cliente, ni fotos de referencia para futuras atenciones. Cada visita comienza desde cero, sin aprovechar el conocimiento acumulado de atenciones previas, lo que dificulta la fidelización y la personalización del servicio.
+2.4.3. Identificación de Puntos de Fuga
+El análisis del flujo actual evidencia cuatro puntos de fuga principales que afectan la rentabilidad y eficiencia de las barberías:
+2.4.4. Oportunidad de Mejora
+FadeBooker busca eliminar estos puntos de fuga mediante:
+Automatización de la reserva: El cliente puede ver disponibilidad en tiempo real y reservar sin depender de la disponibilidad del barbero para contestar llamadas.
+Pago de abono de garantía: Se retiene un porcentaje configurable (entre 30% y 100%) que asegura el compromiso del cliente y reduce el ausentismo.
+Registro permanente del historial: Cada corte, preferencia y foto queda registrado, permitiendo un servicio personalizado y continuo en el tiempo.
+3. OBJETIVOS Y ALCANCE (IL 1.2)
+3.1. Objetivo General
+Desarrollar e implementar un sistema de reservas para peluquerías y barberías basado en React, Node.js y Power Platform, desplegado en Microsoft Azure mediante Azure App Service, que permita a los clientes reservar y pagar citas online mediante Mercado Pago, visualizar cortes mediante simulación con inteligencia artificial, y a los barberos gestionar reservas, disponibilidad y clientes mediante Power Apps, alcanzando una reducción del ausentismo del 40% y un aumento del 30% en las reservas confirmadas, entregado en un plazo de 16 semanas con un presupuesto de $0 en licencias, utilizando capas gratuitas de Azure y SQL Server Developer Edition.
+3.1.1. Verificación de Criterios SMART
+El objetivo general ha sido formulado siguiendo los criterios SMART (Específico, Medible, Alcanzable, Relevante y Temporal), lo que garantiza su claridad, viabilidad y alineación con los resultados esperados del proyecto.
+
+
+3.1.2. Desglose del Objetivo General
+
+3.2 Objetivos Específicos
+Los objetivos específicos descomponen el objetivo general en metas concretas y verificables, cada una asociada a un entregable clave del proyecto. A continuación, se presentan los siete objetivos específicos definidos para FadeBooker.
+Primer objetivo específico (OE-01): Implementar un portal web público utilizando React que permita a los clientes visualizar peluquerías y barberos disponibles, con tiempos de carga inferiores a 3 segundos, desplegado en Microsoft Azure mediante Azure App Service.
+Indicadores de verificación: Sitio web accesible públicamente, tiempo de carga inferior a 3 segundos medido con Lighthouse, y listado de barberías funcional. Este objetivo responde a los requerimientos R-03 y R-04, garantizando una experiencia de usuario fluida y profesional desde el primer contacto.
+Segundo objetivo específico (OE-02): Desarrollar una API REST con Node.js y Express.js desplegada en Microsoft Azure mediante Azure App Service, que gestione la lógica de negocio de disponibilidad, reservas y pagos, con una disponibilidad del 99.9%.
+Indicadores de verificación: API documentada con Swagger/OpenAPI, 99.9% de uptime en pruebas de carga, y endpoints validados con Postman. Este objetivo asegura que el backend sea robusto y escalable, respondiendo al requerimiento HT-01 y R-05.
+Tercer objetivo específico (OE-03): Diseñar e implementar una base de datos relacional en SQL Server normalizada hasta tercera forma normal (3FN) que almacene la información de clientes, barberos, reservas y valoraciones.
+Indicadores de verificación: Diagrama Entidad-Relación completo, scripts de creación versionados en GitHub, y validación de integridad referencial. La normalización garantiza integridad y consistencia de los datos, respondiendo a HT-03, R-01, R-05 y R-18.
+Cuarto objetivo específico (OE-04): Integrar Mercado Pago como pasarela de pagos para gestionar la retención de abonos y liberación automática post-servicio, implementando webhooks gestionados desde el backend Node.js y Power Automate.
+Indicadores de verificación: Flujo de pago funcional en modo test, webhooks registrados y operativos, y confirmación de reserva post-pago. Este objetivo aborda directamente el problema del ausentismo mediante el requerimiento R-09.
+Quinto objetivo específico (OE-05): Desarrollar una aplicación administrativa mediante Power Apps, permitiendo que los barberos gestionen su agenda desde dispositivos móviles, permitiendo confirmar, cancelar y marcar citas como realizadas.
+Indicadores de verificación: Aplicación Power Apps funcional y conectada al backend mediante conectores personalizados, gestión de estados de cita funcional (Creado, En proceso, Pagado, Cancelado), y sincronización en tiempo real con la base de datos. Este objetivo atiende las necesidades operativas de los barberos (R-06, R-11) y las historias de usuario HU-06 y HU-07.
+Sexto objetivo específico (OE-06): Desarrollar la funcionalidad de simulación de cortes mediante inteligencia artificial, permitiendo a los clientes subir una foto y visualizar diferentes estilos, con un mensaje de alerta que indique que la simulación es referencial y debe consultarse con el barbero.
+Indicadores de verificación: Subida de foto funcional, generación de al menos tres estilos de prueba, y mensaje de disclaimer visible y obligatorio antes de la simulación. Este objetivo constituye el valor diferencial del proyecto, respondiendo a R-08 y a las historias de usuario HU-08, HU-09 y HU-10.
+Séptimo objetivo específico (OE-07): Documentar todo el proceso bajo metodología en Cascada, con entregables por fase: análisis, diseño, desarrollo, pruebas y despliegue, asegurando que cada etapa sea revisada antes de avanzar a la siguiente.
+Indicadores de verificación: Documentación completa por fase, acta de revisión por cada hito, y repositorio GitHub actualizado con toda la documentación técnica. Este objetivo asegura la calidad documental exigida en el contexto académico, alineándose con los indicadores de logro IL 1.4 e IL 1.5.
+3.2.1. Alineación con las fases del proyecto
+Los objetivos específicos se distribuyen a lo largo de las cinco fases definidas en la metodología en Cascada:
+Fase 1: Análisis — OE-07 (parcial): levantamiento de requerimientos, definición de alcance y planificación.
+Fase 2: Diseño — OE-02, OE-03, OE-07 (parcial): diseño de API, base de datos y arquitectura.
+Fase 3: Desarrollo — OE-01, OE-04, OE-05, OE-06: implementación de portal web, pagos, app de gestión y simulación de cortes con IA.
+Fase 4: Pruebas — OE-01, OE-02, OE-04, OE-05, OE-06: validación de cada funcionalidad según los indicadores definidos.
+Fase 5: Despliegue — OE-01, OE-07: publicación final y entrega de documentación completa.
+
+3.2.2. Relación con los requerimientos del cliente
+Cada objetivo específico responde directamente a los requerimientos funcionales identificados durante la fase de análisis, asegurando que la solución desarrollada cubra las necesidades reales del negocio:
+OE-01 responde a la necesidad de visibilidad de barberías y disponibilidad (R-03, R-04)
+OE-02 y OE-03 establecen la base técnica para la gestión de reservas (R-05, HT-01)
+OE-04 aborda el problema del ausentismo mediante pago de garantía (R-09)
+OE-05 atiende las necesidades operativas de los barberos (R-06, R-11)
+OE-06 constituye el valor diferencial del proyecto, incorporando innovación tecnológica (R-08)
+OE-07 asegura la calidad documental exigida en el contexto académico
+3.3 Alcance Técnico
+El alcance técnico del proyecto define de manera precisa los límites del desarrollo, especificando qué se entregará, bajo qué supuestos se trabajará y cuáles son las restricciones que condicionan la ejecución. Esta delimitación permite establecer expectativas claras con el cliente y el equipo académico.
+3.3.1. Entregables del Proyecto
+Los entregables contemplan tanto los productos de software como la documentación asociada, garantizando que el proyecto cuente con todos los elementos necesarios para su comprensión, uso y mantenimiento futuro.
+Productos de software:
+Código fuente completo de la aplicación React (frontend), alojado en el repositorio de GitHub, con toda la estructura de componentes, páginas y lógica de cliente.
+Código fuente completo de la API desarrollada con Node.js y desplegada en Azure App Service incluyendo los endpoints de reservas, pagos, disponibilidad y simulación, implementados bajo arquitectura hexagonal y Repository Pattern.
+Scripts SQL completos para la creación de la base de datos, incluyendo tablas, índices, stored procedures y datos de prueba precargados.
+Aplicación web frontend desarrollada en React, Vite y TypeScript, desplegada en Microsoft Azure mediante Azure App Service, accesible mediante una URL pública durante el período de demostración.
+API funcional desplegada en Azure App Service, con documentación interactiva mediante Swagger/OpenAPI.
+Base de datos SQL Server poblada con datos de prueba que permitan demostrar todas las funcionalidades del sistema.
+Aplicación Power Apps para la gestión de agenda de barberos, publicada y accesible desde dispositivos móviles y web.
+Flujos de Power Automate configurados para notificaciones automáticas y procesamiento de webhooks de Mercado Pago.
+Documentación:
+Manual de usuario en formato PDF, dirigido a clientes y barberos, con instrucciones claras sobre el uso de la plataforma.
+Documentación técnica detallada, que incluye diagrama de arquitectura, instrucciones de despliegue, configuración de entornos y descripción de los endpoints de la API.
+Video demo de 5 a 10 minutos que recorre todas las funcionalidades del sistema, desde el registro de usuario hasta la simulación de cortes y la confirmación de reservas.
+Presentación final del proyecto en formato PowerPoint o PDF, que sintetiza los objetivos, la solución implementada, los resultados obtenidos y las lecciones aprendidas.
+3.3.2. Supuestos del Proyecto
+Los supuestos representan condiciones que se dan por ciertas para el desarrollo del proyecto y que, de no cumplirse, podrían afectar su ejecución.
+Acceso a plataformas y recursos:
+Se cuenta con acceso a Microsoft Azure mediante créditos para estudiantes, lo que permite desplegar aplicaciones web mediante Azure App Service tanto para el frontend (React) como para el backend (Node.js y Express.js), sin incurrir en costos durante la fase de desarrollo.
+Se dispone de una cuenta de Microsoft Azure con créditos gratuitos por $100 USD para estudiantes, que cubren los costos de Azure App Service, Azure SQL Database y otros servicios necesarios durante el desarrollo y las pruebas.
+Mercado Pago proporciona entorno sandbox para pruebas de transacciones sin procesar dinero real.
+Cloudinary ofrece una capa gratuita suficiente para el almacenamiento y manipulación de imágenes de prueba durante la fase de desarrollo.
+La API de simulación de cortes que se seleccione cuenta con una capa gratuita o demo que permite su integración sin costos adicionales.
+Disponibilidad de recursos humanos y técnicos:
+Los usuarios finales (dueños de barberías y barberos) tienen acceso a internet y dispositivos básicos (smartphones o computadores) para utilizar la plataforma.
+El equipo dispone de 10 a 15 horas semanales por integrante para el desarrollo, lo que permite cumplir con los plazos definidos.
+Se cuenta con la colaboración de una barbería real (donde trabaja un integrante del equipo) para realizar pruebas de usuario y validar la solución en un entorno real.
+3.3.3. Restricciones del Proyecto
+Las restricciones establecen los límites dentro de los cuales se desarrollará el proyecto, considerando aspectos presupuestarios, temporales, tecnológicos y de alcance.
+Presupuestarias:
+El presupuesto asignado es de $0 USD para licencias de software, utilizando exclusivamente capas gratuitas de servicios cloud y créditos estudiantiles de Microsoft Azure. Cualquier costo adicional deberá ser asumido fuera del alcance del proyecto.
+Temporales:
+El plazo de ejecución es de 16 semanas, alineado con el semestre académico y las fechas de entrega establecidas en la carta Gantt.
+Tecnológicas:
+El uso de servicios en capas gratuitas y créditos estudiantiles en Microsoft Azure impone limitaciones en recursos de cómputo, almacenamiento y escalabilidad, lo que puede afectar el rendimiento del sistema en escenarios de alta demanda.
+La precisión de la simulación de cortes mediante inteligencia artificial está limitada por la tecnología disponible en las APIs externas o modelos seleccionados. Se incluirá un disclaimer informativo que indique que la simulación es referencial y debe consultarse con el barbero antes del servicio.
+Solo Mercado Pago será utilizado como pasarela de pagos en esta fase, quedando fuera del alcance la integración con otros proveedores como PayPal, Stripe o transferencias bancarias directas.
+De alcance:
+El proyecto no incluye el desarrollo de aplicaciones nativas para iOS o Android. La solución se entregará como una aplicación web responsive (accesible desde navegadores móviles) complementada con Power Apps para la gestión de barberos.
+No se contempla la integración con sistemas externos adicionales a los definidos en el stack tecnológico (Mercado Pago, Cloudinary y servicios desplegados en Microsoft Azure).
+La gestión de sueldos y liquidaciones de personal no forma parte del alcance, limitándose a la administración de ganancias individuales de barberos.
+3.3.4. Relación con los Objetivos Específicos
+Cada entregable definido en el alcance técnico responde directamente a uno o más objetivos específicos del proyecto:
+
+4. PROPUESTA DE SOLUCIÓN Y DISEÑO CONCEPTUAL (IL 1.1 / IL 1.4)
+4.1 Definición de Requerimientos
+La definición de requerimientos constituye la base sobre la cual se construirá la solución. Se han identificado 22 requerimientos funcionales que describen el comportamiento esperado del sistema, y 10 requerimientos no funcionales que establecen los atributos de calidad que la solución debe garantizar.
+4.1.1. Requerimientos Funcionales
+Los requerimientos funcionales describen las capacidades específicas que el sistema debe ofrecer a sus usuarios, organizados por los distintos roles que interactúan con la plataforma.
+Gestión de usuarios y autenticación:
+El sistema debe permitir el registro de usuarios con roles diferenciados: cliente, barbero, dueño de local, proveedor y administrador. Cada rol tendrá acceso a funcionalidades específicas según sus necesidades, garantizando que la información sensible sea visible únicamente para quienes cuentan con los permisos adecuados. La autenticación será segura mediante JWT (JSON Web Token) implementado en el backend Node.js con validación de roles y control de acceso por endpoints.
+Búsqueda y visualización de barberías (clientes):
+Los clientes podrán buscar barberías cercanas según su ubicación en tiempo real, utilizando geolocalización del navegador. El sistema permitirá filtrar los resultados por distancia y disponibilidad de horarios. Al seleccionar una barbería, los usuarios podrán ver los barberos disponibles con sus especialidades, valoraciones promedio y fotos de trabajos anteriores. El sistema mostrará un calendario interactivo con horarios ocupados y libres para cada profesional, permitiendo al cliente seleccionar el momento que mejor se ajuste a sus necesidades.
+Reserva de citas y gestión de pagos:
+La reserva de citas requerirá el pago de una abono de garantía, configurable por cada barbería entre el 30% y el 100% del valor total del servicio. Mercado Pago procesará el pago con retención del dinero hasta la confirmación del servicio, garantizando que los fondos no sean liberados hasta que la cita se haya realizado. Los estados de la cita serán gestionados como: Creado (reserva inicial), En proceso (confirmada por el barbero), Pagado (servicio completado) y Cancelado (anulado por cliente o barbero), según las acciones del cliente y el barbero.
+Simulación de cortes con inteligencia artificial:
+Una funcionalidad innovadora permitirá a los clientes subir una foto y visualizar diferentes cortes de pelo mediante simulación con inteligencia artificial. Antes de la simulación, se mostrará un mensaje de alerta indicando que la imagen generada es solo referencial y debe consultarse con el barbero antes del servicio. La foto simulada podrá adjuntarse automáticamente a la reserva para que el barbero la visualice, facilitando la comunicación de expectativas entre cliente y profesional.
+Valoraciones y contenido post-servicio:
+Post-servicio, los clientes podrán calificar su experiencia con una puntuación de 1 a 5 estrellas y dejar comentarios, así como subir fotos de su corte final. Estas valoraciones serán visibles para otros usuarios en los perfiles de barberías y barberos, contribuyendo a la construcción de reputación. Se implementará un sistema de moderación para filtrar comentarios inapropiados, asegurando la calidad del contenido generado por los usuarios.
+Gestión de agenda y ganancias (barberos):
+Para los barberos, el sistema ofrecerá una vista de agenda diaria y semanal, permitiendo confirmar citas, cancelar, marcar como realizadas, y visualizar sus ganancias generadas por período. Podrán gestionar su disponibilidad horaria de manera flexible, cargar su perfil con experiencia, especialidades y fotos de trabajos, y administrar promociones como 2x1 o descuentos por fidelidad para incentivar la recurrencia de clientes.
+Administración de locales (dueños):
+Los dueños de locales podrán administrar el personal asociado a su barbería, gestionar el inventario de insumos (productos, máquinas, tijeras, etc.), y acceder a estadísticas de reservas, ingresos y valoración promedio. Esta funcionalidad permite una visión integral del negocio y facilita la toma de decisiones basada en datos.
+Publicidad y administración global:
+Los proveedores podrán pagar por espacios publicitarios dentro de la plataforma para promocionar sus productos o servicios, con enlaces externos a sus páginas web. El administrador global gestionará usuarios, contenido inapropiado y el funcionamiento general del sistema, asegurando el cumplimiento de las políticas de la plataforma.
+4.1.2. Resumen de requerimientos funcionales:
+
+4.1.3. Requerimientos No Funcionales
+Los requerimientos no funcionales establecen los atributos de calidad que la solución debe cumplir para garantizar su viabilidad, seguridad y satisfacción del usuario.
+Seguridad:
+El sistema debe proteger los datos mediante autenticación segura con JWT, cifrado de comunicaciones mediante HTTPS, validación de entrada en todas las solicitudes a la API para prevenir inyecciones SQL y XSS, y prevención de vulnerabilidades OWASP Top 10. Se implementarán validaciones de seguridad tanto en el frontend como en el backend para proteger las transacciones sensibles. Las contraseñas serán almacenadas utilizando algoritmos de hash seguros (bcrypt).
+
+
+Disponibilidad:
+La disponibilidad del sistema debe ser del 99.5% en Azure, con respaldos diarios de la base de datos para garantizar recuperación ante fallos. La arquitectura desplegada mediante Azure App Service permitirá mantener alta disponibilidad y escalabilidad del sistema. Se implementarán mecanismos de monitoreo para detectar y alertar sobre interrupciones del servicio.
+Precisión:
+La precisión es fundamental para el sistema de reservas. Se implementarán transacciones ACID en SQL Server utilizando Knex.js para el manejo transaccional en procesos críticos para garantizar que no existan inconsistencias en los datos. Las validaciones de disponibilidad utilizarán locks de base de datos para evitar sobre-reservas cuando dos clientes intenten reservar el mismo horario simultáneamente. Se realizarán pruebas de concurrencia con herramientas como Artillery o K6 para asegurar 0% de inconsistencias bajo carga.
+Rendimiento:
+El rendimiento debe garantizar tiempos de respuesta inferiores a 2 segundos para consultas comunes (listado de barberías, visualización de disponibilidad, creación de reservas). Se realizarán pruebas de carga que simulen 100 usuarios concurrentes para validar este umbral. Las consultas SQL serán optimizadas con índices adecuados y se implementará caché donde sea pertinente.
+Usabilidad:
+La usabilidad se logrará mediante un diseño mobile-first, garantizando que la experiencia sea óptima tanto en dispositivos móviles como en computadores de escritorio. Se realizarán pruebas con usuarios reales del rubro (barberos y dueños) para validar la intuición de la interfaz. Se buscará un Net Promoter Score superior a 50 en pruebas de usuario, indicando un alto nivel de satisfacción.
+Mantenibilidad:
+La mantenibilidad del código se asegurará mediante cobertura de pruebas superior al 70% en los módulos críticos (reservas, pagos, disponibilidad). La documentación técnica se mantendrá actualizada en el repositorio GitHub, y se adoptará arquitectura hexagonal que separa claramente las capas de dominio, aplicación e infraestructura, facilitando modificaciones y extensiones futuras.
+Escalabilidad:
+La escalabilidad está garantizada mediante el uso de Azure App Service , permitiendo aumentar recursos y réplicas de manera flexible según la demanda. La base de datos estará diseñada con índices optimizados y particionamiento que soportan crecimiento sin reingeniería. La arquitectura hexagonal permite agregar nuevos adaptadores (como nuevas pasarelas de pago o servicios de almacenamiento) sin afectar la lógica de negocio central.
+
+
+
+
+4.1.4. Resumen de requerimientos no funcionales:
+
+4.1.5. Relación entre requerimientos funcionales y no funcionales
+Los requerimientos no funcionales garantizan que los requerimientos funcionales se ejecuten dentro de los estándares de calidad esperados. Por ejemplo, el requerimiento R-05 (agendamiento de citas) depende críticamente de RNF-09 (consistencia) para evitar sobre-reservas, y de RNF-04 (rendimiento) para asegurar que la experiencia de reserva sea fluida. De manera similar, R-08 (simulación de cortes) requiere RNF-07 (integración) para conectarse con servicios externos de inteligencia artificial y almacenamiento de imágenes mediante APIs especializadas, y RNF-03 (usabilidad) para que la experiencia sea intuitiva para el cliente.
+4.2. Diseño de Interfaz
+4.2.1. Etapas del diseño
+En la primera etapa, se elaboraron wireframes de baja fidelidad para definir la estructura de las pantallas principales y el flujo de navegación. Estos prototipos iniciales permitieron validar la arquitectura de la información y la disposición de los elementos clave sin distracciones estéticas, facilitando ajustes rápidos basados en la retroalimentación del equipo y de usuarios potenciales.
+En la segunda etapa, se está trabajando en mockups de alta fidelidad utilizando Figma, herramienta que permite prototipado interactivo y colaboración en tiempo real. La estética adoptada es de tipo "Modern SaaS", caracterizada por colores claros, amplio uso de espacios en blanco, y la tipografía Plus Jakarta Sans, que aporta claridad y una sensación de frescura alineada con la identidad visual del sector de barberías y peluquerías.
+A continuación, se describen los flujos principales de usuario, que abarcan las funcionalidades más relevantes de la plataforma.
+Diseño Baja 
+4.2.2. Flujo del Cliente
+El flujo del cliente está diseñado para ser intuitivo y guiar al usuario desde la búsqueda de una barbería hasta la confirmación de su reserva, pasando por la simulación de cortes como funcionalidad estrella.
+Pantalla de inicio: El usuario accede a la página de inicio donde primero visualiza la opción de agenda rápida, esto mostrará un listado de barberías cercanas al momento de hacer click en “Ir a barbería cercana”. Estas se verán ordenadas por proximidad según su ubicación en tiempo real y con sus respectivas valoraciones. Cada barbería muestra una imagen representativa, la calificación con estrellas, la distancia aproximada y un botón para acceder a la misma. 
+
+
+Pantalla de detalle de barbería: Al seleccionar una barbería, el usuario accede a una vista detallada que incluye información completa del local: dirección, horario de atención, galería de fotos del ambiente, y un listado de los barberos disponibles. Cada barbero se presenta con su nombre, fotografía, especialidades, años de experiencia y puntaje promedio. El usuario puede seleccionar un barbero específico para continuar con el proceso de reserva.
+
+Pantalla de selección de horario: Una vez seleccionado el barbero, el sistema muestra un calendario interactivo con los días disponibles. Al elegir una fecha, se despliega una cuadrícula de horarios donde se mostrarán solamente los espacios disponibles de esa fecha. El usuario puede navegar entre semanas para encontrar la disponibilidad que mejor se ajuste a sus necesidades.
+
+Pantalla de selección de servicio: El usuario elige el tipo de servicio que desea: corte, barba, corte y barba, dependiendo de lo que ofrezca la barbería. Cada servicio muestra su duración estimada y precio. Al seleccionar un servicio, el sistema calcula automáticamente el valor de la abono de garantía (configurable entre 30% y 100% del total) y lo presenta de forma clara antes de continuar.
+
+Pantalla de simulación de cortes: Antes de proceder al pago, el usuario tiene la opción de utilizar la funcionalidad de simulación de cortes. Al hacer clic en el botón correspondiente, se abre un modal que permite subir una foto desde el dispositivo o tomar una fotografía en el momento. Aparece un mensaje de alerta con el siguiente texto: "La simulación es solo una referencia visual. El resultado final puede variar según las características de tu cabello y la técnica del barbero. Consulta con tu barbero seleccionado antes del corte." El usuario debe aceptar este disclaimer para continuar. Una vez procesada la imagen, el sistema muestra una galería con al menos tres estilos de corte aplicados sobre la foto del usuario. El cliente puede seleccionar el estilo que prefiera, y la imagen simulada quedará adjunta automáticamente a la reserva.
+
+Pantalla de pago: En la pantalla de pago se resumen todos los detalles de la reserva: barbería, barbero, fecha, hora, servicio seleccionado, valor total y abono a pagar. El usuario ingresa los datos de su tarjeta en el formulario seguro de Mercado pago, que cumple con los estándares de seguridad PCI DSS. Al confirmar el pago, se procesa la transacción con retención del dinero, y el sistema registra la reserva en estado "Creado". Inmediatamente, el cliente recibe un correo electrónico de confirmación con todos los detalles de su cita y un código de reserva único.
+
+2.3. Flujo del Barbero
+El flujo del barbero está diseñado para ser utilizado desde dispositivos móviles mediante una aplicación Power Apps, permitiendo una gestión ágil de la agenda diaria.
+Inicio de sesión y agenda diaria: El barbero inicia sesión con sus credenciales y accede a su panel principal, donde visualiza su agenda del día ordenada cronológicamente. Cada cita muestra el nombre del cliente, la hora, el servicio solicitado, y una insignia que indica si el cliente adjuntó una foto simulada. Las citas se presentan en tarjetas diferenciadas por color según su estado: pendientes (amarillo), confirmadas (verde), canceladas (rojo) y realizadas (gris).
+
+
+
+Gestión de citas: Al seleccionar una cita, el barbero puede visualizar los detalles completos, incluyendo la foto simulada adjunta, comentarios adicionales del cliente y su historial de cortes previos. Desde esta vista, el barbero puede:
+Confirmar asistencia: cambia el estado de la cita a "En proceso" y notifica al cliente.
+Cancelar cita: requiere seleccionar un motivo de cancelación (cliente no responde, emergencia, etc.) y libera el horario para nuevas reservas.
+Marcar como realizado: al finalizar el servicio, cambia el estado a "Pagado", lo que libera automáticamente el pago retenido hacia el barbero o la barbería según la configuración.
+
+Resumen de ganancias: Al final del día, el barbero puede acceder a un resumen de sus ganancias, que muestra el total acumulado por servicios realizados, desglosado por día, semana o mes. Esta información es clave para su gestión financiera personal.
+
+
+4.2.4. Flujo del Dueño
+El flujo del dueño está orientado a la administración integral del negocio, con acceso a datos agregados y herramientas de gestión.
+Dashboard principal: El dueño accede a un dashboard donde visualiza estadísticas clave de su barbería: número de reservas por período, ingresos proyectados, valoración promedio (en estrellas), tasa de ausentismo, y distribución de servicios más solicitados. Los datos se presentan mediante gráficos interactivos que permiten filtrar por rango de fechas.
+Gestión de personal: Desde el panel de personal, el dueño puede agregar nuevos barberos, asignarles horarios de trabajo, gestionar sus perfiles (foto, especialidades, experiencia), y visualizar el desempeño individual a través de métricas como número de servicios realizados y valoración promedio recibida.
+
+Promociones y ofertas: El dueño puede crear promociones especiales, como descuentos por primera visita, paquetes de servicios combinados (corte + barba con descuento), o programas de fidelización. Estas promociones se activan automáticamente en el portal del cliente según las reglas definidas.
+
+
+4.2.5. Consideraciones de Diseño y Accesibilidad
+El diseño de interfaz considera los siguientes principios para garantizar una experiencia óptima:
+Responsividad: Todas las pantallas están diseñadas bajo el enfoque mobile-first, asegurando que la experiencia sea fluida tanto en dispositivos móviles como en computadores de escritorio.
+Accesibilidad: Se respetan los estándares de contraste de color para garantizar legibilidad, y los elementos interactivos tienen tamaños adecuados para su uso táctil en dispositivos móviles.
+Consistencia visual: Se ha definido una guía de estilos que incluye paleta de colores, tipografía (Plus Jakarta Sans), espaciados y componentes reutilizables (botones, tarjetas, formularios), garantizando coherencia en todas las pantallas.
+Feedback visual: Cada acción del usuario genera una respuesta visual inmediata: carga de procesamiento durante la simulación, confirmaciones de reserva, y notificaciones de error cuando corresponde.
+4.3. Arquitectura y Patrones
+La arquitectura seleccionada para el proyecto es la Arquitectura Hexagonal, también conocida como Puertos y Adaptadores (Ports & Adapters). Esta elección responde a los requerimientos específicos del proyecto, a la necesidad de garantizar la mantenibilidad del código a largo plazo, y a la necesidad de desacoplar la lógica de negocio de tecnologías externas como Azure SQL, Cloudinary, Mercado Pago y Power Platform.
+4.3.1. Fundamentos de la Arquitectura Hexagonal
+La arquitectura hexagonal, propuesta por Alistair Cockburn, busca proteger el núcleo de la lógica de negocio de las dependencias externas (bases de datos, frameworks, APIs, interfaces de usuario). El sistema se organiza en torno al dominio central, y las interacciones con el exterior se canalizan a través de puertos bien definidos, implementados por adaptadores específicos.
+4.3.2. Representación esquemática de la arquitectura
+                                            
+Esquema de la arquitectura
+4.3.3. Capas de la Arquitectura
+Núcleo (Dominio):
+En el núcleo se encuentra la lógica de negocio pura, completamente aislada de cualquier tecnología externa. Esta capa contiene las reglas que definen el comportamiento esencial del sistema:
+Reglas de reserva: Validación de que un barbero no tenga dos reservas en el mismo horario, verificación de que el horario solicitado esté dentro del rango de atención del local, y gestión de la retención de la abono hasta la confirmación del servicio.
+Cálculo de abonos: Lógica que determina el porcentaje a retener según la configuración de cada barbería (entre 30% y 100% del valor total), asegurando que el cliente tenga un incentivo económico para cumplir con la cita.
+Gestión de estados de cita: Definición y transición entre los estados Creado, En proceso, Pagado y Cancelado, garantizando que las transiciones sean válidas según las acciones del cliente o barbero.
+Lógica de valoraciones: Cálculo de promedios, verificación de que un usuario solo pueda valorar servicios que haya recibido, y acumulación de puntos por fidelidad.
+Algoritmos de disponibilidad: Cálculo de horarios disponibles en tiempo real, considerando citas ya agendadas, tiempos de servicio y horarios de atención de cada barbero.
+Este núcleo es independiente de cualquier tecnología externa, lo que facilita las pruebas unitarias con Vitest sin necesidad de bases de datos reales o servicios externos.
+Puertos (Interfaces):
+Los puertos son las interfaces que exponen la funcionalidad del núcleo hacia el exterior y definen lo que el sistema necesita del mundo exterior:
+Puertos de entrada: Definen cómo se puede interactuar con el sistema. Incluyen interfaces como ReservaService, DisponibilidadService, UsuarioService. Estos puertos son implementados por los controladores que reciben las solicitudes de la API.
+Puertos de salida: Definen qué necesita el sistema del exterior. Incluyen interfaces como ReservaRepository (para persistir datos), PagoGateway (para procesar pagos mediante Mercado Pago), AlmacenamientoGateway (para gestionar imágenes mediante Cloudinary). El núcleo depende de estas interfaces, no de implementaciones concretas.
+Adaptadores:
+Los adaptadores son las implementaciones concretas que conectan el núcleo con el mundo exterior:
+Adaptadores de entrada: Convierten las solicitudes del exterior en llamadas a los puertos de entrada. En este proyecto incluyen:
+Controladores HTTP en Express.js que procesan las peticiones de la API REST.
+Aplicación web desarrollada en React, que actúa como adaptador de interfaz de usuario para clientes.
+Power Apps, que sirve como adaptador para la gestión de barberos.
+
+Adaptadores de salida: Implementan los puertos de salida utilizando tecnologías específicas:
+SQL Server con Knex.js como adaptador de persistencia (ReservaRepository).
+Mercado Pago SDK como adaptador de pagos (PagoGateway).
+Cloudinary como adaptador de almacenamiento de imágenes (AlmacenamientoGateway).
+4.3.4. Justificación de la Elección Arquitectónica
+La arquitectura hexagonal es proporcional a los requerimientos del proyecto por las siguientes razones:
+1. Testabilidad:
+Al estar el núcleo completamente aislado de infraestructura externa, es posible probar las reglas de negocio con pruebas unitarias sin necesidad de levantar una base de datos real o conectarse a servicios externos. Esto es fundamental para garantizar la precisión del sistema de reservas, donde una falla podría causar sobre-reservas o pérdida de datos.
+2. Flexibilidad tecnológica:
+La separación entre lógica de negocio y adaptadores permite cambiar tecnologías sin afectar el núcleo. Por ejemplo, en el futuro se podría migrar de SQL Server a PostgreSQLo de Mercado Pago a otra pasarela de pagos, simplemente implementando un nuevo adaptador que cumpla con el mismo puerto de salida, sin modificar una sola línea de código del dominio.
+3. Adaptación a la combinación low-code y desarrollo tradicional:
+El proyecto combina herramientas low-code (Power Apps) con desarrollo tradicional (React, Node.js y SQL Server). La arquitectura hexagonal permite que Power Apps actúe como adaptador de entrada para la gestión interna de barberos y dueños, mientras que el backend desarrollado en Node.js provee la lógica de negocio central. Esta separación evita que la plataforma low-code imponga limitaciones sobre el desarrollo principal del sistema.
+4. Facilidad para el trabajo en equipo:
+La separación clara de responsabilidades permite que cada integrante del equipo se especialice en su capa sin interferencias. Nicolás puede trabajar en las pruebas del núcleo, Steve en los adaptadores de interfaz (React y Power Apps), Fernanda en la validación de requerimientos, y Mauricio en los adaptadores de persistencia y pagos, con interfaces claramente definidas que evitan conflictos.
+5. Cumplimiento de atributos de calidad:
+La arquitectura hexagonal facilita el cumplimiento de los atributos de calidad definidos en los requerimientos no funcionales:
+Seguridad: La autenticación se maneja en los adaptadores, sin contaminar la lógica de negocio.
+Mantenibilidad: El núcleo es estable y los adaptadores pueden modificarse independientemente.
+Escalabilidad: Los servicios desplegados en Azure App Service junto con Azure SQL Database permiten escalar el sistema sin afectar la lógica central.
+
+
+
+4.3.5. Implementación Práctica en FadeBooker
+La implementación concreta de la arquitectura hexagonal se refleja en la estructura de carpetas del repositorio
+4.4 Estrategia Cloud
+La estrategia cloud define cómo se desplegarán y operarán los distintos componentes de FadeBooker en la nube, considerando aspectos de integración, costos, escalabilidad y viabilidad técnica. La elección del proveedor y los modelos de servicio ha sido cuidadosamente evaluada para alinearse con los objetivos del proyecto y las restricciones presupuestarias.
+4.4.1. Proveedor Cloud: Microsoft Azure
+El proyecto se aloja en Microsoft Azure por las siguientes razones estratégicas:
+● Integración con servicios cloud y herramientas híbridas: Microsoft Azure permite desplegar aplicaciones desarrolladas en React y Node.js  utilizando Azure App Service, además de facilitar la integración con herramientas complementarias como Power Apps y servicios externos como Azure SQL Database, Mercado Pago y Cloudinary. Esto permite combinar desarrollo tradicional con herramientas low-code sin afectar la arquitectura principal del sistema.
+Créditos gratuitos para estudiantes: Azure ofrece créditos por $100 USD para estudiantes a través del programa Azure for Students, lo que permite mantener el presupuesto del proyecto en cero durante el desarrollo y las pruebas. Estos créditos son suficientes para cubrir el consumo estimado de los servicios utilizados.
+Documentación y soporte: Azure cuenta con documentación extensa en español, tutoriales específicos para estudiantes, y una comunidad activa de desarrolladores. Esto facilita el aprendizaje y la resolución de problemas, reduciendo los tiempos de curva de aprendizaje del equipo.
+Escalabilidad y confiabilidad: Azure proporciona servicios con alta disponibilidad garantizada (99.95% en la mayoría de los casos) y capacidad de escalar automáticamente según la demanda, lo que asegura que la solución pueda crecer sin necesidad de reingeniería futura.
+4.4.2. Modelos de Servicio Seleccionados
+El proyecto adopta principalmente un modelo PaaS (Platform as a Service), optimizando la flexibilidad de desarrollo, el despliegue y la administración de la infraestructura cloud.
+Azure App Service :
+El frontend desarrollado en React y el backend desarrollado en Node.js serán desplegados utilizando Azure App Service. Este enfoque presenta las siguientes ventajas:
+● Despliegue simplificado: Permite publicar aplicaciones web de manera centralizada y administrada, facilitando la publicación y mantenimiento del sistema.
+● Escalabilidad flexible: Azure App Service permite aumentar recursos y escalar instancias según la demanda del sistema sin modificar la arquitectura principal.
+● Integración con servicios Azure: Se integra fácilmente con Azure SQL Database, Application Insights y otros servicios cloud necesarios para el monitoreo y administración del sistema.
+●Integración híbrida: Azure App Service permite integrar fácilmente aplicaciones desarrolladas en React y Node.js con servicios de Power Platform y Azure SQL Database.
+Azure SQL Database (PaaS):
+La base de datos principal será alojada en Azure SQL Database. Este modelo ofrece:
+Compatibilidad total: Es compatible con SQL Server, permitiendo utilizar las mismas herramientas y scripts de desarrollo local.
+Power Platform (SaaS):
+Los componentes de gestión interna se apoyan parcialmente en Power Platform, específicamente mediante Power Apps como herramienta complementaria para administración operativa:
+● Power Apps: Aloja la aplicación de gestión para barberos y dueños, permitiendo administración de citas, visualización de información y acceso desde dispositivos móviles y web.
+La lógica principal del sistema, autenticación y procesamiento de negocio son gestionados por el backend desarrollado en Node.js y desplegado en Microsoft Azure mediante Azure App Service.
+Cloudinary (SaaS para imágenes):
+Para el almacenamiento y manipulación de imágenes, se utilizará Cloudinary, un servicio especializado que ofrece:
+● Manipulación de imágenes on-the-fly: Permite redimensionar, recortar y transformar imágenes en tiempo real mediante parámetros en la URL.
+● IA integrada: Ofrece capacidades de detección de rostros, optimización automática y reconocimiento de contenido, útiles para la simulación de cortes.
+● Capa gratuita generosa: Proporciona créditos mensuales suficientes para transformaciones y almacenamiento durante la fase de desarrollo y pruebas.
+● Integración sencilla con Node.js: SDK oficial con documentación clara y ejemplos de implementación
+
+4.4.3. Recursos Específicos a Utilizar
+A continuación se detallan los recursos de Azure y servicios externos que serán utilizados, junto con su propósito y modelo de consumo:
+4.4.4. Justificación de la Elección de Servicios Cloud
+Azure App service vs. Máquinas Virtuales:
+“Se optó por Azure App Service en lugar de máquinas virtuales porque permite desplegar y administrar aplicaciones web de manera simplificada, reduciendo la complejidad de configuración y mantenimiento de infraestructura. Además, Azure App Service facilita la integración con Azure SQL Database, Power Platform y servicios externos como Cloudinary y Mercado Pago, manteniendo una arquitectura escalable y centralizada.
+Azure SQL Database vs. SQL Server en VM:
+Se eligió Azure SQL Database sobre SQL Server en máquina virtual por las siguientes razones:
+Menor sobrecarga administrativa: No requiere gestionar parches del sistema operativo ni configuraciones de alta disponibilidad.
+Backups automáticos: Incluye respaldos automáticos y point-in-time recovery sin configuración adicional.
+Cloudinary vs. Azure Blob Storage:
+Se optó por Cloudinary en lugar de Azure Blob Storage por las siguientes razones:
+Manipulación de imágenes integrada: Cloudinary ofrece transformaciones on-the-fly (redimensionar, recortar, aplicar efectos) mediante simples parámetros en la URL, lo que facilita la generación de diferentes formatos para la simulación de cortes.
+IA y detección de rostros: Cloudinary incluye capacidades de detección de rostros y optimización automática, útiles para la funcionalidad de simulación donde es necesario identificar el rostro del usuario para aplicar el corte.
+Menor complejidad de desarrollo: Integrar Cloudinary con Node.js es directo mediante su SDK, mientras que Azure Blob Storage requeriría implementar servicios adicionales para manipulación y procesamiento de imágenes, aumentando la complejidad técnica del sistema.
+Capa gratuita suficiente: El plan gratuito de Cloudinary (25 créditos mensuales) es suficiente para el volumen de imágenes esperado durante la fase de desarrollo y pruebas piloto.
+Frontend React desplegado en Azure App Service:
+Se optó por desarrollar el frontend completamente en React y desplegarlo mediante Azure App Service, debido a las siguientes ventajas:
+● Mayor flexibilidad de desarrollo: React permite construir interfaces altamente personalizadas y escalables, facilitando la implementación de funcionalidades avanzadas como la simulación de cortes mediante inteligencia artificial.
+● Control total de la aplicación: El desarrollo tradicional permite gestionar completamente la autenticación, navegación, componentes y lógica del frontend sin depender de limitaciones propias de plataformas low-code.
+● Despliegue centralizado: Azure App Service permite administrar y publicar la aplicación de manera simplificada, facilitando el mantenimiento, monitoreo y escalabilidad del sistema.
+● Integración con Azure: Azure App Service proporciona hosting seguro, certificados SSL, escalabilidad y monitoreo integrado, manteniendo compatibilidad con el ecosistema cloud utilizado en el proyecto.
+4.4.5. Factibilidad de la Estrategia Cloud
+La estrategia cloud propuesta es altamente factible por las siguientes razones:
+Documentación y recursos de aprendizaje: Azure cuenta con documentación extensa en español, tutoriales paso a paso, y módulos de aprendizaje gratuitos en Microsoft Learn. Cloudinary, por su parte, ofrece documentación clara y numerosos ejemplos de integración con Node.js y React. El equipo ya ha comenzado a investigar estas tecnologías y ha identificado las guías de inicio rápido necesarias para cada componente.
+Soporte para estudiantes: Microsoft ofrece soporte prioritario para estudiantes a través de los foros de Microsoft Q&A y canales de Discord especializados. Además, el programa Azure for Students proporciona créditos y acceso a servicios sin necesidad de tarjeta de crédito.
+Integración probada: Microsoft Azure ofrece integración sólida con aplicaciones desarrolladas en React y Node.js desplegadas mediante Azure App Service. Además, servicios como Azure SQL Database y Application Insights cuentan con documentación oficial y patrones recomendados por Microsoft. Power Apps puede integrarse como herramienta complementaria para la gestión interna, mientras que Cloudinary dispone de amplia documentación para integraciones con el stack Node.js/React.
+Plazos de desarrollo: Las 16 semanas definidas en la planificación son suficientes para implementar la solución con este stack, dado que se han priorizado las funcionalidades críticas en la carta Gantt y se ha asignado tiempo específico para la configuración de entornos (Sprint 0) y la curva de aprendizaje de las tecnologías.
+Mitigación de riesgos: En caso de que algún servicio presente limitaciones o costos imprevistos, la arquitectura hexagonal permite reemplazar adaptadores sin afectar la lógica de negocio. Por ejemplo:
+Si los recursos asignados en Azure App Service resultaran insuficientes, se podría aumentar el plan de servicio o escalar la infraestructura utilizando los créditos disponibles según las necesidades del sistema.
+Si Cloudinary resultara insuficiente, se podría migrar a Azure Blob Storage implementando un nuevo adaptador de almacenamiento.
+Si los créditos de Azure se agotaran, se podría utilizar SQL Server Developer Edition local para continuar el desarrollo.
+
+
+4.4.6. Resumen de la Estrategia Cloud
+
+5. DESCRIPCIÓN TÉCNICA
+5.1 Stack Tecnológico
+El proyecto utiliza un conjunto de tecnologías seleccionadas por su madurez, integración, capacidad para cumplir con los requisitos académicos de desarrollo intensivo, y su alineación con la arquitectura hexagonal definida. A continuación, se detalla cada componente del stack organizado por capas.
+5.1.1. Frontend
+React (versión 18.x) con TypeScript
+La interfaz de usuario se construye con React, acompañado de TypeScript para tipado estático. React permite crear componentes reusables y manejar el estado de manera eficiente mediante hooks, mientras que TypeScript reduce errores en tiempo de desarrollo, facilita el mantenimiento a largo plazo y mejora la experiencia de desarrollo con autocompletado y validaciones en tiempo real. La aplicación se estructura como una Single Page Application (SPA) con React Router para la navegación entre páginas.
+Azure App Service (Hosting Frontend)
+La aplicación frontend desarrollada en React será desplegada mediante Azure App Service. Este enfoque permite mantener consistencia entre los entornos de desarrollo y producción, facilitando el despliegue y mantenimiento de la aplicación. Azure App Service proporciona hosting seguro con certificados SSL, escalabilidad automática, integración con servicios Azure y monitoreo mediante Application Insights. La autenticación y gestión de usuarios serán manejadas directamente desde el backend desarrollado en Node.js mediante JWT y mecanismos de seguridad implementados en la aplicación.
+Axios (Cliente HTTP)
+Axios se emplea como cliente HTTP para realizar solicitudes desde el frontend React hacia la API desarrollada en Node.js y desplegada en Azure App Service. Axios maneja promesas de manera elegante, facilita la interceptación de requests para agregar tokens de autenticación JWT, y simplifica el manejo de errores. Se configura una instancia global con la URL base de la API y los headers de autorización por defecto.
+5.1.2. Backend
+Node.js (versión 20.x LTS)
+Node.js constituye la plataforma de ejecución para el backend, elegido por su naturaleza asíncrona y orientada a eventos, lo que lo hace ideal para aplicaciones con alta concurrencia como un sistema de reservas. La versión LTS (Long Term Support) garantiza estabilidad y soporte extendido durante el desarrollo.
+Express.js (Framework)
+Express.js es el framework utilizado para construir la API REST. Su minimalismo permite una curva de aprendizaje rápida y una arquitectura flexible, facilitando la organización del código en controladores, servicios y middlewares. Express maneja el enrutamiento, la validación de parámetros y la gestión de respuestas HTTP.
+Azure Functions (Hosting API)
+Azure App Service aloja la API desarrollada en Node.js, proporcionando un entorno administrado, escalable y centralizado para la ejecución del backend. Este enfoque permite mantener costos reducidos durante el desarrollo utilizando créditos académicos y capas gratuitas de Azure. La integración con Application Insights proporciona telemetría y monitoreo del rendimiento.
+5.1.3. Base de Datos
+SQL Server 2022 Developer Edition
+SQL Server se utiliza como motor de base de datos relacional, aprovechando que la Developer Edition es completamente gratuita para desarrollo. SQL Server ofrece soporte completo de transacciones ACID (Atomicidad, Consistencia, Aislamiento, Durabilidad), stored procedures para encapsular lógica compleja, y un motor robusto para aplicaciones transaccionales como un sistema de reservas. Durante el desarrollo, la base de datos se ejecuta localmentecon integración posterior a Azure SQL Database para el despliegue final del sistema.
+Knex.js (Query Builder)
+Knex.js se emplea como query builder para interactuar con la base de datos desde Node.js. Permite construir consultas SQL de forma programática, manejar migraciones de esquema para versionar los cambios en la estructura de la base de datos, y sembrar datos de prueba (seeds) para facilitar el desarrollo y las pruebas. Al evitar el SQL crudo, Knex.js reduce el riesgo de inyección SQL y mejora la mantenibilidad del código.
+5.1.4. Pagos y Autenticación
+Mercado pago API 
+Mercado Pago gestiona los pagos de abonos y reservas mediante integración API y webhooks para confirmación asíncrona de transacciones. La plataforma ofrece un entorno sandbox para pruebas durante el desarrollo, permitiendo validar pagos sin procesar dinero real. La integración permite confirmar automáticamente el estado de las reservas una vez aprobado el pago correspondiente.
+5.1.5. Autenticación (JWT + SQL Server)
+La autenticación del sistema se implementa mediante JSON Web Tokens (JWT), gestionados desde el backend en Node.js.
+Los usuarios se registran e inician sesión mediante credenciales almacenadas de forma segura en la base de datos SQL Server, utilizando técnicas de hash (bcrypt).
+El sistema genera tokens JWT que son utilizados para validar las solicitudes al backend, asegurando sesiones seguras y control de acceso según roles.
+
+5.1.6. Almacenamiento de Imágenes
+Cloudinary
+Cloudinary se utiliza para el almacenamiento y manipulación de imágenes, incluyendo:
+Fotos de perfil de usuarios (clientes, barberos, dueños)
+Imágenes de cortes subidas por clientes en sus valoraciones
+Fotos generadas por simulación de cortes mediante inteligencia artificial
+Cloudinary ofrece transformaciones on-the-fly mediante parámetros en la URL, permitiendo redimensionar, recortar, aplicar filtros y optimizar imágenes sin necesidad de procesamiento adicional en el servidor. Su capa gratuita proporciona 25 créditos mensuales para transformaciones, suficientes para la fase de desarrollo y pruebas piloto. Además, incluye capacidades de detección de rostros que pueden ser aprovechadas para la funcionalidad de simulación de cortes.
+5.1.7. Pruebas
+Vitest
+Vitest se utiliza como framework de pruebas unitarias para el backend y la lógica de negocio. Su integración con el entorno frontend permite una ejecución rápida de las pruebas, y su API compatible con Jest facilita la migración de conocimientos existentes. Se utiliza para probar las funciones del núcleo de la arquitectura hexagonal, incluyendo las reglas de validación de disponibilidad, cálculo de abonos y gestión de estados de cita.
+Supertest
+Supertest se emplea para pruebas de integración de endpoints HTTP, permitiendo simular solicitudes a la API y verificar las respuestas. Estas pruebas validan que los controladores, middlewares y adaptadores funcionen correctamente en conjunto, garantizando que los contratos de la API se mantengan consistentes.
+React Testing Library
+Para el frontend, se utiliza React Testing Library para probar componentes en aislamiento y en conjunto, verificando el comportamiento esperado de la interfaz de usuario y la correcta interacción con los hooks y servicios.
+5.2. Control de Versiones y Gestión de Código
+Git con GitHub
+El código fuente se aloja en GitHub en el repositorio https://github.com/floatinggxx/FadeBooker , utilizando Git como sistema de control de versiones. La estrategia de ramas sigue un modelo GitFlow simplificado:
+main: Rama principal que contiene exclusivamente el código estable que ha pasado todas las pruebas y está listo para despliegue.
+develop: Rama de integración continua, donde se fusionan las funcionalidades completadas.
+feature/nombre-funcionalidad: Ramas creadas a partir de develop para desarrollar nuevas funcionalidades. Se fusionan de vuelta a develop al completar el desarrollo y pasar las pruebas.
+release/version: Ramas creadas a partir de develop para preparar una versión de lanzamiento, permitiendo realizar ajustes finales antes de fusionar a main.
+hotfix/nombre: Ramas para correcciones urgentes, creadas a partir de main y fusionadas tanto a main como a develop.
+5.2.1. Estructura del repositorio:
+
+5.2.2. Flujo de trabajo:
+Desarrollo de funcionalidades:
+Crear rama feature/nombre a partir de develop
+Desarrollar y realizar commits frecuentes
+Al finalizar, abrir Pull Request hacia develop
+El PR debe ser revisado por al menos un miembro del equipo
+Las pruebas automatizadas deben pasar antes del merge
+Preparación de una versión:
+Crear rama release/vX.Y.Z a partir de develop
+Realizar ajustes finales (documentación, últimos bugs)
+Fusionar release en main y etiquetar con el número de versión
+Fusionar release de vuelta en develop para incorporar los cambios finales
+Corrección urgente (hotfix):
+Crear rama hotfix/descripción a partir de main
+Aplicar la corrección
+Fusionar en main y etiquetar con nuevo número de versión (incremento de parche)
+Fusionar también en develop para mantener la sincronización
+
+5.2.3. Políticas de Contribución y Calidad
+Para mantener la calidad del código y la consistencia del repositorio, se han definido las siguientes políticas:
+Convenciones de commits:
+Se utiliza el formato Conventional Commits para mantener un historial legible y facilitar la generación automática de changelogs:
+Tipos permitidos:
+feat: Nueva funcionalidad
+fix: Corrección de errores
+docs: Cambios en documentación
+style: Cambios de formato (no afectan lógica)
+refactor: Refactorización de código
+test: Adición o modificación de pruebas
+chore: Tareas de mantenimiento
+Pull Requests:
+Todo cambio debe ser incorporado mediante Pull Request (PR)
+Cada PR requiere al menos una revisión aprobada por otro miembro del equipo
+Las pruebas automatizadas deben pasar exitosamente
+El PR debe incluir una descripción clara de los cambios y vincular las historias de usuario o issues correspondientes
+Protección de ramas:
+La rama main está protegida contra pushes directos
+La rama develop requiere que las pruebas pasen antes de aceptar merges
+Se requiere al menos una revisión aprobada para fusionar cambios
+
+5.2.4. Integración Continua (CI/CD)
+Se ha configurado GitHub Actions para automatizar los procesos de integración y despliegue continuo:
+
+6. METODOLOGÍA Y PLANIFICACIÓN (IL 1.4)
+6.1 Ciclo de Vida del Software
+El ciclo de vida seleccionado para el desarrollo de FadeBooker es el Modelo en Cascada (Waterfall) con entregas por fases secuenciales. Esta elección responde a la naturaleza del proyecto, al contexto académico en el que se enmarca, y a la estabilidad de los requisitos definidos desde el inicio.
+6.1.1. Descripción del Modelo en Cascada
+El modelo en cascada organiza el desarrollo en fases lineales y secuenciales, donde cada fase debe completarse y ser aprobada antes de avanzar a la siguiente. Este enfoque garantiza que los requisitos estén completamente definidos antes de iniciar la implementación, y que cada etapa genera documentación exhaustiva que sirve como base para las fases posteriores.
+6.1.2. Representación gráfica de las fases
+
+6.1.3. Fases del Proyecto
+Fase 1: Análisis de Requerimientos (Semanas 1 a 4)
+Esta fase se centra en comprender a fondo la problemática, definir el alcance del proyecto y establecer las bases sobre las cuales se construirá la solución. Las actividades principales incluyen:
+Levantamiento de requerimientos mediante entrevistas con dueños de barberías y barberos, aprovechando la experiencia de un integrante del equipo que trabaja en el rubro.
+Definición de historias de usuario con criterios de aceptación claros y medibles.
+Elaboración del diagrama de Ishikawa para analizar las causas del problema.
+Diseño de mockups de baja fidelidad para validar la estructura de las pantallas.
+Definición de la arquitectura hexagonal y el stack tecnológico.
+Elaboración del plan de pruebas inicial.
+Entregables de la Fase 1:
+Informe de Avance N°1: Estrategia y Conceptualización
+Product Backlog y User Stories
+Mockups de baja fidelidad
+Plan de pruebas inicial
+Acta de constitución del proyecto
+Carta Gantt de planificación
+Hito de revisión: Presentación al docente para validar la dirección del proyecto antes de avanzar al diseño.
+
+Fase 2: Diseño del Sistema (Semanas 5 a 8)
+Una vez aprobados los requerimientos, se procede al diseño detallado de todos los componentes del sistema. Esta fase establece las especificaciones técnicas que guiarán el desarrollo. Las actividades principales incluyen:
+Diseño de la base de datos: modelo entidad-relación, normalización hasta tercera forma normal, definición de índices y stored procedures.
+Diseño de la API: especificación de endpoints, contratos de entrada/salida, validaciones y estrategia de autenticación JWT.
+Configuración de entornos: Azure App Service, Azure SQL Database, Power Platform y repositorio GitHub.
+Diseño de mockups de alta fidelidad en Figma, con guía de estilos y componentes reutilizables.
+Entregables de la Fase 2:
+Diagrama Entidad-Relación (MER) y scripts SQL
+Documentación de API RESTcon Swagger/OpenAPI
+Mockups de alta fidelidad
+Entornos de desarrollo configurados
+Hito de revisión: Presentación al docente para validar el diseño antes de iniciar la implementación.
+
+Fase 3: Desarrollo (Semanas 9 a 14)
+Esta es la fase más extensa del proyecto, donde se implementan todos los componentes según las especificaciones definidas. El desarrollo se organiza en sprints internos para mantener el ritmo y la calidad, aunque el ciclo de vida general siga un modelo en cascada. Las actividades principales incluyen:
+Desarrollo de la base de datos: creación de tablas, índices, stored procedures y datos de prueba.
+Desarrollo de la API: implementación de endpoints con Node.js y Express.js, integración con Mercado pago (webhooks), lógica de disponibilidad y reservas.
+Desarrollo del frontend React: componentes, páginas, routing, consumo de API con Axios.
+Despliegue del frontend React mediante Azure App Service, configuración de autenticación JWT y conexión con la API backend.
+Desarrollo de Power Apps: aplicación para barberos conectada a la API.
+Desarrollo de Power Automate: flujos de notificaciones y procesamiento de eventos.
+Entregables de la Fase 3:
+Código fuente completo (frontend y backend)
+Frontend React desplegado en Azure App Service.
+API backend Node.js desplegada en Azure App Service.
+Power Apps Solution
+Power Automate Flows
+Hito de revisión: Demostración de funcionalidades completadas para validar avances.
+
+Fase 4: Pruebas (Semanas 15 a 16)
+Una vez completado el desarrollo, se ejecuta un plan de pruebas exhaustivo para garantizar la calidad, estabilidad y cumplimiento de los requerimientos. Las actividades principales incluyen:
+Pruebas unitarias con Vitest en backend y React Testing Library en frontend.
+Pruebas de integración con Supertest para validar los endpoints de la API.
+Pruebas de usuario con barberos reales para validar usabilidad y flujos operativos.
+Pruebas de concurrencia con Artillery para simular 100 usuarios simultáneos.
+Pruebas de seguridad básicas con OWASP ZAP.
+Corrección de bugs identificados durante las pruebas.
+Entregables de la Fase 4:
+Reporte de pruebas unitarias con cobertura superior al 70%
+Reporte de pruebas de integración
+Feedback de usuarios documentado
+Lista de bugs corregidos
+Hito de revisión: Presentación de resultados de pruebas y sistema estabilizado.
+
+Fase 5: Despliegue y Documentación (Semanas 17 a 18)
+La fase final consiste en la publicación de la solución y la entrega de toda la documentación necesaria para su uso y mantenimiento. Las actividades principales incluyen:
+Despliegue final en entorno de producción/demostración.
+Elaboración del manual de usuario para clientes y barberos.
+Elaboración de la documentación técnica completa (arquitectura, despliegue, configuración).
+Grabación del video demo de 5 a 10 minutos.
+Preparación de la presentación final.
+Entregables de la Fase 5:
+Manual de usuario (PDF)
+Documentación técnica (PDF)
+Video demo (YouTube/MP4)
+Presentación final (PowerPoint/PDF)
+Código fuente completo en GitHub
+Hito de revisión: Presentación final del proyecto y defensa ante el docente.
+
+
+6.1.4. Justificación de la Elección del Modelo en Cascada
+La selección del modelo en cascada para FadeBooker se fundamenta en los siguientes criterios:
+1. Estabilidad de los requisitos:
+Los requerimientos del proyecto están claramente definidos desde el inicio y no cambiarán durante el semestre, ya que responden a una problemática específica y acotada, validada con usuarios reales del rubro a través de la experiencia de un integrante del equipo que trabaja en una barbería. Esta estabilidad elimina la necesidad de iteraciones frecuentes sobre los requisitos, característica que favorece modelos ágiles pero que no es requerida en este contexto.
+2. Alineación con la estructura de evaluación académica:
+El modelo de evaluación de la asignatura está estructurado en tres fases secuenciales (Fase 1: Análisis, Fase 2: Desarrollo, Fase 3: Pruebas), con entregables definidos al final de cada una. El modelo en cascada calza perfectamente con esta estructura, permitiendo que los hitos de entrega coincidan con los hitos de evaluación.
+3. Tamaño y organización del equipo:
+El equipo está conformado por cuatro integrantes con roles claramente definidos (Jefe de Proyecto, Analistas, Desarrolladores, DBA). Esta estructura facilita la planificación completa del proyecto antes de comenzar la implementación, sin necesidad de reajustes frecuentes que caracterizan a los modelos iterativos.
+4. Hitos de control y reducción de riesgos:
+Las revisiones al final de cada fase permiten al docente validar el avance antes de continuar, reduciendo significativamente el riesgo de desviaciones. Si se detectara un error en una fase, este puede ser corregido antes de que impacte en las siguientes, evitando retrabajos mayores.
+5. Documentación exhaustiva:
+El modelo en cascada exige documentación completa al final de cada fase, lo que constituye un requisito académico fundamental para la evaluación. Esta documentación sirve como evidencia del trabajo realizado y como base para el mantenimiento futuro.
+6. Complejidad técnica controlada:
+Aunque el proyecto combina desarrollo tradicional (React, Node.js y SQL Server) con herramientas complementarias low-code como Power Apps y Power Automate, el stack tecnológico ha sido investigado y definido previamente, minimizando la incertidumbre técnica. La naturaleza predecible de las tareas favorece un enfoque secuencial.
+6.1.5. Relación con el Stack Tecnológico y la Arquitectura
+El modelo en cascada se complementa con la arquitectura hexagonal definida para el proyecto. Mientras que el ciclo de vida define el orden de las actividades, la arquitectura define la estructura del código:
+Fase 1 (Análisis): Se definen los puertos (interfaces) que el núcleo expondrá y los requerimientos que deben cumplir los adaptadores.
+Fase 2 (Diseño): Se especifican los contratos de los adaptadores de entrada y salida (API REST, base de datos, pagos).
+Fase 3 (Desarrollo): Se implementan los adaptadores concretos (React, Power Apps, SQL Server, Mercado Pago y Cloudinary) siguiendo las especificaciones definidas.
+Fase 4 (Pruebas): Se prueba el núcleo de forma aislada (pruebas unitarias) y los adaptadores en conjunto (pruebas de integración).
+Fase 5 (Despliegue): Se despliega cada componente en su entorno correspondiente utilizando Azure App Service , Azure SQL Database y servicios externos como Cloudinary.
+Esta separación entre ciclo de vida y arquitectura permite mantener la rigurosidad del modelo en cascada mientras se aprovechan las ventajas de la arquitectura hexagonal para la organización del código.
+6.1.6. Resumen del Ciclo de Vida
+
+6.2. Marco de Trabajo
+Aunque el ciclo de vida general del proyecto sigue el modelo en Cascada con fases secuenciales, la ejecución dentro de cada fase se gestiona con prácticas ágiles que permiten mantener la flexibilidad, la comunicación fluida y la capacidad de respuesta ante imprevistos. Este enfoque híbrido combina la rigurosidad del modelo en cascada con la adaptabilidad de las metodologías ágiles.
+6.2.1. Ceremonias y Reuniones de Coordinación
+Para garantizar la sincronización del equipo y el seguimiento continuo del avance, se han definido las siguientes instancias de coordinación:
+Reuniones diarias (Daily Standup):
+Duración: 15 minutos
+Frecuencia: 3 días a la semana (Martes, Jueves, Domingo)
+Participantes: Todo el equipo
+Objetivo: Sincronizar avances, identificar impedimentos y ajustar prioridades del día. Cada integrante responde tres preguntas: ¿Qué hice ayer?, ¿Qué haré hoy?, ¿Tengo algún bloqueo?
+Modalidad: Virtual a través de Discord o reunión presencial según disponibilidad.
+Reuniones de seguimiento semanal:
+Duración: 60 a 90 minutos
+Frecuencia: Semanal (generalmente los Domingos)
+Participantes: Todo el equipo
+Objetivo: Revisar avances de la semana, ajustar la planificación según el progreso real, resolver dudas técnicas complejas, y definir prioridades para la semana siguiente.
+Modalidad: Virtual o presencial con apoyo de herramientas colaborativas.
+Revisión de hitos de fase:
+Duración: Variable (según alcance de la fase)
+Frecuencia: Al final de cada fase (Análisis, Diseño, Desarrollo, Pruebas, Despliegue)
+Participantes: Todo el equipo y el docente/guía
+Objetivo: Validar los entregables de la fase, recibir retroalimentación, y obtener la aprobación para avanzar a la siguiente fase.
+Modalidad: Presencial en taller de alto cómputo, con presentación de avances.
+
+6.2.2. Gestión de Tareas con Jira
+Para el seguimiento detallado de las tareas, se utiliza Jira como herramienta de gestión de proyectos. Jira permite organizar el trabajo, asignar responsabilidades y mantener un registro histórico de avances.
+Estructura del tablero:
+El tablero de Jira está organizado en las siguientes columnas, que reflejan el flujo de trabajo:
+Información por tarea:
+Cada tarea en Jira contiene los siguientes campos obligatorios:
+Responsable: Integrante asignado a la ejecución
+Estimación de esfuerzo: Horas estimadas o story points
+Fecha límite: Fecha de entrega comprometida
+Descripción: Detalle de la tarea y criterios de aceptación
+Etiquetas: Identificadores de fase, módulo o tipo de actividad
+Comentarios: Actualizaciones de progreso y bloqueos
+
+6.2.3. Roles y Responsabilidades en la Ejecución
+6.2.4. Gestión de Riesgos y Cambios
+Aunque el modelo en cascada no contempla cambios frecuentes en los requisitos, se ha establecido un proceso para gestionar eventuales desviaciones:
+Identificación de riesgos: Se mantiene un registro de riesgos actualizado, con evaluación de probabilidad e impacto, y planes de mitigación definidos.
+Solicitud de cambio: Cualquier desviación significativa respecto al alcance definido debe ser documentada en una solicitud de cambio, evaluada por el equipo y aprobada por el jefe de proyecto antes de su implementación.
+Impedimentos: Durante las reuniones diarias, se identifican impedimentos que puedan afectar el avance. Estos se registran en un "Impediment Log" y se asignan responsables para su resolución.
+6.3. Planificación Semestral
+La planificación del proyecto se organiza en cinco fases distribuidas en 18 semanas (16 semanas de ejecución activa más 2 semanas de holgura para imprevistos), alineadas con el calendario académico y los hitos de evaluación establecidos.
+
+
+6.3.1. Resumen de Fases y Responsables
+6.3.2. Descripción Detallada de las Fases
+Fase 1: Análisis de Requerimientos (Semanas 1 a 4)
+Esta fase establece las bases del proyecto, definiendo qué se va a construir y por qué. Las actividades principales son:
+Levantamiento de requerimientos mediante entrevistas con dueños de barberías y barberos, aprovechando la experiencia de un integrante del equipo que trabaja en el rubro.
+Definición de historias de usuario con criterios de aceptación claros y medibles, documentadas en formato Excel.
+Elaboración del diagrama de Ishikawa para analizar las causas del problema.
+Diseño de mockups de baja fidelidad en Figma/Canva para validar la estructura de las pantallas.
+Definición de la arquitectura hexagonal y el stack tecnológico.
+Elaboración del plan de pruebas inicial.
+Desarrollo del acta de constitución y carta Gantt.
+Responsables: Fernanda lidera requerimientos, Steve lidera diseño de mockups, Mauricio lidera arquitectura y planificación.
+
+Fase 2: Diseño del Sistema (Semanas 5 a 8)
+Una vez aprobados los requerimientos, se procede al diseño detallado de todos los componentes técnicos. Las actividades principales son:
+Diseño de la base de datos: modelo entidad-relación, normalización hasta tercera forma normal (3FN), definición de índices y stored procedures.
+Diseño de la API: especificación de endpoints con Swagger/OpenAPI, definición de contratos de entrada/salida, validaciones y estrategia de autenticación JWT.
+Configuración de entornos de desarrollo: Azure App Service , suscripción de Azure con créditos para estudiantes, Power Apps y repositorio GitHub.
+Diseño de mockups de alta fidelidad en Figma, con guía de estilos y componentes reutilizables.
+Preparación de la presentación de avance para validación con el docente.
+Responsables: Mauricio lidera diseño de base de datos, Nicolás lidera especificación de API, Steve lidera diseño de alta fidelidad.
+Fase 3: Desarrollo (Semanas 9 a 14)
+Esta es la fase más extensa del proyecto, donde se implementan todos los componentes según las especificaciones definidas. Las actividades principales son:
+Desarrollo de la base de datos: creación de tablas, índices, stored procedures y datos de prueba (seeds).
+Desarrollo de la API: implementación de endpoints con Node.js y Express.js, lógica de disponibilidad y reservas, integración con Mercado pago (webhooks).
+Desarrollo del frontend React: componentes, páginas, routing, consumo de API con Axios, integración con TypeScript.
+Despliegue del frontend React mediante Azure App Service, configuración de autenticación JWT e integración con la API backend.
+Desarrollo de la aplicación Power Apps para barberos, conectada a la API.
+Desarrollo de flujos Power Automate para notificaciones y webhooks de Mercado pago.
+Responsables: Mauricio lidera base de datos, Nicolás lidera API y pruebas, Steve lidera frontend, Fernanda lidera validación de requerimientos durante el desarrollo.
+Fase 4: Pruebas (Semanas 15 a 16)
+Una vez completado el desarrollo, se ejecuta un plan de pruebas exhaustivo para garantizar la calidad y estabilidad del sistema. Las actividades principales son:
+Pruebas unitarias con Vitest en backend y React Testing Library en frontend.
+Pruebas de integración con Supertest para validar los endpoints de la API.
+Pruebas de usuario con barberos reales para validar usabilidad y flujos operativos.
+Pruebas de concurrencia con Artillery para simular 100 usuarios simultáneos.
+Pruebas de seguridad básicas con OWASP ZAP.
+Corrección de bugs identificados durante las pruebas.
+Elaboración del reporte de pruebas con cobertura y resultados.
+Responsables: Nicolás lidera las pruebas con apoyo de todo el equipo.
+Fase 5: Despliegue y Documentación (Semanas 17 a 18)
+La fase final consiste en la publicación de la solución y la entrega de toda la documentación necesaria para su uso y mantenimiento. Las actividades principales son:
+Despliegue final en entorno de demostración: backend Node.js y frontend React desplegados en Azure App Service, junto con la base de datos en Azure SQL Database.
+Elaboración del manual de usuario en formato PDF, dirigido a clientes y barberos.
+Elaboración de la documentación técnica completa: arquitectura, instrucciones de despliegue, configuración de entornos.
+Grabación del video demo de 5 a 10 minutos recorriendo todas las funcionalidades.
+Preparación de la presentación final en PowerPoint/PDF.
+Ensayo de presentación y preparación para defensa ante el docente.
+Responsables: Mauricio coordina despliegue, Steve lidera manual de usuario, todos participan en documentación y presentación.
+6.3.3. Carta Gantt
+La carta Gantt detallada, con la planificación semana a semana de todas las actividades y sus responsables, está disponible en el siguiente enlace:
+https://app.valorexperto.com/#/proyecto/14896/gantt
+Nota: Para acceder a la carta Gantt es necesario iniciar sesión en la plataforma Valorexperto con las credenciales del equipo. La herramienta permite visualizar la secuencia de actividades, dependencias entre tareas, y el porcentaje de avance por fase. También está disponible la opción de visualización en formato PDF.
+
+Carta Gantt
+6.3.4. Resumen de Hitos Clave
+7. MECANISMOS DE CONTROL Y CALIDAD
+Los mecanismos de control y calidad garantizan que el desarrollo de FadeBooker se mantenga dentro de los plazos establecidos, cumpla con los requisitos definidos y entregue un producto confiable, seguro y usable. Estos mecanismos abarcan desde la validación continua con el docente hasta un plan de pruebas estructurado por niveles.
+
+
+
+7.1 Certificación de Avances
+La certificación de avances asegura que el equipo y el docente mantenga una comunicación fluida sobre el progreso del proyecto, permitiendo ajustes oportunos y validando que los entregables cumplan con los estándares esperados. Se han definido tres mecanismos principales para este propósito.
+7.1.1. Revisiones de hito por fase
+Al finalizar cada una de las cinco fases del proyecto (Análisis, Diseño, Desarrollo, Pruebas, Despliegue), el equipo realiza una presentación formal ante el docente para mostrar los entregables completados. En estas instancias se presentan los artefactos generados (documentos, diagramas, código funcional), se recibe retroalimentación específica, y se obtiene la aprobación para avanzar a la siguiente fase. Este mecanismo, definido desde la planificación inicial, reduce significativamente el riesgo de desviaciones y asegura que cada etapa esté sólidamente fundamentada antes de continuar.
+7.1.2. Demostraciones de funcionalidades
+A lo largo de la fase de desarrollo, se realizan demostraciones quincenales de las funcionalidades implementadas. Estas demostraciones, aunque no requieren que las funcionalidades estén completamente terminadas, permiten validar que la dirección técnica es la correcta y que el desarrollo se alinea con las expectativas definidas en las historias de usuario. Las demostraciones son un espacio para identificar ajustes tempranos y resolver dudas antes de que impacten en el cronograma.
+7.1.3. Informes de avance documentados
+Al finalizar cada hito significativo, se elabora un informe de avance que documenta:
+El estado actual del proyecto y el porcentaje de avance por fase.
+Los logros alcanzados en el período, con referencia a las historias de usuario completadas.
+Los impedimentos resueltos y las lecciones aprendidas que aportan al equipo.
+Los riesgos identificados y las acciones de mitigación implementadas.
+Estos informes quedan registrados en el repositorio GitHub, constituyendo evidencia del trabajo realizado y facilitando la trazabilidad de las decisiones.
+7.1.4. Validación de historias de usuario
+Para cada historia de usuario completada, se aplica una checklist de aceptación que verifica los siguientes criterios antes de considerarla finalizada:
+Cumplimiento de los criterios de aceptación definidos en la historia.
+Superación de las pruebas unitarias asociadas a la funcionalidad.
+Revisión de código por al menos un miembro distinto al responsable de la implementación.
+Actualización de la documentación técnica correspondiente (diagramas, especificaciones, manuales).
+Registro de la funcionalidad en el tablero de Jira como "Completado".
+Este proceso asegura que cada entrega cumpla con los estándares de calidad definidos y que el conocimiento quede adecuadamente documentado para el equipo.
+7.1.5. Registro de impedimentos y lecciones aprendidas
+Durante las reuniones diarias y semanales, se identifican y registran los impedimentos que puedan afectar el avance. Cada impedimento se documenta en un registro con su descripción, impacto, responsable de resolución, fecha de detección y fecha de cierre. Al finalizar cada fase, se realiza una retrospectiva para extraer lecciones aprendidas que se incorporan a las fases siguientes, mejorando continuamente los procesos del equipo.
+7.2 Plan de Pruebas Inicial
+El plan de pruebas garantiza que el software cumpla con los atributos de calidad definidos en los requerimientos no funcionales. Las pruebas se estructuran en varios niveles, abarcando desde la validación de componentes individuales hasta la verificación del sistema completo en condiciones reales de uso.
+7.2.1. Pruebas unitarias de backend
+Las pruebas unitarias se ejecutan con Vitest sobre el núcleo de la arquitectura hexagonal, verificando las reglas de negocio de forma aislada de infraestructura externa. Se apunta a una cobertura mínima del 80% sobre las funciones críticas:
+Validación de disponibilidad (evitar sobre-reservas)
+Cálculo de abonos (configurable entre 30% y 100%)
+Gestión de estados de cita (Creado, En proceso, Pagado, Cancelado)
+Lógica de puntos por fidelidad
+Estas pruebas se ejecutan automáticamente en cada pull request a través de GitHub Actions, bloqueando la integración si no se alcanza el umbral de cobertura establecido.
+7.2.2. Pruebas unitarias de frontend
+Para el frontend React, se utiliza React Testing Library con un objetivo de cobertura del 70% sobre los componentes principales. Las pruebas se enfocan en:
+Renderización correcta de componentes según diferentes estados (carga, error, datos presentes)
+Manejo de eventos de usuario (clics, submits, cambios en formularios)
+Integración con hooks personalizados y servicios de API simulados
+7.2.3. Pruebas de integración de API
+Las pruebas de integración se realizan con Postman y Newman, cubriendo todos los endpoints de la API. Estas pruebas verifican:
+Que los contratos entre frontend y backend se mantengan consistentes.
+Que los endpoints respondan con los códigos HTTP esperados (200, 400, 401, 404, etc.).
+Que las validaciones de entrada funcionen correctamente (campos obligatorios, formatos inválidos).
+Que los flujos end-to-end (crear reserva → procesar pago con Mercado Pago → confirmar) se completen exitosamente.
+Las colecciones de Postman se versionan en el repositorio y se ejecutan diariamente en el pipeline de integración continua.
+7.2.4. Pruebas de integración de base de datos
+Utilizando Knex.js y sus migraciones, se verifica que el esquema de base de datos sea consistente con el modelo definido. Las pruebas se ejecutan en cada cambio del esquema, validando:
+Que las migraciones se apliquen correctamente en orden ascendente.
+Que los datos de prueba (seeds) se inserten sin errores.
+Que las restricciones de integridad referencial funcionen como se espera.
+Que la eliminación lógica (soft delete) preserve el historial de datos.
+7.2.5. Pruebas de concurrencia
+Para garantizar la precisión del sistema bajo carga, se realizan pruebas de concurrencia con Artillery o K6, simulando 100 usuarios simultáneos que intentan reservar horarios disponibles. Estas pruebas verifican:
+Que no se produzcan sobre-reservas (un mismo horario asignado a dos clientes).
+Que los tiempos de respuesta se mantengan por debajo de 2 segundos.
+Que el sistema mantenga consistencia transaccional con 0% de errores.
+7.2.6. Pruebas de usabilidad
+Se involucran 5 usuarios reales del rubro (barberos y dueños de barberías) al final de la fase de desarrollo para validar la experiencia de usuario. Las pruebas se realizan con los siguientes objetivos:
+Evaluar la intuición de la interfaz para los flujos principales (registro, reserva, gestión de agenda).
+Medir el Net Promoter Score (NPS) con objetivo superior a 50.
+Identificar puntos de fricción o confusión en la navegación.
+Recoger sugerencias de mejora para incorporar antes del despliegue final.
+7.2.7. Pruebas de seguridad básicas
+Antes del despliegue final, se ejecutan pruebas de seguridad con OWASP ZAP para identificar vulnerabilidades comunes. El escaneo automático verifica:
+Inyección SQL en los endpoints de la API.
+Cross-site scripting (XSS) en campos de entrada de usuarios.
+Autenticación débil o sesiones mal gestionadas.
+Exposición de información sensible en respuestas de error.
+Configuración de cabeceras de seguridad (CORS, CSP, HSTS).
+
+7.2.8. Resumen del plan de pruebas
+
+
+8. CONCLUSIONES Y PRÓXIMOS PASOS
+8.1. Conclusiones del Proyecto
+FadeBooker se consolida como una solución tecnológica integral diseñada para responder a una problemática real del rubro de las barberías y peluquerías, identificada y validada a través de la experiencia directa de un integrante del equipo que trabaja en el sector. El proyecto aborda las principales causas de ineficiencia detectadas: la falta de disponibilidad en tiempo real, el alto ausentismo sin penalización, la ausencia de historial de clientes y la inexistencia de herramientas especializadas en el rubro.
+Innovación y valor diferencial: El proyecto incorpora un módulo de simulación de cortes mediante inteligencia artificial, funcionalidad que ninguna de las plataformas analizadas en el estado del arte ofrece actualmente. Esta característica, junto con el sistema de pago de abono configurable (entre 30% y 100% del valor) y la gestión de agenda para barberos, posiciona a FadeBooker como una solución diferenciada en el mercado.
+Arquitectura y enfoque técnico: La adopción de la arquitectura hexagonal (Puertos y Adaptadores) ha permitido definir una estructura de código que separa claramente la lógica de negocio de las dependencias externas. Esta decisión, combinada con una estrategia híbrida que integra desarrollo tradicional (React, Node.js, SQL Server y Cloudinary) con herramientas complementarias low-code como Power Apps y Power Automate, garantiza:
+Testabilidad: El núcleo de negocio puede probarse de forma aislada con Vitest, sin dependencias de infraestructura.
+Flexibilidad: Los adaptadores (base de datos, pagos, almacenamiento) pueden ser reemplazados sin afectar la lógica central.
+Mantenibilidad: La separación de responsabilidades facilita la evolución del sistema y el trabajo colaborativo.
+Cantidad de código significativa: El desarrollo abarca aproximadamente 5.300 líneas de código distribuidas entre SQL, backend Node.js, frontend React con TypeScript y flujos de Power Automate, cumpliendo con los requisitos académicos de un proyecto de título.
+Viabilidad económica: La estrategia cloud basada en Microsoft Azure, complementada con los créditos para estudiantes del programa Azure for Students ($100 USD), permite mantener los costos operativos cercanos a cero durante la fase de desarrollo y pruebas. El despliegue del frontend React y backend Node.js mediante Azure App Service aprovecha los recursos disponibles dentro del ecosistema Azure. Además, el uso de Cloudinary para almacenamiento de imágenes aprovecha su capa gratuita, mientras que SQL Server Developer Edition se utiliza localmente sin costo durante el desarrollo.
+Metodología y planificación: El modelo en cascada seleccionado se alinea perfectamente con la estructura de evaluación de la asignatura, organizada en fases secuenciales de análisis, desarrollo y pruebas. Las reuniones periódicas (daily stand ups de 15 minutos y sesiones semanales de seguimiento) han permitido mantener la sincronización del equipo y resolver impedimentos oportunamente. La herramienta Jira ha facilitado la gestión de tareas con un tablero organizado por estados (Pendiente, En Progreso, En Revisión, Completado).
+Estado actual del proyecto: 
+Al momento de la elaboración del Informe de Avance N°2, FadeBooker presenta avances importantes tanto en definición técnica como en implementación inicial del sistema.
+Actualmente se encuentran completados los siguientes elementos:
+● Arquitectura hexagonal definida y documentada.
+● Stack tecnológico validado y configurado (React, Node.js, SQL Server, Azure, Stripe y Cloudinary).
+● Repositorio GitHub configurado con estrategia GitFlow.
+● Diseño de base de datos y scripts SQL iniciales.
+● Configuración inicial del backend Node.js con Express.js y autenticación JWT.
+● Desarrollo inicial del frontend React con TypeScript y Axios.
+● Mockups de baja y alta fidelidad desarrollados en Figma.
+● Configuración preliminar de despliegue mediante Docker y Azure App Service.
+● Plan de pruebas definido (unitarias, integración, concurrencia y seguridad).
+● Organización y seguimiento del proyecto mediante Jira.
+
+Actualmente el equipo trabaja en la integración de reservas, disponibilidad, pagos con Stripe y conexión entre frontend y backend, manteniendo el avance alineado con la planificación establecida en la carta Gantt.
+8.2. Próximos Pasos
+Acciones inmediatas post-entrega (2):
+
+Actualmente el proyecto se encuentra en fase avanzada de desarrollo, con la arquitectura definida, el stack tecnológico implementado y los principales módulos funcionales en construcción y validación.
+8.2.1. Preparación para Evaluación Parcial N°2 (31 de marzo al 7 de abril)
+Nicolás: Finalizar documentación técnica de la arquitectura hexagonal, patrones implementados y configuración del backend Node.js con Azure SQL.
+Steve: Completar mockups de alta fidelidad en Figma y apoyar la integración visual del frontend React.
+Fernanda: Revisar coherencia general del informe, validando requerimientos, arquitectura, metodología y plan de pruebas.
+Mauricio: Consolidar documentación técnica, actualizar carta Gantt según el avance real del proyecto y coordinar la preparación de la presentación parcial.
+8.2.2. Próximas reuniones y hitos
+8.2.3. Preparación para la Fase 3 (Implementación y pruebas)
+Una vez aprobada la Fase 2, el equipo continuará con el desarrollo completo y validación del sistema, abarcando las siguientes actividades:
+
+Integración y despliegue: Configuración final de Azure App Service con Docker, despliegue continuo desde GitHub (CI/CD) y pruebas en entorno de staging.
+Plan de pruebas funcionales: Elaboración de casos de prueba por módulo, validación de requisitos levantados en Fase 1 y corrección de defectos detectados.
+Planilla de casos de prueba: Registro de resultados, evidencia de pruebas ejecutadas y mejoras post-validación.
+Control de versiones: Documentación de commits, ramas y versiones en GitHub, asegurando trazabilidad del desarrollo.
+Documentación final: Consolidación de toda la documentación técnica y funcional del proyecto para entrega total.
+8.3. Lecciones Aprendidas y Mejoras Futuras
+Lecciones aprendidas durante la Fase 1 y 2:
+Las reuniones semanales resultaron efectivas para mantener la sincronización, mientras que las sesiones de trabajo conjunto permitieron resolver bloqueos más complejos.
+La evaluación oportuna de Power Pages evidenció limitaciones técnicas incompatibles con los requerimientos del sistema, lo que llevó a migrar a React + Vite, decisión que dotó al frontend de mayor flexibilidad y control sobre el desarrollo.
+El cambio hacia Mercado Pago como pasarela de pago permitió adaptar la solución a una plataforma ampliamente utilizada en el contexto local, mejorando la viabilidad real del sistema.
+8.3.1 Visión de futuro (post-proyecto)
+Más allá de la entrega académica, se han identificado oportunidades de evolución del proyecto que podrían ser abordadas en versiones futuras:
+Servicio de cortes a domicilio, ampliando el alcance de la plataforma.
+Dashboards avanzados con métricas de rendimiento para barberos y dueños.
+Algoritmo de recomendación de cortes basado en forma de rostro y tendencias.
+Integración con API de WhatsApp para notificaciones más directas.
+Sistema de fidelización gamificado con niveles y recompensas.
+
+

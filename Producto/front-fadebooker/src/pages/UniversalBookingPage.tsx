@@ -8,6 +8,7 @@ import { pagoService } from '@/lib/api/pagoService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import { ServicioBarbero, Barbero, Tienda } from '@/types';
 import { PLACEHOLDERS, FALLBACK_URLS } from '@/lib/utils/placeholders';
+import { useNotification } from '@/context/NotificationContext';
 import { 
   Star, 
   Clock, 
@@ -17,7 +18,8 @@ import {
   ArrowRight,
   MapPin,
   ShieldCheck,
-  Scissors
+  Scissors,
+  AlertCircle
 } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -35,11 +37,13 @@ const UniversalBookingPage: React.FC = () => {
   const { id } = useParams(); // id_barbero
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
+  const { showNotification } = useNotification();
   
   const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState<ServicioBarbero | null>(null);
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [selectedTime, setSelectedTime] = useState('');
+  const [paymentType, setPaymentType] = useState<'abono' | 'total'>('abono');
   const [isBooking, setIsBooking] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
 
@@ -102,27 +106,93 @@ const UniversalBookingPage: React.FC = () => {
 
   const handleBooking = async () => {
     if (!isAuthenticated) {
+        showNotification("Debes iniciar sesión para reservar", "warning");
         navigate('/login', { state: { from: `/barbero/${id}` } });
         return;
     }
 
-    if (!user || !selectedService || !selectedDate || !selectedTime || !barber) return;
+    if (!user || !selectedService || !selectedDate || !selectedTime || !barber) {
+        showNotification("Faltan datos para completar la reserva", "warning");
+        return;
+    }
     
     setIsBooking(true);
     try {
-      const cita = await bookingService.crearCita({
-        clienteId: Number(user.id_usuario || user.id),
-        barberoId: Number(barber.id_barbero || barber.id),
-        servicioBarberoId: Number(selectedService.id_servicio_barbero || selectedService.id),
-        fecha: selectedDate,
-        hora: selectedTime,
-      });
+      // Validar IDs antes de enviar
+      const clienteId = Number(user.id_usuario || user.id);
+      const barberoId = Number(barber.id_barbero || barber.id || id);
+      // Intentar obtener id_servicio de varias fuentes
+      const servicioId = Number(selectedService.id_servicio || selectedService.servicio?.id_servicio);
+      // Forzar id_tienda válido (usar el de la tienda si el barbero no lo tiene)
+      const tiendaId = Number(barber.id_tienda || tienda?.id_tienda || tienda?.id || 1);
 
-      // Simplemente marcamos como confirmado por ahora como lo hacía la página del compañero
-      setConfirmed(true);
-    } catch (err) {
+      if (!clienteId || isNaN(clienteId)) {
+        throw new Error("Sesión de usuario no válida. Por favor, vuelve a ingresar.");
+      }
+      
+      if (!barberoId || isNaN(barberoId)) {
+        throw new Error("No se pudo identificar al barbero.");
+      }
+
+      if (!servicioId || isNaN(servicioId)) {
+        throw new Error("Servicio seleccionado no identificado.");
+      }
+
+      if (!tiendaId || isNaN(tiendaId)) {
+        // Si no hay tienda, intentamos usar 1 como fallback final o lanzamos error si es crítico
+        console.warn("[Booking] Tienda no identificada, usando ID default: 1");
+      }
+
+      // Asegurar formato de hora HH:mm:ss
+      let timeStr = selectedTime;
+      if (timeStr.length === 5) timeStr += ":00";
+      
+      // Combinar fecha y hora en formato ISO local
+      const fechaHoraInicio = `${selectedDate}T${timeStr}`;
+      
+      const total = Number(selectedService.precio_barbero || selectedService.precio || selectedService.servicio?.precio_base || 0);
+      const abonoCalculado = paymentType === 'abono' ? total * 0.5 : total;
+
+      const payload = {
+        id_cliente: clienteId,
+        id_barbero: barberoId,
+        id_servicio: servicioId,
+        id_tienda: tiendaId,
+        fecha_hora_inicio: fechaHoraInicio,
+        duracion_minutos: Number(selectedService.tiempo_servicio_minutos || selectedService.duracion || selectedService.servicio?.duracion_minutos || 30),
+        monto_total: total,
+        estado: 'pendiente', // Inicia como pendiente hasta que se pague
+        metodo_pago: 'mercadopago', // Coincide con el esquema de validación
+        origen: 'web_universal',
+        pago_abono: abonoCalculado,
+        tipo_pago_reserva: paymentType, // Campo nuevo
+        notas: ''
+      };
+
+      console.log("[UniversalBookingPage] Payload Final:", payload);
+      
+      const response = await bookingService.crearCita(payload);
+      const id_cita = response.id_cita || response.id;
+
+      showNotification("¡Reserva confirmada! Redirigiendo al pago...", "success");
+      
+      // Esperar un momento para que el usuario lea el mensaje
+      setTimeout(async () => {
+        try {
+          await pagoService.procesarPago(Number(id_cita));
+        } catch (pagoErr) {
+          console.error("Error al iniciar pago:", pagoErr);
+          showNotification("Cita creada, pero no se pudo iniciar el pago. Puedes pagarla en 'Mis Citas'.", "warning");
+          setConfirmed(true);
+        }
+      }, 1500);
+
+    } catch (err: any) {
       console.error("Error al crear cita:", err);
-      alert("No se pudo crear la cita. Por favor intenta de nuevo.");
+      // Extraer mensaje de error del backend si existe (maneja tanto controllers como middleware)
+      const backendError = err.response?.data?.error || err.response?.data?.message;
+      const errorMsg = backendError || err.message || "No se pudo crear la cita. Por favor intenta de nuevo.";
+      showNotification(errorMsg, "error");
     } finally {
       setIsBooking(false);
     }
@@ -204,28 +274,26 @@ const UniversalBookingPage: React.FC = () => {
                 </div>
 
                 <div className="rounded-[3rem] border-4 border-[#3366FF] bg-white p-10 shadow-2xl flex flex-col md:flex-row gap-10 items-center">
-                    <div className="h-64 w-64 overflow-hidden rounded-[3rem] bg-slate-900 shadow-xl">
+                    <div className="h-64 w-64 overflow-hidden rounded-[3rem] bg-slate-100 shadow-xl border-4 border-slate-50">
                         <img
                             src={barber.foto_perfil_url || PLACEHOLDERS.BARBERO}
                             alt={`${barber.nombre} ${barber.apellido}`}
                             className="h-full w-full object-cover"
                             onError={(e) => {
                                 const img = e.target as HTMLImageElement;
-                                if (img.src !== FALLBACK_URLS.BARBERO) img.src = FALLBACK_URLS.BARBERO;
+                                img.src = PLACEHOLDERS.BARBERO;
                             }}
                         />
                     </div>
                     <div className="flex-1 space-y-4 text-center md:text-left">
-                        <div>
-                            <span className="bg-[#3366FF]/10 text-[#3366FF] px-4 py-2 rounded-full text-xs font-black tracking-widest uppercase mb-4 inline-block">
-                                {barber.especialidad || 'Master Barber'}
-                            </span>
-                            <h3 className="text-5xl font-black text-slate-900">{barber.nombre} {barber.apellido}</h3>
-                        </div>
-                        <p className="text-xl text-slate-600 leading-relaxed max-w-xl">
-                            {barber.descripcion || 'Especialista en cortes modernos y estilo clásico con años de experiencia en la industria.'}
+                        <h3 className="text-5xl font-black text-slate-900">{barber.nombre} {barber.apellido}</h3>
+                        <p className="inline-block bg-blue-50 text-[#3366FF] px-6 py-2 rounded-full font-black uppercase tracking-widest text-sm">
+                            {barber.especialidad || 'Estilista Profesional'}
                         </p>
-                        <div className="flex items-center gap-6 justify-center md:justify-start">
+                        <p className="text-xl text-slate-600 leading-relaxed max-w-xl">
+                            {barber.descripcion || 'Especialista en cortes modernos y clásicos con años de experiencia transformando estilos.'}
+                        </p>
+                        <div className="flex items-center gap-6 justify-center md:justify-start pt-4">
                             <div className="flex items-center gap-2">
                                 <Star className="text-yellow-400 fill-yellow-400" size={24} />
                                 <span className="text-2xl font-black text-slate-900">{barber.calificacion_promedio?.toFixed(1) || '4.9'}</span>
@@ -282,17 +350,17 @@ const UniversalBookingPage: React.FC = () => {
                     >
                         <Scissors className={clsx("mb-6", selectedService?.id_servicio_barbero === service.id_servicio_barbero ? 'text-blue-100' : 'text-[#3366FF]')} size={32} />
                         <p className={clsx("text-2xl font-black", selectedService?.id_servicio_barbero === service.id_servicio_barbero ? 'text-white' : 'text-slate-900')}>
-                            {service.servicio?.nombre || service.nombre_servicio}
+                            {service.nombre_servicio || service.servicio?.nombre || service.servicio?.nombre_servicio || 'Servicio'}
                         </p>
                         <p className={clsx("mt-3 text-sm leading-relaxed", selectedService?.id_servicio_barbero === service.id_servicio_barbero ? 'text-blue-100' : 'text-slate-500')}>
-                            {service.servicio?.descripcion || service.descripcion}
+                            {service.descripcion || service.servicio?.descripcion || 'Sin descripción'}
                         </p>
                         <div className="mt-8 flex items-center justify-between">
                             <span className={clsx("text-3xl font-black", selectedService?.id_servicio_barbero === service.id_servicio_barbero ? 'text-white' : 'text-[#3366FF]')}>
-                                {formatMoney(service.precio || service.precio_barbero || service.precio_base || 0)}
+                                {formatMoney(service.precio_barbero || service.precio || service.servicio?.precio_base || 0)}
                             </span>
-                            <div className={clsx("px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest", selectedService?.id_servicio_barbero === service.id_servicio_barbero ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500')}>
-                                {service.duracion || service.duracion_minutos || service.tiempo_servicio_minutos || 30} min
+                            <div className={clsx("px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest", selectedService?.id_servicio_barbero === service.id_servicio_barbero ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500")}>
+                                {service.tiempo_servicio_minutos || service.duracion || service.servicio?.duracion_minutos || 30} min
                             </div>
                         </div>
                     </button>
@@ -437,8 +505,16 @@ const UniversalBookingPage: React.FC = () => {
               <div className="relative z-10 grid gap-12 lg:grid-cols-2">
                 <div className="space-y-8">
                   <div className="flex items-center gap-6">
-                    <div className="h-24 w-24 rounded-3xl bg-slate-100 overflow-hidden shadow-inner">
-                        <img src={barber.foto_perfil_url || PLACEHOLDERS.BARBERO} alt="" className="w-full h-full object-cover" />
+                    <div className="h-24 w-24 rounded-3xl bg-slate-100 overflow-hidden shadow-inner border-2 border-slate-50">
+                        <img 
+                          src={barber.foto_perfil_url || PLACEHOLDERS.BARBERO} 
+                          alt="" 
+                          className="w-full h-full object-cover" 
+                          onError={(e) => {
+                            const img = e.target as HTMLImageElement;
+                            img.src = PLACEHOLDERS.BARBERO;
+                          }}
+                        />
                     </div>
                     <div>
                         <p className="text-sm uppercase tracking-[0.35em] text-slate-400 font-black">Barbero</p>
@@ -448,11 +524,15 @@ const UniversalBookingPage: React.FC = () => {
 
                   <div className="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100">
                     <p className="text-xs uppercase tracking-[0.35em] text-slate-400 font-black mb-4">Servicio seleccionado</p>
-                    <p className="text-2xl font-black text-slate-900">{selectedService?.nombre_servicio || selectedService?.servicio?.nombre_servicio}</p>
+                    <p className="text-2xl font-black text-slate-900">
+                      {selectedService?.nombre_servicio || selectedService?.servicio?.nombre || selectedService?.servicio?.nombre_servicio || 'Servicio'}
+                    </p>
                     <div className="mt-4 flex items-center justify-between">
-                        <span className="text-3xl font-black text-[#3366FF]">{formatMoney(selectedService?.precio_barbero || selectedService?.precio_base || 0)}</span>
+                        <span className="text-3xl font-black text-[#3366FF]">
+                          {formatMoney(selectedService?.precio_barbero || selectedService?.precio || selectedService?.servicio?.precio_base || 0)}
+                        </span>
                         <div className="bg-white px-4 py-2 rounded-xl text-xs font-black text-slate-500 shadow-sm border border-slate-100">
-                            {selectedService?.duracion_minutos || 30} MIN
+                            {selectedService?.tiempo_servicio_minutos || selectedService?.duracion || selectedService?.servicio?.duracion_minutos || 30} MIN
                         </div>
                     </div>
                   </div>
@@ -469,6 +549,41 @@ const UniversalBookingPage: React.FC = () => {
                             <p className="text-xs font-black uppercase tracking-widest text-blue-100 mb-3">Hora</p>
                             <p className="text-3xl font-black">{selectedTime}</p>
                        </div>
+                   </div>
+
+                   {/* Elección de pago configurable */}
+                   <div className="bg-slate-50 p-6 rounded-[2rem] border-2 border-slate-100">
+                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <ShieldCheck size={14} className="text-[#3366FF]" /> Configuración de Pago
+                     </p>
+                     <div className="grid grid-cols-2 gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setPaymentType('abono')}
+                          className={clsx(
+                            "p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-1",
+                            paymentType === 'abono' 
+                              ? "bg-white border-[#3366FF] shadow-md" 
+                              : "bg-transparent border-slate-100 opacity-60 hover:opacity-100"
+                          )}
+                        >
+                          <span className={clsx("text-[10px] font-black", paymentType === 'abono' ? "text-[#3366FF]" : "text-slate-400")}>PAGAR ABONO</span>
+                          <span className="text-sm font-black text-slate-900">50% ({formatMoney((selectedService?.precio_barbero || selectedService?.precio || 0) * 0.5)})</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPaymentType('total')}
+                          className={clsx(
+                            "p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-1",
+                            paymentType === 'total' 
+                              ? "bg-white border-[#3366FF] shadow-md" 
+                              : "bg-transparent border-slate-100 opacity-60 hover:opacity-100"
+                          )}
+                        >
+                          <span className={clsx("text-[10px] font-black", paymentType === 'total' ? "text-[#3366FF]" : "text-slate-400")}>PAGO TOTAL</span>
+                          <span className="text-sm font-black text-slate-900">100% ({formatMoney(selectedService?.precio_barbero || selectedService?.precio || 0)})</span>
+                        </button>
+                     </div>
                    </div>
 
                    <button

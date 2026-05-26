@@ -64,6 +64,23 @@ const BarberoDashboard: React.FC = () => {
         }
     };
 
+    const handleRegisterCashPayment = async (id: number) => {
+        if (!id) return;
+        setIsUpdating(true);
+        try {
+            await bookingService.registrarPagoEfectivo(id);
+            showNotification("Pago registrado correctamente (Efectivo)", "success");
+            setSelectedBooking(null);
+            refetch();
+        } catch (err: any) {
+            console.error("Error al registrar pago:", err);
+            const msg = err.response?.data?.error || "Error al registrar pago";
+            showNotification(msg, "error");
+        } finally {
+            setIsUpdating(false);
+        }
+    };
+
     if (!idBarbero && user?.rol !== 'Dueño') {
         return (
             <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
@@ -248,7 +265,7 @@ const BarberoDashboard: React.FC = () => {
                                             <th className="px-8 py-6">Hora {period !== 'day' && 'y Fecha'}</th>
                                             <th className="px-8 py-6">Cliente</th>
                                             <th className="px-8 py-6">Servicio</th>
-                                            <th className="px-8 py-6">Barbero</th>
+                                            <th className="px-8 py-6">Pago</th>
                                             <th className="px-8 py-6">Estado</th>
                                             <th className="px-8 py-6">Acciones</th>
                                         </tr>
@@ -284,8 +301,14 @@ const BarberoDashboard: React.FC = () => {
                                                     </span>
                                                 </td>
                                                 <td className="px-8 py-8">
-                                                    <span className="font-bold text-[#3366FF]">
-                                                        {booking.barbero_nombre ? `${booking.barbero_nombre} ${booking.barbero_apellido || ''}` : 'Asignado'}
+                                                    <span className={`text-[10px] px-3 py-1.5 rounded-full font-black uppercase border-2 ${
+                                                        booking.estado_pago === 'pagado' 
+                                                        ? 'bg-green-50 text-green-600 border-green-100' 
+                                                        : booking.estado_pago === 'abonado' 
+                                                        ? 'bg-blue-50 text-blue-600 border-blue-100' 
+                                                        : 'bg-slate-50 text-slate-400 border-slate-100'
+                                                    }`}>
+                                                        {booking.estado_pago || 'Pendiente'}
                                                     </span>
                                                 </td>
                                                 <td className="px-8 py-8">
@@ -374,9 +397,35 @@ const BarberoDashboard: React.FC = () => {
                                     <div className="p-6 border-4 border-slate-50 rounded-[2.5rem]">
                                         <p className="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-2">Servicio</p>
                                         <p className="font-black text-slate-900 text-lg">{selectedBooking.servicio_nombre || 'Corte'}</p>
-                                        <p className="text-[#3366FF] font-black">${selectedBooking.monto_total}</p>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <p className="text-[#3366FF] font-black">${selectedBooking.monto_total}</p>
+                                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-black uppercase ${
+                                                selectedBooking.estado_pago === 'pagado' 
+                                                ? 'bg-green-100 text-green-600' 
+                                                : selectedBooking.estado_pago === 'abonado' 
+                                                ? 'bg-blue-100 text-blue-600' 
+                                                : 'bg-slate-100 text-slate-400'
+                                            }`}>
+                                                {selectedBooking.estado_pago || 'Pendiente'}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
+
+                                {selectedBooking.estado_pago !== 'pagado' && selectedBooking.estado !== 'cancelada' && (
+                                    <div className="p-6 bg-[#3366FF]/5 rounded-[2.5rem] border-4 border-[#3366FF]/10">
+                                        <p className="text-[#3366FF] font-black text-[10px] uppercase tracking-widest mb-3 flex items-center gap-2">
+                                            <DollarSign size={14} /> Gestión de Pago
+                                        </p>
+                                        <button 
+                                            disabled={isUpdating}
+                                            onClick={() => handleRegisterCashPayment(selectedBooking.id_cita || selectedBooking.id)}
+                                            className="w-full bg-white text-[#3366FF] border-2 border-[#3366FF] py-3 rounded-xl font-black text-xs hover:bg-[#3366FF] hover:text-white transition-all flex items-center justify-center gap-2"
+                                        >
+                                            <DollarSign size={14} /> MARCAR COMO PAGADO (EFECTIVO)
+                                        </button>
+                                    </div>
+                                )}
 
                                 {selectedBooking.notas && (
                                     <div className="p-6 bg-rose-50/50 rounded-[2.5rem] border-4 border-rose-50">

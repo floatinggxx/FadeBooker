@@ -14,7 +14,7 @@ const citaSchema = z.object({
   duracion_minutos: z.coerce.number().int().positive().optional(),
   notas: z.string().max(500).optional(),
   monto_total: z.coerce.number().positive().optional(),
-  metodo_pago: z.enum(['Efectivo', 'Tarjeta', 'Transferencia']).optional(),
+  metodo_pago: z.string().optional(),
   cliente_nombre: z.string().min(3).optional(),
   cliente_email: z.string().email().optional().or(z.literal('')),
   cliente_telefono: z.string().optional(),

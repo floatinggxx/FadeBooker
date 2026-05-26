@@ -94,7 +94,7 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
         `${fecha} 00:00:00`,
         `${fecha} 23:59:59`
       ])
-      .whereIn('estado', ['confirmada', 'en_progreso', 'completada'])
+      .whereIn('estado', ['confirmada', 'en_progreso', 'completada', 'pendiente'])
       .select('id_cita', 'fecha_hora_inicio', 'duracion_minutos', 'estado')
   }
 
@@ -123,6 +123,29 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
 
   async findByUsuarioId(id_usuario) {
     return db('Barbero').where({ id_usuario }).first()
+  }
+
+  async findById(id_barbero) {
+    const row = await db('Barbero')
+      .leftJoin('Usuario', 'Barbero.id_usuario', '=', 'Usuario.id_usuario')
+      .where({ 'Barbero.id_barbero': id_barbero })
+      .select(
+        'Barbero.id_barbero',
+        'Usuario.id_usuario',
+        'Usuario.nombre',
+        'Usuario.apellido',
+        'Usuario.email',
+        'Usuario.telefono',
+        'Usuario.foto_perfil_url',
+        'Barbero.especialidad',
+        'Barbero.anos_experiencia',
+        'Barbero.tarifa_base',
+        'Barbero.id_tienda',
+        'Barbero.calificacion_promedio',
+        'Barbero.descripcion'
+      )
+      .first()
+    return row
   }
 
   async findAll() {

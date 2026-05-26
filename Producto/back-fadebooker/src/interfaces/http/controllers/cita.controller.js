@@ -11,8 +11,10 @@ const citaService = new CitaService(citaRepository, servicioRepository, usuarioR
 const CitaController = {
   async crear(req, res) {
     try {
-      const citaId = await citaService.crearCita(req.body)
-      res.status(201).json({ id: citaId, mensaje: 'Cita creada exitosamente' })
+      const result = await citaService.crearCita(req.body)
+      // Asegurar que enviamos el ID plano para que el frontend no se confunda
+      const idFinal = typeof result === 'object' ? result.id_cita : result;
+      res.status(201).json({ id: idFinal, mensaje: 'Cita creada exitosamente' })
     } catch (error) {
       console.error('Error al crear cita:', error);
       // Limpiar errores de base de datos para no exponer SQL en la respuesta

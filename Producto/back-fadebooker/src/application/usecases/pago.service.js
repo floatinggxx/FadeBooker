@@ -107,12 +107,9 @@ class PagoService {
           const nuevoAbono = (cita.pago_abono || 0) + pago.monto_pagado;
           const citaUpdate = {
             pago_abono: nuevoAbono,
-            metodo_pago: 'mercadopago'
+            metodo_pago: 'mercadopago',
+            estado: 'confirmada' // Pasar de pendiente a confirmada al pagar
           };
-
-          if (nuevoAbono >= cita.monto_total) {
-            citaUpdate.estado = 'completada';
-          }
 
           await this.citaRepository.update(id_cita, citaUpdate);
         }

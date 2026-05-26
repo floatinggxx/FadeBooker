@@ -68,6 +68,12 @@ export const bookingService = {
     });
   },
 
+  // Registrar pago en efectivo (pago completo)
+  async registrarPagoEfectivo(citaId: number): Promise<any> {
+    const response = await api.post(`/citas/${citaId}/pago-efectivo`);
+    return response.data;
+  },
+
   // Obtener mis citas (alias para listCitas sin parámetros, el backend filtra por JWT)
   async getMyBookings(): Promise<Cita[]> {
     const response = await api.get<Cita[]>('/citas');

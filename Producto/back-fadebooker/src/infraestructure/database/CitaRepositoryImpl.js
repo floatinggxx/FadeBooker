@@ -14,7 +14,15 @@ class CitaRepositoryImpl {
 
   async create(data) {
     console.log('--- DEBUG: Entrando a CitaRepositoryImpl.create (SQL RAW) ---');
-    console.log('--- Datos recibidos:', data);
+    console.log('--- Datos recibidos:', JSON.stringify(data));
+    
+    // Normalizar fecha para SQL Server (YYYY-MM-DD HH:mm:ss)
+    const fechaSQL = data.fecha_hora_inicio.replace('T', ' ').substring(0, 19);
+    
+    // El estado inicial debe ser compatible con el CHECK constraint del Azure SQL
+    // CHK_Cita_Estado CHECK (estado IN ('confirmada', 'cancelada', 'completada', 'no_presentado', 'pendiente'))
+    const estadoInicial = data.estado || 'pendiente';
+
     // Solución específica para Azure SQL con Triggers: 
     // Usar query raw para evitar que Knex agregue "OUTPUT INSERTED.id_cita"
     const result = await this.db.raw(`
@@ -28,28 +36,77 @@ class CitaRepositoryImpl {
       data.id_barbero, 
       data.id_servicio, 
       data.id_tienda, 
-      data.fecha_hora_inicio, 
+      fechaSQL, 
       data.duracion_minutos || 30, 
-      data.estado || 'confirmada', 
-      data.monto_total, 
+      estadoInicial, 
+      data.monto_total || 0, 
       data.pago_abono || 0, 
-      (data.metodo_pago || 'efectivo').toLowerCase(), 
+      (data.metodo_pago || 'mercadopago').toLowerCase(), 
       data.notas || ''
     ]);
     
     console.log('--- Resultado RAW (OUTPUT INTO):', JSON.stringify(result));
     
-    // En MSSQL con Knex y mssql driver, el resultado suele ser un array simple para SELECT
+    // Extracción ultra-robusta del ID para SQL Server (Tedious/Knex)
     let id_cita = null;
-    if (result && Array.isArray(result) && result.length > 0) {
-      id_cita = result[0].id_cita;
-    } else if (result && result[0] && Array.isArray(result[0]) && result[0].length > 0) {
-      id_cita = result[0][0].id_cita;
+    
+    const findIdInObject = (obj) => {
+      if (!obj) return null;
+      if (typeof obj !== 'object') return null;
+      
+      // Búsqueda directa (evitar el valor 0 que a veces devuelve Azure como placeholder)
+      if (obj.id_cita && typeof obj.id_cita === 'number' && obj.id_cita > 0) return obj.id_cita;
+      
+      // Búsqueda en arrays
+      if (Array.isArray(obj)) {
+        for (const item of obj) {
+          const found = findIdInObject(item);
+          if (found) return found;
+        }
+      }
+      
+      // Búsqueda en sub-objetos (como recordset)
+      if (obj.recordset) return findIdInObject(obj.recordset);
+      
+      // Caso especial Azure SQL: Si id_cita es 0, intentar buscar id_cita en otras props del objeto
+      for (const key in obj) {
+        if (key.toLowerCase() === 'id_cita' && obj[key] > 0) return obj[key];
+        if (typeof obj[key] === 'object') {
+           const found = findIdInObject(obj[key]);
+           if (found) return found;
+        }
+      }
+      
+      return null;
+    };
+
+    id_cita = findIdInObject(result);
+    
+    // FALLBACK CRÍTICO: Si la BD devolvió 0 o nada, buscar la última cita creada para este cliente/barbero
+    if (!id_cita || id_cita === 0) {
+      console.log('--- ADVERTENCIA: ID 0 detectado, realizando búsqueda de respaldo ---');
+      const ultimaCita = await this.db('Cita')
+        .where({ id_cliente: data.id_cliente, id_barbero: data.id_barbero })
+        .orderBy('id_cita', 'desc')
+        .first();
+      
+      if (ultimaCita) {
+        id_cita = ultimaCita.id_cita;
+        console.log('--- ID Recuperado de búsqueda de respaldo:', id_cita);
+      }
     }
     
-    if (id_cita === null || id_cita === undefined) {
-      console.error('--- FALLO AL OBTENER ID_CITA. Estructura:', result);
-      throw new Error('No se pudo obtener el ID de la cita insertada');
+    // Si aún no lo encontramos, escaneo por texto como último recurso
+    if (!id_cita && result) {
+       const strResult = JSON.stringify(result);
+       const match = strResult.match(/"id_cita":\s*(\d+)/i);
+       if (match && parseInt(match[1]) > 0) id_cita = parseInt(match[1]);
+    }
+    
+    if (!id_cita) {
+      console.error('--- ERROR CRÍTICO: No se pudo capturar id_cita del resultado SQL ---');
+      console.error('Estructura recibida:', JSON.stringify(result, null, 2));
+      throw new Error('La reserva se guardó en la base de datos, pero el sistema no pudo obtener el número de confirmación. Por favor, refresca la página de "Mis Citas" para verla.');
     }
     
     return id_cita;
@@ -88,12 +145,16 @@ class CitaRepositoryImpl {
       .leftJoin('Servicio as s', 'c.id_servicio', 's.id_servicio')
       .where('c.id_barbero', id_barbero)
     
+    let orderDirection = 'desc';
+
     if (fecha) {
       const fechaLimpia = (typeof fecha === 'string') ? fecha.split('T')[0] : new Date(fecha).toISOString().split('T')[0];
       query.whereRaw('CAST(c.fecha_hora_inicio AS DATE) = ?', [fechaLimpia])
+      orderDirection = 'asc'; // Es una agenda del día
     } else {
       if (period === 'day') {
         query.whereRaw('CAST(c.fecha_hora_inicio AS DATE) = CAST(GETDATE() AS DATE)');
+        orderDirection = 'asc'; // Agenda de hoy
       } else if (period === 'week') {
         query.whereRaw('c.fecha_hora_inicio >= DATEADD(day, -7, GETDATE())');
       } else if (period === 'month') {
@@ -106,7 +167,7 @@ class CitaRepositoryImpl {
       'u_c.nombre as cliente_nombre',
       'u_c.apellido as cliente_apellido',
       's.nombre_servicio as servicio_nombre'
-    ).orderBy('c.fecha_hora_inicio', 'desc')
+    ).orderBy('c.fecha_hora_inicio', orderDirection)
   }
 
   async findByTienda(id_tienda, fecha = null, period = 'day') {
@@ -117,12 +178,16 @@ class CitaRepositoryImpl {
       .leftJoin('Servicio as s', 'c.id_servicio', 's.id_servicio')
       .where('c.id_tienda', id_tienda)
     
+    let orderDirection = 'desc';
+
     if (fecha) {
       const fechaLimpia = (typeof fecha === 'string') ? fecha.split('T')[0] : new Date(fecha).toISOString().split('T')[0];
       query.whereRaw('CAST(c.fecha_hora_inicio AS DATE) = ?', [fechaLimpia])
+      orderDirection = 'asc';
     } else {
       if (period === 'day') {
         query.whereRaw('CAST(c.fecha_hora_inicio AS DATE) = CAST(GETDATE() AS DATE)');
+        orderDirection = 'asc';
       } else if (period === 'week') {
         query.whereRaw('c.fecha_hora_inicio >= DATEADD(day, -7, GETDATE())');
       } else if (period === 'month') {
@@ -137,7 +202,7 @@ class CitaRepositoryImpl {
       'u_b.nombre as barbero_nombre',
       'u_b.apellido as barbero_apellido',
       's.nombre_servicio as servicio_nombre'
-    ).orderBy('c.fecha_hora_inicio', 'desc')
+    ).orderBy('c.fecha_hora_inicio', orderDirection)
   }
 
   async findAll() {
@@ -171,14 +236,34 @@ class CitaRepositoryImpl {
     }
 
     const result = await query.select(
-      this.db.raw('SUM(monto_total) as ingresos'),
+      this.db.raw('ISNULL(SUM(monto_total), 0) as ingresos'),
       this.db.raw('COUNT(*) as totalServicios')
     ).first();
+
+    // Obtener tendencia diaria para el periodo
+    let trendQuery = this.db('Cita')
+      .where({ id_barbero })
+      .whereIn('estado', ['confirmada', 'completada']);
+
+    if (period === 'day') {
+      trendQuery.whereRaw('CAST(fecha_hora_inicio AS DATE) = CAST(GETDATE() AS DATE)');
+    } else if (period === 'week') {
+      trendQuery.whereRaw('fecha_hora_inicio >= DATEADD(day, -7, GETDATE())');
+    } else if (period === 'month') {
+      trendQuery.whereRaw('fecha_hora_inicio >= DATEADD(month, -1, GETDATE())');
+    }
+
+    const trend = await trendQuery
+      .select(this.db.raw('CAST(fecha_hora_inicio AS DATE) as fecha'))
+      .sum('monto_total as ingresos')
+      .groupByRaw('CAST(fecha_hora_inicio AS DATE)')
+      .orderBy('fecha', 'asc');
 
     return {
       ingresos: result?.ingresos || 0,
       totalServicios: result?.totalServicios || 0,
-      period
+      period,
+      trend
     };
   }
 
@@ -186,13 +271,15 @@ class CitaRepositoryImpl {
     const inicio = new Date(fecha_hora_inicio);
     const fin = new Date(inicio.getTime() + duracion_minutos * 60000);
     
-    // Convertir a formato compatible con SQL
+    // Convertir a formato compatible con SQL (YYYY-MM-DD HH:mm:ss)
     const inicioStr = inicio.toISOString().replace('T', ' ').substring(0, 19);
     const finStr = fin.toISOString().replace('T', ' ').substring(0, 19);
 
+    console.log(`[Disponibilidad] Verificando para barbero ${id_barbero} entre ${inicioStr} y ${finStr}`);
+
     const solapamientos = await this.db('Cita')
-      .where('id_barbero', id_barbero)
-      .whereIn('estado', ['confirmada', 'no_presentado', 'completada'])
+      .where('id_barbero', id_barbero) // FILTRO CRÍTICO POR BARBERO
+      .whereIn('estado', ['confirmada', 'no_presentado', 'completada', 'pendiente'])
       .where(function() {
         this.where(function() {
           this.where('fecha_hora_inicio', '>=', inicioStr)
@@ -206,10 +293,10 @@ class CitaRepositoryImpl {
           this.where('fecha_hora_inicio', '<=', inicioStr)
             .andWhereRaw('DATEADD(minute, duracion_minutos, fecha_hora_inicio) >= ?', [finStr])
         })
-      })
-      .select('id_cita')
+      });
 
-    return solapamientos.length === 0
+    console.log(`[Disponibilidad] Solapamientos encontrados para barbero ${id_barbero}:`, solapamientos.length);
+    return solapamientos.length === 0;
   }
 
   async findAll() {
@@ -222,8 +309,9 @@ class CitaRepositoryImpl {
 
   async autoCompletarCitasVencidas() {
     return this.db('Cita')
-      .where('estado', 'confirmada')
-      .whereRaw('DATEADD(minute, duracion_minutos, fecha_hora_inicio) < GETDATE()')
+      .where('estado', 'confirmada') // SOLO completar las pagadas (confirmadas)
+      // Solo completar si ya pasó el tiempo de inicio + duración del servicio
+      .whereRaw('DATEADD(minute, duracion_minutos, fecha_hora_inicio) <= GETDATE()')
       .update({
         estado: 'completada',
         updatedAt: this.db.raw('GETDATE()')
@@ -296,11 +384,11 @@ class CitaRepositoryImpl {
     const hoy = new Date();
     const hoyISO = hoy.toISOString().split('T')[0];
 
-    // 1. Ingresos de hoy (confirmadas o finalizadas)
+    // 1. Ingresos de hoy (confirmadas o completadas)
     const ingresos = await this.db('Cita')
       .where('id_tienda', id_tienda)
       .whereRaw("CONVERT(DATE, fecha_hora_inicio) = ?", [hoyISO])
-      .whereIn('estado', ['confirmada', 'finalizado', 'completada'])
+      .whereIn('estado', ['confirmada', 'completada'])
       .sum('monto_total as total');
 
     // 2. Servicios de hoy
@@ -315,7 +403,7 @@ class CitaRepositoryImpl {
       .join('Servicio', 'Cita.id_servicio', '=', 'Servicio.id_servicio')
       .where('Cita.id_tienda', id_tienda)
       .where('Cita.fecha_hora_inicio', '>=', hoy.toISOString())
-      .where('Cita.estado', 'confirmada')
+      .whereIn('Cita.estado', ['confirmada', 'pendiente'])
       .orderBy('Cita.fecha_hora_inicio', 'asc')
       .select(
         'Cita.fecha_hora_inicio',
@@ -327,7 +415,9 @@ class CitaRepositoryImpl {
     return {
       ingresosHoy: ingresos[0].total || 0,
       serviciosHoy: serviciosCount[0].total || 0,
-      proximaCita: proxima || null
+      proximaCita: proxima || null,
+      ingresos: ingresos[0].total || 0, // Aliases para compatibilidad frontend
+      totalServicios: serviciosCount[0].total || 0
     };
   }
 

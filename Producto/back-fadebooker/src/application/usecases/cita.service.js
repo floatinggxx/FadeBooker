@@ -74,7 +74,7 @@ class CitaService {
       ...data,
       id_cliente, // Usamos el ID resuelto
       duracion_minutos: duracion,
-      estado: 'confirmada'
+      estado: data.estado || 'pendiente'
     })
 
     // 6. Enviar a Power Automate (Notificación de agendamiento)
@@ -87,7 +87,7 @@ class CitaService {
     }
 
     // Retornamos el ID o el objeto completo si fuera necesario
-    return { id_cita, ...data, duracion_minutos: duracion, estado: 'confirmada' }
+    return id_cita;
   }
 
   async actualizarEstado(id, estado, motivo = null) {

@@ -1,50 +1,48 @@
-import axios from 'axios';
-import { Tienda } from '../types';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+import api from '../api';
+import { Tienda } from '@/types';
 
 export const tiendaService = {
   listTiendas: async (ciudad?: string): Promise<Tienda[]> => {
     const params = ciudad ? { ciudad } : {};
-    const response = await axios.get(`${API_URL}/tiendas`, { params });
+    const response = await api.get('/tiendas', { params });
     return response.data;
   },
 
   getTiendaById: async (id: string | number): Promise<Tienda> => {
-    const response = await axios.get(`${API_URL}/tiendas/${id}`);
+    const response = await api.get(`/tiendas/${id}`);
     return response.data;
   },
 
   getBarberosByTienda: async (id: string | number): Promise<any[]> => {
-    const response = await axios.get(`${API_URL}/tiendas/${id}/barberos`);
+    const response = await api.get(`/tiendas/${id}/barberos`);
     return response.data;
   },
 
   getResenasByTienda: async (id: string | number): Promise<any[]> => {
-    const response = await axios.get(`${API_URL}/tiendas/${id}/resenas`);
+    const response = await api.get(`/tiendas/${id}/resenas`);
     return response.data;
   },
 
   listCiudades: async (): Promise<string[]> => {
     // Podríamos tener un endpoint específico o deducirlo de las tiendas
-    const response = await axios.get(`${API_URL}/tiendas`);
+    const response = await api.get('/tiendas');
     const tiendas: Tienda[] = response.data;
     const ciudades = Array.from(new Set(tiendas.map(t => t.ciudad)));
     return ciudades.sort();
   },
 
   updateTienda: async (id: string | number, data: Partial<Tienda>): Promise<Tienda> => {
-    const response = await axios.put(`${API_URL}/tiendas/${id}`, data);
+    const response = await api.put(`/tiendas/${id}`, data);
     return response.data;
   },
 
   updateTiendaPhoto: async (id: string | number, image: string): Promise<{ fotoUrl: string }> => {
-    const response = await axios.post(`${API_URL}/tiendas/${id}/foto`, { image });
+    const response = await api.post(`/tiendas/${id}/foto`, { image });
     return response.data;
   },
 
   updateTiendaGallery: async (id: string | number, image: string): Promise<{ fotoUrl: string }> => {
-    const response = await axios.post(`${API_URL}/tiendas/${id}/galeria`, { image });
+    const response = await api.post(`/tiendas/${id}/galeria`, { image });
     return response.data;
   }
 };

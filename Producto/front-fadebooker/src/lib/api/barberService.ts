@@ -122,5 +122,11 @@ export const barberService = {
   // Remover un servicio de un barbero
   async removerServicio(barberoId: number, servicioId: number): Promise<void> {
     await api.delete(`/barberos/${barberoId}/servicios/${servicioId}`);
+  },
+
+  // Actualizar foto del barbero
+  async actualizarFoto(barberoId: number, image: string): Promise<{ fotoUrl: string }> {
+    const response = await api.post<{ fotoUrl: string }>(`/barberos/${barberoId}/foto`, { image });
+    return response.data;
   }
 };

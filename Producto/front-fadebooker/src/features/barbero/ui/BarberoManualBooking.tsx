@@ -103,6 +103,7 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
                 id_tienda: finalIdTienda,
                 fecha_hora_inicio: `${formData.fecha} ${formData.hora}:00`,
                 monto_total: selectedService?.precio_barbero || selectedService?.precio_base || 0,
+                estado: 'confirmada',
                 origen: 'manual'
             });
             onSuccess();

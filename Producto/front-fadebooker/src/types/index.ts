@@ -118,12 +118,17 @@ export interface Cita {
 }
 
 export interface CreateCitaRequest {
-  clienteId: number;
-  barberoId: number;
-  servicioBarberoId: number;
-  fecha: string;
-  hora: string;
+  id_cliente: number;
+  id_barbero: number;
+  id_servicio: number;
+  id_tienda: number;
+  fecha_hora_inicio: string;
+  duracion_minutos: number;
+  monto_total: number;
+  metodo_pago?: string;
+  pago_abono?: number;
   notas?: string;
+  origen?: string;
 }
 
 // Clientes

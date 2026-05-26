@@ -15,6 +15,17 @@ const TiendaConfig: React.FC = () => {
     const [isUploadingLogo, setIsUploadingLogo] = useState(false);
     const [isUploadingGallery, setIsUploadingGallery] = useState(false);
     const [gallery, setGallery] = useState<string[]>([]);
+    const [ selectedDays, setSelectedDays ] = useState<string[]>([]);
+
+    const daysOfWeek = [
+        { id: 'Lunes', label: 'L' },
+        { id: 'Martes', label: 'M' },
+        { id: 'Miércoles', label: 'M' },
+        { id: 'Jueves', label: 'J' },
+        { id: 'Viernes', label: 'V' },
+        { id: 'Sábado', label: 'S' },
+        { id: 'Domingo', label: 'D' }
+    ];
 
     const { register, handleSubmit, reset, setValue } = useForm<Partial<Tienda>>();
 
@@ -26,6 +37,10 @@ const TiendaConfig: React.FC = () => {
                     setTienda(data);
                     reset(data);
                     
+                    if (data.dias_laborales) {
+                        setSelectedDays(data.dias_laborales.split(',').map(d => d.trim()));
+                    }
+
                     // Cargar galería desde JSON si existe
                     if (data.galeria) {
                         try {
@@ -52,6 +67,12 @@ const TiendaConfig: React.FC = () => {
         fetchTienda();
     }, [user, reset]);
 
+    const toggleDay = (day: string) => {
+        setSelectedDays(prev => 
+            prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
+        );
+    };
+
     const onSubmit = async (data: Partial<Tienda>) => {
         if (!user?.id_tienda) return;
         setIsSaving(true);
@@ -71,6 +92,7 @@ const TiendaConfig: React.FC = () => {
 
             const updateData = {
                 ...cleanData,
+                dias_laborales: selectedDays.join(', '),
                 galeria: JSON.stringify(gallery)
             };
 
@@ -210,13 +232,27 @@ const TiendaConfig: React.FC = () => {
                             </div>
                             
                             <div className="pt-4 border-t border-slate-200">
-                                <label htmlFor="dias_laborales" className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Días Laborales</label>
-                                <input 
-                                    id="dias_laborales"
-                                    {...register('dias_laborales')}
-                                    className="w-full p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-600 text-xs focus:ring-2 focus:ring-blue-200 outline-none"
-                                    placeholder="Lunes a Sábado"
-                                />
+                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4">Días Laborales</label>
+                                <div className="flex flex-wrap gap-2">
+                                    {daysOfWeek.map(day => (
+                                        <button
+                                            key={day.id}
+                                            type="button"
+                                            onClick={() => toggleDay(day.id)}
+                                            title={day.id}
+                                            className={`w-10 h-10 rounded-xl font-black text-xs flex items-center justify-center transition-all border-2 ${
+                                                selectedDays.includes(day.id)
+                                                    ? 'bg-[#3366FF] border-[#3366FF] text-white shadow-lg shadow-blue-100'
+                                                    : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200'
+                                            }`}
+                                        >
+                                            {day.label}
+                                        </button>
+                                    ))}
+                                </div>
+                                <p className="text-[9px] text-slate-400 font-bold mt-3 italic">
+                                    {selectedDays.length > 0 ? `Abierto: ${selectedDays.join(', ')}` : 'Ningún día seleccionado'}
+                                </p>
                             </div>
                         </div>
                     </div>
