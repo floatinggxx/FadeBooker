@@ -40,35 +40,45 @@ class BarberoService {
   }
 
   async obtenerDisponibilidadBarbero(id_barbero, fecha) {
-    const citas = await this.barberoRepository.obtenerDisponibilidad(id_barbero, fecha);
+    const [citas, horarios] = await Promise.all([
+      this.barberoRepository.obtenerDisponibilidad(id_barbero, fecha),
+      this.barberoRepository.obtenerHorariosTienda(id_barbero)
+    ]);
     
     const slots = [];
-    const inicio = 9; // 09:00
-    const fin = 21;   // Extender a 21:00 para más flexibilidad
     
-    for (let hora = inicio; hora < fin; hora++) {
-      for (let min of ['00', '30']) {
-        const slotHora = hora;
-        const slotMin = parseInt(min);
-        const slotDate = new Date(`${fecha}T${slotHora.toString().padStart(2, '0')}:${min}:00`);
-        const slotTime = slotDate.getTime();
+    // Parsear horarios de la tienda
+    const horaApertura = parseInt(horarios.horario_apertura.split(':')[0]);
+    const minApertura = parseInt(horarios.horario_apertura.split(':')[1]) || 0;
+    const horaCierre = parseInt(horarios.horario_cierre.split(':')[0]);
+    const minCierre = parseInt(horarios.horario_cierre.split(':')[1]) || 0;
+
+    const startMinutes = horaApertura * 60 + minApertura;
+    const endMinutes = horaCierre * 60 + minCierre;
+
+    for (let totalMin = startMinutes; totalMin < endMinutes; totalMin += 30) {
+      const hora = Math.floor(totalMin / 60);
+      const min = totalMin % 60;
+      
+      const slotTimeStr = `${hora.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}:00`;
+      const slotDate = new Date(`${fecha}T${slotTimeStr}`);
+      const slotTime = slotDate.getTime();
         
-        // Un slot de 30 min está ocupado si alguna cita se solapa con él
-        const citaOcupante = citas.find(cita => {
-          const citaInicio = new Date(cita.fecha_hora_inicio).getTime();
-          const citaFin = citaInicio + (cita.duracion_minutos || 30) * 60000;
-          const slotFin = slotTime + 30 * 60000;
+      // Un slot de 30 min está ocupado si alguna cita se solapa con él
+      const citaOcupante = citas.find(cita => {
+        const citaInicio = new Date(cita.fecha_hora_inicio).getTime();
+        const citaFin = citaInicio + (cita.duracion_minutos || 30) * 60000;
+        const slotFin = slotTime + 30 * 60000;
 
-          // Solapamiento: (SlotInicio < CitaFin) AND (SlotFin > CitaInicio)
-          return (slotTime < citaFin) && (slotFin > citaInicio);
-        });
+        // Solapamiento: (SlotInicio < CitaFin) AND (SlotFin > CitaInicio)
+        return (slotTime < citaFin) && (slotFin > citaInicio);
+      });
 
-        slots.push({
-          hora: `${hora.toString().padStart(2, '0')}:${min}:00`,
-          disponible: !citaOcupante,
-          detalle: citaOcupante ? `Cita ${citaOcupante.estado}` : null
-        });
-      }
+      slots.push({
+        hora: slotTimeStr,
+        disponible: !citaOcupante,
+        detalle: citaOcupante ? `Cita ${citaOcupante.estado}` : null
+      });
     }
     
     return slots;

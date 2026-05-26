@@ -121,6 +121,10 @@ class CitaService {
     return result
   }
 
+  async registrarPagoEfectivo(id) {
+    return this.citaRepository.registrarPagoEfectivo(id);
+  }
+
   async enviarReservaPowerAutomate(id_cita) {
     const cita = await this.citaRepository.findByIdConDetalles(id_cita)
     if (!cita) {

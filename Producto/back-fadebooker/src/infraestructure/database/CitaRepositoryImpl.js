@@ -225,7 +225,10 @@ class CitaRepositoryImpl {
   async getStats(id_barbero, period = 'day') {
     let query = this.db('Cita')
       .where({ id_barbero })
-      .whereIn('estado', ['confirmada', 'completada']);
+      .where(function() {
+        this.whereIn('estado', ['confirmada', 'completada'])
+          .orWhere('estado_pago', 'pagado')
+      });
 
     if (period === 'day') {
       query.whereRaw('CAST(fecha_hora_inicio AS DATE) = CAST(GETDATE() AS DATE)');
@@ -236,14 +239,17 @@ class CitaRepositoryImpl {
     }
 
     const result = await query.select(
-      this.db.raw('ISNULL(SUM(monto_total), 0) as ingresos'),
+      this.db.raw('ISNULL(SUM(pago_abono), 0) as ingresos'),
       this.db.raw('COUNT(*) as totalServicios')
     ).first();
 
     // Obtener tendencia diaria para el periodo
     let trendQuery = this.db('Cita')
       .where({ id_barbero })
-      .whereIn('estado', ['confirmada', 'completada']);
+      .where(function() {
+        this.whereIn('estado', ['confirmada', 'completada'])
+          .orWhere('estado_pago', 'pagado')
+      });
 
     if (period === 'day') {
       trendQuery.whereRaw('CAST(fecha_hora_inicio AS DATE) = CAST(GETDATE() AS DATE)');
@@ -305,6 +311,22 @@ class CitaRepositoryImpl {
 
   async update(id, data) {
     return this.db('Cita').where({ id_cita: id }).update(data)
+  }
+
+  async registrarPagoEfectivo(id) {
+    // 1. Obtener la cita para conocer el monto total
+    const cita = await this.db('Cita').where({ id_cita: id }).first();
+    if (!cita) throw new Error('Cita no encontrada');
+
+    // 2. Actualizar estado_pago a 'pagado' y pago_abono al total (ya que se pagó completo)
+    // Además, cambiar estado a 'confirmada' al estar ya pagada
+    return this.db('Cita').where({ id_cita: id }).update({
+      estado: 'confirmada',
+      estado_pago: 'pagado',
+      pago_abono: cita.monto_total,
+      metodo_pago: 'Efectivo',
+      updatedAt: this.db.raw('GETDATE()')
+    });
   }
 
   async autoCompletarCitasVencidas() {

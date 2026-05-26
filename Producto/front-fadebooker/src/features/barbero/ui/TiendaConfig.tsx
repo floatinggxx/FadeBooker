@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { tiendaService } from '@/lib/api/tiendaService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import { useNotification } from '@/context/NotificationContext';
-import { Store, MapPin, Camera, Save, RefreshCw, Image as ImageIcon, Plus, Trash2, Clock } from 'lucide-react';
+import { Store, MapPin, Camera, Save, RefreshCw, Image as ImageIcon, Plus, Trash2, Clock, ShieldCheck, Calendar } from 'lucide-react';
 import { Tienda } from '@/types';
 
 const TiendaConfig: React.FC = () => {
@@ -34,11 +34,20 @@ const TiendaConfig: React.FC = () => {
             if (user?.id_tienda) {
                 try {
                     const data = await tiendaService.getTiendaById(user.id_tienda);
-                    setTienda(data);
-                    reset(data);
                     
-                    if (data.dias_laborales) {
-                        setSelectedDays(data.dias_laborales.split(',').map(d => d.trim()));
+                    // Formatear datos para el formulario (defaults 10:00 - 20:00)
+                    const formattedData = {
+                        ...data,
+                        horario_apertura: data.horario_apertura ? data.horario_apertura.substring(0, 5) : '10:00',
+                        horario_cierre: data.horario_cierre ? data.horario_cierre.substring(0, 5) : '20:00',
+                        dias_laborales: data.dias_laborales || 'Lunes, Martes, Miércoles, Jueves, Viernes, Sábado'
+                    };
+
+                    setTienda(formattedData);
+                    reset(formattedData);
+                    
+                    if (formattedData.dias_laborales) {
+                        setSelectedDays(formattedData.dias_laborales.split(',').map(d => d.trim()));
                     }
 
                     // Cargar galería desde JSON si existe
@@ -205,54 +214,81 @@ const TiendaConfig: React.FC = () => {
                         </div>
                     </div>
 
-                    <div className="bg-slate-50 p-8 rounded-[2.5rem] border-4 border-white shadow-xl" aria-labelledby="hours-heading">
+                    <div className="bg-[#F8FAFC] p-8 rounded-[3rem] border-4 border-white shadow-xl relative overflow-hidden" aria-labelledby="hours-heading">
+                        <div className="absolute top-0 right-0 p-4 opacity-5">
+                            <Clock size={80} className="text-[#3366FF]" />
+                        </div>
+                        
                         <h3 id="hours-heading" className="font-black text-slate-900 text-sm uppercase mb-6 flex items-center gap-2">
-                            <RefreshCw size={16} className="text-[#3366FF]" aria-hidden="true" /> Horarios de Atención
+                            <Clock size={18} className="text-[#3366FF]" aria-hidden="true" /> Horarios de Atención
                         </h3>
-                        <div className="space-y-4">
+                        
+                        <div className="space-y-6">
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                    <label htmlFor="horario_apertura" className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Apertura</label>
+                                <div className="space-y-2">
+                                    <label htmlFor="horario_apertura" className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> Abre a las
+                                    </label>
                                     <input 
                                         id="horario_apertura"
                                         type="time"
                                         {...register('horario_apertura')}
-                                        className="w-full p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-600 text-xs focus:ring-2 focus:ring-blue-200 outline-none"
+                                        className="w-full p-4 bg-white border-2 border-slate-100 rounded-[1.5rem] font-black text-slate-700 text-lg focus:ring-4 focus:ring-blue-100 focus:border-[#3366FF] outline-none transition-all"
                                     />
                                 </div>
-                                <div className="space-y-1">
-                                    <label htmlFor="horario_cierre" className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Cierre</label>
+                                <div className="space-y-2">
+                                    <label htmlFor="horario_cierre" className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div> Cierra a las
+                                    </label>
                                     <input 
                                         id="horario_cierre"
                                         type="time"
                                         {...register('horario_cierre')}
-                                        className="w-full p-3 bg-white border border-slate-200 rounded-xl font-bold text-slate-600 text-xs focus:ring-2 focus:ring-blue-200 outline-none"
+                                        className="w-full p-4 bg-white border-2 border-slate-100 rounded-[1.5rem] font-black text-slate-700 text-lg focus:ring-4 focus:ring-blue-100 focus:border-[#3366FF] outline-none transition-all"
                                     />
                                 </div>
                             </div>
+
+                            <div className="bg-blue-50/50 p-4 rounded-2xl border border-blue-100/50">
+                                <p className="text-[10px] text-[#3366FF] font-black uppercase tracking-widest mb-1 flex items-center gap-2">
+                                    <ShieldCheck size={14} /> Gestión de Disponibilidad
+                                </p>
+                                <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
+                                    Estos horarios definen los bloques de citas que verán tus clientes al reservar.
+                                </p>
+                            </div>
                             
-                            <div className="pt-4 border-t border-slate-200">
+                            <div className="pt-6 border-t border-slate-200">
                                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4">Días Laborales</label>
-                                <div className="flex flex-wrap gap-2">
+                                <div className="grid grid-cols-4 gap-2">
                                     {daysOfWeek.map(day => (
                                         <button
                                             key={day.id}
                                             type="button"
                                             onClick={() => toggleDay(day.id)}
                                             title={day.id}
-                                            className={`w-10 h-10 rounded-xl font-black text-xs flex items-center justify-center transition-all border-2 ${
+                                            className={`h-12 rounded-2xl font-black text-xs flex items-center justify-center transition-all border-2 ${
                                                 selectedDays.includes(day.id)
-                                                    ? 'bg-[#3366FF] border-[#3366FF] text-white shadow-lg shadow-blue-100'
-                                                    : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200'
+                                                    ? 'bg-[#3366FF] border-[#3366FF] text-white shadow-lg shadow-blue-100/50'
+                                                    : 'bg-white border-slate-100 text-slate-400 hover:border-slate-300'
                                             }`}
                                         >
                                             {day.label}
                                         </button>
                                     ))}
                                 </div>
-                                <p className="text-[9px] text-slate-400 font-bold mt-3 italic">
-                                    {selectedDays.length > 0 ? `Abierto: ${selectedDays.join(', ')}` : 'Ningún día seleccionado'}
-                                </p>
+                                
+                                <div className="mt-6 flex items-start gap-3 p-4 bg-white rounded-2xl border border-slate-100">
+                                    <Calendar className="text-slate-400 mt-0.5" size={16} />
+                                    <div>
+                                        <p className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-1">Resumen semanal</p>
+                                        <p className="text-[11px] text-slate-500 font-bold">
+                                            {selectedDays.length === 7 ? 'Abierto todos los días' : 
+                                             selectedDays.length === 0 ? 'Sin días configurados' :
+                                             `Abierto ${selectedDays.length} días de la semana`}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -98,6 +98,33 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
       .select('id_cita', 'fecha_hora_inicio', 'duracion_minutos', 'estado')
   }
 
+  /**
+   * Obtiene los horarios de apertura y cierre de la tienda a la que pertenece el barbero
+   * @param {number} id_barbero - ID del barbero
+   * @returns {Promise<{horario_apertura: string, horario_cierre: string}>}
+   */
+  async obtenerHorariosTienda(id_barbero) {
+    const tienda = await db('Tienda')
+      .join('Barbero', 'Tienda.id_tienda', '=', 'Barbero.id_tienda')
+      .where('Barbero.id_barbero', id_barbero)
+      .select('Tienda.horario_apertura', 'Tienda.horario_cierre')
+      .first();
+    
+    // Valores por defecto si no se encuentran
+    if (!tienda) {
+      return { horario_apertura: '09:00:00', horario_cierre: '20:00:00' };
+    }
+    
+    // Convertir de objeto Date/Time a string si es necesario (Knex con Tedious a veces lo hace)
+    let apertura = tienda.horario_apertura;
+    let cierre = tienda.horario_cierre;
+
+    if (apertura instanceof Date) apertura = apertura.toTimeString().split(' ')[0];
+    if (cierre instanceof Date) cierre = cierre.toTimeString().split(' ')[0];
+
+    return { horario_apertura: apertura, horario_cierre: cierre };
+  }
+
   async findByTienda(id_tienda) {
     return db('Barbero')
       .leftJoin('Usuario', 'Barbero.id_usuario', '=', 'Usuario.id_usuario')

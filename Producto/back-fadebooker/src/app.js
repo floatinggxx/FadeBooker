@@ -63,6 +63,7 @@ app.get('/api-docs', (req, res) => {
   `);
 });
 
+// Sincronización de rutas y estados de pago
 app.use('/api', routes)
 
 // Middleware de manejo de errores global

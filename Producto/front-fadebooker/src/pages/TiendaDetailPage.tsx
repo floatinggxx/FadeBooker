@@ -104,8 +104,14 @@ const TiendaDetailPage: React.FC = () => {
                     <div className="p-2 bg-rose-500/20 rounded-xl text-rose-400"><Clock size={20} /></div>
                     <span className="text-xs uppercase tracking-[0.35em] text-slate-500 font-black">Horario</span>
                   </div>
-                  <p className="text-lg font-bold text-white mb-1">Lun - Sáb</p>
-                  <p className="text-slate-400 font-medium">09:00 - 19:00</p>
+                  <p className="text-lg font-bold text-white mb-1">
+                    {tiendaData.dias_laborales 
+                      ? (tiendaData.dias_laborales.length > 20 ? tiendaData.dias_laborales.substring(0, 17) + '...' : tiendaData.dias_laborales)
+                      : 'Lunes a Sábado'}
+                  </p>
+                  <p className="text-slate-400 font-medium">
+                    {tiendaData.horario_apertura ? tiendaData.horario_apertura.substring(0, 5) : '10:00'} - {tiendaData.horario_cierre ? tiendaData.horario_cierre.substring(0, 5) : '20:00'}
+                  </p>
                 </div>
               </div>
 

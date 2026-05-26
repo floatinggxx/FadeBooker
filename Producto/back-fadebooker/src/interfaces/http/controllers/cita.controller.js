@@ -108,6 +108,18 @@ const CitaController = {
     }
   },
 
+  async registrarPagoEfectivo(req, res) {
+    try {
+      const { id } = req.params
+      console.log(`[CitaController] Registrando pago en EFECTIVO para cita ID=${id}`);
+      await citaService.registrarPagoEfectivo(id)
+      res.json({ mensaje: 'Pago en efectivo registrado correctamente' })
+    } catch (error) {
+      console.error(`[CitaController] Error al registrar pago en efectivo:`, error.message);
+      res.status(400).json({ error: error.message })
+    }
+  },
+
   async eliminar(req, res) {
     try {
       const { id } = req.params
