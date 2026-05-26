@@ -4,35 +4,35 @@ Este diagrama representa el flujo de datos y la organización de patrones de dis
 
 ```mermaid
 graph TD
-    subgraph "Capas de Arquitectura Hexagonal"
+    subgraph Capas_de_Arquitectura_Hexagonal [Capas de Arquitectura Hexagonal]
         direction TB
 
-        subgraph "1. LÍNEA DE ENTRADA (Interfaces/HTTP)"
-            A[Request HTTP /api] --> B{Middlewares}
-            B -- Valida JWT/Zod --> C[Controllers]
+        subgraph Entrada [1. LÍNEA DE ENTRADA]
+            A[Request HTTP] --> B{Middlewares}
+            B --> C[Controllers]
         end
 
-        subgraph "2. CORAZÓN DE NEGOCIO (Application)"
-            C --> D[Use Cases / Services]
-            D -- Reglas de Negocio --> E[Lógica de Dominio]
+        subgraph Application [2. CORAZÓN DE NEGOCIO]
+            C --> D[Services / Use Cases]
+            D --> E[Lógica de Dominio]
         end
 
-        subgraph "3. ADAPTADORES (Infrastructure)"
-            D -- Puerto/Interfaz --> F[Repository Implementation]
-            D -- Puerto/Interfaz --> G[Adapter Pago/Cloud]
+        subgraph Infrastructure [3. ADAPTADORES]
+            D --> F[Repository Impl]
+            D --> G[External Adapters]
         end
 
-        subgraph "4. EXTERIOR (Data Source)"
-            F --> H[(Azure SQL / Knex.js)]
-            G --> I[Mercado Pago SDK]
-            G --> J[Cloudinary API]
+        subgraph Data_Source [4. EXTERIOR]
+            F --> H[(Azure SQL)]
+            G --> I[Mercado Pago]
+            G --> J[Cloudinary]
         end
     end
 
-    style E fill:#f96,stroke:#333,stroke-width:4px
-    style D fill:#bbf,stroke:#333,stroke-width:2px
-    style C fill:#dfd,stroke:#333,stroke-width:2px
-    style H fill:#fff,stroke:#333,stroke-dasharray: 5 5
+    classDef default fill:#fff,stroke:#333,stroke-width:1px;
+    class E fill:#f96,stroke:#333,stroke-width:4px;
+    class D fill:#bbf,stroke:#333,stroke-width:2px;
+    class C fill:#dfd,stroke:#333,stroke-width:2px;
 ```
 
 ### 📝 Resumen Técnico para Presentación
