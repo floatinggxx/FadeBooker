@@ -35,6 +35,9 @@ app.get('/docs/swagger.json', (req, res) => {
 app.get('/docs/openapi.yaml', (req, res) => {
   res.sendFile(path.join(docsPath, 'openapi.yaml'));
 });
+app.get('/docs/swagger_powerapps.json', (req, res) => {
+  res.sendFile(path.join(docsPath, 'swagger_powerapps.json'));
+});
 
 // Interfaz visual de Swagger
 app.get('/api-docs', (req, res) => {

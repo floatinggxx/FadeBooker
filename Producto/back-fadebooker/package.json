@@ -1,6 +1,6 @@
 {
   "name": "fadebooker-backend",
-  "version": "1.0.0",
+  "version": "1.11.0",
   "description": "Backend en Node de FadeBooker.",
   "main": "src/index.js",
   "scripts": {

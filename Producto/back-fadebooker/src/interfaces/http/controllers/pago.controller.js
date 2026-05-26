@@ -7,7 +7,7 @@ const citaRepository = new CitaRepositoryImpl();
 const pagoService = new PagoService(pagoRepository, citaRepository);
 
 const PagoController = {
-  async crearPreferencia(req, res) {
+  async crearPreferencia(req, res, next) {
     try {
       const { id_cita } = req.body;
 
@@ -19,11 +19,11 @@ const PagoController = {
       res.json(resultado);
     } catch (error) {
       console.error('Error en crearPreferencia:', error);
-      res.status(500).json({ error: error.message });
+      next(error);
     }
   },
 
-  async webhook(req, res) {
+  async webhook(req, res, next) {
     try {
       console.log('Webhook recibido:', req.body);
 
@@ -32,7 +32,7 @@ const PagoController = {
       res.sendStatus(200);
     } catch (error) {
       console.error('Error en webhook:', error);
-      res.status(500).json({ error: error.message });
+      next(error);
     }
   },
 

@@ -7,9 +7,9 @@ const usuarioSchema = z.object({
   telefono: z.string().max(20).optional(),
   rol: z.enum(['Cliente', 'Barbero', 'Dueño', 'Proveedor', 'Administrador']),
   contrasena: z.string().min(6),
-  id_tienda: z.number().int().optional(),
+  id_tienda: z.union([z.number().int(), z.string().transform(v => v === '' ? undefined : Number(v))]).optional(),
   especialidad: z.string().max(100).optional(),
-  anos_experiencia: z.number().int().optional(),
+  anos_experiencia: z.union([z.number().int(), z.string().transform(v => v === '' ? undefined : Number(v))]).optional().nullable(),
   servicios: z.array(z.number().int()).optional()
 })
 

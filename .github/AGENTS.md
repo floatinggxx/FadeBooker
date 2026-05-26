@@ -1,8 +1,8 @@
 # 🤖 AGENTS.md - Registro Central de Agentes FadeBooker
 
-**Última actualización:** 19 de mayo de 2026  
-**Versión:** 1.5.0  
-**Estado:** Fase Implementación (Integración React-Backend & Refuerzo de Resiliencia)
+**Última actualización:** 26 de mayo de 2026  
+**Versión:** 1.5.1  
+**Estado:** Producción Azure (v1.11.0) - Despliegue Limpio & Mercado Pago Activo
 
 ---
 
@@ -10,6 +10,9 @@
 
 Todos los agentes deben adherirse estrictamente a estas reglas:
 - **Arquitectura Hexagonal:** Obligatoria en backend con inyección de dependencias.
+- **Despliegue Limpio:** Los scripts de despliegue (`deploy_azure.sh`) deben usar `--no-cache` para garantizar integridad en producción.
+- **SSOT de Versión:** La versión del API en `openapi.yaml`, `package.json` y `AGENTS.md` debe estar sincronizada (Actual: 1.11.0).
+- **Exposición de Swagger:** `swagger_powerapps.json` debe estar expuesto vía endpoint para consumo externo de Power Platform.
 - **Self-healing Aware:** Lógica resiliente ante fallos de infraestructura.
 - **Validación Defensiva:** El middleware `validateRequest` debe ser robusto y no colapsar ante fallos de mapeo de errores (blindaje Power Apps).
 - **Feature-Based Frontend:** Desarrollo por slices funcionales (No Atomic Design).

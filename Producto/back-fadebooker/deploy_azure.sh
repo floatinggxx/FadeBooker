@@ -21,8 +21,8 @@ if [ $? -ne 0 ]; then
 fi
 
 # 2. Construcción de la imagen Docker
-echo -e "${YELLOW}🏗️  Paso 2: Construyendo la imagen Docker...${NC}"
-docker build -t fadebookerregistry.azurecr.io/fadebooker-backend:latest .
+echo -e "${YELLOW}🏗️  Paso 2: Construyendo la imagen Docker (sin cache para limpieza total)...${NC}"
+docker build --no-cache -t fadebookerregistry.azurecr.io/fadebooker-backend:latest .
 if [ $? -ne 0 ]; then
     echo -e "${RED}❌ Error durante la construcción de la imagen (docker build).${NC}"
     exit 1

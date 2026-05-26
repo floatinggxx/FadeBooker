@@ -26,10 +26,10 @@ const PaymentResultPage: React.FC = () => {
       buttonClass: 'bg-green-500 hover:bg-green-600'
     },
     failure: {
-      icon: <XCircle className="text-red-500 w-20 h-20" />,
-      title: 'Pago Fallido',
-      message: 'No pudimos procesar tu pago. Pero no te preocupes, tu reserva está guardada como pendiente de pago en la tienda.',
-      buttonClass: 'bg-red-500 hover:bg-red-600'
+      icon: <XCircle className="text-red-500 w-24 h-24 animate-bounce" />,
+      title: '⚠️ Pago No Completado',
+      message: 'Parece que hubo un problema o decidiste cancelar el pago. \n\n¡No te preocupes! Tu reserva sigue registrada en estado "Pendiente". Puedes intentarlo más tarde o pagar directamente el día de tu cita.',
+      buttonClass: 'bg-red-500 hover:bg-black'
     },
     pending: {
       icon: <Clock className="text-yellow-500 w-20 h-20" />,
@@ -48,7 +48,7 @@ const PaymentResultPage: React.FC = () => {
           {current.icon}
         </div>
         <h1 className="text-3xl font-black text-gray-900 mb-4">{current.title}</h1>
-        <p className="text-gray-500 font-medium mb-10 leading-relaxed">
+        <p className="text-gray-500 font-medium mb-10 leading-relaxed whitespace-pre-line">
           {current.message}
         </p>
 

@@ -37,7 +37,9 @@ class PagoService {
           failure: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/pago-fallido`,
           pending: `${process.env.FRONTEND_URL || 'http://localhost:5173'}/pago-pendiente`
         },
-        notification_url: `${process.env.BACKEND_URL || 'http://localhost:3000'}/api/pagos/webhook`,
+        notification_url: (process.env.BACKEND_URL && !process.env.BACKEND_URL.includes('localhost')) 
+          ? `${process.env.BACKEND_URL.startsWith('http') ? '' : 'https://'}${process.env.BACKEND_URL}/api/pagos/webhook`
+          : 'https://fadebooker-backend-ok.azurewebsites.net/api/pagos/webhook', // Fallback hardcoded para producción si falla env
         external_reference: `cita_${id_cita}`
       };
 
