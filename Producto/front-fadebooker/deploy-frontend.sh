@@ -29,8 +29,8 @@ if [ $? -ne 0 ]; then
 fi
 
 # 2. Construcción de la imagen Docker con inyección de ARGs
-echo -e "${YELLOW}🏗️  Paso 2: Construyendo imagen Docker (Inyectando API URL)...${NC}"
-docker build \
+echo -e "${YELLOW}🏗️  Paso 2: Construyendo imagen Docker (Limpia y sin Caché)...${NC}"
+docker build --no-cache \
     --build-arg VITE_API_URL=$API_URL \
     --build-arg VITE_API_BASE_URL=$API_URL \
     -t $REGISTRY.azurecr.io/$IMAGE_NAME:latest .

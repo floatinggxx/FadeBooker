@@ -14,10 +14,10 @@
  */
 
 const cloudinaryConfig = {
-  cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+  cloudName: process.env.CLOUDINARY_CLOUD_NAME ? process.env.CLOUDINARY_CLOUD_NAME.toLowerCase().trim() : undefined,
   apiKey: process.env.CLOUDINARY_API_KEY,
   apiSecret: process.env.CLOUDINARY_API_SECRET,
-  uploadPreset: process.env.CLOUDINARY_UPLOAD_PRESET || 'fadebooker_uploads',
+  uploadPreset: process.env.CLOUDINARY_UPLOAD_PRESET ? process.env.CLOUDINARY_UPLOAD_PRESET.trim() : 'fadebooker_uploads',
   isConfigured: false,
   
   // Validar que todas las variables necesarias estén presentes

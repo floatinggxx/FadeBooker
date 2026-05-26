@@ -102,6 +102,9 @@ const AppHeader = () => {
                     </Link>
                   </>
                 )}
+                {user?.rol === 'Proveedor' && (
+                  <Link to="/promociones" className="link-button text-[#3366FF] font-black">Panel Proveedor</Link>
+                )}
                 {(user?.rol === 'Barbero' || user?.rol === 'Dueño' || user?.rol === 'Proveedor') && (
                   <Link to="/promociones" className="link-button">Promociones</Link>
                 )}

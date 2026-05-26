@@ -193,23 +193,38 @@ const TiendaConfig: React.FC = () => {
                                         <span className="text-slate-400 font-bold text-xs">Sin Logo</span>
                                     </div>
                                 )}
-                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
-                                    <button 
-                                        type="button"
-                                        onClick={() => document.getElementById('logo-upload')?.click()}
-                                        disabled={isUploadingLogo}
-                                        className="bg-white text-slate-900 px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl flex items-center gap-2"
-                                    >
-                                        {isUploadingLogo ? <RefreshCw className="animate-spin" size={14} /> : 'Cambiar Logo'}
-                                    </button>
-                                    <input 
-                                        id="logo-upload"
-                                        type="file"
-                                        className="hidden"
-                                        accept="image/*"
-                                        onChange={handleLogoUpload}
-                                    />
+
+                                {/* Botón de edición flotante (superior derecha) para mejor accesibilidad */}
+                                <button 
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        document.getElementById('logo-upload')?.click();
+                                    }}
+                                    disabled={isUploadingLogo}
+                                    className="absolute top-5 right-5 p-4 bg-[#3366FF] text-white rounded-[1.25rem] shadow-2xl hover:bg-blue-700 transition-all transform hover:scale-110 active:scale-95 z-20 flex items-center justify-center"
+                                    title="Cambiar logo de la barbería"
+                                >
+                                    {isUploadingLogo ? <RefreshCw className="animate-spin" size={20} /> : <Camera size={20} />}
+                                </button>
+
+                                {/* Overlay informativo al pasar el mouse */}
+                                <div 
+                                    className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
+                                    onClick={() => document.getElementById('logo-upload')?.click()}
+                                >
+                                    <div className="bg-white/90 backdrop-blur-md text-slate-900 px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                                        Click para cambiar
+                                    </div>
                                 </div>
+
+                                <input 
+                                    id="logo-upload"
+                                    type="file"
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={handleLogoUpload}
+                                />
                             </div>
                         </div>
                     </div>

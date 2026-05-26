@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { bookingService } from '@/lib/api/bookingService';
-import { Calendar, User, Search, Settings, LogOut, Clock, CheckCircle } from 'lucide-react';
+import { Calendar, User, Search, Settings, LogOut, Clock, CheckCircle, Ticket } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const DashboardPage: React.FC = () => {
@@ -44,6 +44,17 @@ const DashboardPage: React.FC = () => {
       color: 'bg-slate-50'
     }
   ];
+
+  // Si es proveedor, añadimos tarjeta de promociones
+  if (user?.rol === 'Proveedor') {
+    cards.splice(1, 0, {
+      title: 'Promociones',
+      description: 'Publica anuncios y ofertas para barberías.',
+      icon: <Ticket className="text-amber-500" size={24} />,
+      link: '/promociones',
+      color: 'bg-amber-50'
+    });
+  }
 
   return (
     <div className="page-content container animate-fade-in">

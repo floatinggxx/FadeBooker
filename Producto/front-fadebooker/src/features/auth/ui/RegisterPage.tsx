@@ -251,6 +251,41 @@ const RegisterPage: React.FC = () => {
             </label>
           </div>
 
+          {rol === 'Proveedor' && (
+            <div className="provider-extra-fields animate-fade-in py-6 px-4 bg-blue-50/50 rounded-[2.5rem] border-2 border-blue-100/50 my-6">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-600">
+                  <Briefcase size={24} />
+                </div>
+                <div>
+                  <h3 className="font-black text-slate-900 leading-tight">Perfil de Proveedor</h3>
+                  <p className="text-[10px] text-blue-600 font-bold uppercase tracking-widest">Insumos y Productos</p>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex items-start gap-3 bg-white/60 p-4 rounded-2xl border border-white">
+                  <Info size={18} className="text-blue-500 shrink-0 mt-0.5" />
+                  <p className="text-sm text-slate-600 leading-relaxed font-medium">
+                    Al registrarte como <span className="text-blue-600 font-bold">Proveedor</span>, podrás publicar promociones de tus insumos, máquinas y productos directamente para los profesionales de la barbería.
+                  </p>
+                </div>
+                
+                <div className="bg-white/40 p-4 rounded-2xl">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Incluye acceso a:</span>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
+                      <Check size={14} className="text-green-500" /> Panel de Insumos
+                    </div>
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
+                      <Check size={14} className="text-green-500" /> Gestión de Ofertas
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {rol === 'Barbero' && (
             <div className="barber-extra-fields animate-fade-in">
               <div className="section-divider">
