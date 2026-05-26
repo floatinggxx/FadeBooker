@@ -6,6 +6,7 @@ import { serviceService } from '@/lib/api/serviceService';
 import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff, Scissors, Store, Briefcase, Plus, AlertCircle, Info, Clock, Check } from 'lucide-react';
 import { useNotification } from '@/context/NotificationContext';
+import { parseError } from '@/lib/utils/errorParser';
 import { Tienda, Servicio } from '@/types';
 
 type FormData = { 
@@ -114,9 +115,21 @@ const RegisterPage: React.FC = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      // No enviamos contrasenaConfirm al API
-      const { contrasenaConfirm, ...registerData } = data;
+      // Limpieza de datos antes de enviar (excluimos contrasenaConfirm)
+      const { contrasenaConfirm, ...prepData } = data;
+      const registerData: any = { ...prepData };
       
+      // Asegurar tipos numéricos para el backend
+      if (registerData.id_tienda) {
+        registerData.id_tienda = Number(registerData.id_tienda);
+      }
+      
+      if (registerData.anos_experiencia !== undefined && registerData.anos_experiencia !== '') {
+        registerData.anos_experiencia = Number(registerData.anos_experiencia);
+      } else {
+        delete registerData.anos_experiencia;
+      }
+
       // Si el rol es Barbero o si está registrando una tienda
       if (data.rol === 'Barbero' || isRegisteringTienda) {
         registerData.servicios = selectedServices;
@@ -128,13 +141,14 @@ const RegisterPage: React.FC = () => {
         delete registerData.id_tienda;
         delete registerData.servicios;
         delete registerData.tienda_nueva;
+        delete registerData.anos_experiencia;
       }
 
       await authService.register(registerData);
       showNotification('Registro exitoso. ¡Bienvenido a FadeBooker!', 'success');
       navigate('/login');
     } catch (err: any) {
-      showNotification(err?.response?.data?.message || err?.response?.data?.error || 'Error en registro', 'error');
+      showNotification(parseError(err), 'error');
     }
   };
 

@@ -9,6 +9,7 @@ import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import { ServicioBarbero, Barbero, Tienda } from '@/types';
 import { PLACEHOLDERS, FALLBACK_URLS } from '@/lib/utils/placeholders';
 import { useNotification } from '@/context/NotificationContext';
+import { parseError } from '@/lib/utils/errorParser';
 import { 
   Star, 
   Clock, 
@@ -189,10 +190,7 @@ const UniversalBookingPage: React.FC = () => {
 
     } catch (err: any) {
       console.error("Error al crear cita:", err);
-      // Extraer mensaje de error del backend si existe (maneja tanto controllers como middleware)
-      const backendError = err.response?.data?.error || err.response?.data?.message;
-      const errorMsg = backendError || err.message || "No se pudo crear la cita. Por favor intenta de nuevo.";
-      showNotification(errorMsg, "error");
+      showNotification(parseError(err), "error");
     } finally {
       setIsBooking(false);
     }

@@ -3,6 +3,7 @@ import { Calendar, User, Scissors, Info, CheckCircle2, XCircle, Clock, CreditCar
 import { clsx } from 'clsx';
 import { pagoService } from '@/lib/api/pagoService';
 import { useNotification } from '@/context/NotificationContext';
+import { parseError } from '@/lib/utils/errorParser';
 
 interface BookingCardProps {
   dateTime: string;
@@ -35,7 +36,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
       showNotification("Iniciando portal de pago...", "info");
       await pagoService.procesarPago(id);
     } catch (err: any) {
-      showNotification(err.message || "No se pudo iniciar el pago", "error");
+      showNotification(parseError(err), "error");
     } finally {
       setIsProcessing(false);
     }

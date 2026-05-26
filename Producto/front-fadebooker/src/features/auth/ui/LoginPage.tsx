@@ -5,6 +5,7 @@ import { authService } from '@/lib/api/authService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import { Eye, EyeOff } from 'lucide-react';
 import { useNotification } from '@/context/NotificationContext';
+import { parseError } from '@/lib/utils/errorParser';
 
 type FormData = { email: string; password: string };
 
@@ -39,7 +40,7 @@ const LoginPage: React.FC = () => {
         showNotification('Respuesta inválida del servidor', 'error');
       }
     } catch (err: any) {
-      showNotification(err?.response?.data?.message || err?.response?.data?.error || 'Error en login', 'error');
+      showNotification(parseError(err), 'error');
     }
   };
 
