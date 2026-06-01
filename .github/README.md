@@ -1,110 +1,44 @@
-# 🤖 FadeBooker Agent Architecture
+# 🤖 Ecosistema de Agentes Inteligentes — FadeBooker
 
-This directory contains the customization and coordination files for the FadeBooker agent ecosystem.
+Este directorio contiene la configuración del sistema de agentes personalizados para **FadeBooker**, optimizado para el desarrollo ágil, la documentación automatizada y el análisis de negocio.
 
-## 📁 File Structure
+## 🏛️ Arquitectura de Coordinación (3 Niveles)
+
+1.  **Orquestador Principal (`@system-orchestrator`)**: Punto de entrada único. Analiza tu petición y delega al área técnica correspondiente.
+2.  **Orquestadores de Dominio**: Especialistas en áreas macro (Programación, Documentación, Datos).
+3.  **Agentes Especialistas**: Expertos en tareas granulares (Frontend, Backend, DB, DevOps, Seguridad, etc.).
+
+## 📁 Estructura del Ecosistema
 
 ```
 .github/
-├── copilot-instructions.md    # Global conventions, stack, and principles
-├── AGENTS.md                  # Central registry and status of all agents
-├── agents/
-│   ├── orchestrator-agent.md  # Multi-agent coordination and workflow
-│   ├── database-agent.md      # SQL Server schema and migrations
-│   ├── backend-agent.md       # Node.js APIs and business logic
-│   ├── frontend-agent.md      # React UI and user experience
-│   ├── documentation-agent.md # Technical and user documentation
-│   ├── diagram-agent.md       # Architecture and flow visualization
-│   └── security-agent.md      # Code audits and security standards
-└── README.md                  # This file
+├── system-orchestrator.agent.md    # Punto de partida recomendado
+├── AGENTS.md                        # Registro maestro y mapa de estados
+├── copilot-instructions.md          # Reglas de oro y stack tecnológico
+└── agents/
+    ├── programming/                 # Desarrollo de Software (React, Node, SQL)
+    ├── study/                       # Gestión de Knowledge Base y Documentos
+    ├── data/                        # Métricas y Business Intelligence
+    └── support/                     # Soporte Git/GitHub
 ```
 
-## 🎯 Quick Reference
+## 🚀 Cómo usar los Agentes
 
-| File | Purpose | Audience |
-|------|---------|----------|
-| [copilot-instructions.md](copilot-instructions.md) | **Global conventions:** Stack, naming, principles, Git workflow | All agents |
-| [AGENTS.md](AGENTS.md) | **Agent registry & status:** Who does what, current phase, coordination rules | All agents, orchestrator |
-| [agents/\*-agent.md](agents/) | **Detailed agent instructions:** Domain expertise, responsibility, examples | Specific agent only |
+Para obtener los mejores resultados, **comienza tus peticiones con @system-orchestrator**. Él se encargará de llamar a los agentes necesarios.
 
-## 🚀 How to Invoke Agents
+### Ejemplos de uso:
 
-From any chat in VS Code, invoke an agent with `@agent-name`:
+-   **Desarrollo Completo**: `@system-orchestrator: Implementa el sistema de reseñas de barberos, incluyendo DB, API y Frontend.`
+-   **Análisis de Documentación**: `@system-orchestrator: Resume el Acta de Constitución y dime si mis últimos cambios cumplen los requerimientos.`
+-   **Gestión Git**: `@system-orchestrator: Revisa mis cambios y prepara un commit siguiendo el estándar.`
+-   **Métricas de Negocio**: `@system-orchestrator: Analiza las tendencias de ventas de este mes basándote en los logs de Mercado Pago.`
 
-```markdown
-@database-agent: Create table Users with fields: id (UUID), email, nombre, createdAt
+## 🛠️ Stack Tecnológico de Referencia
 
-@backend-agent: Generate CRUD endpoints for Users at /api/users with validation
-
-@documentation-agent: Document the /api/users endpoints in README
-
-@diagram-agent: Add Users table to ER diagram and show auth flow
-
-@orchestrator-agent: Coordinate complete feature implementation for "User Authentication"
-
-@security-agent: Audit backend for OWASP Top 10 vulnerabilities and JWT standards
-
-@frontend-agent: Create user management page with React + TypeScript
-```
-
-## 📊 Project Status
-
-**Latest Update:** April 28, 2026 | **Version:** 1.1.0
-
-| Agent | State | Progress | Next Steps |
-|:------|:------|:----------|:-----------|
-| Database | ✅ Complete | 100% | Deploy to Azure, CI/CD pipeline |
-| Backend | ✅ Complete | 92% | Finish E2E tests, production deployment |
-| Documentation | ✅ Complete | 100% | Maintenance mode |
-| Diagram | ✅ Complete | 100% | Keep in sync with changes |
-| **Security** | 🆕 Active | 0% | Audit backend, define JWT/CORS standards |
-| **Frontend** | 🆕 Starting | 0% | Migrate Power Pages → React |
-| Orchestrator | ✅ Active | — | Coordinate all agents |
-
-## 🔗 Related Documentation
-
-- **Project Overview:** [README.md](../README.md)
-- **Codebase Structure:** [CODEBASE_STRUCTURE.md](../CODEBASE_STRUCTURE.md)
-- **Database Design:** [BD_Diseño_3NF.txt](../Documentación/Documentos/BD_Diseño_3NF.txt)
-- **Backend & Frontend:** [Producto/](../Producto/)
-
-## 🛠️ Agent Responsibilities at a Glance
-
-### 🗄️ Database Agent
-- Define schema, migrations, indexes, constraints
-- Source of truth: SQL scripts in version control
-- Coordinates with Backend Agent for model alignment
-
-### 🔧 Backend Agent
-- Implement API endpoints and business services
-- Follow clean architecture (domain, application, infrastructure)
-- Coordinates with Security Agent for auth/CORS standards
-
-### 🎨 Frontend Agent
-- Build React components and user workflows
-- Migrate from Power Pages to React
-- Coordinates with Backend Agent for API integration
-
-### 📋 Documentation Agent
-- Document APIs, architecture, deployment
-- Keep docs in sync with implementation
-- Single source of truth for user and technical guides
-
-### 📐 Diagram Agent
-- Maintain ER diagrams, architecture diagrams, flow diagrams
-- Keep visuals synchronized with code changes
-- Uses draw.io format for version control
-
-### 🔐 Security Agent
-- Audit code for OWASP standards
-- Define authentication and authorization patterns
-- Review all critical changes before merge
-
-### 🎛️ Orchestrator Agent
-- Coordinate multi-agent workflows
-- Validate consistency across domains (DB ↔ Backend ↔ Docs ↔ Diagrams)
-- Report project status and remove blockers
+-   **Backend**: Node.js 20, Hexagonal Architecture, Knex.js.
+-   **Frontend**: React 18, Vite, Tailwind CSS.
+-   **BD**: Azure SQL Server.
+-   **Integraciones**: Mercado Pago v2, Cloudinary.
 
 ---
-
-**For detailed instructions, see:** [AGENTS.md](AGENTS.md)
+Para más detalles sobre cada agente y su responsabilidad, consulta [AGENTS.md](AGENTS.md).

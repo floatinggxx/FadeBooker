@@ -1,3 +1,6 @@
+---
+name: powerapps
+---
 # 🚀 Power Apps Agent - Instrucciones
 
 **Propósito:** Especialista en Microsoft Power Apps para la integración de FadeBooker.

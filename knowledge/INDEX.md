@@ -15,6 +15,7 @@ _Generado automáticamente por `extract_course_content.py`_
 - [Plan_de_Adquisicion-fadebooker](Plan_de_Adquisicion-fadebooker.md)
 - [Plan_de_Pruebas_FadeBooker](Plan_de_Pruebas_FadeBooker.md)
 - [README-fadebooker](README-fadebooker.md)
+- [TECHNICAL_KNOWLEDGE](TECHNICAL_KNOWLEDGE.md)
 - [paleta_de_colores-fadebooker](paleta_de_colores-fadebooker.md)
 - [plan_costos-fadebooker](plan_costos-fadebooker.md)
 - [plan_de_calidad-fadebooker](plan_de_calidad-fadebooker.md)

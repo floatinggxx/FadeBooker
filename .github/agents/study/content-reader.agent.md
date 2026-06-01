@@ -1,4 +1,7 @@
 ---
+name: content-reader
+---
+---
 description: "Lector y resumidor de contenido del curso. Accede al knowledge base extraído (carpeta knowledge/), lee archivos Markdown del material convertido y produce resúmenes estructurados, mapas de conceptos y síntesis temáticas."
 tools: ["read_file", "list_dir", "grep_search", "file_search", "semantic_search"]
 ---

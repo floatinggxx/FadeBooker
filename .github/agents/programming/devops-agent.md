@@ -1,4 +1,7 @@
 ---
+name: devops
+---
+---
 description: "Especialista en infraestructura y automatización para FadeBooker. Use when: dockerizar aplicaciones, configurar CI/CD en GitHub Actions, despliegue en Azure, gestión de secrets, monitoreo de salud del sistema, optimización de imágenes Docker."
 tools: [execute, read, edit, search]
 ---

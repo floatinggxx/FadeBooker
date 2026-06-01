@@ -1,3 +1,6 @@
+---
+name: database-validator
+---
 # 🛡️ Agent: Database Validator
 
 **Nombre:** `@database-validator`

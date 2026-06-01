@@ -1,3 +1,6 @@
+---
+name: architecture
+---
 # 🏛️ Architecture & Patterns Agent - FadeBooker
 
 **Rol:** Guardián de la Arquitectura Hexagonal y Estándares de Diseño.

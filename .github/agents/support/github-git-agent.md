@@ -1,3 +1,6 @@
+---
+name: github-git
+---
 # 🐙 GitHub Git Agent - Instrucciones
 
 **Propósito:** Especialista en gestión de versiones, estándares de commit y flujos de trabajo en GitHub para FadeBooker.
