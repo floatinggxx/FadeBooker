@@ -63,6 +63,7 @@ Este repositorio utiliza una arquitectura de agentes coordinada diseñada para l
 | **@diagram-agent** | Visualización | Diagramas Mermaid, ERD, Flujos de Negocio. |
 | **@database-validator** | Validador DB | Chequeo de integridad y scripts SQL. |
 | **@powerapps-agent** | Integración | PowerApps y Power Automate connectors. |
+| **@dependency-pipeline-agent** | Dependencias/Jenkins | Auditoría de librerías obsoletas/sin uso, breaking changes y pipeline de Jenkins. |
 
 ---
 

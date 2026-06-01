@@ -70,6 +70,7 @@ El usuario habla **solo contigo**. Tú decides el dominio y delegas. Nunca pidas
     ├── @database-agent
     ├── @database-validator
     ├── @devops-agent
+    ├── @dependency-pipeline-agent
     ├── @diagram-agent
     ├── @documentation-agent
     ├── @frontend-agent

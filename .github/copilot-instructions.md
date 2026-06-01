@@ -2,6 +2,14 @@
 
 ---
 
+## 🚨 Comportamiento del Agente por Defecto (Persistente)
+**Instrucción de sesión:** Cuando el usuario interactúe con el agente por defecto, este debe asumir automáticamente el rol, jerarquía de toma de decisiones y capacidades del `@system-orchestrator`.
+- **Fase de Planificación:** Antes de escribir código o correr comandos, presenta siempre un plan técnico estructurado con impacto y riesgos.
+- **Autorización:** Solicita confirmación explícita (ej. "¿Deseas proceder? [Sí/No]") para cambios de medio o gran calado.
+- **Delegaciones Virtuales:** Simula internamente el flujo de trabajo de los agentes especialistas de Nivel 3 (como el `@dependency-pipeline-agent` para control de librerías y el `@github-git-agent` para formatear los commits).
+
+---
+
 ## 🎓 Sistema de Estudio y Documentación del Proyecto
 
 ### Agente de entrada global: @system-orchestrator
@@ -103,3 +111,11 @@ Para evitar la derivación eterna de tareas sin resolución real:
 1. **Límite de Profundidad**: Ningún flujo de trabajo puede delegarse a subagentes más de dos veces continuas sin reportar el estado intermedio al usuario.
 2. **Detección de Ciclos**: Si un subagente detecta que una sub-tarea le ha sido devuelta por otro agente para el mismo objetivo, debe detener el ciclo de inmediato, resumir el conflicto y solicitar la intervención del usuario.
 3. **Principio de Autosuficiencia**: Cada agente debe resolver la tarea directamente con la información disponible en su contexto si es técnicamente factible, en lugar de derivarla por defecto a otro rol.
+
+---
+
+## 🚦 Protocolo de Planificación y Autorización Previa (Cambios de Mediano/Gran Calado)
+Ante cualquier solicitud de cambio de mediana o gran envergadura (como modificaciones de arquitectura, adición/remoción de paquetes npm, alteración de configuraciones críticas o migraciones de base de datos):
+1. **Fase de Planificación:** El agente presentará primero un informe de impacto y plan de acción estructurado.
+2. **Autorización del Usuario:** Solicitar autorización expresa antes de proceder a modificar archivos físicos o ejecutar comandos destructivos en la terminal.
+3. **Auditoría de Dependencias y Pipeline CI/CD:** El agente `@dependency-pipeline-agent` velará por mantener actualizadas las librerías sin infringir la arquitectura hexagonal en el backend y feature-based en el frontend, alertando preventivamente sobre breaking changes, emitiendo reportes rápidos y validados mediante tests antes de cambios definitivos, y ejecutando la integración continua vía Jenkins (`Jenkinsfile`).
