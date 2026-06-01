@@ -1,361 +1,148 @@
-# 🤖 AGENTS.md - Registro Central de Agentes FadeBooker
+# 🤖 Ecosistema de Agentes — Sistema Universal Multi-Proyecto
 
-**Última actualización:** 26 de mayo de 2026  
-**Versión:** 9.6.0 (Hito Consolidado)
-**Estado:** Producción Azure (v1.11.0) - Puntos de Fidelidad & Reseñas con Decimales Activas
+**Versión:** 3.0.0 | **Última actualización:** 28 de mayo de 2026
 
----
+Este repositorio usa una arquitectura de tres niveles de coordinación de agentes, diseñada para funcionar en cualquier tipo de proyecto: educativo, de datos/ML o de desarrollo de software.
 
-## 🏛️ Directrices Innegociables (La Ley)
-
-Todos los agentes deben adherirse estrictamente a estas reglas:
-- **Arquitectura Hexagonal:** Obligatoria en backend con inyección de dependencias.
-- **Decimales en Reseñas:** Las valoraciones soportan medios puntos (1.0 - 5.0) y el promedio acumulado se calcula como decimal.
-- **Fidelización:** Las citas completadas otorgan +50 puntos de fidelidad en la tabla Perfil.
-- **Despliegue Limpio:** Los scripts de despliegue (`deploy_azure.sh`) deben usar `--no-cache` para garantizar integridad en producción.
-- **SSOT de Versión:** La versión del API en `openapi.yaml`, `package.json` y `AGENTS.md` debe estar sincronizada (Actual: 1.11.0).
-- **Exposición de Swagger:** `swagger_powerapps.json` debe estar expuesto vía endpoint para consumo externo de Power Platform.
-- **Self-healing Aware:** Lógica resiliente ante fallos de infraestructura.
-- **Validación Defensiva:** El middleware `validateRequest` debe ser robusto y no colapsar ante fallos de mapeo de errores (blindaje Power Apps).
-- **Feature-Based Frontend:** Desarrollo por slices funcionales (No Atomic Design).
-- **Power Platform Sync:** Mantener `swagger_powerapps.json` bajo estándar **Swagger 2.0**.
-- **Log de Errores:** Auditoría obligatoria en `LogErrores`.
-- **Docker First:** El backend debe ejecutarse sobre `node:20-alpine` para garantizar consistencia.
-- **SSOT (Single Source of Truth):** Todas las barberías, barberos y servicios mostrados en el frontend DEBEN ser reales y provenir de la base de datos Azure SQL. Los fallbacks estáticos están prohibidos.
-- **Mercado Pago v2:** Migración obligatoria a SDK v2 para toda lógica de pagos.
-- **Anti-Duplicación:** Estricta vigilancia contra SyntaxErrors por duplicación de bloques.
-- **Limpieza de Conflictos:** Prohibido dejar marcadores de conflicto (`<<<<<<<`, `=======`, `>>>>>>>`) en el código. Si un agente detecta estos marcadores, DEBE resolverlos antes de realizar cualquier otra tarea. Es la prioridad #1.
-- **Validación de Entorno (Compatibilidad):** Asegurar que el entorno local coincida con `.env.example`. Nunca subir archivos `.env` reales al repositorio.
-- **Auto-Sanación de Dependencias:** En caso de errores `MODULE_NOT_FOUND` después de una sincronización, el agente tiene permiso (y obligación) de sugerir/ejecutar la limpieza de `node_modules` y una re-instalación limpia (`npm install`).
-- **Validación Pre-Commit:** Verificar que el código sea sintácticamente válido antes de realizar commits o sugerir arranques de servidor.
-- **Rutas Relativas:** Evitar el uso de rutas absolutas de Windows (ej. `C:\Users\...`) en la documentación; usar rutas relativas al workspace para garantizar compatibilidad entre Linux/Windows.
+1. **Orquestador principal (`@system-orchestrator`)**: punto de entrada único — clasifica y enruta.
+2. **Orquestadores de dominio** (nivel 2): uno por cada dominio técnico.
+3. **Agentes especialistas** (nivel 3): ejecutan tareas concretas y entrenables.
 
 ---
 
-## 📋 Descripción General
+## 🗺️ Mapa de Estructura de Carpetas
 
-Este archivo es la **fuente única de verdad** para el registro y estado de los agentes en el ecosistema FadeBooker. Para guías de implementación detalladas, consulte los archivos individuales en [`.github/agents/`](.github/agents/).
-
-Para entender la estructura completa del proyecto, ver: [CODEBASE_STRUCTURE.md](../CODEBASE_STRUCTURE.md)
-
----
-
-## 🎯 Registro de Agentes
-
-| Agente | Propósito Principal | Estado | Instrucciones |
-| :--- | :--- | :--- | :--- |
-| **Database Agent** | Gestión de esquema SQL Server y migraciones | ✅ Activo | [Instrucciones](agents/database-agent.md) |
-| **Backend Agent** | Desarrollo de API Node.js (Ark. Hexagonal) | ✅ Activo | [Instrucciones](agents/backend-agent.md) |
-| **Frontend Agent** | Migración React a Feature-Based Architecture | ✅ Activo | [Instrucciones](agents/frontend-agent.md) |
-| **Documentation Agent** | Creación de manuales, READMEs y reporte Office | ✅ Activo | [Instrucciones](agents/documentation-agent.md) |
-| **Diagram Agent** | Visualización de arquitectura y flujos (draw.io) | ✅ Activo | [Instrucciones](agents/diagram-agent.md) |
-| **Testing Agent** | Pruebas (unit, integracion, estres) y diagnóstico Azure | ✅ Activo | [Instrucciones](agents/testing-agent.md) |
-| **PowerApps Agent** | Desarrollo de Low-Code Apps e integración | ✅ Activo | [Instrucciones](agents/powerapps-agent.md) |
-| **Power-Automate Agent**| Automatización de flujos y conectores | ✅ Activo | [Instrucciones](agents/power-automate-agent.md) |
-| **Security Agent** | Auditoría de código y estándares de seguridad | 🆕 Iniciando | [Instrucciones](agents/security-agent.md) |
-| **Github Git Agent** | Gestión de commits y flujo de trabajo Git | ✅ Activo | [Instrucciones](agents/github-git-agent.md) |
-| **Photographer-AI Agent**| Lógica de simulación y procesamiento de imagen | 🆕 Planificado | [Instrucciones](agents/photographer-ai-agent.md) |
-| **Orchestrator Agent** | Coordinación de flujos multi-agente complejos | ✅ Activo | [Instrucciones](agents/orchestrator-agent.md) |
+```
+.github/
+  system-orchestrator.agent.md      ← orquestador principal (ENTRADA ÚNICA)
+  AGENTS.md                          ← este archivo
+  copilot-instructions.md            ← reglas globales del workspace
+  agents/
+    study/                           ← agentes del sistema educativo
+    data/                            ← agentes del pipeline EDA-ACV / ML
+    programming/                     ← agentes de desarrollo de software
+    support/                         ← agentes compartidos entre dominios
+  skills/
+    programming/                     ← skills técnicos de software
+  instructions/                      ← instrucciones específicas de archivo
+  prompts/                           ← prompts de entrada del editor
+  agent-workflows/                   ← lecciones aprendidas y flujos documentados
+```
 
 ---
 
-## �️ Herramientas y Skills Compartidas
+## 🧭 Nivel 1 — Orquestador Principal
 
-- [**Check Compatibility**](skills/check-compatibility.md): Protocolo de verificación de entorno y dependencias.
-- [**Merge Mastery**](skills/merge-mastery.md): Guía de resolución de conflictos en Arquitectura Hexagonal y Feature-Based.
-- [**Node Version Manager**](skills/node-version-manager.md): Manejo de versiones compatibles de Node.js.
-- [**Backend Setup Automation**](skills/backend-setup-automation.md): Automatización de reparaciones de entorno.
-
----
-
-## �🚀 Estado Actual del Proyecto
-
-**Hito Actual:** 5.9 - Integración Frontend-Backend inicial.
-
-| Módulo | Progreso | Notas |
+| Agente | Rol | Cuándo invocarlo |
 | :--- | :--- | :--- |
-| **Backend Core** | 98% | Endpoints de Citas y Barberos expandidos. |
-| **Base de Datos** | 100% | Esquema estable, triggers de auditoría configurados. |
-| **Frontend React** | 40% | Migración a Feature-Based en curso. Auth listo. |
-| **Power Apps** | 90% | Integración exitosa, conectores parchados. |
-| **Security/JWT** | 80% | Validaciones de tokens activas. |
-| **Deployment** | 100% | Azure CD funcional vía ACR. |
+| **@system-orchestrator** | Orquestador principal | Punto de entrada único — clasifica solicitudes y delega al dominio correcto |
 
-| Componente | Estado | Completado | Detalles |
-|:-----------|:------:|:----------:|----------|
-| **Database** 🗄️ | ✅ Complete | **100%** | 36 objetos BD, 51 registros test, triggers validados |
-| **Backend** 🔧 | ✅ Complete | **92%** | APIs CRUD funcionales, falta: E2E tests, CI/CD |
-| **Documentation** 📋 | ✅ Complete | **100%** | APIs, procesos, arquitectura documentados |
-| **Diagram** 📐 | ✅ Complete | **100%** | ER, arquitectura, flujos en draw.io |
-| **Security** 🔐 | 🆕 Starting | **0%** | Auditoría pendiente, estándares JWT/CORS a definir |
-| **Frontend** 🎨 | 🆕 Starting | **0%** | Migración Power Pages → React |
-| **Orchestrator** 🎛️ | ✅ Active | — | Coordinación en progreso |
-
-**Progreso total:** ~50% (Core backend listo, frontend y seguridad iniciando)
+**Ruta del archivo:** `.github/system-orchestrator.agent.md`
 
 ---
 
-## 🛠️ Responsabilidades y Skills
+## 📁 Nivel 2 — Orquestadores de Dominio
 
-### 1️⃣ **Database Agent** 🗄️
-**Status:** ✅ **COMPLETADO**
-**Skill Principal:** [sql-migration](skills/sql-migration.md)
-
-### 2️⃣ **Backend Agent** 🔧
-**Status:** ✅ **COMPLETADO (95%)**
-**Contexto:** Arquitectura Hexagonal (Clean Architecture). Protocolo de Onboarding (User -> Barbero) consolidado. Endpoints de perfil `/usuarios/perfil` (GET/PUT) funcionales.
-
-### 5️⃣ **Orchestrator Agent** ⚖️
-**Status:** ✅ **ACTIVO**
-**Acción Reciente:** Verificación final de flujos críticos y sincronización de Swagger 2.0 completada. Delegación activa al `@github-git-agent` para estandarización de commits.
-
-### 6️⃣ **Github Git Agent** 🐙
-**Status:** ✅ **ACTIVO**
-**Responsabilidad:** Asegurar que cada commit siga el patrón `X.X. Titulo` + Cuerpo descriptivo en Español. Automatizar la generación de mensajes de commit coherentes con el progreso del proyecto.
-
+| Orquestador | Dominio | Ruta |
+| :--- | :--- | :--- |
+| **@study-orchestrator** | Sistema educativo (tutores, quizzes, knowledge base) | `.github/agents/study/study-orchestrator.agent.md` |
+| **@data-orchestrator** | Pipeline EDA-ACV, ML, limpieza, modelado | `.github/agents/data/data-orchestrator.agent.md` |
+| **@programming-orchestrator** | Desarrollo de software: APIs, BD, frontend, docs, tests | `.github/agents/programming/programming-orchestrator.agent.md` |
 
 ---
 
-## 🚀 Estado Actual del Proyecto  
-**Puerto:** 3000
+## 🤝 Agentes de Soporte Compartido
+
+| Agente | Rol | Ruta |
+| :--- | :--- | :--- |
+| **@github-git-agent** | Gestión de commits, ramas y pull requests | `.github/agents/support/github-git-agent.md` |
 
 ---
 
-### 3️⃣ **Frontend Agent** 🎨
-**Status:** 🆕 **INICIANDO**
+## 🎓 Nivel 3A — Agentes del Sistema Educativo
 
-**Responsabilidades:**
-- Migrar de Power Pages a React (Feature-Based Architecture)
-- Diseñar componentes reutilizables
-- Implementar routing y autenticación
-- Crear sistema de diseño con Tailwind CSS
-- Integrar con APIs del backend
-- UX/UI para flujos de barbería
+**Orquestador:** `@study-orchestrator` | **Carpeta:** `.github/agents/study/`
 
-**Stack:** React 18, TypeScript, Vite, Tailwind CSS, React Router v6, React Query, Axios  
-**Ubicación:** [`Producto/front-fadebooker/`](../Producto/front-fadebooker/)  
-**Puerto:** 5173
+| Agente | Rol | Cuándo invocarlo |
+| :--- | :--- | :--- |
+| **@study-orchestrator** | Director del sistema de estudio | Orquestador interno para cualquier solicitud de estudio, resumen o evaluación |
+| **@content-reader** | Lector del knowledge base | Resumir archivos del curso, sintetizar temas, leer `knowledge/` |
+| **@preprocesamiento-tutor** | Tutor de Preprocesamiento de Datos | Preguntas de estadística, EDA, limpieza, escalado, encoding, feature engineering |
+| **@programacion-tutor** | Tutor de Programación para Ciencia de Datos | Preguntas de Python, ML, clustering, Git, visualización interactiva |
+| **@quiz-generator** | Generador de evaluaciones | Crear quizzes, simulacros, ejercicios de código y fichas de repaso |
 
-**Legacy (Power Pages):** [`Producto/pages-fadebooker/`](../Producto/pages-fadebooker/)
+### Knowledge Base
+- `Semestre 1 mención/` — Material original
+- `knowledge/` — Contenido extraído en Markdown
 
-**Instrucciones completas:** [`.github/agents/frontend-agent.md`](agents/frontend-agent.md)
-
-**Ejemplo de uso:**
-```
-@frontend-agent: Migra la página de búsqueda de barberos de Power Pages a React.
-Crea componentes: BarberList, BarberCard, SearchFilters, BarberDetail.
-Implementa navegación y carrito de servicios.
+```bash
+# Inicializar knowledge base (ejecutar una vez)
+pip install -r scripts/requirements_extraction.txt
+python scripts/extract_course_content.py
 ```
 
 ---
 
-### 4️⃣ **Documentation Agent** 📋
-**Status:** ✅ **COMPLETADO**
+## 🔬 Nivel 3B — Agentes del Pipeline EDA-ACV
 
-**Logros:**
-- ✅ README.md con overview del proyecto
-- ✅ GETTING_STARTED.md con instrucciones de setup
-- ✅ API_DOCUMENTATION.md con todos los endpoints
-- ✅ BACKEND_CONSOLIDADO.md
-- ✅ DATABASE_CONSOLIDADO.md
-- ✅ CODEBASE_STRUCTURE.md con rutas y convenciones
+**Orquestador:** `@data-orchestrator` | **Carpeta:** `.github/agents/data/`
 
-**Responsabilidades:**
-- Documenta APIs generadas por Backend Agent
-- Crea manuales de usuario y guías de instalación
-- Mantiene especificaciones del producto
-- Documenta procesos (testing, deployment, contribución)
-- Mantiene CHANGELOG y versionado
+| Agente | Rol | Responsabilidad Principal | Carpeta de Trabajo |
+| :--- | :--- | :--- | :--- |
+| **@data-extractor** | Extractor | Ingesta y extracción de datos desde diversas fuentes | `src/0_audit/` |
+| **@data-cleaner** | Limpiador | Limpieza, feature engineering y escalado | `src/1_prep/` |
+| **@data-analyzer** | Analizador | EDA, análisis exploratorio y estadístico | `src/2_unsupervised/` |
+| **@stats-modeler** | Modelador | Modelos ML, hiperparámetros, validación | `src/3_optuna/` + `src/4_train/` |
+| **@data-visualizer** | Visualizador | Gráficos, métricas y artefactos visuales | `src/5_report/` |
+| **@data-reporter** | Reporteador | Narrativas de negocio y documentación de resultados | `reports/` |
 
-**Ubicación:** [`Documentación/md-fuente/`](../Documentación/md-fuente/)
-
-**Instrucciones completas:** [`.github/agents/documentation-agent.md`](agents/documentation-agent.md)
-
----
-
-### 5️⃣ **Diagram Agent** 📐
-**Status:** ✅ **COMPLETADO**
-
-**Logros:**
-- ✅ Diagrama ER convertido a draw.io
-- ✅ Diagrama de arquitectura
-- ✅ Flujos de procesos principales
-
-**Responsabilidades:**
-- Convierte documentos visuales (PDFs, imágenes) a draw.io editable
-- Mantiene diagramas actualizados con cambios
-- Crea nuevos diagramas (flujos, componentes, secuencias)
-- Exporta diagramas a PNG/SVG para documentación
-
-**Ubicación:** [`Documentación/Material complementario/`](../Documentación/Material%20complementario/)
-
-**Instrucciones completas:** [`.github/agents/diagram-agent.md`](agents/diagram-agent.md)
-
----
-
-### 6️⃣ **Security Agent** 🔐
-**Status:** 🆕 **INICIANDO**
-
-**Responsabilidades:**
-- Auditoría de código (Backend y Frontend)
-- Validación de OWASP Top 10
-- Definición de estándares JWT y CORS
-- Revisión de dependencias (CVE check)
-- Threat modeling y hardening
-- Recomendaciones de remediación
-
-**Stack:** OWASP standards, JWT, bcrypt, input validation, rate limiting
-
-**Instrucciones completas:** [`.github/agents/security-agent.md`](agents/security-agent.md)
-
-**Ejemplo de uso:**
-```
-@security-agent: Audita el backend para vulnerabilidades OWASP Top 10.
-Revisa autenticación (JWT), validaciones de input, manejo de datos sensibles.
-Genera reporte con recomendaciones.
+### Comandos del Pipeline
+```bash
+python setup_and_run.py --mode status --venv-name venv --skip-install
+python setup_and_run.py --mode run --venv-name venv --skip-install
 ```
 
 ---
 
-### 7️⃣ **PowerApps Agent** 📱
-**Status:** ✅ **ACTIVO**
+## 💻 Nivel 3C — Agentes de Programación
 
-**Responsabilidades:**
-- Desarrollar aplicaciones Low-Code sobre Azure SQL
-- Integrar formularios complejos y dashboards
-- Configurar autenticación y roles en Power Platform
+**Orquestador:** `@programming-orchestrator` | **Carpeta:** `.github/agents/programming/`
 
-**Instrucciones completas:** [`.github/agents/powerapps-agent.md`](agents/powerapps-agent.md)
+| Agente | Rol | Cuándo invocarlo |
+| :--- | :--- | :--- |
+| **@programming-orchestrator** | Director de desarrollo | Punto de entrada para cualquier solicitud de desarrollo de software |
+| **@architecture-agent** | Guardián de arquitectura | Validar patrones, estructura de carpetas, separación de capas |
+| **@backend-agent** | Desarrollador backend | APIs REST, servicios, repositorios, middlewares |
+| **@database-agent** | Especialista BD | Tablas, migraciones, índices, stored procedures |
+| **@database-validator** | Validador de BD | Verificación de integridad, relaciones y esquemas |
+| **@devops-agent** | DevOps/Infra | CI/CD, Docker, despliegue, entornos |
+| **@diagram-agent** | Diagramas | Diagramas de arquitectura y flujos (draw.io, Mermaid) |
+| **@documentation-agent** | Documentación | READMEs, changelogs, manuales de usuario, OpenAPI |
+| **@frontend-agent** | Desarrollador frontend | UI, componentes, integración con APIs, UX |
+| **@security-agent** | Seguridad | Auditoría OWASP, JWT, validaciones, CORS |
+| **@testing-agent** | Testing | Pruebas unitarias, integración, estrés, diagnóstico |
+| **@powerapps-agent** | Power Platform | Low-code apps, conectores, Power Apps |
+| **@power-automate-agent** | Automatización | Flujos automatizados, conectores Power Automate |
 
----
-
-### 8️⃣ **Power-Automate Agent** ⚡
-**Status:** ✅ **ACTIVO**
-
-**Responsabilidades:**
-- Crear flujos automatizados (aprobaciones, notificaciones)
-- Implementar conectores personalizados para las APIs Node.js
-- Sincronizar datos entre SQL Server y servicios externos
-
-**Instrucciones completas:** [`.github/agents/power-automate-agent.md`](agents/power-automate-agent.md)
-
----
-
-### 9️⃣ **Orchestrator Agent** 🎛️
-**Status:** ✅ **ACTIVO**
-
-**Responsabilidades:**
-- Coordina flujos multi-agente
-- Valida coherencia entre dominios (BD ↔ Backend ↔ Docs ↔ Diagramas)
-- Reporta estado del proyecto
-- Resuelve inconsistencias
-- Planifica sprints y fases
-
-**Flujo Coordinado Estándar:**
-```
-1. Database Agent → Define tablas necesarias
-2. Backend Agent → Implementa servicios y endpoints
-3. Documentation Agent → Documenta APIs
-4. Diagram Agent → Actualiza diagramas
-5. Security Agent → Audita
-6. Orchestrator Agent → Valida coherencia total
-```
-
-**Instrucciones completas:** [`.github/agents/orchestrator-agent.md`](agents/orchestrator-agent.md)
-
-**Ejemplo de uso:**
-```
-@orchestrator-agent: Implementa Historia Usuario "Crear Sesión Fotográfica".
-Coordina DB → Backend → Docs → Diagrams → Security.
-Reporta cuando esté completo.
-```
-
-### 🔟 **DevOps Agent** 🚀
-**Propósito:** Automatizar la infraestructura, dockerización y despliegue en Azure.
-
-**Responsabilidades:**
-- Crear y optimizar archivos Docker (Dockerfile, compose).
-- Configurar CI/CD vía GitHub Actions.
-- Gestionar despliegue en Azure App Service/Container Registry.
-- Asegurar gestión segura de variables de entorno y secrets.
-
-**Instrucciones:** [`.github/agents/devops-agent.md`](agents/devops-agent.md)
-
-**Status:** ✅ **ACTIVO** (10% completado - Docker base listo)
+### Skills de Programación
+Disponibles en `.github/skills/programming/`:
+`architecture`, `backend-service-gen`, `backend-setup-automation`, `check-compatibility`, `cloudinary-integration`, `document-processing`, `error-handling-strategy`, `frontend-component-bridge`, `merge-mastery`, `node-version-manager`, `security-audit`, `sql-migration`, `sync-db-models`
 
 ---
 
-## 📞 Coordinación Entre Agentes
+## 🔎 Workflow: Evaluar Estado del Pipeline ML
 
-```mermaid
-graph LR
-    DA[Database Agent] -->|Esquema creado| BA[Backend Agent]
-    BA -->|Endpoints implementados| DOC[Documentation Agent]
-    BA -->|Código generado| SEC[Security Agent]
-    DOC -->|APIs documentadas| DIA[Diagram Agent]
-    SEC -->|Estándares definidos| BA
-    BA -->|Cambios en API| DIA
-    DA -->|Cambios en BD| DIA
-    DIA -->|Diagramas actualizados| DOC
-    BA -->|Completado| ORC[Orchestrator Agent]
-    DOC -->|Completado| ORC
-    SEC -->|Completado| ORC
-    DIA -->|Completado| ORC
-    ORC -->|Valida coherencia| BA
-    ORC -->|Reporta estado| DEV["👨‍💻 Developer"]
-```
+1. `python setup_and_run.py --mode status --venv-name venv --skip-install`
+2. `python setup_and_run.py --mode compat --venv-name venv --skip-install`
+3. `python setup_and_run.py --mode run --venv-name venv --skip-install`
+4. (Opcional) `python setup_and_run.py --mode smoke-test --venv-name venv --skip-install`
 
----
+Checklist:
+- Artefactos en `data/processed/`, `models/`, `reports/`.
+- Métricas con prioridad en recall/F1 por desbalance.
+- Verificación contra [docs/verificacion_rubrica_pdf.md](../docs/verificacion_rubrica_pdf.md).
 
-## 🔗 Referencias Útiles
+## 🧩 Convención de Fases del Pipeline
+- Mapeo pedagógico: 0-5 (audit, prep, unsupervised, optuna, train, report).
+- Para coordinación entre agentes, usar siempre el mapeo 0-5.
 
-- **Instrucciones Globales:** [`copilot-instructions.md`](copilot-instructions.md)
-- **Codebase Structure:** [`CODEBASE_STRUCTURE.md`](../CODEBASE_STRUCTURE.md)
-- **Documentación Proyecto:** [`Documentación/`](../Documentación/)
-- **Backend:** [`Producto/back-fadebooker/`](../Producto/back-fadebooker/)
-- **Frontend:** [`Producto/front-fadebooker/`](../Producto/front-fadebooker/)
-- **Conexión BD:** `fadebooker-server.database.windows.net / FadeBooker_DB`
-- **Repositorio Local:** `c:\Users\SanNi\OneDrive\Escritorio\Barberia\FadeBooker`
-
----
-
-## 🚀 Cómo Usar Este Archivo
-
-### Para invocar un agente:
-```markdown
-@nombre-agent: [descripción de tarea]
-```
-
-### Ejemplos completos:
-```markdown
-@database-agent: Crear tabla ServicioFoto con campos id_sesion, id_fotografo, fecha_sesion, duracion_minutos
-
-@backend-agent: Generar CRUD para SessionFoto en /api/sessions endpoint con validaciones
-
-@frontend-agent: Crear página de sesiones con filtros por fecha y estado
-
-@documentation-agent: Documentar endpoints de sesiones en API_DOCUMENTATION.md
-
-@diagram-agent: Actualizar ER con tabla ServicioFoto y crear flujo "Crear Sesión"
-
-@security-agent: Auditar endpoints de sesiones para validación de permisos
-
-@orchestrator-agent: Coordina implementación completa de "Crear Sesión Fotográfica"
-```
-
----
-
-## ✅ Checklist para Completar Feature
-
-- [ ] Database Agent: Tablas/migraciones creadas
-- [ ] Backend Agent: Endpoints CRUD implementados
-- [ ] Backend Agent: Validaciones y error handling
-- [ ] Security Agent: Auditoría pasada
-- [ ] Documentation Agent: APIs documentadas
-- [ ] Diagram Agent: Diagramas actualizados
-- [ ] Orchestrator Agent: Coherencia validada
-- [ ] Git: Cambios commiteados
-
----
-
-**Para más detalles sobre arquitectura y convenciones:** Ver [`copilot-instructions.md`](copilot-instructions.md)

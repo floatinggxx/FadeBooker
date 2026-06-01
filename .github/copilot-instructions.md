@@ -1,404 +1,128 @@
-# 🎭 FadeBooker - Instrucciones Globales para Copilot Agents
-
-**Versión:** 1.5.0  
-**Última actualización:** 19 de mayo de 2026  
-**Estado:** Fase Implementación (Frontend Feature-Based, Backend Hexagonal)
-
-## 📌 Visión General del Proyecto
-
-**FadeBooker** es una plataforma de gestión de citas para servicios de barbería y fotografía relacional.
-
-- **Stack:** Node.js 20 (Backend), React (Frontend), Azure SQL Server (BD).
-- **BD:** `fadebooker-server.database.windows.net` / `FadeBooker_DB`
-- **Repositorio Local:** `/home/mauricio/Documentos/GitHub/FadeBooker`
-- **Estado:** Backend 95% completo, Frontend en migración a Feature-Based.
+# 🎯 Reglas de Operación — Ciencia de Datos
 
 ---
 
-## 🏛️ La Ley del Proyecto (Estándares Innegociables)
+## 🎓 Sistema de Estudio — Asignaturas del Semestre
 
-### 1. Backend (Arquitectura Hexagonal)
-- **Patrón:** Hexagonal (Ports & Adapters) + Repository Pattern.
-- **Inyección de Dependencias:** Obligatoria en Use Cases y Controladores.
-- **Validación:** Zod para esquemas de entrada.
-- **Self-healing Aware:** El backend debe detectar fallos en servicios externos y manejar reintentos o fallbacks elegantes.
-- **Evitar Duplicación:** Al editar archivos, verificar que no se duplique código al final del archivo (causa SyntaxError).
+### Agente de entrada global: `@system-orchestrator`
+Para cualquier solicitud general en el repositorio, usar este orden de delegación:
+1. `@system-orchestrator` clasifica la solicitud (PUNTO DE ENTRADA ÚNICO)
+2. `@study-orchestrator` atiende material, dudas y evaluaciones del curso
+3. `@data-orchestrator` atiende pipeline EDA-ACV y artefactos de ML
+4. `@programming-orchestrator` atiende desarrollo de software: APIs, BD, frontend, tests, docs, arquitectura
 
-### 2. Frontend React (Feature-Based Architecture)
-**Decisión:** Sustituimos Atomic Design por Feature-Based Architecture para reducir fatiga de niveles de carpetas y alinearnos directamente con dominios del negocio.
+### Agente de entrada: `@study-orchestrator`
+Para cualquier solicitud relacionada con el estudio, usar este orden de delegación:
+1. `@study-orchestrator` identifica la necesidad y delega
+2. `@content-reader` lee el knowledge base en `knowledge/`
+3. `@preprocesamiento-tutor` o `@programacion-tutor` responde según la asignatura
+4. `@quiz-generator` genera evaluaciones o práctica
 
-**Reglas de Datos (SSOT):**
-- **Prohibición de Datos Estáticos:** Está estrictamente prohibido el uso de archivos de "fallback" o "datos falsos" (ej: `tiendasFallback.ts`) para mostrar entidades de negocio (Tiendas, Barberos, Servicios).
-- **Base de Datos como Única Fuente de Verdad:** Todas las barberías y barberos mostrados en el frontend DEBEN provenir de la base de datos Azure SQL. Si no hay datos en la BD, se debe mostrar un estado vacío (Empty State) informativo, nunca datos simulados.
-- **Limpieza de Rastro:** Cualquier componente que use datos hardcodeados debe ser refactorizado inmediatamente para usar React Query y el servicio de API correspondiente.
+### Protocolo para solicitudes de estudio
+Cuando el usuario pida resumir, explicar, preguntar o evaluar:
+1. Verificar si `knowledge/` existe → si no, guiar al usuario a ejecutar el script de extracción
+2. Buscar el tema en `knowledge/INDEX.md`
+3. Leer el archivo `.md` correspondiente
+4. Delegar al tutor especialista o quiz-generator según la solicitud
 
-**Enfoque Híbrido:**
-- **Tailwind CSS:** Para nuevas interfaces y utilidades rápidas (configurado en `tailwind.config.ts`).
-- **Bootstrap 5:** Clases heredadas y componentes de `react-bootstrap` presentes en la base de código. Se permite la coexistencia, pero se prefiere Tailwind para nuevas features.
-
-**Reglas:**
-- Cada feature es autónoma: contiene su lógica de negocio, componentes y servicios.
-- Los componentes compartidos (`components/atoms`, `molecules`, `organisms`) no dependen de features específicas.
-- Las páginas (`pages/`) son vistas composables que pueden usar features y componentes compartidos.
-- Los servicios de API (`lib/api/`) son agnósticos a React (no usan hooks).
-- **Prohibición de Conflictos:** No se permiten marcadores de conflicto de Git. Si se encuentran, resolver inmediatamente.
-
-**Estilo:**
-- Tailwind CSS para utilidades (ya integrado en `globals.css` via `@tailwind`).
-- Clases Bootstrap 5 heredadas en algunos componentes legacy (transición gradual).
-- Animaciones suaves con `@keyframes` definidas en `globals.css` (fadeInUp, appear, fadeIn).
-
-### 3. Integración Power Platform y Pagos
-- **Conectores:** Custom Connectors basados exclusivamente en **Swagger 2.0**.
-- **Mercado Pago:** Se utiliza la **SDK v2**. Requiere instanciar `MercadoPagoConfig` y usar clases específicas (ej: `new Preference(client)`).
-- **Sincronización:** El archivo `swagger_powerapps.json` debe reflejar siempre la última versión estable del API, procesada mediante `fix_swagger.js`.
-- **Validación Estricta Swagger 2.0 (Power Apps):**
-    1. **No `example`:** Eliminar `example` de respuestas/parámetros si causa errores de validación; preferir incluirlos dentro del `schema`.
-    2. **Parámetros:** Los parámetros `in: body` NO deben tener propiedad `type` (usar `schema`). Parámetros `in: path|query|header` NO deben tener `schema` (usar `type`).
-    3. **No `content`:** Propiedad de OpenAPI 3.0. En 2.0 usar `schema` directamente bajo la respuesta.
-    4. **No `nullable`:** No soportado en 2.0. Eliminar la propiedad.
-    5. **OperationId:** Obligatorio, único y en `camelCase`.
-
-### 4. Seguridad y Resiliencia
-- **Auth:** JWT con expiración de 24 horas (`EXPIRES_IN=24h`).
-- **Manejo de Errores:** Sistema global de captura de excepciones.
-- **Auditoría:** Todos los errores críticos deben registrarse en la tabla `LogErrores` de la BD (Migración 20260512).
-- **CORS:** Estrictamente configurado para dominios autorizados.
-
-### 5. Estándar de Commits (GitHub Git Agent)
-- **Formato obligatorio:** Los mensajes de commit deben seguir estrictamente el patrón: `X.X. Titulo` seguido de un cuerpo descriptivo detallado, **todo en idioma Español**.
-- **Versión:** La numeración debe continuar progresivamente desde el hito **5.6** (el siguiente commit relevante será el **5.7** o superior).
-- **Confirmación:** Es una regla innegociable **solicitar confirmación explícita al usuario** antes de proceder con cualquier comando de commit.
-- **Delegación:** El Orchestrator debe delegar en el `@github-git-agent` la redacción y validación del mensaje antes de persistir cambios.
-
-### 6. Despliegue y Entorno
-- **Docker:** El entorno de ejecución oficial es `node:20-alpine`. No usar imágenes basadas en Debian/Ubuntu para producción por temas de permisos y peso.
-- **Paths:** Los controladores deben acceder a la carpeta `config` usando rutas relativas robustas (e.g., `../../../config/`).
-
-### 7. Mantenimiento de Documentación API
-- **Docker:** El entorno de ejecución oficial es `node:20-alpine`. No usar imágenes basadas en Debian/Ubuntu para producción por temas de permisos y peso.
-- **Paths:** Los controladores deben acceder a la carpeta `config` usando rutas relativas robustas (e.g., `../../../config/`).
-
-### 7. Mantenimiento de Documentación API
-- **SSOT:** El archivo `Producto/back-fadebooker/openapi.yaml` es la **Fuente Única de Verdad (Single Source of Truth)**.
-- **Identificadores:** Cada endpoint **DEBE** tener un `operationId` único en formato `camelCase` (ej: `getUsuarios`, `createCita`) para asegurar la compatibilidad con Custom Connectors de Power Apps.
-- **Sincronización:** Tras cualquier modificación en el YAML, se deben ejecutar los scripts de sincronización (`fix_swagger.js`) para actualizar `swagger.json` y `swagger_powerapps.json`.
-- **Esquemas:** Los esquemas en `components/schemas` del YAML deben coincidir estrictamente con las validaciones de Zod en `src/infraestructure/schemas` o `src/validations`.
-
----
-
-## 🔗 Endpoints de Producción
-- **Swagger UI:** [https://fadebooker-backend-ok.azurewebsites.net/api-docs](https://fadebooker-backend-ok.azurewebsites.net/api-docs)
-- **Swagger JSON:** [https://fadebooker-backend-ok.azurewebsites.net/docs/swagger.json](https://fadebooker-backend-ok.azurewebsites.net/docs/swagger.json)
-- **Health Check:** [https://fadebooker-backend-ok.azurewebsites.net/api/health](https://fadebooker-backend-ok.azurewebsites.net/api/health)
-
----
-
-## 🖼️ Gestión de Assets e Imágenes
-
-### Ubicación de archivos
-Todos los assets públicos se almacenan en:
-```
-Producto/front-fadebooker/public/images/
+### Inicializar el Knowledge Base (ejecutar UNA sola vez)
+```bash
+pip install -r scripts/requirements_extraction.txt
+python scripts/extract_course_content.py
 ```
 
-### Imágenes del Proyecto
-
-| Archivo | Ubicación | Dónde se usa | Descripción |
-|---------|-----------|-------------|-------------|
-| `logo.png` | `public/images/logo.png` | Header (App.tsx → AppHeader) | Logo de la marca en navbar. Formato: PNG transparente (46x46px). Cargado en `<img src="/images/logo.png" />` |
-| `slider-1.jpg` | `public/images/slider-1.jpg` | HomePage → HeroSection → ImageCarousel | Carrusel automático home (slide 1) - Fotografía barbería/estilo (1200x600px recomendado) |
-| `slider-2.jpg` | `public/images/slider-2.jpg` | HomePage → HeroSection → ImageCarousel | Carrusel automático home (slide 2) - Fotografía barbería/estilo (1200x600px recomendado) |
-| `slider-3.jpg` | `public/images/slider-3.jpg` | HomePage → HeroSection → ImageCarousel | Carrusel automático home (slide 3) - Fotografía barbería/estilo (1200x600px recomendado) |
-| `barber-placeholder.jpg` | `public/images/barber-placeholder.jpg` | Fallback para tarjetas de barbero | Imagen por defecto si barbero no tiene `fotoUrl` - Avatar/silhueta genérico (400x400px) |
-
-### Cómo agregar imágenes
-
-1. **Copiar archivos a** `Producto/front-fadebooker/public/images/`
-2. **Referenciar en código** con rutas relativas a public: `src="/images/slider-1.jpg"`
-3. **Sin procesar:** Las imágenes en `public/` se sirven tal cual (sin bundling)
-4. **Fallback automático:** Si falta una imagen, `ImageCarousel.tsx` muestra un gradiente azul con texto
-
-### Convenciones de nombres
-
-- Imágenes de banner/carrusel: `slider-N.jpg` (N=número)
-- Imágenes de usuario/barbero: `avatar-*.jpg` o `barber-*.jpg`
-- Iconos: `.svg` preferentemente (escalables)
-- Logotipos: `.svg` (mejor calidad, menor tamaño)
+### Asignaturas disponibles
+| Asignatura | Carpeta en `knowledge/` |
+|---|---|
+| Preprocesamiento de Datos | `PREPROCESAMIENTO de datos/` |
+| Programación para Ciencia de Datos | `Programación para ciencia de datos/` |
+| Inferencia Estadística | `Inferencia Estadística/` |
+| Herramientas de Cálculo Diferencial | `Herramientas de calculo diferencial/` |
 
 ---
 
-## 🎨 Convenciones de Componentes (Hybrid Pattern)
+## 🔬 Reglas de Operación — Pipeline EDA-ACV (Fase 2 Modelado)
 
-El proyecto combina **Feature-Based Architecture** con niveles de componentes heredados de Atomic Design:
+## 🧬 Contexto y Referencia
+Este proyecto sigue la metodología modular de [codon-classification-pipeline](https://github.com/trigoduoc/codon-classification-pipeline). Todo el desarrollo debe alinearse con la estructura de 6 fases (0-5).
 
-### Niveles de Componentes
+## 🤖 Roles de Agente
+Consulta [.github/AGENTS.md](.github/AGENTS.md) para identificar qué agente debe realizar cada tarea. No ignores los límites de responsabilidad de cada rol.
 
-**Atoms** (`components/atoms/`)
-- `Button.tsx`, `ButtonLink.tsx`, `Text.tsx`, `Heading.tsx`, `Paragraph.tsx`
-- Componentes base reutilizables
-- Sin estilos propios complejos; usan CSS global
+### Jerarquía Operativa
+- `@system-orchestrator` decide el subsistema (nivel 1 — entrada única).
+- `@study-orchestrator` coordina el sistema educativo (nivel 2).
+- `@data-orchestrator` coordina el pipeline de ML (nivel 2).
+- `@programming-orchestrator` coordina el desarrollo de software (nivel 2).
+- Los agentes especialistas solo ejecutan tareas concretas dentro de su dominio (nivel 3).
 
-**Molecules** (`components/molecules/`)
-- `FeatureCard.tsx`, `BookingCard.tsx`, `TestimonialCard.tsx`, `StepCard.tsx`
-- Combinan atoms con lógica simple
-- Reutilizables en múltiples vistas
+### Estructura de Custom Agents
+- Orquestador principal: `.github/system-orchestrator.agent.md`
+- Agentes de estudio: `.github/agents/study/*.agent.md`
+- Agentes de data: `.github/agents/data/*.agent.md`
+- Agentes de programación: `.github/agents/programming/*.agent.md`
+- Agentes de soporte: `.github/agents/support/github-git-agent.md`
+- Skills de programación: `.github/skills/programming/*.md`
+- Instructions: `.github/instructions/*.instructions.md`
 
-**Organisms** (`components/organisms/`)
-- `HeroSection.tsx`, `FeaturesSection.tsx`, `BarberSearchSection.tsx`, `ProfileSection.tsx`, `FAQSection.tsx`, `BookingsSection.tsx`
-- Secciones complejas que combina molecules y atoms
-- Cada página (HomePage, BarberiasPage, etc.) usa uno o varios organismos
+## 🧭 Jerarquía de Instrucciones
+- Primero: perfiles especializados en `.github/agents/*.agent.md`.
+- Segundo: mapa de roles y carpetas en `.github/AGENTS.md`.
+- Tercero: estas reglas globales en `.github/copilot-instructions.md`.
+- Si hay conflicto, prima la instrucción más específica al archivo o tarea.
 
-**Pages** (`pages/`)
-- Vistas completas componibles
-- Carga data, define rutas
-- Usa organismos y ligamos al contexto
+## 📁 Estructura del Código
+- **`src/`**: Dividido en subcarpetas numeradas por fase (`0_audit` a `5_report`).
+- **Scripts**: Cada fase debe tener un script orquestador o notebook de ejecución.
+- **Data**: 
+  - `data/raw/`: INMUTABLE. No abrir para escritura.
+  - `data/processed/`: Salida de procesos de limpieza y transformación.
 
-### Migrando a Feature-Based Puro
+## 🛠 Stack Tecnológico
+- **Core**: Python 3.x, pandas, scikit-learn.
+- **Modelado**: xgboost, lightgbm, optuna.
+- **Visualización**: matplotlib, seaborn, yellowbrick.
 
-Cuando una feature crezca, migra sus componentes de `/components/` a `/features/[feature]/ui/`:
-```
-// Antes
-src/components/organisms/ProfileSection.tsx
+## 🚀 Comandos Críticos
+- Inicializar estructura: `python3 setup_and_run.py`
+- Instalación: `pip install -r requirements.txt`
 
-// Después (cuando Profile sea feature completa)
-src/features/profile/ui/ProfileSection.tsx
-src/features/profile/hooks/useProfile.ts
-src/features/profile/services/profileService.ts
-```
+## ✅ Protocolo Para Evaluar Estado Del Proyecto
+Cuando el usuario pida "evaluar cómo está el proyecto" o "ejecutarlo para validar estado", usar este orden:
 
----
+1. Estado general (sin ejecución completa):
+  - `python setup_and_run.py --mode status --venv-name venv --skip-install`
+2. Compatibilidad del entorno:
+  - `python setup_and_run.py --mode compat --venv-name venv --skip-install`
+3. Ejecución end-to-end del pipeline:
+  - `python setup_and_run.py --mode run --venv-name venv --skip-install`
+4. Verificación rápida opcional:
+  - `python setup_and_run.py --mode smoke-test --venv-name venv --skip-install`
 
-## 🤝 Protocolos de Negocio Críticos
+Reportar resultados con foco en:
+- Métricas finales y trade-off recall/precision.
+- Artefactos generados en `data/processed/`, `models/` y `reports/`.
+- Brechas detectadas respecto de [docs/verificacion_rubrica_pdf.md](../docs/verificacion_rubrica_pdf.md).
 
-### 1. Registro en dos pasos (Onboarding Barbero)
-Para registrar un barbero, se debe seguir este flujo:
-1. **Paso 1:** `POST /api/usuarios/register` con `rol: "Barbero"`. Esto crea la entidad base `Usuario`.
-2. **Paso 2:** `POST /api/barberos` usando el `id_usuario` retornado en el paso anterior. Esto crea la entidad `Barbero` vinculada.
-*Nota:* El sistema no permite crear un barbero sin un usuario previo por integridad de autenticación.
+## � Dominio de Programación — Desarrollo de Software
+Cuando el usuario pida crear un programa, API, base de datos, frontend, documentación técnica, diagramas de arquitectura o ejecutar tests:
+1. `@system-orchestrator` detecta la solicitud como programación
+2. Delega a `@programming-orchestrator`
+3. `@programming-orchestrator` coordina a los agentes especialistas: `@backend-agent`, `@database-agent`, `@frontend-agent`, `@architecture-agent`, `@testing-agent`, `@security-agent`, `@documentation-agent`, etc.
+4. Para commits, `@github-git-agent` (en `agents/support/`) solicita confirmación antes de persistir
 
-### 2. Gestión de Perfil
-- Los usuarios pueden gestionar sus datos (nombre, apellido, teléfono) vía `GET/PUT /api/usuarios/perfil`.
-- Estos endpoints requieren el header `Authorization: Bearer <token>`.
+### Stack de programación disponible
+- Node.js (Express, Hexagonal Architecture, Zod)
+- React / Vue (Feature-Based Architecture)
+- SQL Server / PostgreSQL / SQLite
+- Docker, Azure, CI/CD
+- Power Platform (Power Apps, Power Automate)
+- Python (scripts, CLI, ML)
 
-
----
-
-## 🤖 Coordinación de Agentes
-
-**IMPORTANTE:** Para invocaciones de agentes, ver [`.github/AGENTS.md`](.github/AGENTS.md) - la **fuente única de verdad** para registro y estado de agentes.
-
-**Estructura:**
-- `.github/AGENTS.md` - Registry central con status actual
-- `.github/agents/*.md` - Instrucciones detalladas por agente
-- `.github/README.md` - Arquitectura del sistema de agentes
-
-**Agents disponibles:**
-```
-@database-agent       # SQL Server y migraciones
-@backend-agent        # APIs Node.js (Ark. Hexagonal)
-@frontend-agent       # React (Feature-Based Architecture)
-@documentation-agent  # READMEs y API docs
-@diagram-agent        # Visualización draw.io
-@powerapps-agent      # Low-code Apps
-@power-automate-agent # Automatización flujos
-@security-agent       # Auditoría y estándares
-@github-git-agent     # Gestión de commits y flujo Git
-@orchestrator-agent   # Coordinación multi-agente
-```
-
----
-
-## 🎯 Convenciones Globales
-
-### Nomenclatura
-- **Carpetas:** `lowercase-with-hyphens` (ej: `src/application/usecases/`)
-- **Archivos SQL:** `PascalCase.sql` (ej: `Users_Migration_001.sql`)
-- **Archivos código:** `camelCase.ts` (ej: `getUserById.ts`)
-- **Archivos config:** `snake_case.json` (ej: `database_config.json`)
-- **Tablas BD:** `PascalCase` plural (ej: `Usuarios`, `Barberos`)
-- **Columnas BD:** `camelCase` (ej: `id_usuario`, `nombreBarbero`)
-- **Variables código:** `camelCase` (ej: `userCount`)
-- **Constantes código:** `UPPER_SNAKE_CASE` (ej: `MAX_LOGIN_ATTEMPTS`)
-
-### Directorios Clave
-```
-Producto/
-├── back-fadebooker/          # Backend (Entry: src/index.js, Puerto 3000)
-│   ├── src/
-│   │   ├── domain/           # Entities & repositories
-│   │   ├── application/      # UseCases & services
-│   │   ├── infrastructure/   # DB, adapters
-│   │   └── interfaces/       # Controllers & routes
-│   └── tests/
-│
-├── front-fadebooker/         # Frontend React (Vite, Puerto 5173)
-│   ├── src/
-│   │   ├── components/
-│   │   ├── features/
-│   │   ├── lib/
-│   │   └── styles/
-│   └── package.json
-│
-└── pages-fadebooker/         # Legacy Power Pages (deprecado)
-
-Documentación/
-├── Documentos/               # Fuentes: SQL scripts, diseño
-└── md-fuente/                # Documentación en Markdown
-```
-
-### Git & Flujo Trabajo
-- **Branches:** `main` (prod), `develop` (int), `feature/*` (features)
-- **Commits:** Imperativos, claros (ej: "Add JWT authentication", "Fix user validation")
-- **Versionado:** SemVer `MAJOR.MINOR.PATCH`
-- **Integración:** Cambios documentados en `CHANGELOG.md`
-
-### Stack Technology
-
-**Backend:**
-- Framework: Express.js 5.2.1
-- Query Builder: Knex.js 3.2.9
-- Driver: tedious 19.2.1 (MSSQL)
-- Auth: JWT (jsonwebtoken)
-- Validation: Zod
-- Testing: Jest + Supertest
-- Architecture: Hexagonal (Clean)
-
-**Frontend:**
-- Framework: React 18
-- Build: Vite
-- Language: TypeScript
-- Styling: Tailwind CSS
-- HTTP: Axios
-- Router: React Router v6
-- State: Context API + React Query
-- Testing: Vitest
-
-**Database:**
-- Server: Azure SQL Server
-- Design: 3NF Relational
-- Tables: 10 core entities
-- Indexes: 13 optimizados
-- Procedures/Triggers: 4 triggers para auditoría
-
----
-
-## 🛡️ Principios de Desarrollo
-
-✅ **DRY (Don't Repeat Yourself)**
-- No duplicar lógica entre backend y documentación
-- Usar servicios/utilities compartidas
-
-✅ **Single Responsibility**
-- Cada agente tiene un único propósito
-- Cada módulo de código es independiente y testeable
-
-✅ **Infrastructure as Code**
-- Toda modificación de BD vía scripts SQL versionados
-- Migraciones ejecutables y reversibles
-
-✅ **Documentation First**
-- Documentar APIs antes de implementación extensiva
-- Mantener docs sincronizadas con código
-
-✅ **Security by Design**
-- Validación de inputs en todas las capas
-- Autenticación y autorización obligatorias
-- Auditoría de cambios sensibles
-
----
-
-## 📞 Canales de Comunicación
-
-### Entre Agentes
-- **Source of Truth:** [`.github/AGENTS.md`](.github/AGENTS.md)
-- **Instrucciones:** [`.github/agents/`](./agents/)
-- **Codebase Structure:** [`CODEBASE_STRUCTURE.md`](../CODEBASE_STRUCTURE.md)
-
-### Con Desarrolladores
-- **Issues:** GitHub Issues para features/bugs
-- **Documentation:** Markdown en `Documentación/md-fuente/`
-- **Comments:** Código comentado en lugares críticos
-
----
-
-## 🚀 Próximos Pasos Prioritarios
-
-1. **✅ Schema & Backend:** Completado y validado (92%)
-2. **✅ Cloud Deployment:** Backend desplegado en Azure Functions/App Service (Node 24 + Docker)
-3. **Frontend Migration:** Power Pages → React (iniciando)
-4. **Security Audit:** OWASP + JWT standards (iniciando)
-5. **E2E Testing & CI/CD:** Falta backend completo
-6. **Production Deployment:** Azure + monitoring
-
-## 🌐 Endpoints de Verificación
-- **Health Check:** `/api/health` (Útil para validar despliegue en Azure)
-- **Base API:** `/api`
-- **Auth:** `/api/usuarios/login`, `/api/usuarios/register`
-
----
-
-## ⚡ Consejos de Productividad Inmediata
-
-1. **Backend routing:** Todas las rutas agregadas en `src/interfaces/http/routes/index.js`
-2. **Configuración BD:** Verificar `src/config/knexfile.js` (requiere variable DB_PASSWORD)
-3. **Estado frontend:** React Query (estado servidor) + Zustand (estado cliente)
-4. **Autenticación frontend:** Hook `useAuthContext` provee user, login, logout, isAuthenticated
-5. **Tests ejecutan:** `npm test` incluye reporte de cobertura
-6. **Conflictos de puerto:** Asegurar puertos 3000 (backend) y 5173 (frontend) libres
-
----
-
-## 🚨 Posibles Problemas Comunes
-
-- ⚠️ Variable `DB_PASSWORD` faltante = falla de conexión silenciosa
-- ⚠️ Lógica de precios ServicioBarbero v1.1.0 requiere verificar overrides
-- ⚠️ Modo estricto TypeScript + ESLint estricto (TODAS las advertencias = errores)
-- ⚠️ Timeout de tests en 5000ms (incrementar para tests pesados de BD)
-- ⚠️ CORS no configurado (agregar middleware si frontend desplegado separado)
-- ⚠️ Solo clases Bootstrap 5 (no utilidades Tailwind)
-
----
-
-## 📚 Documentación Relacionada
-
-- **Estado Agentes:** [`.github/AGENTS.md`](.github/AGENTS.md)
-- **Arquitectura Agentes:** [`.github/README.md`](.github/README.md)
-- **Codebase Structure:** [`CODEBASE_STRUCTURE.md`](../CODEBASE_STRUCTURE.md)
-- **BD Design:** [`Documentación/Documentos/BD_Diseño_3NF.txt`](../Documentación/Documentos/BD_Diseño_3NF.txt)
-- **Scripts BD:** [`Documentación/Documentos/FadeBooter_ScriptBD.sql`](../Documentación/Documentos/FadeBooker_ScriptBD.sql)
-
----
-
-## 🔧 Primeros Pasos para Agentes Nuevos
-
-### Database Agent
-1. Lee [`.github/agents/database-agent.md`](./agents/database-agent.md)
-2. Consulta [`BD_Diseño_3NF.txt`](../Documentación/Documentos/BD_Diseño_3NF.txt)
-3. Ejecuta [`FadeBooter_ScriptBD.sql`](../Documentación/Documentos/FadeBooker_ScriptBD.sql) en Azure SQL
-
-### Backend Agent
-1. Lee [`.github/agents/backend-agent.md`](./agents/backend-agent.md)
-2. Navega a `Producto/back-fadebooker/`
-3. `npm install && npm start` (Puerto 3000)
-4. Ver endpoints en `src/interfaces/http/routes/`
-
-### Frontend Agent
-1. Lee [`.github/agents/frontend-agent.md`](./agents/frontend-agent.md)
-2. Navega a `Producto/front-fadebooker/`
-3. `npm install && npm run dev` (Puerto 5173)
-4. Consulta componentes existentes en `src/components/`
-
-### Security Agent
-1. Lee [`.github/agents/security-agent.md`](./agents/security-agent.md)
-2. Revisa endpoints backend en `Producto/back-fadebooker/src/`
-3. Audita autenticación JWT y validaciones
-
-### Documentation Agent
-1. Lee [`.github/agents/documentation-agent.md`](./agents/documentation-agent.md)
-2. Consulta archivos en `Documentación/md-fuente/`
-3. Sincroniza con cambios de código y BD
-
----
-
-**Para detalles de coordinación multi-agente:** Ver [`.github/AGENTS.md`](.github/AGENTS.md)
+## 👥 Definiciones Detalladas
+Los perfiles de agentes individuales se encuentran en:
+- [.github/agents/study/](.github/agents/study/) — tutores y sistema educativo
+- [.github/agents/data/](.github/agents/data/) — pipeline ML
+- [.github/agents/programming/](.github/agents/programming/) — desarrollo de software
+- [.github/agents/support/](.github/agents/support/) — soporte compartido (git)
+- [.github/AGENTS.md](.github/AGENTS.md) — mapa completo del ecosistema
