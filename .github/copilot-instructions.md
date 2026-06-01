@@ -1,128 +1,105 @@
-# 🎯 Reglas de Operación — Ciencia de Datos
+# 🎯 Reglas de Operación — FadeBooker (Sistema Inteligente de Gestión)
 
 ---
 
-## 🎓 Sistema de Estudio — Asignaturas del Semestre
+## 🎓 Sistema de Estudio y Documentación del Proyecto
 
-### Agente de entrada global: `@system-orchestrator`
+### Agente de entrada global: @system-orchestrator
 Para cualquier solicitud general en el repositorio, usar este orden de delegación:
-1. `@system-orchestrator` clasifica la solicitud (PUNTO DE ENTRADA ÚNICO)
-2. `@study-orchestrator` atiende material, dudas y evaluaciones del curso
-3. `@data-orchestrator` atiende pipeline EDA-ACV y artefactos de ML
-4. `@programming-orchestrator` atiende desarrollo de software: APIs, BD, frontend, tests, docs, arquitectura
+1. @system-orchestrator clasifica la solicitud (PUNTO DE ENTRADA ÚNICO)
+2. @study-orchestrator atiende material, dudas sobre el proyecto, requerimientos y documentación
+3. @data-orchestrator atiende análisis de datos, reportes de negocio y métricas de barbería
+4. @programming-orchestrator atiende desarrollo de software: APIs (Node.js), BD (Azure SQL), Frontend (React), tests, docs y arquitectura
 
-### Agente de entrada: `@study-orchestrator`
-Para cualquier solicitud relacionada con el estudio, usar este orden de delegación:
-1. `@study-orchestrator` identifica la necesidad y delega
-2. `@content-reader` lee el knowledge base en `knowledge/`
-3. `@preprocesamiento-tutor` o `@programacion-tutor` responde según la asignatura
-4. `@quiz-generator` genera evaluaciones o práctica
+### Agente de entrada: @study-orchestrator
+Para cualquier solicitud relacionada con la comprensión del proyecto:
+1. @study-orchestrator identifica la necesidad y delega
+2. @content-reader lee el knowledge base en knowledge/ (donde reside el Acta de Constitución, Planes de Riesgo, etc.)
+3. Genera resúmenes técnicos o responde dudas sobre los requerimientos del cliente
 
-### Protocolo para solicitudes de estudio
-Cuando el usuario pida resumir, explicar, preguntar o evaluar:
-1. Verificar si `knowledge/` existe → si no, guiar al usuario a ejecutar el script de extracción
-2. Buscar el tema en `knowledge/INDEX.md`
-3. Leer el archivo `.md` correspondiente
-4. Delegar al tutor especialista o quiz-generator según la solicitud
+### Protocolo para solicitudes de conocimiento
+Cuando el usuario pida resumir requerimientos, explicar planes o consultar la arquitectura:
+1. Verificar si knowledge/ existe (generado a partir de Documentación/Documentos/)
+2. Buscar el tema en knowledge/INDEX.md
+3. Leer el archivo correspondiente y responder con precisión quirúrgica
 
-### Inicializar el Knowledge Base (ejecutar UNA sola vez)
-```bash
+### Inicializar el Knowledge Base de FadeBooker
+\`\`\`bash
+# Ubicación: Producto/back-fadebooker/
 pip install -r scripts/requirements_extraction.txt
-python scripts/extract_course_content.py
-```
-
-### Asignaturas disponibles
-| Asignatura | Carpeta en `knowledge/` |
-|---|---|
-| Preprocesamiento de Datos | `PREPROCESAMIENTO de datos/` |
-| Programación para Ciencia de Datos | `Programación para ciencia de datos/` |
-| Inferencia Estadística | `Inferencia Estadística/` |
-| Herramientas de Cálculo Diferencial | `Herramientas de calculo diferencial/` |
+python scripts/extract_course_content.py --source "../../Documentación/Documentos" --output "../../knowledge"
+\`\`\`
 
 ---
 
-## 🔬 Reglas de Operación — Pipeline EDA-ACV (Fase 2 Modelado)
+## 🔬 Reglas de Operación — Desarrollo y Calidad (FadeBooker)
 
 ## 🧬 Contexto y Referencia
-Este proyecto sigue la metodología modular de [codon-classification-pipeline](https://github.com/trigoduoc/codon-classification-pipeline). Todo el desarrollo debe alinearse con la estructura de 6 fases (0-5).
+Este proyecto sigue una arquitectura **Hexagonal (Clean Architecture)** en el backend y **Feature-Based Architecture** en el frontend. Todo desarrollo debe alinearse con estos patrones.
 
 ## 🤖 Roles de Agente
-Consulta [.github/AGENTS.md](.github/AGENTS.md) para identificar qué agente debe realizar cada tarea. No ignores los límites de responsabilidad de cada rol.
+Consulta [.github/AGENTS.md](.github/AGENTS.md) para identificar qué agente debe realizar cada tarea.
 
 ### Jerarquía Operativa
-- `@system-orchestrator` decide el subsistema (nivel 1 — entrada única).
-- `@study-orchestrator` coordina el sistema educativo (nivel 2).
-- `@data-orchestrator` coordina el pipeline de ML (nivel 2).
-- `@programming-orchestrator` coordina el desarrollo de software (nivel 2).
-- Los agentes especialistas solo ejecutan tareas concretas dentro de su dominio (nivel 3).
+- @system-orchestrator decide el subsistema.
+- @programming-orchestrator coordina el desarrollo de software (Backend, Frontend, DB).
+- @data-orchestrator coordina el análisis de métricas y reportes.
+- @study-orchestrator facilita la navegación por la documentación técnica y administrativa.
 
 ### Estructura de Custom Agents
-- Orquestador principal: `.github/system-orchestrator.agent.md`
-- Agentes de estudio: `.github/agents/study/*.agent.md`
-- Agentes de data: `.github/agents/data/*.agent.md`
-- Agentes de programación: `.github/agents/programming/*.agent.md`
-- Agentes de soporte: `.github/agents/support/github-git-agent.md`
-- Skills de programación: `.github/skills/programming/*.md`
-- Instructions: `.github/instructions/*.instructions.md`
+- Orquestador principal: .github/system-orchestrator.agent.md
+- Agentes de programación: .github/agents/programming/
+- Agentes de estudio/docs: .github/agents/study/
+- Agentes de soporte: .github/agents/support/
+- Skills y Instructions: .github/skills/ y .github/instructions/
 
 ## 🧭 Jerarquía de Instrucciones
-- Primero: perfiles especializados en `.github/agents/*.agent.md`.
-- Segundo: mapa de roles y carpetas en `.github/AGENTS.md`.
-- Tercero: estas reglas globales en `.github/copilot-instructions.md`.
-- Si hay conflicto, prima la instrucción más específica al archivo o tarea.
+1. Perfiles especializados en .github/agents/.
+2. Mapa de roles en .github/AGENTS.md.
+3. Estas reglas globales en .github/copilot-instructions.md.
 
 ## 📁 Estructura del Código
-- **`src/`**: Dividido en subcarpetas numeradas por fase (`0_audit` a `5_report`).
-- **Scripts**: Cada fase debe tener un script orquestador o notebook de ejecución.
-- **Data**: 
-  - `data/raw/`: INMUTABLE. No abrir para escritura.
-  - `data/processed/`: Salida de procesos de limpieza y transformación.
+- **Backend**: Producto/back-fadebooker/src/ (Domain, Application, Infrastructure, Interfaces).
+- **Frontend**: Producto/front-fadebooker/src/ (features, components, hooks, services).
+- **Documentación**: Documentación/ y knowledge/.
 
 ## 🛠 Stack Tecnológico
-- **Core**: Python 3.x, pandas, scikit-learn.
-- **Modelado**: xgboost, lightgbm, optuna.
-- **Visualización**: matplotlib, seaborn, yellowbrick.
+- **Core**: Node.js 20, React 18, Vite.
+- **Base de Datos**: Azure SQL Server, Knex.js.
+- **Integraciones**: Mercado Pago v2, Cloudinary, Gmail (SMTP).
 
-## 🚀 Comandos Críticos
-- Inicializar estructura: `python3 setup_and_run.py`
-- Instalación: `pip install -r requirements.txt`
+## ✅ Protocolo de Validación
+Al evaluar el estado del proyecto, verificar:
+1. Conectividad local con .env.
+2. Ejecución de tests: npm test en el backend.
+3. Sincronización de migraciones en Documentación/Documentos/Migrations/.
 
-## ✅ Protocolo Para Evaluar Estado Del Proyecto
-Cuando el usuario pida "evaluar cómo está el proyecto" o "ejecutarlo para validar estado", usar este orden:
+## 💻 Dominio de Programación
+Cuando el usuario pida cambios en el código:
+1. @system-orchestrator delega a @programming-orchestrator.
+2. Se coordina al especialista: @backend-agent, @frontend-agent, @database-agent, etc.
+3. Para persistir cambios, el @github-git-agent solicita confirmación del commit.
 
-1. Estado general (sin ejecución completa):
-  - `python setup_and_run.py --mode status --venv-name venv --skip-install`
-2. Compatibilidad del entorno:
-  - `python setup_and_run.py --mode compat --venv-name venv --skip-install`
-3. Ejecución end-to-end del pipeline:
-  - `python setup_and_run.py --mode run --venv-name venv --skip-install`
-4. Verificación rápida opcional:
-  - `python setup_and_run.py --mode smoke-test --venv-name venv --skip-install`
+### Estándares de Código
+- Tipado estricto (donde aplique) y validación con **Zod**.
+- Documentación OpenAPI (Swagger) siempre actualizada.
+- Manejo de errores centralizado y registro de logs de auditoría.
 
-Reportar resultados con foco en:
-- Métricas finales y trade-off recall/precision.
-- Artefactos generados en `data/processed/`, `models/` y `reports/`.
-- Brechas detectadas respecto de [docs/verificacion_rubrica_pdf.md](../docs/verificacion_rubrica_pdf.md).
+### Reglas de Negocio Críticas
+- **Pagos**: No permitir agendar sin abono de retención (30-100% vía Mercado Pago).
+- **Entidades**: Usar `ServicioBarbero` para la lógica de precios y tiempos (no `ServicioTienda`).
+- **Fidelización**: 50 puntos por cada cita completada satisfactoriamente.
+- **Seguridad**: Passwords SIEMPRE hasheadas con bcrypt (validar en `UsuarioRepository`).
 
-## � Dominio de Programación — Desarrollo de Software
-Cuando el usuario pida crear un programa, API, base de datos, frontend, documentación técnica, diagramas de arquitectura o ejecutar tests:
-1. `@system-orchestrator` detecta la solicitud como programación
-2. Delega a `@programming-orchestrator`
-3. `@programming-orchestrator` coordina a los agentes especialistas: `@backend-agent`, `@database-agent`, `@frontend-agent`, `@architecture-agent`, `@testing-agent`, `@security-agent`, `@documentation-agent`, etc.
-4. Para commits, `@github-git-agent` (en `agents/support/`) solicita confirmación antes de persistir
+## ⚠️ Protocolo de Herramientas Deshabilitadas
+Cuando las herramientas de edición de archivos o ejecución en terminal estén deshabilitadas o restringidas en el entorno actual del usuario, el asistente debe operar bajo las siguientes reglas estrictas:
+1. **Notificación Temprana**: El agente debe detectar la ausencia de las herramientas (como errores de ejecución de comandos por limitaciones del sandbox) y alertar al usuario al principio de su respuesta sobre esta limitación.
+2. **Propuesta de Cambios Transparentes**: En lugar de intentar ejecutar modificaciones silenciosas o delegaciones automatizadas en bucle, se deben proporcionar bloques de código completos y limpios, indicando las rutas de archivo exactas.
+3. **Instrucciones Manuales Claras**: Guiar al usuario con los comandos y pasos específicos que debe realizar por su cuenta.
+4. **Cese de Reintentos Automáticos**: Si una herramienta retorna un error de falta de permisos o no disponibilidad, no intentes volver a llamarla; pasa inmediatamente a asistencia guiada.
 
-### Stack de programación disponible
-- Node.js (Express, Hexagonal Architecture, Zod)
-- React / Vue (Feature-Based Architecture)
-- SQL Server / PostgreSQL / SQLite
-- Docker, Azure, CI/CD
-- Power Platform (Power Apps, Power Automate)
-- Python (scripts, CLI, ML)
-
-## 👥 Definiciones Detalladas
-Los perfiles de agentes individuales se encuentran en:
-- [.github/agents/study/](.github/agents/study/) — tutores y sistema educativo
-- [.github/agents/data/](.github/agents/data/) — pipeline ML
-- [.github/agents/programming/](.github/agents/programming/) — desarrollo de software
-- [.github/agents/support/](.github/agents/support/) — soporte compartido (git)
-- [.github/AGENTS.md](.github/AGENTS.md) — mapa completo del ecosistema
+## 🔄 Prevención de Bucles de Delegación Excesiva
+Para evitar la derivación eterna de tareas sin resolución real:
+1. **Límite de Profundidad**: Ningún flujo de trabajo puede delegarse a subagentes más de dos veces continuas sin reportar el estado intermedio al usuario.
+2. **Detección de Ciclos**: Si un subagente detecta que una sub-tarea le ha sido devuelta por otro agente para el mismo objetivo, debe detener el ciclo de inmediato, resumir el conflicto y solicitar la intervención del usuario.
+3. **Principio de Autosuficiencia**: Cada agente debe resolver la tarea directamente con la información disponible en su contexto si es técnicamente factible, en lugar de derivarla por defecto a otro rol.

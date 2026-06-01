@@ -1,4 +1,7 @@
 ---
+name: study-orchestrator
+---
+---
 description: "Orquestador principal del sistema de estudio. Coordina los agentes tutores, generador de quizzes y lector de contenido para responder preguntas, crear resúmenes y preparar evaluaciones de las asignaturas de Ciencia de Datos."
 tools: ["read_file", "list_dir", "grep_search", "file_search", "semantic_search", "run_in_terminal", "runSubagent", "manage_todo_list"]
 ---

@@ -91,3 +91,15 @@ Este orquestador es **universal**: funciona en repositorios académicos, proyect
 1. Lee `README.md` para entender el contexto del proyecto.
 2. Lee `.github/copilot-instructions.md` para aplicar las reglas específicas del repositorio.
 3. Adapta el enrutamiento según los dominios activos del proyecto.
+
+## 🛑 Protocolo para Herramientas Deshabilitadas o Limitadas
+
+Si se detecta que las herramientas de ejecución (como `run_in_terminal` o herramientas de edición) están deshabilitadas o restringidas en el entorno por el usuario:
+1. **No delegar en bucle**: Detener inmediatamente la invocación repetida de sub-agentes automáticos que requieran guardar archivos.
+2. **Rol de Asesor**: Adoptar de inmediato el modo de asesoramiento, proveyendo explicaciones, comandos e instrucciones para que el usuario pueda copiar y ejecutar manualmente con facilidad.
+
+## 🔄 Prevención de Bucles de Delegación (Anti-Loop Regulation)
+
+Para evitar rebotar indefinidamente tareas entre el orquestador principal y los sub-agentes:
+1. **Límite de Profundidad**: No delegar más de dos veces continuas sin reportar el estado intermedio al usuario final.
+2. **Freno de Rebote**: Si un sub-agente devuelve una tarea por falta de contexto o incapacidad, el @system-orchestrator debe asumir el control directo o consultar detalladamente al usuario en vez de reintentar recursivamente.

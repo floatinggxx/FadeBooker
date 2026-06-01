@@ -1,3 +1,6 @@
+---
+name: power-automate
+---
 # ⚡ Power Automate Agent - Instrucciones
 
 **Propósito:** Especialista en automatización de flujos para FadeBooker.

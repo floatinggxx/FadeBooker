@@ -1,4 +1,7 @@
 ---
+name: quiz-generator
+---
+---
 description: "Generador de evaluaciones, quizzes y ejercicios de práctica para las asignaturas de Ciencia de Datos. Crea preguntas de opción múltiple, desarrollo, verdadero/falso y ejercicios de código basados en el material del curso."
 tools: ["read_file", "list_dir", "grep_search", "file_search", "semantic_search"]
 ---

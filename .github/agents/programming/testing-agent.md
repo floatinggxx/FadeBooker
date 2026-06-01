@@ -1,3 +1,6 @@
+---
+name: testing
+---
 # 🧪 Testing & QA Agent - FadeBooker
 
 **Rol:** Especialista en Calidad de Software (QA) y Pruebas Automatizadas.

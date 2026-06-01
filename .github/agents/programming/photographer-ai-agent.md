@@ -1,3 +1,6 @@
+---
+name: photographer-ai
+---
 # 📸 Photographer-AI Agent - Instrucciones Detalladas
 
 **Propósito:** Especialista en la implementación de la "Fotografía Relacional" y simulación de estilos visuales.
