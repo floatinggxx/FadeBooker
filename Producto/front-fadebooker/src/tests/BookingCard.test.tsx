@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import BookingCard from '../components/molecules/BookingCard';
 import { NotificationProvider } from '../context/NotificationContext';
 
@@ -9,6 +10,23 @@ vi.mock('@/lib/api/pagoService', () => ({
     procesarPago: vi.fn(),
   },
 }));
+
+const createTestQueryClient = () =>
+  new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
+
+const TestWrapper = ({ children }: { children: React.ReactNode }) => {
+  const testQueryClient = createTestQueryClient();
+  return (
+    <QueryClientProvider client={testQueryClient}>
+      <NotificationProvider>{children}</NotificationProvider>
+    </QueryClientProvider>
+  );
+};
 
 describe('BookingCard Component', () => {
   const defaultProps = {
@@ -21,31 +39,22 @@ describe('BookingCard Component', () => {
   };
 
   it('debe mostrar el botón de "Valorar Servicio" cuando la cita está completada', () => {
-    render(
-      <NotificationProvider>
-        <BookingCard {...defaultProps} />
-      </NotificationProvider>
-    );
+    render(<BookingCard {...defaultProps} />, { wrapper: TestWrapper });
 
     expect(screen.getByText(/Valorar Servicio/i)).toBeDefined();
   });
 
   it('no debe mostrar el botón de valorar si el usuario es Barbero', () => {
     render(
-      <NotificationProvider>
-        <BookingCard {...defaultProps} isBarberoView={true} />
-      </NotificationProvider>
+      <BookingCard {...defaultProps} isBarberoView={true} />,
+      { wrapper: TestWrapper }
     );
 
     expect(screen.queryByText(/Valorar Servicio/i)).toBeNull();
   });
 
   it('debe abrir el modal de reseña al hacer clic en valorar', async () => {
-    render(
-      <NotificationProvider>
-        <BookingCard {...defaultProps} />
-      </NotificationProvider>
-    );
+    render(<BookingCard {...defaultProps} />, { wrapper: TestWrapper });
 
     const btn = screen.getByText(/Valorar Servicio/i);
     fireEvent.click(btn);

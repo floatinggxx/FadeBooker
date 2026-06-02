@@ -19,6 +19,7 @@ describe('Usuario Model', () => {
         foto_perfil_url: 'https://example.com/photo.jpg',
         fecha_registro: '2026-04-14',
         ultimo_login: '2026-04-14',
+        puntos_acumulados: 0,  // Agregado en migración 20260526
         createdAt: '2026-04-14T00:00:00Z',
         updatedAt: '2026-04-14T00:00:00Z'
       }
@@ -32,6 +33,7 @@ describe('Usuario Model', () => {
       expect(usuario.telefono).toBe('3001234567')
       expect(usuario.rol).toBe('Cliente')
       expect(usuario.estado).toBe(true)
+      expect(usuario.puntos_acumulados).toBe(0)
     })
 
     test('debe asignar foto_perfil_url correctamente (sin typo)', () => {
@@ -118,11 +120,11 @@ describe('Usuario Model', () => {
     })
 
     test('debe validar sincronización con campos de BD', () => {
-      // Campos esperados en BD según ESPECIFICACION_BD.md
+      // Campos esperados en BD según ESPECIFICACION_BD.md + migraciones
       const camposBD = [
         'id_usuario', 'email', 'nombre', 'apellido', 'telefono',
         'rol', 'estado', 'foto_perfil_url', 'fecha_registro',
-        'ultimo_login', 'createdAt', 'updatedAt'
+        'ultimo_login', 'puntos_acumulados', 'createdAt', 'updatedAt'  // puntos_acumulados añadido en migración 20260526
       ]
 
       const usuarioData = {
@@ -136,6 +138,7 @@ describe('Usuario Model', () => {
         foto_perfil_url: 'https://example.com/photo.jpg',
         fecha_registro: '2026-04-14',
         ultimo_login: '2026-04-14',
+        puntos_acumulados: 0,
         createdAt: '2026-04-14T00:00:00Z',
         updatedAt: '2026-04-14T00:00:00Z'
       }
@@ -162,6 +165,7 @@ describe('Usuario Model', () => {
         foto_perfil_url: 'https://example.com/photo.jpg',
         fecha_registro: '2026-04-14',
         ultimo_login: '2026-04-14',
+        puntos_acumulados: 0,
         createdAt: '2026-04-14T00:00:00Z',
         updatedAt: '2026-04-14T00:00:00Z'
       }
@@ -169,8 +173,8 @@ describe('Usuario Model', () => {
       const usuario = new Usuario(usuarioData)
 
       // Campos según BD: id_usuario, email, nombre, apellido, telefono, rol, estado, 
-      // foto_perfil_url, fecha_registro, ultimo_login, createdAt, updatedAt
-      expect(Object.keys(usuario)).toHaveLength(12)
+      // foto_perfil_url, fecha_registro, ultimo_login, puntos_acumulados, createdAt, updatedAt (13 campos después de migración 20260526)
+      expect(Object.keys(usuario)).toHaveLength(13)
     })
 
     test('debe no tener propiedades que no existan en BD', () => {
@@ -185,6 +189,7 @@ describe('Usuario Model', () => {
         foto_perfil_url: 'https://example.com/photo.jpg',
         fecha_registro: '2026-04-14',
         ultimo_login: '2026-04-14',
+        puntos_acumulados: 0,
         createdAt: '2026-04-14T00:00:00Z',
         updatedAt: '2026-04-14T00:00:00Z'
       }
@@ -192,7 +197,7 @@ describe('Usuario Model', () => {
       const usuario = new Usuario(usuarioData)
 
       // Propiedades que NO deben existir (no están en BD)
-      expect(usuario).not.toHaveProperty('puntos_acumulados') // ← Cliente lo tiene, pero Usuario NO
+      expect(usuario).toHaveProperty('puntos_acumulados') // ← AHORA lo tiene después de migración 20260526
       expect(usuario).not.toHaveProperty('especialidad') // ← Barbero lo tiene, pero Usuario NO
       expect(usuario).not.toHaveProperty('password') // No debe guardar contraseña aquí
     })
@@ -245,6 +250,40 @@ describe('Usuario Model', () => {
       })
 
       expect(typeof usuario.estado).toBe('boolean')
+    })
+
+    test('puntos_acumulados debe ser número (agregado en migración 20260526)', () => {
+      const usuario = new Usuario({
+        id_usuario: 1,
+        email: 'test@example.com',
+        nombre: 'Juan',
+        apellido: 'Pérez',
+        telefono: '3001234567',
+        rol: 'Cliente',
+        estado: true,
+        puntos_acumulados: 50,
+        createdAt: '2026-04-14T00:00:00Z',
+        updatedAt: '2026-04-14T00:00:00Z'
+      })
+
+      expect(typeof usuario.puntos_acumulados).toBe('number')
+      expect(usuario.puntos_acumulados).toBe(50)
+    })
+
+    test('puntos_acumulados debe tener valor por defecto de 0', () => {
+      const usuario = new Usuario({
+        id_usuario: 1,
+        email: 'test@example.com',
+        nombre: 'Juan',
+        apellido: 'Pérez',
+        telefono: '3001234567',
+        rol: 'Cliente',
+        estado: true,
+        createdAt: '2026-04-14T00:00:00Z',
+        updatedAt: '2026-04-14T00:00:00Z'
+      })
+
+      expect(usuario.puntos_acumulados).toBe(0)
     })
   })
 })

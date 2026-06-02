@@ -71,6 +71,25 @@ Consulta [.github/AGENTS.md](.github/AGENTS.md) para identificar qué agente deb
 - **Frontend**: Producto/front-fadebooker/src/ (features, components, hooks, services).
 - **Documentación**: Documentación/ y knowledge/.
 
+## 🧩 Proyecto — Convenciones clave
+- Inicia cualquier cambio de código con el contexto del backend en `Producto/back-fadebooker/` y el frontend en `Producto/front-fadebooker/`.
+- El `knowledge/` es la fuente de requerimientos y criterios de negocio; `Documentación/md-fuente/` es la fuente de la API/documentación técnica.
+- Usa `@system-orchestrator` como puerta de entrada en todas las solicitudes. Si el entorno lo permite, arranca desde `.github/prompts/route-through-system-orchestrator.prompt.md`.
+- Mantén la arquitectura hexagonal en el backend y la organización feature-based en el frontend.
+- Revisa `Documentación/md-fuente/INDICE_ENDPOINTS.md` antes de actualizar o documentar endpoints.
+
+## 🧪 Comandos útiles
+- Backend:
+  - Instalar dependencias: `cd Producto/back-fadebooker && npm install`
+  - Ejecutar local: `cd Producto/back-fadebooker && npm start`
+  - Tests: `cd Producto/back-fadebooker && npm test`
+  - Tests unitarios: `cd Producto/back-fadebooker && npm run test:unit`
+- Frontend:
+  - Instalar dependencias: `cd Producto/front-fadebooker && npm install`
+  - Ejecutar local: `cd Producto/front-fadebooker && npm run dev`
+  - Tests: `cd Producto/front-fadebooker && npm run test`
+  - Build: `cd Producto/front-fadebooker && npm run build`
+
 ## 🛠 Stack Tecnológico
 - **Core**: Node.js 20, React 18, Vite.
 - **Base de Datos**: Azure SQL Server, Knex.js.

@@ -78,21 +78,21 @@ describe('CitaService (Reseñas)', () => {
     });
   });
 
-  describe('actualizarEstado (Puntos de Lealtad)', () => {
-    test('debe otorgar puntos al completar una cita', async () => {
+  describe('actualizarEstado (Puntos de Fidelizacion)', () => {
+    test('debe otorgar 50 puntos al completar una cita', async () => {
       mockCitaRepo.findById.mockResolvedValue({ 
         id_cita: 1, 
         id_cliente: 10, 
         monto_total: 1000, 
         fecha_hora_inicio: '2020-01-01' // En el pasado
       });
-      mockUsuarioRepo.findById.mockResolvedValue({ id_usuario: 10, puntosLealtad: 100 });
+      mockUsuarioRepo.findById.mockResolvedValue({ id_usuario: 10, puntos_acumulados: 100 });
       mockUsuarioRepo.update.mockResolvedValue(1);
 
       await citaService.actualizarEstado(1, 'completada');
 
-      // 1000 / 10 = 100 puntos ganados. 100 + 100 = 200.
-      expect(mockUsuarioRepo.update).toHaveBeenCalledWith(10, { puntosLealtad: 200 });
+      // 50 puntos por cita completada. 100 + 50 = 150.
+      expect(mockUsuarioRepo.update).toHaveBeenCalledWith(10, { puntos_acumulados: 150 });
     });
   });
 });
