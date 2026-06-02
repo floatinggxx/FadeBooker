@@ -65,19 +65,20 @@ class HairstyleService {
   }
 
   /**
-   * Genera una URL transformada que simula un corte de pelo usando overlays.
-   * El overlay se superpone sobre el rostro de la persona en la imagen.
+   * Genera una URL transformada que simula un corte de pelo usando overlays tradicionales o IA Generativa (Cloudinary Generative Replace).
+   * El overlay o reemplazo se ajusta sobre el cabello/rostro de la persona en la imagen.
    * 
    * Estilos disponibles:
-   * - degradado: Corte con degradado de lados
-   * - clasico: Corte clásico tradicional
-   * - moderno: Corte moderno contemporáneo
-   * - mohicano: Corte mohicano
-   * - buzzcut: Corte rapado corto
+   * - degradado: Corte con degradado de lados (Low Fade)
+   * - clasico: Corte clásico tradicional (Pompadour/Side Part)
+   * - moderno: Corte moderno contemporáneo (Textured Crop)
+   * - mohicano: Corte mohicano (Mohawk)
+   * - buzzcut: Corte rapado corto (Buzz Cut)
    * 
    * @param {Object} params - Parámetros de la simulación
    * @param {string} params.publicId - Public ID de la imagen en Cloudinary (sin extensión)
    * @param {string} params.styleId - ID del estilo de corte a simular (degradado, clasico, moderno, mohicano, buzzcut)
+   * @param {boolean} [params.useAI=true] - Booleano para usar Inteligencia Artificial de Cloudinary en lugar de overlays
    * @returns {Object} Objeto con URL transformada de Cloudinary
    */
   generateHairstyleSimulation(params = {}) {
@@ -89,6 +90,10 @@ class HairstyleService {
 
       const { publicId, styleId } = params;
       
+      // Permitir desactivar la IA a través del body o variable de entorno (.env)
+      const envUseAI = process.env.CLOUDINARY_USE_GEN_AI !== 'false';
+      const useAI = params.useAI !== undefined ? (params.useAI === true || params.useAI === 'true') : envUseAI;
+      
       // Validar parámetros
       if (!publicId) {
         throw new Error('El publicId de la imagen es requerido');
@@ -97,7 +102,7 @@ class HairstyleService {
         throw new Error('El styleId del corte es requerido');
       }
       
-      // Mapeo de estilos a rutas de overlay en Cloudinary
+      // Mapeo tradicional de overlays
       const styleMap = {
         degradado: 'cortes/degradado',
         clasico: 'cortes/clasico',
@@ -106,20 +111,36 @@ class HairstyleService {
         buzzcut: 'cortes/buzzcut'
       };
 
+      // Mapeo para IA Generativa (Generative Replace: from hair to specified hairstyle)
+      const aiPromptMap = {
+        degradado: 'low fade haircut',
+        clasico: 'classic pompadour hairstyle',
+        moderno: 'modern textured crop haircut',
+        mohicano: 'mohawk haircut',
+        buzzcut: 'buzz cut haircut'
+      };
+
       const overlay = styleMap[styleId];
+      const aiPrompt = aiPromptMap[styleId];
       
       if (!overlay) {
         throw new Error(`El estilo '${styleId}' no es válido. Opciones: ${Object.keys(styleMap).join(', ')}`);
       }
 
-      /**
-       * Generamos la URL de transformación:
-       * 1. Detectamos el rostro (g_face)
-       * 2. Ajustamos el overlay al rostro (u_overlay, w_1.3, flags_region_relative)
-       * 3. Ajustamos posición vertical (y_-0.1) para que el pelo quede arriba del rostro
-       */
       const baseUrl = `https://res.cloudinary.com/${this.cloudinaryConfig.cloudName}/image/upload`;
-      const transformations = `g_face,u_${overlay.replace(/\//g, ':')},w_1.3,fl_region_relative,y_-0.1`;
+      let transformations = '';
+      let methodUsed = '';
+
+      if (useAI) {
+        // Usar Cloudinary Generative Replace (e_gen_replace:from_hair;to_hairstyle)
+        transformations = `e_gen_replace:from_hair;to_${encodeURIComponent(aiPrompt)}`;
+        methodUsed = 'Generative AI (Cloudinary)';
+      } else {
+        // Usar overlays tradicionales de rostro
+        transformations = `g_face,u_${overlay.replace(/\//g, ':')},w_1.3,fl_region_relative,y_-0.1`;
+        methodUsed = 'Overlay tradicional';
+      }
+
       const simulatedImageUrl = `${baseUrl}/${transformations}/${publicId}`;
 
       return {
@@ -127,7 +148,9 @@ class HairstyleService {
         simulatedImageUrl,
         styleId,
         publicId,
-        overlay,
+        useAI,
+        methodUsed,
+        overlay: useAI ? null : overlay,
         message: 'Simulación de corte generada exitosamente'
       };
     } catch (error) {

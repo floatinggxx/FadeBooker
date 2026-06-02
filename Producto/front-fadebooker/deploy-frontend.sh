@@ -20,30 +20,16 @@ API_URL="https://fadebooker-backend-ok.azurewebsites.net/api"
 
 echo -e "${BLUE}🚀 Iniciando despliegue de Frontend (Modo Automático)...${NC}"
 
-# 1. Autenticación en Azure Container Registry
-echo -e "${YELLOW}🔑 Paso 1: Autenticando en ACR ($REGISTRY)...${NC}"
-az acr login --name $REGISTRY
-if [ $? -ne 0 ]; then
-    echo -e "${RED}❌ Error al autenticar en ACR.${NC}"
-    exit 1
-fi
-
-# 2. Construcción de la imagen Docker con inyección de ARGs
-echo -e "${YELLOW}🏗️  Paso 2: Construyendo imagen Docker (Limpia y sin Caché)...${NC}"
-docker build --no-cache \
+# 1 y 2. Construcción y Push en la nube (ACR Build)
+# Usamos 'az acr build' para no depender de Docker localmente.
+# Inyectamos las variables de entorno para que Vite las use en la compilación.
+echo -e "${YELLOW}🏗️  Paso 1 y 2: Construyendo imagen en Azure (ACR Build)...${NC}"
+az acr build --registry $REGISTRY \
+    --image $IMAGE_NAME:latest \
     --build-arg VITE_API_URL=$API_URL \
-    --build-arg VITE_API_BASE_URL=$API_URL \
-    -t $REGISTRY.azurecr.io/$IMAGE_NAME:latest .
+    --build-arg VITE_API_BASE_URL=$API_URL .
 if [ $? -ne 0 ]; then
-    echo -e "${RED}❌ Error en docker build.${NC}"
-    exit 1
-fi
-
-# 3. Push de la imagen
-echo -e "${YELLOW}📤 Paso 3: Subiendo imagen al Registry...${NC}"
-docker push $REGISTRY.azurecr.io/$IMAGE_NAME:latest
-if [ $? -ne 0 ]; then
-    echo -e "${RED}❌ Error en docker push.${NC}"
+    echo -e "${RED}❌ Error durante la construcción en Azure (ACR Build).${NC}"
     exit 1
 fi
 

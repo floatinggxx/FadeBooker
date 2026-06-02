@@ -127,7 +127,9 @@ const MyBookingsPage: React.FC = () => {
               servicioName: c.servicio_nombre || c.nombre_servicio || (c.servicio?.servicio?.nombre || c.servicio?.nombre || 'Sin datos'),
               estado: c.estado,
               notas: c.notas,
-              isBarberoView: isBarbero
+              isBarberoView: isBarbero,
+              montoTotal: c.monto_total,
+              pagoAbono: c.pago_abono
             }))}
           />
         ) : (

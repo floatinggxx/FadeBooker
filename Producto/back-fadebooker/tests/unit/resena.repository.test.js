@@ -12,6 +12,7 @@ mKnex.select = jest.fn().mockReturnThis();
 mKnex.orderBy = jest.fn().mockReturnThis();
 mKnex.avg = jest.fn().mockReturnThis();
 mKnex.join = jest.fn().mockReturnThis();
+mKnex.raw = jest.fn().mockResolvedValue([]);
 
 // Implementación de promise para el await
 mKnex.then = jest.fn(function(onFulfilled) {
@@ -33,15 +34,14 @@ describe('ResenaRepositoryImpl', () => {
   describe('create', () => {
     test('debe insertar correctamente una reseña', async () => {
       const data = { id_cita: 1, puntuacion: 5 };
-      db._results = [100]; // Mock id retornado
+      db.raw.mockResolvedValue([{ id_resena: 100 }]);
 
       const result = await resenaRepo.create(data);
 
-      expect(db).toHaveBeenCalledWith('Reseña');
-      expect(db.insert).toHaveBeenCalledWith(expect.objectContaining({
-        id_cita: 1,
-        puntuacion: 5
-      }));
+      expect(db.raw).toHaveBeenCalledWith(
+        expect.stringContaining('INSERT INTO [dbo].[Reseña]'),
+        expect.any(Array)
+      );
       expect(result).toBe(100);
     });
   });

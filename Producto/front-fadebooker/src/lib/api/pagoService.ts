@@ -2,6 +2,7 @@ import api from '../api';
 
 export interface CrearPagoRequest {
   id_cita: number;
+  tipo_pago?: 'total' | 'abono';
 }
 
 export interface PagoResponse {
@@ -13,6 +14,12 @@ export const pagoService = {
   // Crear preferencia de pago para una cita
   async crearPago(data: CrearPagoRequest): Promise<PagoResponse> {
     const response = await api.post<PagoResponse>('/pagos/crear', data);
+    return response.data;
+  },
+
+  // Obtener estado de pagos de una cita
+  async obtenerPagosCita(id_cita: number): Promise<any[]> {
+    const response = await api.get<any[]>(`/pagos/cita/${id_cita}`);
     return response.data;
   },
 

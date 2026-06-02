@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Calendar, User, Scissors, Info, CheckCircle2, XCircle, Clock, CreditCard, Star } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useQueryClient } from '@tanstack/react-query';
 import { pagoService } from '@/lib/api/pagoService';
 import { useNotification } from '@/context/NotificationContext';
 import { parseError } from '@/lib/utils/errorParser';
 import ReviewModal from './ReviewModal';
+import PaymentWaitingModal from './PaymentWaitingModal';
 
 interface BookingCardProps {
   dateTime: string;
@@ -15,6 +17,8 @@ interface BookingCardProps {
   notes?: string;
   isBarberoView?: boolean;
   id?: number;
+  montoTotal?: number;
+  pagoAbono?: number;
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({ 
@@ -25,24 +29,72 @@ const BookingCard: React.FC<BookingCardProps> = ({
   status = 'pendiente', 
   notes,
   isBarberoView,
-  id
+  id,
+  montoTotal = 0,
+  pagoAbono = 0
 }) => {
+  const queryClient = useQueryClient();
   const { showNotification } = useNotification();
   const [isProcessing, setIsProcessing] = useState(false);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [isReviewed, setIsReviewed] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+  const [paymentType, setPaymentType] = useState<'total' | 'abono'>('abono');
+  
+  // Estados para el modal de espera del pago
+  const [showWaitingModal, setShowWaitingModal] = useState(false);
+  const [paymentUrl, setPaymentUrl] = useState('');
+
+  const montoPendiente = (montoTotal || 0) - (pagoAbono || 0);
+  const abonoFaltante = Math.max(0, (montoTotal || 0) * 0.5 - (pagoAbono || 0));
 
   const handlePayNow = async () => {
     if (!id) return;
     setIsProcessing(true);
     try {
-      showNotification("Iniciando portal de pago...", "info");
-      await pagoService.procesarPago(id);
+      showNotification("Generando pasarela de pago...", "info");
+      const outcomeType = (paymentType === 'abono' && abonoFaltante > 0) ? 'abono' : 'total';
+      const resultado = await pagoService.crearPago({ 
+        id_cita: id,
+        tipo_pago: outcomeType
+      });
+      setPaymentUrl(resultado.url);
+      setShowWaitingModal(true);
     } catch (err: any) {
       showNotification(parseError(err), "error");
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handleCancel = async () => {
+    if (!id) return;
+    if (!window.confirm("¿Estás seguro de que deseas cancelar esta cita?")) return;
+    
+    setIsProcessing(true);
+    try {
+      showNotification("Cancelando cita...", "info");
+      const res = await (await import('@/lib/api/bookingService')).bookingService.cancelarCita(id);
+      
+      if (res.reembolso) {
+        showNotification(`Cita cancelada. Se ha aprobado un reembolso del ${res.porcentaje}% de tu abono.`, "success");
+      } else {
+        showNotification("Cita cancelada. No aplica reembolso según la política de cancelación (<8h).", "info");
+      }
+      
+      queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
+    } catch (err: any) {
+      showNotification(parseError(err), "error");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handlePaymentSuccess = () => {
+    setShowWaitingModal(false);
+    showNotification("¡Pago completado con éxito! Tu reserva está confirmada.", "success");
+    // Invalidamos el caché de React Query para actualizar la lista de citas en tiempo real
+    queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
   };
 
   const getStatusConfig = (s: string = 'confirmada') => {
@@ -135,15 +187,57 @@ const BookingCard: React.FC<BookingCardProps> = ({
           </div>
 
           {status && status.toLowerCase() === 'pendiente' && !isBarberoView && (
+            <div className="w-full space-y-3">
+              <div className="flex gap-2 p-1 bg-slate-100 rounded-xl">
+                <button
+                  onClick={() => setPaymentType('abono')}
+                  className={clsx(
+                    "flex-1 py-2 px-3 rounded-lg text-[10px] font-black uppercase transition-all",
+                    paymentType === 'abono' ? "bg-white shadow-sm text-blue-600" : "text-slate-500 hover:bg-white/50"
+                  )}
+                >
+                  Abono (50%)
+                </button>
+                <button
+                  onClick={() => setPaymentType('total')}
+                  className={clsx(
+                    "flex-1 py-2 px-3 rounded-lg text-[10px] font-black uppercase transition-all",
+                    paymentType === 'total' ? "bg-white shadow-sm text-blue-600" : "text-slate-500 hover:bg-white/50"
+                  )}
+                >
+                  Total (100%)
+                </button>
+              </div>
+
+              <button
+                onClick={handlePayNow}
+                disabled={isProcessing}
+                className="w-full flex items-center justify-center gap-2 bg-[#3366FF] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-blue-200 hover:bg-[#2563EB] disabled:opacity-50 transition-all hover:scale-105"
+              >
+                <CreditCard size={16} />
+                {isProcessing ? 'Procesando...' : `Pagar ${paymentType === 'abono' ? 'Abono' : 'Total'}`}
+              </button>
+            </div>
+          )}
+
+          {status && (status.toLowerCase() === 'confirmada' || status.toLowerCase() === 'pendiente') && (
             <button
-              onClick={handlePayNow}
+              onClick={handleCancel}
               disabled={isProcessing}
-              className="w-full flex items-center justify-center gap-2 bg-[#3366FF] text-white px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-blue-200 hover:bg-[#2563EB] disabled:opacity-50 transition-all hover:scale-105"
+              className="w-full flex items-center justify-center gap-2 border-2 border-rose-100 text-rose-500 hover:bg-rose-50 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all disabled:opacity-50"
             >
-              <CreditCard size={16} />
-              {isProcessing ? 'Procesando...' : 'Pagar Ahora'}
+              <XCircle size={16} />
+              Cancelar Cita
             </button>
           )}
+
+          <button 
+            onClick={() => setShowDetails(!showDetails)}
+            className="text-[10px] font-black uppercase tracking-tighter text-slate-400 hover:text-blue-500 transition-colors flex items-center gap-1"
+          >
+            <Info size={12} />
+            {showDetails ? 'Ocultar Detalles' : 'Ver Detalles'}
+          </button>
 
           {status && status.toLowerCase() === 'completada' && !isBarberoView && !isReviewed && (
             <button
@@ -164,6 +258,23 @@ const BookingCard: React.FC<BookingCardProps> = ({
         </div>
       </div>
 
+      {showDetails && (
+        <div className="mt-8 pt-8 border-t-2 border-slate-50 grid grid-cols-1 sm:grid-cols-3 gap-6 animate-in slide-in-from-top-4 duration-300">
+          <div className="space-y-1">
+            <p className="text-[10px] font-black uppercase text-slate-400">Total del Servicio</p>
+            <p className="text-lg font-black text-slate-900">${montoTotal}</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-[10px] font-black uppercase text-slate-400">Abono Pagado</p>
+            <p className="text-lg font-black text-emerald-600">${pagoAbono}</p>
+          </div>
+          <div className="space-y-1">
+            <p className="text-[10px] font-black uppercase text-slate-400">Restante</p>
+            <p className="text-lg font-black text-blue-600">${montoTotal - pagoAbono}</p>
+          </div>
+        </div>
+      )}
+
       {id && (
         <ReviewModal 
           isOpen={showReviewModal}
@@ -171,6 +282,16 @@ const BookingCard: React.FC<BookingCardProps> = ({
           onSuccess={() => setIsReviewed(true)}
           bookingId={id}
           barberName={barberName}
+        />
+      )}
+
+      {id && paymentUrl && (
+        <PaymentWaitingModal
+          isOpen={showWaitingModal}
+          onClose={() => setShowWaitingModal(false)}
+          onSuccess={handlePaymentSuccess}
+          bookingId={id}
+          paymentUrl={paymentUrl}
         />
       )}
 

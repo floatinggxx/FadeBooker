@@ -168,6 +168,48 @@ class CitaService {
     return result
   }
 
+  async cancelarCita(id, motivo, cancelado_por) {
+    const cita = await this.citaRepository.findById(id);
+    if (!cita) {
+      throw new Error('Cita no encontrada');
+    }
+
+    if (cita.estado === 'cancelada') {
+      throw new Error('La cita ya se encuentra cancelada');
+    }
+
+    const ahora = new Date();
+    const fechaCita = new Date(cita.fecha_hora_inicio);
+    const diffHoras = (fechaCita.getTime() - ahora.getTime()) / (1000 * 60 * 60);
+
+    let ofrecer_reembolso = false;
+    let porcentaje_reembolso = 0;
+
+    // Política: > 8 horas = reembolso total del abono
+    if (diffHoras > 8 && (cita.pago_abono || 0) > 0) {
+      ofrecer_reembolso = true;
+      porcentaje_reembolso = 100;
+    }
+
+    // Actualizar estado de la cita
+    await this.citaRepository.update(id, { estado: 'cancelada' });
+
+    // Registrar en auditoría
+    await this.citaRepository.registrarAuditoriaCancelacion({
+      id_cita: id,
+      cancelada_por: cancelado_por || cita.id_cliente,
+      motivo_cancelacion: motivo || 'Cancelada por el usuario',
+      ofrecer_reembolso: ofrecer_reembolso ? 1 : 0,
+      porcentaje_reembolso
+    });
+
+    return {
+      mensaje: 'Cita cancelada exitosamente',
+      reembolso: ofrecer_reembolso,
+      porcentaje: porcentaje_reembolso
+    };
+  }
+
   async registrarPagoEfectivo(id) {
     return this.citaRepository.registrarPagoEfectivo(id);
   }

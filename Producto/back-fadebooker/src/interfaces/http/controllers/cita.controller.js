@@ -49,6 +49,20 @@ class CitaController {
     }
   }
 
+  cancelar = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { motivo, cancelado_por } = req.body; // cancelado_por es el ID del usuario que cancela
+
+      console.log(`[CitaController] Cancelando cita ID=${id}`);
+      const resultado = await this.citaService.cancelarCita(id, motivo, cancelado_por);
+      res.json(resultado);
+    } catch (error) {
+      console.error(`[CitaController] Error al cancelar cita:`, error.message);
+      res.status(400).json({ error: error.message });
+    }
+  }
+
   checkDisponibilidad = async (req, res) => {
     try {
       const { idBarbero, fecha, hora, duracion } = req.query

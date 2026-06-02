@@ -7,3 +7,4 @@ export { userService } from './userService';
 export { pagoService } from './pagoService';
 export { promocionService } from './promocionService';
 export { tiendaService } from './tiendaService';
+export { hairstyleService } from './hairstyleService';

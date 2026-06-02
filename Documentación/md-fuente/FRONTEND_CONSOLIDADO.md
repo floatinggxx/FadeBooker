@@ -46,4 +46,43 @@ FadeBooker utiliza una arquitectura híbrida donde **React** maneja la interacti
   - Refresh Token en cookie `HttpOnly`, `Secure`, `SameSite=Strict`.
 
 ---
-*Documento unificado y consolidado el 28 de abril de 2026.*
+
+## 🤖 Módulo de Simulación de Peinados Inteligente (IA & Cloudinary)
+
+Se ha implementado un sistema interactivo para que el cliente pueda previsualizar cortes sobre una foto de su rostro antes de reservar. Esta funcionalidad corre de forma adaptativa y utiliza Inteligencia Artificial Generativa de Cloudinary (`e_gen_replace`) o overlays tradicionales en caso de limitaciones de cuota.
+
+### 🖼️ Flujo del Simulador
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Cliente as Cliente (Frontend)
+    participant HW as HaircutSimulator Component
+    participant API as hairstyleService (Axios)
+    participant BE as Backend (Express)
+    participant CL as Cloudinary (CDN)
+    
+    Cliente->>HW: Selecciona Foto (Subida o Cámara)
+    Cliente->>HW: Elige Estilo (ej. Low Fade)
+    HW->>API: getUploadSignature()
+    API->>BE: POST /api/hairstyle/signature
+    BE-->>API: Firma segura + Credenciales temporales
+    API-->>HW: Retorna firma (SHA-1)
+    
+    HW->>CL: uploadPhoto() (Direct Upload con firma)
+    CL-->>HW: Retorna publicId seguro
+    
+    HW->>API: simulateHairstyle(publicId, styleId, useAI)
+    API->>BE: POST /api/hairstyle/simulate
+    Note over BE: Valida con cita.schema y procesa e_gen_replace o overlay tradicional
+    BE-->>API: Retorna simulatedImageUrl
+    API-->>HW: Retorna URL de imagen simulada
+    
+    HW-->>Cliente: Visualiza resultado + Advertencia de IA
+    Cliente->>HW: Confirma "Enviar look al barbero"
+    Cliente->>Cliente: Selecciona Servicio, Fecha, Hora
+    Cliente->>API: crearCita() con notas adjuntas
+```
+
+---
+*Documento unificado y consolidado el 1 de junio de 2026.*

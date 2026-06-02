@@ -10,6 +10,8 @@ import { ServicioBarbero, Barbero, Tienda } from '@/types';
 import { PLACEHOLDERS, FALLBACK_URLS } from '@/lib/utils/placeholders';
 import { useNotification } from '@/context/NotificationContext';
 import { parseError } from '@/lib/utils/errorParser';
+import HaircutSimulator from '@/components/booking/HaircutSimulator';
+import PaymentWaitingModal from '@/components/molecules/PaymentWaitingModal';
 import { 
   Star, 
   Clock, 
@@ -47,6 +49,12 @@ const UniversalBookingPage: React.FC = () => {
   const [paymentType, setPaymentType] = useState<'abono' | 'total'>('abono');
   const [isBooking, setIsBooking] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
+  const [simulatedLook, setSimulatedLook] = useState<{ url: string; styleId: string } | null>(null);
+
+  // Estados para el modal de espera del pago
+  const [createdBookingId, setCreatedBookingId] = useState<number | null>(null);
+  const [paymentUrl, setPaymentUrl] = useState('');
+  const [showWaitingModal, setShowWaitingModal] = useState(false);
 
   // Queries
   const { data: barber, isLoading: loadingBarber } = useQuery({
@@ -167,7 +175,9 @@ const UniversalBookingPage: React.FC = () => {
         origen: 'web_universal',
         pago_abono: abonoCalculado,
         tipo_pago_reserva: paymentType, // Campo nuevo
-        notas: ''
+        notas: simulatedLook 
+          ? `[Simulación de Peinado IA: ${simulatedLook.styleId}] Imagen: ${simulatedLook.url}`
+          : ''
       };
 
       console.log("[UniversalBookingPage] Payload Final:", payload);
@@ -175,12 +185,15 @@ const UniversalBookingPage: React.FC = () => {
       const response = await bookingService.crearCita(payload);
       const id_cita = response.id_cita || response.id;
 
-      showNotification("¡Reserva confirmada! Redirigiendo al pago...", "success");
+      showNotification("¡Reserva confirmada! Generando portal de pago...", "success");
       
       // Esperar un momento para que el usuario lea el mensaje
       setTimeout(async () => {
         try {
-          await pagoService.procesarPago(Number(id_cita));
+          const resultado = await pagoService.crearPago({ id_cita: Number(id_cita) });
+          setCreatedBookingId(Number(id_cita));
+          setPaymentUrl(resultado.url);
+          setShowWaitingModal(true);
         } catch (pagoErr) {
           console.error("Error al iniciar pago:", pagoErr);
           showNotification("Cita creada, pero no se pudo iniciar el pago. Puedes pagarla en 'Mis Citas'.", "warning");
@@ -370,6 +383,19 @@ const UniversalBookingPage: React.FC = () => {
                 </div>
               )}
             </div>
+
+            {/* Haircut Simulator integration */}
+            <div className="pt-6">
+              <HaircutSimulator
+                onSimulationComplete={(url, styleId) => {
+                  if (url && styleId) {
+                    setSimulatedLook({ url, styleId });
+                  } else {
+                    setSimulatedLook(null);
+                  }
+                }}
+              />
+            </div>
           </section>
         )}
 
@@ -534,6 +560,19 @@ const UniversalBookingPage: React.FC = () => {
                         </div>
                     </div>
                   </div>
+
+                  {simulatedLook && (
+                    <div className="p-6 bg-amber-50/50 rounded-[2.5rem] border border-amber-100 flex items-center gap-4">
+                      <div className="h-16 w-16 rounded-xl overflow-hidden shadow-inner border border-amber-200 shrink-0">
+                        <img src={simulatedLook.url} alt="Simulación IA" className="h-full w-full object-cover" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] uppercase tracking-[0.35em] text-amber-600 font-black">Estilo IA Solicitado</p>
+                        <p className="text-lg font-black text-slate-900 capitalize">{simulatedLook.styleId}</p>
+                        <p className="text-xs text-slate-500">Se enviará el resultado de la simulación a tu barbero</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-8 flex flex-col justify-between">
@@ -607,10 +646,9 @@ const UniversalBookingPage: React.FC = () => {
             <div className="w-32 h-32 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-10 shadow-lg shadow-green-100">
                 <CheckCircle2 size={64} />
             </div>
-            <h3 className="text-5xl font-black text-slate-900 mb-6 tracking-tight">¡Reserva Completada!</h3>
+            <h3 className="text-5xl font-black text-slate-900 mb-6 tracking-tight">¡Reserva Completada y Confirmada!</h3>
             <p className="text-xl text-slate-500 font-bold mb-12 max-w-2xl mx-auto leading-relaxed">
-                Tu cita con {barber.nombre} ha sido agendada exitosamente. 
-                Recibirás un correo de confirmación con los detalles y el link para el pago del abono.
+                Tu cita con {barber.nombre} ha sido agendada exitosamente y el pago de tu abono fue recibido y validado de forma automática por Mercado Pago.
             </p>
             <div className="flex flex-col gap-6 sm:flex-row justify-center">
               <button
@@ -629,6 +667,25 @@ const UniversalBookingPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {createdBookingId && paymentUrl && (
+        <PaymentWaitingModal
+          isOpen={showWaitingModal}
+          onClose={() => {
+            setShowWaitingModal(false);
+            // Si cierra el modal antes de que se confirme el pago, lo dejamos en pantalla de éxito pero
+            // mencionamos que está pendiente de pago.
+            setConfirmed(true);
+          }}
+          onSuccess={() => {
+            setShowWaitingModal(false);
+            showNotification("¡Pago recibido con éxito!", "success");
+            setConfirmed(true);
+          }}
+          bookingId={createdBookingId}
+          paymentUrl={paymentUrl}
+        />
+      )}
     </div>
   );
 };

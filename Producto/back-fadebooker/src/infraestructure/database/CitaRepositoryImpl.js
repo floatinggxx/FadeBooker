@@ -313,6 +313,17 @@ class CitaRepositoryImpl {
     return this.db('Cita').where({ id_cita: id }).update(data)
   }
 
+  async registrarAuditoriaCancelacion(data) {
+    return this.db('AuditoriaCancelacion').insert({
+      id_cita: data.id_cita,
+      cancelada_por: data.cancelada_por,
+      motivo_cancelacion: data.motivo_cancelacion,
+      ofrecer_reembolso: data.ofrecer_reembolso,
+      porcentaje_reembolso: data.porcentaje_reembolso,
+      fecha_cancelacion: this.db.raw('GETDATE()')
+    });
+  }
+
   async registrarPagoEfectivo(id) {
     // 1. Obtener la cita para conocer el monto total
     const cita = await this.db('Cita').where({ id_cita: id }).first();

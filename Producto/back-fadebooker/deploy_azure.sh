@@ -12,27 +12,12 @@ NC='\033[0m' # No Color
 
 echo -e "${BLUE}🚀 Iniciando el proceso de despliegue de FadeBooker...${NC}"
 
-# 1. Autenticación en Azure Container Registry
-echo -e "${YELLOW}🔑 Paso 1: Iniciando sesión en Azure Container Registry...${NC}"
-az acr login --name fadebookerregistry
+# 1 y 2. Construcción y Push en la nube (ACR Build)
+# Usamos 'az acr build' porque no requiere tener Docker instalado ni corriendo localmente.
+echo -e "${YELLOW}🏗️  Paso 1 y 2: Construyendo y subiendo la imagen en Azure (ACR Build)...${NC}"
+az acr build --registry fadebookerregistry --image fadebooker-backend:latest .
 if [ $? -ne 0 ]; then
-    echo -e "${RED}❌ Error al autenticar en el registro. Verifica que tengas el Azure CLI instalado y sesión iniciada (az login).${NC}"
-    exit 1
-fi
-
-# 2. Construcción de la imagen Docker
-echo -e "${YELLOW}🏗️  Paso 2: Construyendo la imagen Docker (sin cache para limpieza total)...${NC}"
-docker build --no-cache -t fadebookerregistry.azurecr.io/fadebooker-backend:latest .
-if [ $? -ne 0 ]; then
-    echo -e "${RED}❌ Error durante la construcción de la imagen (docker build).${NC}"
-    exit 1
-fi
-
-# 3. Push de la imagen a la nube
-echo -e "${YELLOW}📤 Paso 3: Subiendo imagen al registro de Azure (Push)...${NC}"
-docker push fadebookerregistry.azurecr.io/fadebooker-backend:latest
-if [ $? -ne 0 ]; then
-    echo -e "${RED}❌ Error al subir la imagen al ACR (docker push).${NC}"
+    echo -e "${RED}❌ Error durante la construcción en Azure. Verifica tu conexión y permisos de ACR.${NC}"
     exit 1
 fi
 

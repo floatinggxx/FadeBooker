@@ -12,7 +12,7 @@ const citaSchema = z.object({
     message: "Formato de fecha u hora inválido"
   }),
   duracion_minutos: z.coerce.number().int().positive().optional(),
-  notas: z.string().max(500).optional(),
+  notas: z.string().max(3000).optional(),
   monto_total: z.coerce.number().positive().optional(),
   metodo_pago: z.string().optional(),
   cliente_nombre: z.string().min(3).optional(),

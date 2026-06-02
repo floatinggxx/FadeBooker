@@ -1,7 +1,8 @@
 const { z } = require('zod')
 
 const pagoCrearSchema = z.object({
-  id_cita: z.number().int().positive()
+  id_cita: z.number().int().positive(),
+  tipo_pago: z.enum(['total', 'abono']).optional().default('total')
 })
 
 const pagoCitaParamsSchema = z.object({

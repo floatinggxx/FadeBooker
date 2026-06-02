@@ -43,9 +43,9 @@ export const bookingService = {
     return response.data;
   },
 
-  // Cancelar una cita
-  async cancelarCita(citaId: number): Promise<any> {
-    const response = await api.put(`/citas/${citaId}/estado`, { estado: 'cancelada' });
+  // Cancelar una cita con política de reembolso
+  async cancelarCita(id: number, motivo?: string, cancelado_por?: number): Promise<any> {
+    const response = await api.post(`/citas/${id}/cancelar`, { motivo, cancelado_por });
     return response.data;
   },
 

@@ -11,6 +11,8 @@ interface BookingItem {
   estado: string;
   notas?: string;
   isBarberoView?: boolean;
+  montoTotal?: number;
+  pagoAbono?: number;
 }
 
 interface BookingsSectionProps {
@@ -30,6 +32,8 @@ const BookingsSection: React.FC<BookingsSectionProps> = ({ bookings }) => (
         status={item.estado}
         notes={item.notas}
         isBarberoView={item.isBarberoView}
+        montoTotal={item.montoTotal}
+        pagoAbono={item.pagoAbono}
       />
     ))}
   </div>
