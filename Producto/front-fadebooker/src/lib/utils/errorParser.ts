@@ -35,6 +35,12 @@ export const parseError = (error: any): string => {
   if (error.message === 'Network Error') {
     return 'No hay conexión con el servidor. Revisa tu internet.';
   }
+  // Errores de runtime (por ejemplo: Cannot read properties of undefined)
+  if (typeof error.message === 'string') {
+    if (error.message.includes('Cannot read properties of undefined') || error.message.includes('reading')) {
+      return 'Ocurrió un error al procesar la información. Intenta recargar la página o vuelve a intentarlo más tarde.';
+    }
+  }
 
   return error.message || 'Ha ocurrido un error. Inténtalo de nuevo.';
 };

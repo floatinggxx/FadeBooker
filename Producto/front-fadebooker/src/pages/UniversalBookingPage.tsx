@@ -349,33 +349,35 @@ const UniversalBookingPage: React.FC = () => {
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {services && services.length > 0 ? (
-                services.map((service) => (
-                    <button
-                        key={service.id_servicio_barbero || service.id}
-                        type="button"
-                        onClick={() => {
-                            setSelectedService(service);
-                            setStep(3);
-                        }}
-                        className={`group rounded-[2.5rem] border-4 p-8 text-left transition-all ${selectedService?.id_servicio_barbero === service.id_servicio_barbero ? 'border-[#3366FF] bg-[#3366FF] text-white shadow-2xl shadow-blue-200' : 'border-white bg-white hover:border-slate-100 shadow-xl'}`}
-                    >
-                        <Scissors className={clsx("mb-6", selectedService?.id_servicio_barbero === service.id_servicio_barbero ? 'text-blue-100' : 'text-[#3366FF]')} size={32} />
-                        <p className={clsx("text-2xl font-black", selectedService?.id_servicio_barbero === service.id_servicio_barbero ? 'text-white' : 'text-slate-900')}>
-                            {service.nombre_servicio || service.servicio?.nombre || service.servicio?.nombre_servicio || 'Servicio'}
-                        </p>
-                        <p className={clsx("mt-3 text-sm leading-relaxed", selectedService?.id_servicio_barbero === service.id_servicio_barbero ? 'text-blue-100' : 'text-slate-500')}>
-                            {service.descripcion || service.servicio?.descripcion || 'Sin descripción'}
-                        </p>
-                        <div className="mt-8 flex items-center justify-between">
-                            <span className={clsx("text-3xl font-black", selectedService?.id_servicio_barbero === service.id_servicio_barbero ? 'text-white' : 'text-[#3366FF]')}>
-                                {formatMoney(service.precio_barbero || service.precio || service.servicio?.precio_base || 0)}
-                            </span>
-                            <div className={clsx("px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest", selectedService?.id_servicio_barbero === service.id_servicio_barbero ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500")}>
-                                {service.tiempo_servicio_minutos || service.duracion || service.servicio?.duracion_minutos || 30} min
-                            </div>
-                        </div>
-                    </button>
-                ))
+              // Filtrar elementos nulos/indefinidos por seguridad
+              (services || []).filter(Boolean).map((service) => (
+                <button
+                  key={service?.id_servicio_barbero || service?.id}
+                  type="button"
+                  onClick={() => {
+                    if (!service) return;
+                    setSelectedService(service);
+                    setStep(3);
+                  }}
+                  className={`group rounded-[2.5rem] border-4 p-8 text-left transition-all ${selectedService?.id_servicio_barbero === service?.id_servicio_barbero ? 'border-[#3366FF] bg-[#3366FF] text-white shadow-2xl shadow-blue-200' : 'border-white bg-white hover:border-slate-100 shadow-xl'}`}
+                >
+                  <Scissors className={clsx("mb-6", selectedService?.id_servicio_barbero === service?.id_servicio_barbero ? 'text-blue-100' : 'text-[#3366FF]')} size={32} />
+                  <p className={clsx("text-2xl font-black", selectedService?.id_servicio_barbero === service?.id_servicio_barbero ? 'text-white' : 'text-slate-900')}>
+                    {service?.nombre_servicio || service?.servicio?.nombre || service?.servicio?.nombre_servicio || 'Servicio'}
+                  </p>
+                  <p className={clsx("mt-3 text-sm leading-relaxed", selectedService?.id_servicio_barbero === service?.id_servicio_barbero ? 'text-blue-100' : 'text-slate-500')}>
+                    {service?.descripcion || service?.servicio?.descripcion || 'Sin descripción'}
+                  </p>
+                  <div className="mt-8 flex items-center justify-between">
+                    <span className={clsx("text-3xl font-black", selectedService?.id_servicio_barbero === service?.id_servicio_barbero ? 'text-white' : 'text-[#3366FF]')}>
+                      {formatMoney(service?.precio_barbero || service?.precio || service?.servicio?.precio_base || 0)}
+                    </span>
+                    <div className={clsx("px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest", selectedService?.id_servicio_barbero === service?.id_servicio_barbero ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500")}>
+                      {service?.tiempo_servicio_minutos || service?.duracion || service?.servicio?.duracion_minutos || 30} min
+                    </div>
+                  </div>
+                </button>
+              ))
               ) : (
                 <div className="col-span-full py-20 text-center bg-white rounded-[3rem] shadow-xl">
                     <p className="text-slate-400 font-black uppercase tracking-widest mb-4">No hay servicios registrados</p>

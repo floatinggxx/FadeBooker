@@ -19,6 +19,7 @@ import {
     Check
 } from 'lucide-react';
 import { Barbero } from '@/types';
+import { parseError } from '@/lib/utils/errorParser';
 
 const BarberosManager: React.FC = () => {
     const { user } = useAuth();
@@ -100,7 +101,8 @@ const BarberosManager: React.FC = () => {
             });
         } catch (error: any) {
             console.error('Error registering barber:', error);
-            alert(`Error: ${error.response?.data?.error || 'No se pudo registrar al barbero'}`);
+            const friendly = parseError(error);
+            alert(`Error: ${friendly}`);
         } finally {
             setIsSaving(false);
         }
