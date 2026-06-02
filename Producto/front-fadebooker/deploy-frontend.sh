@@ -11,25 +11,32 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 # Variables de Infraestructura (Detectadas)
-RG="FadeBooker"
-PLAN="fadebooker-plan-v3"
-APP_NAME="fadebooker-frontend-app"
-REGISTRY="fadebookerregistry"
+RG="FadeBooker-New"
+PLAN="fadebooker-plan-v4"
+APP_NAME="fadebooker-frontend-v2"
+REGISTRY="fadebookerregistrypro"
 IMAGE_NAME="fadebooker-frontend"
-API_URL="https://fadebooker-backend-ok.azurewebsites.net/api"
+API_URL="https://fadebooker-backend-v2.azurewebsites.net/api"
 
 echo -e "${BLUE}🚀 Iniciando despliegue de Frontend (Modo Automático)...${NC}"
 
 # 1 y 2. Construcción y Push en la nube (ACR Build)
 # Usamos 'az acr build' para no depender de Docker localmente.
 # Inyectamos las variables de entorno para que Vite las use en la compilación.
-echo -e "${YELLOW}🏗️  Paso 1 y 2: Construyendo imagen en Azure (ACR Build)...${NC}"
-az acr build --registry $REGISTRY \
-    --image $IMAGE_NAME:latest \
+echo -e "${YELLOW}🏗️  Paso 1 y 2: Construyendo imagen localmente (Docker Local)...${NC}"
+# Login en ACR
+az acr login --name fadebookerregistrypro
+
+# Build local con argumentos de Vite
+docker build -t fadebookerregistrypro.azurecr.io/fadebooker-frontend:latest \
     --build-arg VITE_API_URL=$API_URL \
     --build-arg VITE_API_BASE_URL=$API_URL .
+
+# Push a Azure
+docker push fadebookerregistrypro.azurecr.io/fadebooker-frontend:latest
+
 if [ $? -ne 0 ]; then
-    echo -e "${RED}❌ Error durante la construcción en Azure (ACR Build).${NC}"
+    echo -e "${RED}❌ Error durante la construcción local o push del Frontend.${NC}"
     exit 1
 fi
 
