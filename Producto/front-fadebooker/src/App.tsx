@@ -46,7 +46,7 @@ const ProviderRoute = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
 
   if (!isAuthenticated) return <Navigate to="/login" replace state={{ from: location }} />;
-  if (user?.rol !== 'Barbero' && user?.rol !== 'Dueño' && user?.rol !== 'Proveedor') return <Navigate to="/" replace />;
+  if (user?.rol !== 'Dueño' && user?.rol !== 'Proveedor') return <Navigate to="/" replace />;
 
   return <>{children}</>;
 };
@@ -92,21 +92,20 @@ const AppHeader = () => {
         <div className={`header-right ${isMenuOpen ? 'mobile-open' : ''}`}>
           <nav className="header-links">
             <Link to="/" className="link-button">Inicio</Link>
-            <Link to="/barberias" className="link-button">Barberías</Link>
+            {( !isAuthenticated || user?.rol === 'Cliente' || user?.rol === 'Proveedor') && (
+              <Link to="/barberias" className="link-button">Barberías</Link>
+            )}
             {isAuthenticated ? (
               <>
                 {(user?.rol === 'Barbero' || user?.rol === 'Dueño') && (
-                  <>
-                    <Link to="/barber-dashboard" className="link-button text-[#3366FF] font-black">
-                      {user?.rol === 'Dueño' ? 'Panel Dueño' : 'Panel Barbero'}
-                    </Link>
-                  </>
+                  <Link to="/barber-dashboard" className="link-button text-[#3366FF] font-black">
+                    {user?.rol === 'Dueño' ? 'Panel Dueño' : 'Panel Barbero'}
+                  </Link>
                 )}
-                {user?.rol === 'Proveedor' && (
-                  <Link to="/promociones" className="link-button text-[#3366FF] font-black">Panel Proveedor</Link>
-                )}
-                {(user?.rol === 'Barbero' || user?.rol === 'Dueño' || user?.rol === 'Proveedor') && (
-                  <Link to="/promociones" className="link-button">Promociones</Link>
+                {(user?.rol === 'Dueño' || user?.rol === 'Proveedor') && (
+                  <Link to="/promociones" className="link-button text-[#3366FF] font-black">
+                    {user?.rol === 'Proveedor' ? 'Panel Proveedor' : 'Promociones'}
+                  </Link>
                 )}
                 <Link to="/bookings" className="link-button">Citas</Link>
                 <Link to="/profile" className="link-button">Mi perfil</Link>
