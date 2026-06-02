@@ -2,6 +2,18 @@
  * Tests Unitarios - Cita Controller
  */
 
+// Mock de base de datos ANTES de importar el controlador
+jest.mock('../../src/db/knex', () => ({
+  where: jest.fn().mockReturnThis(),
+  update: jest.fn().mockResolvedValue(1),
+  select: jest.fn().mockReturnThis(),
+  first: jest.fn().mockResolvedValue({}),
+  leftJoin: jest.fn().mockReturnThis(),
+  orderBy: jest.fn().mockReturnThis(),
+  from: jest.fn().mockReturnThis(),
+  insert: jest.fn().mockResolvedValue([1]),
+}));
+
 const CitaController = require('../../src/interfaces/http/controllers/cita.controller');
 
 describe('CitaController', () => {

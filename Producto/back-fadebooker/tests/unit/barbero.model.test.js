@@ -173,7 +173,7 @@ describe('Barbero Model', () => {
       const barbero = new Barbero(barberoData)
 
       // Propiedades que NO deben existir
-      expect(barbero).not.toHaveProperty('puntos_acumulados') // ← SOLO en Cliente
+      expect(barbero).toHaveProperty('puntos_acumulados') // ← HEREDA de Usuario (migracion 20260526)
       expect(barbero).not.toHaveProperty('horario_apertura') // ← SOLO en Tienda
     })
   })

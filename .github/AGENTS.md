@@ -24,7 +24,13 @@ Este repositorio utiliza una arquitectura de agentes coordinada diseñada para l
     support/                         ← Soporte Git/GitHub
   skills/                            ← Habilidades técnicas
   instructions/                      ← Reglas por archivo
+  prompts/                           ← Prompt recomendados para enrutamiento
 ```
+
+---
+
+## 🚀 Uso recomendado
+Para obtener los mejores resultados dentro de este repositorio, inicia las solicitudes a través de `@system-orchestrator` o usando el prompt de enrutamiento en `.github/prompts/route-through-system-orchestrator.prompt.md`.
 
 ---
 

@@ -145,15 +145,15 @@ class CitaService {
         if (cita && cita.id_cliente) {
           const usuario = await this.usuarioRepository.findById(cita.id_cliente);
           if (usuario) {
-            // Regla: 1 punto por cada 10 unidades de dinero gastado, mínimo 50 puntos
-            const puntosGanados = Math.max(50, Math.floor((cita.monto_total || 0) / 10));
-            const nuevosPuntos = (usuario.puntosLealtad || 0) + puntosGanados;
-            await this.usuarioRepository.update(cita.id_cliente, { puntosLealtad: nuevosPuntos });
-            console.log(`[Puntos] Usuario ${cita.id_cliente} ganó ${puntosGanados} puntos. Total: ${nuevosPuntos}`);
+            // Regla: 50 puntos por cada cita completada satisfactoriamente (migracion 20260526)
+            const puntosGanados = 50;
+            const nuevosPuntos = (usuario.puntos_acumulados || 0) + puntosGanados;
+            await this.usuarioRepository.update(cita.id_cliente, { puntos_acumulados: nuevosPuntos });
+            console.log(`[Puntos] Usuario ${cita.id_cliente} gano ${puntosGanados} puntos de fidelizacion. Total: ${nuevosPuntos}`);
           }
         }
       } catch (error) {
-        console.error('Error al actualizar puntos de lealtad:', error.message);
+        console.error('Error al actualizar puntos de fidelizacion:', error.message);
       }
     }
 
