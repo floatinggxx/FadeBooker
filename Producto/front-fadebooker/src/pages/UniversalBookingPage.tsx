@@ -50,6 +50,7 @@ const UniversalBookingPage: React.FC = () => {
   const [isBooking, setIsBooking] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [simulatedLook, setSimulatedLook] = useState<{ url: string; styleId: string } | null>(null);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   // Estados para el modal de espera del pago
   const [createdBookingId, setCreatedBookingId] = useState<number | null>(null);
@@ -114,6 +115,10 @@ const UniversalBookingPage: React.FC = () => {
   };
 
   const handleBooking = async () => {
+    if (!acceptedTerms) {
+      showNotification('Debes aceptar los Términos y Condiciones antes de confirmar la reserva.', 'warning');
+      return;
+    }
     if (!isAuthenticated) {
         showNotification("Debes iniciar sesión para reservar", "warning");
         navigate('/login', { state: { from: `/barbero/${id}` } });
@@ -625,7 +630,7 @@ const UniversalBookingPage: React.FC = () => {
 
                    <button
                     onClick={handleBooking}
-                    disabled={isBooking}
+                    disabled={isBooking || !acceptedTerms}
                     className="w-full py-8 bg-[#3366FF] text-white rounded-[2.5rem] font-black text-2xl shadow-2xl shadow-blue-200 hover:bg-[#2563EB] active:scale-95 transition-all flex items-center justify-center gap-4 disabled:opacity-50"
                   >
                     {isBooking ? (
@@ -634,6 +639,14 @@ const UniversalBookingPage: React.FC = () => {
                         <>CONFIRMAR RESERVA <CheckCircle2 size={32} /></>
                     )}
                   </button>
+                  <div className="mt-4 text-sm text-slate-600 flex items-start gap-3">
+                    <label className="flex items-start gap-2">
+                      <input type="checkbox" checked={acceptedTerms} onChange={(e) => setAcceptedTerms(e.target.checked)} className="mt-1" />
+                      <span>
+                        Acepto los <a href="/politica_privacidad.html" target="_blank" rel="noreferrer" className="text-[#3366FF] font-bold">Términos y Condiciones / Política de Privacidad</a>
+                      </span>
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>

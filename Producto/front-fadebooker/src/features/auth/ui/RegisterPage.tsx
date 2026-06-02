@@ -25,6 +25,7 @@ type FormData = {
     direccion: string;
     ciudad: string;
   };
+  acceptTerms?: boolean;
 };
 
 const ESPECIALIDADES_SUGERIDAS = [
@@ -453,10 +454,24 @@ const RegisterPage: React.FC = () => {
           <button 
             type="submit" 
             className="button button-primary button-glow"
-            disabled={(rol === 'Barbero' || isRegisteringTienda) && selectedServices.length === 0}
+            disabled={((rol === 'Barbero' || isRegisteringTienda) && selectedServices.length === 0)}
           >
             {isRegisteringTienda ? 'Registrar Tienda y Usuario' : 'Registrar'}
           </button>
+
+          <div className="mt-4 text-sm">
+            <label className="flex items-start gap-2">
+              <input
+                type="checkbox"
+                {...register('acceptTerms', { required: 'Debes aceptar los Términos y Condiciones' })}
+                className="mt-1"
+              />
+              <span>
+                He leído y acepto los <a href="/politica_privacidad.html" target="_blank" rel="noreferrer" style={{ color: '#3366FF', fontWeight: 700 }}>Términos y Condiciones / Política de Privacidad</a>
+              </span>
+            </label>
+            {errors.acceptTerms && <span className="error-message">{errors.acceptTerms.message}</span>}
+          </div>
 
           <div className="flex justify-center items-center gap-1 mt-6 text-sm">
             <span className="text-slate-500">¿Ya tienes cuenta?</span>
