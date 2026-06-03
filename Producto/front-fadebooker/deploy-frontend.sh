@@ -17,6 +17,7 @@ APP_NAME="fadebooker-frontend-v2"
 REGISTRY="fadebookerregistrypro"
 IMAGE_NAME="fadebooker-frontend"
 API_URL="https://fadebooker-backend-v2.azurewebsites.net/api"
+API_BASE_URL="https://fadebooker-backend-v2.azurewebsites.net/api"
 
 echo -e "${BLUE}🚀 Iniciando despliegue de Frontend (Modo Automático)...${NC}"
 

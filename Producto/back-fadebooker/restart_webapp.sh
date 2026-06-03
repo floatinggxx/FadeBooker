@@ -10,9 +10,9 @@ fi
 
 if [ -n "$AZ_PATH" ]; then
     echo "Usando az en: $AZ_PATH"
-    "$AZ_PATH" webapp restart --name fadebooker-backend-ok --resource-group FadeBooker
+    "$AZ_PATH" webapp restart --name fadebooker-backend-v2 --resource-group FadeBooker-New
     sleep 5
-    "$AZ_PATH" webapp log tail --name fadebooker-backend-ok --resource-group FadeBooker --num 50
+    "$AZ_PATH" webapp log tail --name fadebooker-backend-v2 --resource-group FadeBooker-New --num 50
 else
     echo "No se pudo localizar el binario 'az'. Por favor, verifica el entorno de ejecución."
 fi

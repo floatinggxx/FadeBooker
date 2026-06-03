@@ -20,7 +20,7 @@ module.exports = {
       server: process.env.DB_SERVER,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+      database: process.env.DB_NAME || process.env.DB_DATABASE || 'FadeBooker_DB',
       options: {
         encrypt: true,
         trustServerCertificate: false,

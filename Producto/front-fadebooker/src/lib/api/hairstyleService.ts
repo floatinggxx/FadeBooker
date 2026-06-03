@@ -7,7 +7,7 @@ export interface SignatureResponse {
   timestamp: number;
   cloudName: string;
   apiKey: string;
-  uploadPreset: string;
+  uploadPreset?: string;
   folder: string;
   error?: string;
 }
@@ -45,12 +45,14 @@ export const hairstyleService = {
   async simulateHairstyle(
     publicId: string,
     styleId: string,
-    useAI?: boolean
+    useAI?: boolean,
+    gender?: string
   ): Promise<SimulationResponse> {
     const response = await api.post<SimulationResponse>('/hairstyle/simulate', {
       publicId,
       styleId,
       useAI,
+      gender,
     });
     return response.data;
   },
@@ -67,16 +69,14 @@ export const hairstyleService = {
     formData.append('api_key', signatureData.apiKey);
     formData.append('timestamp', String(signatureData.timestamp));
     formData.append('signature', signatureData.signature);
-    formData.append('upload_preset', signatureData.uploadPreset);
+    if (signatureData.uploadPreset) {
+      formData.append('upload_preset', signatureData.uploadPreset);
+    }
     formData.append('folder', signatureData.folder);
 
     const uploadUrl = `https://api.cloudinary.com/v1_1/${signatureData.cloudName}/image/upload`;
     
-    const response = await axios.post<CloudinaryUploadResponse>(uploadUrl, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    const response = await axios.post<CloudinaryUploadResponse>(uploadUrl, formData);
 
     return response.data;
   },

@@ -69,7 +69,7 @@ const HairstyleController = {
    */
   async generateHairstyleSimulation(req, res) {
     try {
-      const { publicId, styleId, useAI } = req.body || {};
+      const { publicId, styleId, useAI, gender } = req.body || {};
       
       // Validación básica del request
       if (!publicId || !styleId) {
@@ -82,7 +82,8 @@ const HairstyleController = {
       const result = hairstyleService.generateHairstyleSimulation({
         publicId,
         styleId,
-        useAI
+        useAI,
+        gender
       });
       
       res.status(200).json(result);

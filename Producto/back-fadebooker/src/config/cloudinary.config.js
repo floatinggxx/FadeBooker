@@ -17,7 +17,7 @@ const cloudinaryConfig = {
   cloudName: process.env.CLOUDINARY_CLOUD_NAME ? process.env.CLOUDINARY_CLOUD_NAME.toLowerCase().trim() : undefined,
   apiKey: process.env.CLOUDINARY_API_KEY,
   apiSecret: process.env.CLOUDINARY_API_SECRET,
-  uploadPreset: process.env.CLOUDINARY_UPLOAD_PRESET ? process.env.CLOUDINARY_UPLOAD_PRESET.trim() : 'fadebooker_uploads',
+  uploadPreset: process.env.CLOUDINARY_UPLOAD_PRESET ? process.env.CLOUDINARY_UPLOAD_PRESET.trim() : undefined,
   isConfigured: false,
   
   // Validar que todas las variables necesarias estén presentes
@@ -32,19 +32,19 @@ const cloudinaryConfig = {
         'CLOUDINARY_API_SECRET'
       ).join(', ');
       
-      // En desarrollo, solo mostrar advertencia
+      const warningMessage = `Cloudinary no está configurado. Variables faltantes: ${missingVars}`;
+
       if (process.env.NODE_ENV === 'development') {
-        console.warn(`⚠️  Cloudinary no configurado (variables faltantes: ${missingVars})`);
+        console.warn(`⚠️  ${warningMessage}`);
         console.warn('   Cloudinary es OPCIONAL en desarrollo.');
         console.warn('   Para habilitar uploads, configura las variables de entorno en .env');
-        this.isConfigured = false;
-        return false;
       } else {
-        // En producción, lanzar error
-        throw new Error(
-          `Variables de entorno de Cloudinary faltantes: ${missingVars}`
-        );
+        console.warn(`⚠️  ${warningMessage}.`);
+        console.warn('   La aplicación continuará en producción, pero las operaciones de Cloudinary fallarán si se intentan usar.');
       }
+
+      this.isConfigured = false;
+      return false;
     }
     
     this.isConfigured = true;
@@ -52,15 +52,9 @@ const cloudinaryConfig = {
   }
 };
 
-// Validar al cargar el módulo
-try {
-  cloudinaryConfig.validate();
-  if (cloudinaryConfig.isConfigured) {
-    console.log('✅ Cloudinary configurado correctamente');
-  }
-} catch (error) {
-  console.error('❌ Error en configuración de Cloudinary:', error.message);
-  throw error;
+cloudinaryConfig.validate();
+if (cloudinaryConfig.isConfigured) {
+  console.log('✅ Cloudinary configurado correctamente');
 }
 
 module.exports = cloudinaryConfig;

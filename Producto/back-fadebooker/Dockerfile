@@ -5,12 +5,11 @@ FROM node:20-alpine
 WORKDIR /usr/src/app
 
 # Copia los archivos de definición de paquetes
-# Nota: La carpeta Producto/back-fadebooker es el contexto
 COPY package*.json ./
 
 # Instala las dependencias de producción
-# npm ci es preferible en entornos controlados/CI para replicar exactamente el lockfile
-RUN npm ci --only=production
+# Usamos install temporalmente en lugar de ci para mayor resiliencia mientras se estabilizan las versiones
+RUN npm install --omit=dev
 
 # Copia el resto del código de la aplicación
 COPY . .
@@ -20,6 +19,7 @@ EXPOSE 3000
 
 # Variables de entorno para asegurar que el server escuche correctamente
 ENV PORT=3000
+ENV WEBSITES_PORT=3000
 ENV NODE_ENV=production
 
 # Comando para arrancar la aplicación usando la ruta correcta

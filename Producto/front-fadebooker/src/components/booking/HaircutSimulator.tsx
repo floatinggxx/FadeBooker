@@ -17,13 +17,22 @@ interface HaircutSimulatorProps {
   onSimulationComplete: (simulatedUrl: string | null, styleId: string | null) => void;
 }
 
-const HAIRCUT_STYLES = [
-  { id: 'degradado', name: 'Degradado (Low Fade)', description: 'Laterales desvanecidos con cabello más largo arriba.' },
-  { id: 'clasico', name: 'Clásico (Pompadour)', description: 'Estilo clásico elegante peinado hacia atrás con volumen.' },
-  { id: 'moderno', name: 'Moderno (Textured Crop)', description: 'Corte moderno con textura arriba y flequillo corto.' },
-  { id: 'mohicano', name: 'Mohicano (Mohawk)', description: 'Cresta central llamativa con laterales rapados.' },
-  { id: 'buzzcut', name: 'Pelo Rapado (Buzz Cut)', description: 'Corte ultra corto homogéneo e higiénico.' }
-];
+const HAIRCUT_STYLES_BY_GENDER = {
+  male: [
+    { id: 'degradado', name: 'Degradado (Low Fade)', description: 'Laterales desvanecidos con cabello más largo arriba.' },
+    { id: 'clasico', name: 'Clásico (Pompadour)', description: 'Estilo clásico elegante peinado hacia atrás con volumen.' },
+    { id: 'moderno', name: 'Moderno (Textured Crop)', description: 'Corte moderno con textura arriba y flequillo corto.' },
+    { id: 'mohicano', name: 'Mohicano (Mohawk)', description: 'Cresta central llamativa con laterales rapados.' },
+    { id: 'buzzcut', name: 'Pelo Rapado (Buzz Cut)', description: 'Corte ultra corto homogéneo e higiénico.' }
+  ],
+  female: [
+    { id: 'largo', name: 'Largo Natural', description: 'Cabello fluido con capas suaves y movimiento natural.' },
+    { id: 'ondulado', name: 'Ondulado Suave', description: 'Velos de ondas suaves para un look femenino y sofisticado.' },
+    { id: 'media_melena', name: 'Media Melena', description: 'Corte versátil con largo medio y acabado pulido.' },
+    { id: 'pixie', name: 'Pixie Chic', description: 'Corte corto y atrevido con mucho estilo moderno.' },
+    { id: 'chongo', name: 'Chongo Casual', description: 'Recogido relajado ideal para un estilo fresco y cómodo.' }
+  ]
+};
 
 export const HaircutSimulator: React.FC<HaircutSimulatorProps> = ({ onSimulationComplete }) => {
   const [sourceMode, setSourceSourceMode] = useState<'upload' | 'camera'>('upload');
@@ -32,7 +41,8 @@ export const HaircutSimulator: React.FC<HaircutSimulatorProps> = ({ onSimulation
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
-  const [selectedStyle, setSelectedStyle] = useState<string>('degradado');
+  const [gender, setGender] = useState<'male' | 'female'>('male');
+  const [selectedStyle, setSelectedStyle] = useState<string>(HAIRCUT_STYLES_BY_GENDER.male[0].id);
   const [useAI, setUseAI] = useState<boolean>(true);
   
   // Simulation Flow States
@@ -44,6 +54,9 @@ export const HaircutSimulator: React.FC<HaircutSimulatorProps> = ({ onSimulation
   const [uploadedPublicId, setUploadedPublicId] = useState<string | null>(null);
   const [simulationResult, setSimulationResult] = useState<string | null>(null);
   const [wantToAttach, setWantToAttach] = useState<boolean>(false);
+
+  const availableStyles = HAIRCUT_STYLES_BY_GENDER[gender];
+  const currentStyle = availableStyles.find((x) => x.id === selectedStyle) || availableStyles[0];
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -187,7 +200,7 @@ export const HaircutSimulator: React.FC<HaircutSimulatorProps> = ({ onSimulation
       }
 
       setLoadingStep(useAI ? 'Procesando simulación inteligente con IA de Cloudinary (esto puede tardar unos segundos)...' : 'Generando filtro de visualización de corte...');
-      const simResult = await hairstyleService.simulateHairstyle(currentPublicId, selectedStyle, useAI);
+      const simResult = await hairstyleService.simulateHairstyle(currentPublicId, selectedStyle, useAI, gender);
 
       if (!simResult.success) {
         throw new Error(simResult.error || 'No se pudo generar la simulación del peinado.');
@@ -199,7 +212,8 @@ export const HaircutSimulator: React.FC<HaircutSimulatorProps> = ({ onSimulation
 
     } catch (err: any) {
       console.error(err);
-      setErrorMsg(err?.message || 'Error en la conexión con el servidor. Inténtalo de nuevo.');
+      const responseError = err?.response?.data?.error;
+      setErrorMsg(responseError || err?.message || 'Error en la conexión con el servidor. Inténtalo de nuevo.');
     } finally {
       setLoading(false);
       setLoadingStep('');
@@ -429,17 +443,47 @@ export const HaircutSimulator: React.FC<HaircutSimulatorProps> = ({ onSimulation
             </button>
           </div>
 
+          {/* Gender selection */}
+          <div className="space-y-2">
+            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Selecciona el género del peinado</label>
+            <div className="flex gap-2">
+              {(['male', 'female'] as const).map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => {
+                    setGender(value);
+                    const firstStyle = HAIRCUT_STYLES_BY_GENDER[value][0]?.id;
+                    if (firstStyle) {
+                      setSelectedStyle(firstStyle);
+                    }
+                    setSimulationResult(null);
+                    setUploadedPublicId(null);
+                    setWantToAttach(false);
+                    onSimulationComplete(null, null);
+                  }}
+                  className={`flex-1 rounded-lg border px-3 py-2 text-sm font-semibold transition ${
+                    gender === value
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {value === 'male' ? 'Hombre' : 'Mujer'}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Haircuts Selection */}
           <div className="space-y-2">
             <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Elige un estilo de Corte</label>
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-2">
-              {HAIRCUT_STYLES.map((style) => (
+              {availableStyles.map((style) => (
                 <button
                   key={style.id}
                   type="button"
                   onClick={() => {
                     setSelectedStyle(style.id);
-                    // Reset single simulation view so user is encouraged to run it again on the new style
                     if (simulationResult) {
                       setSimulationResult(null);
                       setWantToAttach(false);
@@ -458,7 +502,7 @@ export const HaircutSimulator: React.FC<HaircutSimulatorProps> = ({ onSimulation
               ))}
             </div>
             <p className="text-xs text-slate-400 italic mt-1 bg-slate-50 p-2 rounded">
-              👉 {HAIRCUT_STYLES.find(x => x.id === selectedStyle)?.description}
+              👉 {currentStyle.description}
             </p>
           </div>
 
@@ -513,7 +557,7 @@ export const HaircutSimulator: React.FC<HaircutSimulatorProps> = ({ onSimulation
                     ✨ ¡Quiero enviar este corte a mi barbero!
                   </label>
                   <p className="text-slate-600 mt-1">
-                    Al marcar esta casilla, el enlace de la imagen generada de <strong className="text-slate-800">{HAIRCUT_STYLES.find(x => x.id === selectedStyle)?.name}</strong> se integrará automáticamente en las observaciones para que el barbero asignado pueda visualizar el objetivo visual solicitado.
+                    Al marcar esta casilla, el enlace de la imagen generada de <strong className="text-slate-800">{availableStyles.find(x => x.id === selectedStyle)?.name}</strong> se integrará automáticamente en las observaciones para que el barbero asignado pueda visualizar el objetivo visual solicitado.
                   </p>
                 </div>
               </div>

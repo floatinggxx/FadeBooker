@@ -26,6 +26,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Ruta raíz para health checks de Azure
+app.get('/', (req, res) => {
+  res.status(200).json({ status: 'up', message: 'FadeBooker Backend is alive' });
+});
+
 // Rutas de documentación ANTES del catch-all
 const path = require('path');
 const docsPath = path.resolve(__dirname, '..');

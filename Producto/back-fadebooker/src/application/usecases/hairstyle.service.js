@@ -31,12 +31,14 @@ class HairstyleService {
       const folder = params.folder || 'user_photos';
       const timestamp = Math.floor(Date.now() / 1000);
       
-      // Parámetros a firmar (deben coincidir con los que use el frontend)
       const signParams = {
         folder: folder,
-        upload_preset: this.cloudinaryConfig.uploadPreset,
         timestamp: timestamp
       };
+
+      if (this.cloudinaryConfig.uploadPreset) {
+        signParams.upload_preset = this.cloudinaryConfig.uploadPreset;
+      }
       
       // Crear string para firmar: "folder=value&upload_preset=value&timestamp=value"
       const paramsToSign = Object.keys(signParams)
@@ -88,7 +90,7 @@ class HairstyleService {
         throw new Error('Cloudinary no está configurado. Por favor, configura las variables de entorno CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, y CLOUDINARY_API_SECRET en el archivo .env');
       }
 
-      const { publicId, styleId } = params;
+      const { publicId, styleId, gender } = params;
       
       // Permitir desactivar la IA a través del body o variable de entorno (.env)
       const envUseAI = process.env.CLOUDINARY_USE_GEN_AI !== 'false';
@@ -108,7 +110,12 @@ class HairstyleService {
         clasico: 'cortes/clasico',
         moderno: 'cortes/moderno',
         mohicano: 'cortes/mohicano',
-        buzzcut: 'cortes/buzzcut'
+        buzzcut: 'cortes/buzzcut',
+        largo: 'cortes/largo',
+        ondulado: 'cortes/ondulado',
+        chongo: 'cortes/chongo',
+        media_melena: 'cortes/media_melena',
+        pixie: 'cortes/pixie'
       };
 
       // Mapeo para IA Generativa (Generative Replace: from hair to specified hairstyle)
@@ -117,27 +124,34 @@ class HairstyleService {
         clasico: 'classic pompadour hairstyle',
         moderno: 'modern textured crop haircut',
         mohicano: 'mohawk haircut',
-        buzzcut: 'buzz cut haircut'
+        buzzcut: 'buzz cut haircut',
+        largo: 'long layered haircut',
+        ondulado: 'wavy layered haircut',
+        chongo: 'messy bun hairstyle',
+        media_melena: 'medium length bob hairstyle',
+        pixie: 'pixie cut hairstyle'
       };
 
       const overlay = styleMap[styleId];
       const aiPrompt = aiPromptMap[styleId];
       
-      if (!overlay) {
+      if (!overlay || !aiPrompt) {
         throw new Error(`El estilo '${styleId}' no es válido. Opciones: ${Object.keys(styleMap).join(', ')}`);
       }
 
+      const genderLabel = gender === 'female' ? 'women' : 'men';
       const baseUrl = `https://res.cloudinary.com/${this.cloudinaryConfig.cloudName}/image/upload`;
       let transformations = '';
       let methodUsed = '';
 
       if (useAI) {
-        // Usar Cloudinary Generative Replace (e_gen_replace:from_hair;to_hairstyle)
-        transformations = `e_gen_replace:from_hair;to_${encodeURIComponent(aiPrompt)}`;
+        // Usar Cloudinary Generative Replace con un prompt contextualizado por género
+        const fullPrompt = `${genderLabel} ${aiPrompt}`;
+        transformations = `e_gen_replace:from_hair:to_${encodeURIComponent(fullPrompt)}`;
         methodUsed = 'Generative AI (Cloudinary)';
       } else {
         // Usar overlays tradicionales de rostro
-        transformations = `g_face,u_${overlay.replace(/\//g, ':')},w_1.3,fl_region_relative,y_-0.1`;
+        transformations = `g_face,l_${overlay.replace(/\//g, ':')},w_1.3,fl_region_relative,y_-0.1`;
         methodUsed = 'Overlay tradicional';
       }
 
@@ -149,6 +163,7 @@ class HairstyleService {
         styleId,
         publicId,
         useAI,
+        gender: gender === 'female' ? 'female' : 'male',
         methodUsed,
         overlay: useAI ? null : overlay,
         message: 'Simulación de corte generada exitosamente'

@@ -32,7 +32,7 @@ CREATE TABLE LogErrores (
 
     -- Relación con Usuario (Integridad Referencial)
     CONSTRAINT FK_LogErrores_Usuario FOREIGN KEY (usuario_id) 
-        REFERENCES Usuarios(id_usuario) 
+        REFERENCES Usuario(id_usuario) 
         ON DELETE SET NULL 
         ON UPDATE CASCADE
 );
