@@ -1001,7 +1001,7 @@ PASOS PARA APLICAR ESTA ACTUALIZACIÓN:
    - SELECT * FROM sys.foreign_keys WHERE referenced_table_name = 'ServicioBarbero'
 
 5. POBLAR DATOS DE PRUEBA:
-   - Ejecutar FadeBooker_DatosTest_v1.1.sql
+   - Ejecutar FadeBooker_DatosTest.sql
 
 6. VALIDAR:
    - Verificar que no hay citas sin relación en ServicioBarbero

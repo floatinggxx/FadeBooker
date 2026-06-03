@@ -25,25 +25,34 @@ class CitaRepositoryImpl {
 
     // Solución específica para Azure SQL con Triggers: 
     // Usar query raw para evitar que Knex agregue "OUTPUT INSERTED.id_cita"
-    const result = await this.db.raw(`
-      DECLARE @InsertedTable TABLE (id_cita INT);
-      INSERT INTO [dbo].[Cita] (id_cliente, id_barbero, id_servicio, id_tienda, fecha_hora_inicio, duracion_minutos, estado, monto_total, pago_abono, metodo_pago, notas)
-      OUTPUT INSERTED.id_cita INTO @InsertedTable
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-      SELECT id_cita FROM @InsertedTable;
-    `, [
-      data.id_cliente, 
-      data.id_barbero, 
-      data.id_servicio, 
-      data.id_tienda, 
-      fechaSQL, 
-      data.duracion_minutos || 30, 
-      estadoInicial, 
-      data.monto_total || 0, 
-      data.pago_abono || 0, 
-      (data.metodo_pago || 'mercadopago').toLowerCase(), 
-      data.notas || ''
-    ]);
+    let result;
+    try {
+      result = await this.db.raw(`
+        DECLARE @InsertedTable TABLE (id_cita INT);
+        INSERT INTO [dbo].[Cita] (id_cliente, id_barbero, id_servicio, id_tienda, fecha_hora_inicio, duracion_minutos, estado, monto_total, pago_abono, metodo_pago, notas)
+        OUTPUT INSERTED.id_cita INTO @InsertedTable
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+        SELECT id_cita FROM @InsertedTable;
+      `, [
+        data.id_cliente, 
+        data.id_barbero, 
+        data.id_servicio, 
+        data.id_tienda, 
+        fechaSQL, 
+        data.duracion_minutos || 30, 
+        estadoInicial, 
+        data.monto_total || 0, 
+        data.pago_abono || 0, 
+        (data.metodo_pago || 'mercadopago').toLowerCase(), 
+        data.notas || ''
+      ]);
+    } catch (error) {
+      console.error('--- ERROR en insert Cita:', error.message || error);
+      if (error.message && /CHK_.*(Estado|estado|CitaEstado)/i.test(error.message)) {
+        throw new Error('La base de datos no acepta el estado "pendiente" para una nueva cita. Aplica la migración de esquema que actualiza el CHECK constraint de la tabla Cita para soportar este estado.');
+      }
+      throw error;
+    }
     
     console.log('--- Resultado RAW (OUTPUT INTO):', JSON.stringify(result));
     

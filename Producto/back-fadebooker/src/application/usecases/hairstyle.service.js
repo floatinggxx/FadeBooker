@@ -147,11 +147,12 @@ class HairstyleService {
       if (useAI) {
         // Usar Cloudinary Generative Replace con un prompt contextualizado por género
         const fullPrompt = `${genderLabel} ${aiPrompt}`;
-        transformations = `e_gen_replace:from_hair:to_${encodeURIComponent(fullPrompt)}`;
+        const encodedPrompt = encodeURIComponent(fullPrompt);
+        transformations = `e_gen_replace:from_hair;to_${encodedPrompt},f_auto,q_auto`;
         methodUsed = 'Generative AI (Cloudinary)';
       } else {
         // Usar overlays tradicionales de rostro
-        transformations = `g_face,l_${overlay.replace(/\//g, ':')},w_1.3,fl_region_relative,y_-0.1`;
+        transformations = `g_face,l_${overlay.replace(/\//g, ':')},w_1.3,fl_region_relative,y_-0.1,f_auto,q_auto`;
         methodUsed = 'Overlay tradicional';
       }
 
