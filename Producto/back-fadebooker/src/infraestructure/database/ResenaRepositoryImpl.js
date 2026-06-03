@@ -18,7 +18,29 @@ class ResenaRepositoryImpl {
       new Date()
     ]);
 
-    const id_resena = result[0]?.id_resena || (result[0]?.[0] ? result[0][0].id_resena : null);
+    const extractId = (value) => {
+      if (value == null) return null;
+      if (Array.isArray(value)) {
+        for (const item of value) {
+          const found = extractId(item);
+          if (found) return found;
+        }
+        return null;
+      }
+      if (typeof value === 'object') {
+        if (value.id_resena != null) return value.id_resena;
+        for (const key of Object.keys(value)) {
+          const found = extractId(value[key]);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+
+    const id_resena = extractId(result);
+    if (!id_resena) {
+      throw new Error('No se pudo obtener el id de la reseña insertada');
+    }
     return id_resena;
   }
 

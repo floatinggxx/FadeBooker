@@ -36,9 +36,13 @@ class CitaService {
       } else {
         // Crear cliente nuevo para reserva manual
         console.log('--- Dashboard: Creando nuevo cliente para reserva manual ---')
+        const nombreCompleto = data.cliente_nombre ? String(data.cliente_nombre).trim() : '';
+        const partesNombre = nombreCompleto ? nombreCompleto.split(' ').filter(Boolean) : [];
+        const nombre = partesNombre[0] || 'Cliente';
+        const apellido = partesNombre.slice(1).join(' ') || 'Manual';
         const nuevoClienteData = {
-          nombre: data.cliente_nombre.split(' ')[0] || 'Cliente',
-          apellido: data.cliente_nombre.split(' ').slice(1).join(' ') || 'Manual',
+          nombre,
+          apellido,
           email: data.cliente_email || `manual_${Date.now()}@fadebooker.com`,
           telefono: data.cliente_telefono || '',
           rol: 'Cliente',

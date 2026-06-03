@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/14</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/14</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -78,44 +78,44 @@
 <a name='L13'></a><a href='#L13'>13</a>
 <a name='L14'></a><a href='#L14'>14</a>
 <a name='L15'></a><a href='#L15'>15</a>
-<a name='L16'></a><a href='#L16'>16</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L16'></a><a href='#L16'>16</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const express = <span class="cstat-no" title="statement not covered" >require('express')</span>
-const router = <span class="cstat-no" title="statement not covered" >express.Router()</span>
-const UsuarioController = <span class="cstat-no" title="statement not covered" >require('../controllers/usuario.controller')</span>
-const authMiddleware = <span class="cstat-no" title="statement not covered" >require('../middlewares/auth.middleware')</span>
-const validateRequest = <span class="cstat-no" title="statement not covered" >require('../middlewares/validateRequest')</span>
-const { usuarioSchema, loginSchema, updateUsuarioSchema } = <span class="cstat-no" title="statement not covered" >require('../../../infraestructure/schemas/usuario.schema')</span>
+<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">const express = require('express')
+const router = express.Router()
+const UsuarioController = require('../controllers/usuario.controller')
+const authMiddleware = require('../middlewares/auth.middleware')
+const validateRequest = require('../middlewares/validateRequest')
+const { usuarioSchema, loginSchema, updateUsuarioSchema } = require('../../../infraestructure/schemas/usuario.schema')
 &nbsp;
-<span class="cstat-no" title="statement not covered" >router.post('/register', validateRequest({ body: usuarioSchema }), UsuarioController.register)</span>
-<span class="cstat-no" title="statement not covered" >router.post('/login', validateRequest({ body: loginSchema }), UsuarioController.login)</span>
-<span class="cstat-no" title="statement not covered" >router.post('/forgot-password', UsuarioController.forgotPassword)</span>
-<span class="cstat-no" title="statement not covered" >router.post('/reset-password', UsuarioController.resetPassword)</span>
-<span class="cstat-no" title="statement not covered" >router.get('/perfil', authMiddleware, UsuarioController.obtenerPerfil)</span>
-<span class="cstat-no" title="statement not covered" >router.put('/perfil', authMiddleware, validateRequest({ body: updateUsuarioSchema }), UsuarioController.actualizarPerfil)</span>
-<span class="cstat-no" title="statement not covered" >router.post('/perfil/foto', authMiddleware, UsuarioController.actualizarFoto)</span>
+router.post('/register', validateRequest({ body: usuarioSchema }), UsuarioController.register)
+router.post('/login', validateRequest({ body: loginSchema }), UsuarioController.login)
+router.post('/forgot-password', UsuarioController.forgotPassword)
+router.post('/reset-password', UsuarioController.resetPassword)
+router.get('/perfil', authMiddleware, UsuarioController.obtenerPerfil)
+router.put('/perfil', authMiddleware, validateRequest({ body: updateUsuarioSchema }), UsuarioController.actualizarPerfil)
+router.post('/perfil/foto', authMiddleware, UsuarioController.actualizarFoto)
 &nbsp;
-<span class="cstat-no" title="statement not covered" >module.exports = router</span></pre></td></tr></table></pre>
+module.exports = router</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-02T21:19:37.261Z
+                at 2026-06-03T21:08:44.656Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

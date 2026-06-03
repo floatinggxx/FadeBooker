@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>16/16</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -82,44 +82,44 @@
 <a name='L17'></a><a href='#L17'>17</a>
 <a name='L18'></a><a href='#L18'>18</a>
 <a name='L19'></a><a href='#L19'>19</a>
-<a name='L20'></a><a href='#L20'>20</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L20'></a><a href='#L20'>20</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const express = <span class="cstat-no" title="statement not covered" >require('express')</span>
-const router = <span class="cstat-no" title="statement not covered" >express.Router()</span>
-const CitaControllerClass = <span class="cstat-no" title="statement not covered" >require('../controllers/cita.controller')</span>
-const validateRequest = <span class="cstat-no" title="statement not covered" >require('../middlewares/validateRequest')</span>
-const { citaSchema, actualizarEstadoSchema } = <span class="cstat-no" title="statement not covered" >require('../../../infraestructure/schemas/cita.schema')</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const express = require('express')
+const router = express.Router()
+const CitaControllerClass = require('../controllers/cita.controller')
+const validateRequest = require('../middlewares/validateRequest')
+const { citaSchema, actualizarEstadoSchema } = require('../../../infraestructure/schemas/cita.schema')
 &nbsp;
-const citaController = <span class="cstat-no" title="statement not covered" >new CitaControllerClass();</span>
+const citaController = new CitaControllerClass();
 &nbsp;
-<span class="cstat-no" title="statement not covered" >router.post('/', validateRequest({ body: citaSchema }), citaController.crear)</span>
-<span class="cstat-no" title="statement not covered" >router.get('/', citaController.listar)</span>
-<span class="cstat-no" title="statement not covered" >router.get('/disponibilidad', citaController.checkDisponibilidad)</span>
-<span class="cstat-no" title="statement not covered" >router.get('/:id', citaController.obtenerPorId)</span>
-<span class="cstat-no" title="statement not covered" >router.post('/:id/pago-efectivo', citaController.registrarPagoEfectivo)</span>
-<span class="cstat-no" title="statement not covered" >router.post('/:id/resena', citaController.crearResena)</span>
-<span class="cstat-no" title="statement not covered" >router.post('/:id/cancelar', citaController.cancelar)</span>
-<span class="cstat-no" title="statement not covered" >router.put('/:id/estado', validateRequest({ body: actualizarEstadoSchema }), citaController.cambiarEstado)</span>
-<span class="cstat-no" title="statement not covered" >router.delete('/:id', citaController.eliminar)</span>
+router.post('/', validateRequest({ body: citaSchema }), citaController.crear)
+router.get('/', citaController.listar)
+router.get('/disponibilidad', citaController.checkDisponibilidad)
+router.get('/:id', citaController.obtenerPorId)
+router.post('/:id/pago-efectivo', citaController.registrarPagoEfectivo)
+router.post('/:id/resena', citaController.crearResena)
+router.post('/:id/cancelar', citaController.cancelar)
+router.put('/:id/estado', validateRequest({ body: actualizarEstadoSchema }), citaController.cambiarEstado)
+router.delete('/:id', citaController.eliminar)
 &nbsp;
-<span class="cstat-no" title="statement not covered" >module.exports = router</span>
+module.exports = router
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -127,7 +127,7 @@ const citaController = <span class="cstat-no" title="statement not covered" >new
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-02T21:19:37.261Z
+                at 2026-06-03T21:08:44.656Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

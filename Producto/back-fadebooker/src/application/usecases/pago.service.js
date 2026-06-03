@@ -67,21 +67,21 @@ class PagoService {
       };
 
       const response = await preference.create({ body });
+      const preferenceResult = response?.body || response?.response || response;
 
       // Crear registro de pago pendiente
       const pagoData = {
         id_cita: id_cita,
         monto_pagado: montoAPagar,
         metodo_pago: 'mercadopago',
-        estado_pago: 'pendiente',
-        referencia_transaccion: response.id
+        referencia_transaccion: preferenceResult.id
       };
 
       await this.pagoRepository.create(pagoData);
 
       return {
-        url: response.init_point,
-        preference_id: response.id
+        url: preferenceResult.init_point || response.init_point,
+        preference_id: preferenceResult.id || response.id
       };
 
     } catch (error) {
@@ -105,7 +105,8 @@ class PagoService {
         try {
           console.log(`[MercadoPago Webhook] Consultando API de Mercado Pago para pago id: ${id}...`);
           const paymentInstance = new Payment(client);
-          const paymentDetails = await paymentInstance.get({ id: String(id) });
+          const paymentResponse = await paymentInstance.get({ id: String(id) });
+          const paymentDetails = paymentResponse?.body || paymentResponse?.response || paymentResponse;
           
           if (paymentDetails) {
             console.log('[MercadoPago Webhook] Detalles obtenidos de la API:', JSON.stringify(paymentDetails, null, 2));
