@@ -467,7 +467,7 @@ const RegisterPage: React.FC = () => {
                 className="mt-1"
               />
               <span>
-                He leído y acepto los <a href="/politica_privacidad.html" target="_blank" rel="noreferrer" style={{ color: '#3366FF', fontWeight: 700 }}>Términos y Condiciones / Política de Privacidad</a>
+                He leído y acepto los <Link to="/terms-and-privacy" style={{ color: '#3366FF', fontWeight: 700 }}>Términos y Condiciones / Política de Privacidad</Link>
               </span>
             </label>
             {errors.acceptTerms && <span className="error-message">{errors.acceptTerms.message}</span>}

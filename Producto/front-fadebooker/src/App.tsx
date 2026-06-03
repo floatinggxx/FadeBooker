@@ -24,6 +24,7 @@ import LoginPage from '@/features/auth/ui/LoginPage';
 import RegisterPage from '@/features/auth/ui/RegisterPage';
 import ForgotPasswordPage from '@/features/auth/ui/ForgotPasswordPage';
 import ResetPasswordPage from '@/features/auth/ui/ResetPasswordPage';
+import TermsAndPrivacyPage from '@/features/legal/ui/TermsAndPrivacyPage';
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -140,6 +141,7 @@ function App() {
                   <Route path="/register" element={<RegisterPage />} />
                   <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                   <Route path="/reset-password" element={<ResetPasswordPage />} />
+                  <Route path="/terms-and-privacy" element={<TermsAndPrivacyPage />} />
                   <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
                   <Route path="/barber-dashboard" element={<BarberoRoute><BarberDashboardPage /></BarberoRoute>} />
                   <Route path="/promociones" element={<ProviderRoute><PromocionesPage /></ProviderRoute>} />
