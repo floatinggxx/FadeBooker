@@ -159,7 +159,7 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
       .leftJoin('Usuario as u', 'b.id_usuario', '=', 'u.id_usuario')
       .leftJoin('Reseña as r', 'b.id_barbero', '=', 'r.id_barbero')
       .where({ 'b.id_barbero': id_barbero })
-      .groupBy('b.id_barbero', 'u.id_usuario', 'u.nombre', 'u.apellido', 'u.email', 'u.telefono', 'u.foto_perfil_url', 'b.especialidad', 'b.anos_experiencia', 'b.tarifa_base', 'b.id_tienda', 'b.descripcion', 'b.total_resenas', 'b.activo', 'b.createdAt', 'b.updatedAt')
+      .groupBy('b.id_barbero', 'u.id_usuario', 'u.nombre', 'u.apellido', 'u.email', 'u.telefono', 'u.foto_perfil_url', 'b.especialidad', 'b.anos_experiencia', 'b.tarifa_base', 'b.id_tienda', 'b.total_resenas', 'b.activo', 'b.createdAt', 'b.updatedAt')
       .select(
         'b.id_barbero',
         'u.id_usuario',
@@ -172,7 +172,6 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
         'b.anos_experiencia',
         'b.tarifa_base',
         'b.id_tienda',
-        'b.descripcion',
         'b.total_resenas',
         'b.activo',
         'b.createdAt',
@@ -194,7 +193,7 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
           .whereRaw('ServicioBarbero.id_barbero = b.id_barbero')
           .where('ServicioBarbero.disponible', true)
       })
-      .groupBy('b.id_barbero', 'b.id_usuario', 'b.id_tienda', 'b.especialidad', 'b.anos_experiencia', 'b.tarifa_base', 'b.total_resenas', 'b.activo', 'b.descripcion', 'b.createdAt', 'b.updatedAt', 'u.email', 'u.nombre', 'u.apellido', 'u.telefono', 'u.foto_perfil_url')
+      .groupBy('b.id_barbero', 'b.id_usuario', 'b.id_tienda', 'b.especialidad', 'b.anos_experiencia', 'b.tarifa_base', 'b.total_resenas', 'b.activo', 'b.createdAt', 'b.updatedAt', 'u.email', 'u.nombre', 'u.apellido', 'u.telefono', 'u.foto_perfil_url')
       .orderBy('u.nombre')
       .select(
         'b.id_barbero',
@@ -205,7 +204,6 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
         'b.tarifa_base',
         'b.total_resenas',
         'b.activo',
-        'b.descripcion',
         'b.createdAt',
         'b.updatedAt',
         'u.email',
