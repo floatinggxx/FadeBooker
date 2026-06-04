@@ -65,7 +65,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         showNotification('Foto de perfil actualizada correctamente.', 'success');
       } catch (error: any) {
         console.error('Error al subir foto:', error);
-        const detail = error.response?.data?.error || error.message || "";
+        const detail = error.response?.data?.message || error.response?.data?.error || error.message || "";
         showNotification(`No se pudo subir la foto. ${detail}`, 'error');
       } finally {
         setIsUploading(false);
@@ -81,7 +81,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       setIsEditing(false);
       showNotification('Información actualizada correctamente.', 'success');
     } catch (error: any) {
-      showNotification(error.response?.data?.error || 'Error al actualizar información', 'error');
+      showNotification(error.response?.data?.message || error.response?.data?.error || 'Error al actualizar información', 'error');
     }
   };
 
