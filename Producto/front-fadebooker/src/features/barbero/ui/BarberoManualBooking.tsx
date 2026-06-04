@@ -11,23 +11,70 @@ interface ManualBookingProps {
 
 const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess }) => {
     const { user } = useAuth();
-    const [step, setStep] = useState(1);
+    
+    // Cargar step persistido
+    const [step, setStep] = useState(() => {
+        try {
+            const saved = localStorage.getItem('barbero_manual_booking_step');
+            return saved ? parseInt(saved) : 1;
+        } catch {
+            return 1;
+        }
+    });
+    
     const [loading, setLoading] = useState(false);
     const [servicios, setServicios] = useState<any[]>([]);
     const [availability, setAvailability] = useState<any[]>([]);
     const [errors, setErrors] = useState<Record<string, string>>({});
     
-    const [formData, setFormData] = useState({
-        id_barbero: user?.id_barbero,
-        id_tienda: user?.id_tienda, 
-        id_servicio: '',
-        cliente_nombre: '',
-        cliente_email: '',
-        cliente_telefono: '',
-        fecha: new Date().toISOString().split('T')[0],
-        hora: '',
-        notas: ''
+    // Refs para evitar llamadas duplicadas
+    const serviciosLoadedRef = React.useRef(false);
+    const availabilityLoadedRef = React.useRef<Record<string, boolean>>({});
+    
+    // Cargar datos persistidos o usar valores por defecto
+    const [formData, setFormData] = useState(() => {
+        try {
+            const saved = localStorage.getItem('barbero_manual_booking');
+            if (saved) {
+                return JSON.parse(saved);
+            }
+        } catch (e) {
+            console.error('Error cargando datos guardados:', e);
+        }
+        return {
+            id_barbero: user?.id_barbero,
+            id_tienda: user?.id_tienda, 
+            id_servicio: '',
+            cliente_nombre: '',
+            cliente_email: '',
+            cliente_telefono: '',
+            fecha: new Date().toISOString().split('T')[0],
+            hora: '',
+            notas: ''
+        };
     });
+
+    // Guardar datos en localStorage cuando cambian
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            try {
+                localStorage.setItem('barbero_manual_booking', JSON.stringify(formData));
+            } catch (e) {
+                console.error('Error guardando datos:', e);
+            }
+        }, 500); // Debounce para no guardar en cada tecla
+
+        return () => clearTimeout(timer);
+    }, [formData]);
+
+    // Guardar step en localStorage cuando cambia
+    useEffect(() => {
+        try {
+            localStorage.setItem('barbero_manual_booking_step', step.toString());
+        } catch (e) {
+            console.error('Error guardando step:', e);
+        }
+    }, [step]);
 
     const validateFormat = () => {
         const newErrors: Record<string, string> = {};
@@ -56,13 +103,30 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
     };
 
     useEffect(() => {
-        if (formData.id_barbero) {
+        if (formData.id_barbero && !serviciosLoadedRef.current) {
             const loadServicios = async () => {
                 try {
+                    // Cachear servicios en sessionStorage para evitar recargas
+                    const cacheKey = `servicios_${formData.id_barbero}`;
+                    const cached = sessionStorage.getItem(cacheKey);
+                    
+                    if (cached) {
+                        setServicios(JSON.parse(cached));
+                        serviciosLoadedRef.current = true;
+                        return;
+                    }
+
+                    // Solo mostrar loading si no hay cache
+                    setLoading(true);
                     const response = await api.get(`/barberos/${formData.id_barbero}/servicios`);
-                    setServicios(response.data || []);
+                    const data = response.data || [];
+                    setServicios(data);
+                    sessionStorage.setItem(cacheKey, JSON.stringify(data));
+                    serviciosLoadedRef.current = true;
                 } catch (err) {
                     console.error("Error cargando servicios", err);
+                } finally {
+                    setLoading(false);
                 }
             };
             loadServicios();
@@ -71,12 +135,35 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
 
     useEffect(() => {
         if (formData.id_barbero && formData.fecha) {
+            const cacheKey = `availability_${formData.id_barbero}_${formData.fecha}`;
+            
+            // Si ya fue cargada esta fecha, no hacer nada
+            if (availabilityLoadedRef.current[cacheKey]) {
+                return;
+            }
+
             const loadAvailability = async () => {
                 try {
+                    // Cachear disponibilidad en sessionStorage por fecha
+                    const cached = sessionStorage.getItem(cacheKey);
+                    
+                    if (cached) {
+                        setAvailability(JSON.parse(cached));
+                        availabilityLoadedRef.current[cacheKey] = true;
+                        return;
+                    }
+
+                    // Solo mostrar loading si no hay cache
+                    setLoading(true);
                     const response = await api.get(`/barberos/${formData.id_barbero}/disponibilidad?fecha=${formData.fecha}`);
-                    setAvailability(response.data || []);
+                    const data = response.data || [];
+                    setAvailability(data);
+                    sessionStorage.setItem(cacheKey, JSON.stringify(data));
+                    availabilityLoadedRef.current[cacheKey] = true;
                 } catch (err) {
                     console.error("Error cargando disponibilidad", err);
+                } finally {
+                    setLoading(false);
                 }
             };
             loadAvailability();
@@ -106,6 +193,12 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
                 estado: 'confirmada',
                 origen: 'manual'
             });
+            
+            // Limpiar datos guardados cuando la cita se crea exitosamente
+            localStorage.removeItem('barbero_manual_booking');
+            localStorage.removeItem('barbero_manual_booking_step');
+            serviciosLoadedRef.current = false;
+            availabilityLoadedRef.current = {};
             onSuccess();
         } catch (err: any) {
             console.error("Error agendando", err);
@@ -122,7 +215,13 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
                 <div className="p-8 border-b-4 border-slate-50 flex justify-between items-center">
                     <h2 id="modal-title" className="text-2xl font-black text-slate-900">Agendar Cita Manual</h2>
                     <button 
-                        onClick={onClose} 
+                        onClick={() => {
+                            localStorage.removeItem('barbero_manual_booking');
+                            localStorage.removeItem('barbero_manual_booking_step');
+                            serviciosLoadedRef.current = false;
+                            availabilityLoadedRef.current = {};
+                            onClose();
+                        }}
                         aria-label="Cerrar modal"
                         className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
                     >

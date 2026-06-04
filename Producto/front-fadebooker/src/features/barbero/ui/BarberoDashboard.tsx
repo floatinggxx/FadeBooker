@@ -4,6 +4,7 @@ import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import { useNotification } from '@/context/NotificationContext';
 import { TrendingUp, Calendar, Scissors, DollarSign, Clock, Plus, LayoutDashboard, Store, Users, Search, Filter, X, CheckCircle, XCircle, Info, Phone } from 'lucide-react';
 import BarberoManualBooking from './BarberoManualBooking';
+import BarbieroCancelBookingModal from './BarbieroCancelBookingModal';
 import TiendaConfig from './TiendaConfig';
 import BarberosManager from '@/features/barberos/ui/BarberosManager';
 import ServiciosManager from './ServiciosManager';
