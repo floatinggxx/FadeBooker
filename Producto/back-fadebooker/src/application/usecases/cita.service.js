@@ -82,15 +82,6 @@ class CitaService {
       estado: data.estado || 'pendiente'
     })
 
-    // 6. Enviar a Power Automate (Notificación de agendamiento)
-    if (id_cita) {
-      try {
-        await this.enviarReservaPowerAutomate(id_cita)
-      } catch (error) {
-        console.error('Error al enviar reserva inicial a Power Automate:', error.message)
-      }
-    }
-
     // Retornamos el ID o el objeto completo si fuera necesario
     return id_cita;
   }
@@ -197,6 +188,40 @@ class CitaService {
 
     // Actualizar estado de la cita
     await this.citaRepository.update(id, { estado: 'cancelada' });
+
+    // Procesar reembolso automático en Mercado Pago si aplica
+    if (ofrecer_reembolso) {
+      try {
+        const PagoRepositoryImpl = require('../../infraestructure/database/PagoRepositoryImpl');
+        const pagoRepository = new PagoRepositoryImpl();
+        const pagos = await pagoRepository.findByCitaId(id);
+        
+        // Filtrar pagos que estén completados o aprobados
+        const pagosExitosos = pagos.filter(p => p.estado_pago === 'completado' || p.estado_pago === 'approved');
+        
+        if (pagosExitosos.length > 0) {
+          const { client, Refund } = require('../../config/mercadopago');
+          const refundInstance = new Refund(client);
+          
+          for (const pago of pagosExitosos) {
+            if (pago.referencia_transaccion) {
+              console.log(`[MercadoPago Reembolso] Reembolsando pago #${pago.id_pago} (Transacción: ${pago.referencia_transaccion}) para cita #${id}`);
+              await refundInstance.create({
+                payment_id: String(pago.referencia_transaccion)
+              });
+              
+              // Actualizar estado del pago localmente
+              await pagoRepository.update(pago.id_pago, {
+                estado_pago: 'reembolsado'
+              });
+            }
+          }
+          console.log(`[MercadoPago Reembolso] Reembolsos procesados exitosamente para cita #${id}`);
+        }
+      } catch (refundError) {
+        console.error('[MercadoPago Reembolso] Error al procesar reembolso en Mercado Pago:', refundError.message || refundError);
+      }
+    }
 
     // Registrar en auditoría
     await this.citaRepository.registrarAuditoriaCancelacion({

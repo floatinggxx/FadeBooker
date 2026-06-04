@@ -88,14 +88,6 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
       });
     }, 1000);
 
-    // Intentar abrir la pestaña de Mercado Pago automáticamente si tiene URL
-    if (paymentUrl) {
-      const paymentWindow = window.open(paymentUrl, '_blank');
-      if (!paymentWindow || paymentWindow.closed || typeof paymentWindow.closed === 'undefined') {
-        console.warn('[MercadoPago] El navegador bloqueó la ventana emergente');
-      }
-    }
-
     // Polling consultando el estado del pago cada 3 segundos
     pollingIntervalRef.current = setInterval(async () => {
       try {
@@ -188,9 +180,9 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
             </div>
 
             <p className="text-slate-500 font-medium mb-8 leading-relaxed px-2 text-sm sm:text-base">
-              Hemos abierto el portal oficial de **Mercado Pago** en una pestaña nueva para que completes el abono.
+              Para completar el pago, por favor haz clic en el botón de abajo. Se abrirá el portal oficial de **Mercado Pago**.
               <span className="block mt-3 text-xs text-slate-400 font-bold uppercase tracking-wider">
-                Esta pantalla se actualizará automáticamente apenas recibamos el pago.
+                Esta pantalla se actualizará automáticamente apenas completes la transacción.
               </span>
             </p>
 

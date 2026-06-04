@@ -19,6 +19,7 @@ interface BookingCardProps {
   id?: number;
   montoTotal?: number;
   pagoAbono?: number;
+  createdAt?: string;
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({ 
@@ -31,7 +32,8 @@ const BookingCard: React.FC<BookingCardProps> = ({
   isBarberoView,
   id,
   montoTotal = 0,
-  pagoAbono = 0
+  pagoAbono = 0,
+  createdAt
 }) => {
   const queryClient = useQueryClient();
   const { showNotification } = useNotification();
@@ -45,12 +47,16 @@ const BookingCard: React.FC<BookingCardProps> = ({
   const [showWaitingModal, setShowWaitingModal] = useState(false);
   const [paymentUrl, setPaymentUrl] = useState('');
 
+  // Estado para modal de confirmación de cancelación
+  const [showCancelConfirmModal, setShowCancelConfirmModal] = useState(false);
+
   const montoPendiente = (montoTotal || 0) - (pagoAbono || 0);
   const abonoFaltante = Math.max(0, (montoTotal || 0) * 0.5 - (pagoAbono || 0));
 
   const handlePayNow = async () => {
     if (!id) return;
     setIsProcessing(true);
+    const paymentWindow = window.open('about:blank', '_blank');
     try {
       showNotification("Generando pasarela de pago...", "info");
       const outcomeType = (paymentType === 'abono' && abonoFaltante > 0) ? 'abono' : 'total';
@@ -59,17 +65,25 @@ const BookingCard: React.FC<BookingCardProps> = ({
         tipo_pago: outcomeType
       });
       setPaymentUrl(resultado.url);
+      if (paymentWindow) {
+        paymentWindow.location.href = resultado.url;
+      }
       setShowWaitingModal(true);
     } catch (err: any) {
+      if (paymentWindow) paymentWindow.close();
       showNotification(parseError(err), "error");
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const handleCancel = async () => {
+  const handleCancelClick = () => {
+    setShowCancelConfirmModal(true);
+  };
+
+  const handleConfirmCancel = async () => {
+    setShowCancelConfirmModal(false);
     if (!id) return;
-    if (!window.confirm("¿Estás seguro de que deseas cancelar esta cita?")) return;
     
     setIsProcessing(true);
     try {
@@ -140,11 +154,25 @@ const BookingCard: React.FC<BookingCardProps> = ({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-6 flex-1">
           {/* Header con Fecha */}
-          <div className="flex items-center gap-3">
-            <div className="bg-[#3366FF]/10 text-[#3366FF] p-3 rounded-2xl">
-              <Calendar size={20} />
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-3">
+              <div className="bg-[#3366FF]/10 text-[#3366FF] p-3 rounded-2xl">
+                <Calendar size={20} />
+              </div>
+              <h3 className="text-2xl font-black text-slate-900 tracking-tight">{dateTime}</h3>
             </div>
-            <h3 className="text-2xl font-black text-slate-900 tracking-tight">{dateTime}</h3>
+            {createdAt && (
+              <p className="text-xs font-bold text-slate-400 pl-[52px]">
+                Solicitada el: {new Date(createdAt).toLocaleDateString('es-CL', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric'
+                })} a las {new Date(createdAt).toLocaleTimeString('es-CL', {
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </p>
+            )}
           </div>
 
           {/* Detalles Grid */}
@@ -222,7 +250,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
           {status && (status.toLowerCase() === 'confirmada' || status.toLowerCase() === 'pendiente') && (
             <button
-              onClick={handleCancel}
+              onClick={handleCancelClick}
               disabled={isProcessing}
               className="w-full flex items-center justify-center gap-2 border-2 border-rose-100 text-rose-500 hover:bg-rose-50 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all disabled:opacity-50"
             >
@@ -293,6 +321,51 @@ const BookingCard: React.FC<BookingCardProps> = ({
           bookingId={id}
           paymentUrl={paymentUrl}
         />
+      )}
+
+      {/* Modal de confirmación de cancelación premium */}
+      {showCancelConfirmModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4 animate-fade-in animate-duration-200">
+          <div className="bg-white rounded-[2.5rem] shadow-2xl p-8 sm:p-10 max-w-md w-full text-center border border-slate-100 relative overflow-hidden animate-scale-up animate-duration-250">
+            <div className="absolute top-0 left-0 right-0 h-2 bg-rose-500"></div>
+            
+            <div className="flex justify-center mb-6 relative">
+              <div className="absolute inset-0 bg-rose-100 rounded-full blur-xl scale-75 animate-pulse"></div>
+              <div className="relative bg-rose-50 text-rose-600 p-5 rounded-full border border-rose-100">
+                <XCircle size={44} className="animate-bounce" />
+              </div>
+            </div>
+
+            <h3 className="text-3xl font-black text-slate-900 mb-4 tracking-tight leading-tight">
+              ¿Cancelar esta cita?
+            </h3>
+            
+            <p className="text-slate-500 font-medium mb-8 leading-relaxed px-2 text-sm sm:text-base">
+              ¿Estás seguro de que deseas cancelar tu reserva para el día <strong>{dateTime}</strong>? 
+              <span className="block mt-3 text-xs text-rose-400 font-bold uppercase tracking-wider">
+                Esta acción no se puede deshacer y está sujeta a nuestras políticas de reembolso.
+              </span>
+            </p>
+
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                type="button"
+                onClick={() => setShowCancelConfirmModal(false)}
+                className="py-4 rounded-2xl bg-slate-50 text-slate-500 hover:text-slate-700 hover:bg-slate-100 font-black uppercase text-xs tracking-widest border-2 border-slate-100 transition-all active:scale-95"
+              >
+                Volver
+              </button>
+              
+              <button
+                type="button"
+                onClick={handleConfirmCancel}
+                className="py-4 rounded-2xl bg-rose-600 text-white hover:bg-rose-700 font-black uppercase text-xs tracking-widest shadow-lg shadow-rose-200 transition-all active:scale-95"
+              >
+                Sí, Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Indicador lateral sutil */}

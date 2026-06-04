@@ -11,8 +11,22 @@ const DashboardPage: React.FC = () => {
   const { data: bookings } = useQuery({
     queryKey: ['my-bookings-summary'],
     queryFn: () => bookingService.getMyBookings(),
-    select: (data) => data.filter((b: any) => b.estado === 'Confirmada').slice(0, 3)
   });
+
+  // Filter bookings dynamically
+  const upcomingBookings = React.useMemo(() => {
+    if (!bookings) return [];
+    // Filter appointments with state 'confirmada' or 'Confirmada'
+    return bookings
+      .filter((b: any) => b.estado?.toLowerCase() === 'confirmada')
+      .slice(0, 3);
+  }, [bookings]);
+
+  const completedBookingsCount = React.useMemo(() => {
+    if (!bookings) return 0;
+    // Filter appointments with state 'completada' or 'Completada'
+    return bookings.filter((b: any) => b.estado?.toLowerCase() === 'completada').length;
+  }, [bookings]);
 
   const cards = [
     {
@@ -127,8 +141,8 @@ const DashboardPage: React.FC = () => {
             </h2>
             
             <div className="space-y-4">
-              {bookings && bookings.length > 0 ? (
-                bookings.map((booking: any) => (
+              {upcomingBookings && upcomingBookings.length > 0 ? (
+                upcomingBookings.map((booking: any) => (
                   <div key={booking.id_cita} className="p-4 border border-slate-100 rounded-xl hover:bg-slate-50 transition-colors">
                     <div className="flex justify-between items-start mb-2">
                       <span className="text-xs font-black uppercase tracking-tighter text-[#3366FF] bg-blue-50 px-2 py-1 rounded">
@@ -165,7 +179,7 @@ const DashboardPage: React.FC = () => {
             </div>
             <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-slate-100 shadow-sm">
               <span className="text-sm text-slate-500 font-medium">Citas Realizadas</span>
-              <span className="text-xl font-black text-slate-900">0</span>
+              <span className="text-xl font-black text-slate-900">{completedBookingsCount}</span>
             </div>
           </section>
         </div>

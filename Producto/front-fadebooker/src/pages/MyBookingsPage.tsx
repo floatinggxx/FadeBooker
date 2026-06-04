@@ -129,7 +129,8 @@ const MyBookingsPage: React.FC = () => {
               notas: c.notas,
               isBarberoView: isBarbero,
               montoTotal: c.monto_total,
-              pagoAbono: c.pago_abono
+              pagoAbono: c.pago_abono,
+              createdAt: c.createdAt
             }))}
           />
         ) : (

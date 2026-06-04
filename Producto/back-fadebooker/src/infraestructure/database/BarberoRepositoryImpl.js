@@ -126,25 +126,27 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
   }
 
   async findByTienda(id_tienda) {
-    return db('Barbero')
-      .leftJoin('Usuario', 'Barbero.id_usuario', '=', 'Usuario.id_usuario')
-      .where({ 'Barbero.id_tienda': id_tienda, 'Barbero.activo': true })
+    return db('Barbero as b')
+      .leftJoin('Usuario as u', 'b.id_usuario', '=', 'u.id_usuario')
+      .leftJoin('Reseña as r', 'b.id_barbero', '=', 'r.id_barbero')
+      .where({ 'b.id_tienda': id_tienda, 'b.activo': true })
       .whereExists(function() {
         this.select('*')
           .from('ServicioBarbero')
-          .whereRaw('ServicioBarbero.id_barbero = Barbero.id_barbero')
+          .whereRaw('ServicioBarbero.id_barbero = b.id_barbero')
           .where('ServicioBarbero.disponible', true)
       })
-      .orderBy('Usuario.nombre')
+      .groupBy('b.id_barbero', 'u.nombre', 'u.apellido', 'u.email', 'b.especialidad', 'u.foto_perfil_url', 'b.id_tienda')
+      .orderBy('u.nombre')
       .select(
-        'Barbero.id_barbero',
-        'Usuario.nombre',
-        'Usuario.apellido',
-        'Usuario.email',
-        'Barbero.especialidad',
-        'Usuario.foto_perfil_url',
-        'Barbero.calificacion_promedio',
-        'Barbero.id_tienda'
+        'b.id_barbero',
+        'u.nombre',
+        'u.apellido',
+        'u.email',
+        'b.especialidad',
+        'u.foto_perfil_url',
+        db.raw('ISNULL(AVG(CAST(r.puntuacion AS FLOAT)), 0) as calificacion_promedio'),
+        'b.id_tienda'
       )
   }
 
@@ -153,61 +155,65 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
   }
 
   async findById(id_barbero) {
-    const row = await db('Barbero')
-      .leftJoin('Usuario', 'Barbero.id_usuario', '=', 'Usuario.id_usuario')
-      .where({ 'Barbero.id_barbero': id_barbero })
+    const row = await db('Barbero as b')
+      .leftJoin('Usuario as u', 'b.id_usuario', '=', 'u.id_usuario')
+      .leftJoin('Reseña as r', 'b.id_barbero', '=', 'r.id_barbero')
+      .where({ 'b.id_barbero': id_barbero })
+      .groupBy('b.id_barbero', 'u.id_usuario', 'u.nombre', 'u.apellido', 'u.email', 'u.telefono', 'u.foto_perfil_url', 'b.especialidad', 'b.anos_experiencia', 'b.tarifa_base', 'b.id_tienda', 'b.descripcion', 'b.total_resenas', 'b.activo', 'b.createdAt', 'b.updatedAt')
       .select(
-        'Barbero.id_barbero',
-        'Usuario.id_usuario',
-        'Usuario.nombre',
-        'Usuario.apellido',
-        'Usuario.email',
-        'Usuario.telefono',
-        'Usuario.foto_perfil_url',
-        'Barbero.especialidad',
-        'Barbero.anos_experiencia',
-        'Barbero.tarifa_base',
-        'Barbero.id_tienda',
-        'Barbero.calificacion_promedio',
-        'Barbero.descripcion'
+        'b.id_barbero',
+        'u.id_usuario',
+        'u.nombre',
+        'u.apellido',
+        'u.email',
+        'u.telefono',
+        'u.foto_perfil_url',
+        'b.especialidad',
+        'b.anos_experiencia',
+        'b.tarifa_base',
+        'b.id_tienda',
+        'b.descripcion',
+        'b.total_resenas',
+        'b.activo',
+        'b.createdAt',
+        'b.updatedAt',
+        db.raw('ISNULL(AVG(CAST(r.puntuacion AS FLOAT)), 0) as calificacion_promedio')
       )
       .first()
     return row
   }
 
   async findAll() {
-    return db('Barbero')
-      .leftJoin('Usuario', 'Barbero.id_usuario', '=', 'Usuario.id_usuario')
-      .where({ 'Barbero.activo': true })
+    return db('Barbero as b')
+      .leftJoin('Usuario as u', 'b.id_usuario', '=', 'u.id_usuario')
+      .leftJoin('Reseña as r', 'b.id_barbero', '=', 'r.id_barbero')
+      .where({ 'b.activo': true })
       .whereExists(function() {
         this.select('*')
           .from('ServicioBarbero')
-          .whereRaw('ServicioBarbero.id_barbero = Barbero.id_barbero')
+          .whereRaw('ServicioBarbero.id_barbero = b.id_barbero')
           .where('ServicioBarbero.disponible', true)
       })
-      .orderBy('Usuario.nombre')
+      .groupBy('b.id_barbero', 'b.id_usuario', 'b.id_tienda', 'b.especialidad', 'b.anos_experiencia', 'b.tarifa_base', 'b.total_resenas', 'b.activo', 'b.descripcion', 'b.createdAt', 'b.updatedAt', 'u.email', 'u.nombre', 'u.apellido', 'u.telefono', 'u.foto_perfil_url')
+      .orderBy('u.nombre')
       .select(
-        'Barbero.*',
-        'Usuario.email',
-        'Usuario.nombre',
-        'Usuario.apellido',
-        'Usuario.telefono',
-        'Usuario.foto_perfil_url'
-      )
-  }
-
-  async findById(id_barbero) {
-    return db('Barbero')
-      .leftJoin('Usuario', 'Barbero.id_usuario', '=', 'Usuario.id_usuario')
-      .where('Barbero.id_barbero', id_barbero)
-      .first()
-      .select(
-        'Barbero.*',
-        'Usuario.email',
-        'Usuario.nombre',
-        'Usuario.apellido',
-        'Usuario.telefono',
-        'Usuario.foto_perfil_url'
+        'b.id_barbero',
+        'b.id_usuario',
+        'b.id_tienda',
+        'b.especialidad',
+        'b.anos_experiencia',
+        'b.tarifa_base',
+        'b.total_resenas',
+        'b.activo',
+        'b.descripcion',
+        'b.createdAt',
+        'b.updatedAt',
+        'u.email',
+        'u.nombre',
+        'u.apellido',
+        'u.telefono',
+        'u.foto_perfil_url',
+        db.raw('ISNULL(AVG(CAST(r.puntuacion AS FLOAT)), 0) as calificacion_promedio')
       )
   }
 

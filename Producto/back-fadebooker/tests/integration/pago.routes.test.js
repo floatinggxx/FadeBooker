@@ -1,8 +1,22 @@
 const request = require('supertest');
 const app = require('../../src/app');
 
+const db = require('../../src/db/knex');
+
 describe('Pagos Integration Test (Mercado Pago)', () => {
   let testCitaId = 10; // ID de cita existente en tu BD para pruebas
+
+  beforeAll(async () => {
+    // Resetear cita de prueba para asegurar que esté en estado 'pendiente', no pagada, y no expirada
+    await db('Cita')
+      .where('id_cita', testCitaId)
+      .update({
+        monto_total: 10000,
+        pago_abono: 0,
+        estado: 'pendiente',
+        createdAt: new Date()
+      });
+  });
 
   describe('POST /api/pagos/crear', () => {
     it('debería intentar crear una preferencia de pago para una cita existente', async () => {
@@ -18,7 +32,7 @@ describe('Pagos Integration Test (Mercado Pago)', () => {
         console.log('✅ URL de Pago generada:', response.body.url);
       } else {
         expect(response.status).toBe(500);
-        expect(response.body.error).toContain('UNAUTHORIZED');
+        expect(response.body.message).toContain('UNAUTHORIZED');
         console.warn('⚠️ El servidor de Mercado Pago rechazó el Access Token (Esperado si el token es de prueba caducado)');
       }
     });

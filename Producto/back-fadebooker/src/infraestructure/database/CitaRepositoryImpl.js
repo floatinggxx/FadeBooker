@@ -350,6 +350,24 @@ class CitaRepositoryImpl {
   }
 
   async autoCompletarCitasVencidas() {
+    // 1. Cancelar citas pendientes que excedieron el límite de 3 minutos sin abono
+    try {
+      await this.db('Cita')
+        .where('estado', 'pendiente')
+        .where(function() {
+          this.whereNull('pago_abono').orWhere('pago_abono', 0);
+        })
+        .whereRaw('DATEDIFF(minute, createdAt, GETDATE()) >= 4')
+        .update({
+          estado: 'cancelada',
+          notas: this.db.raw("CAST(ISNULL(notas, '') AS VARCHAR(MAX)) + ' [Automatización: Cita cancelada por exceder el tiempo de pago (3 minutos)].'"),
+          updatedAt: this.db.raw('GETDATE()')
+        });
+    } catch (err) {
+      console.error('[autoCompletarCitasVencidas] Error al cancelar expiradas:', err.message);
+    }
+
+    // 2. Completar citas confirmadas antiguas
     return this.db('Cita')
       .where('estado', 'confirmada') // SOLO completar las pagadas (confirmadas)
       // Solo completar si ya pasó el tiempo de inicio + duración del servicio
@@ -464,19 +482,50 @@ class CitaRepositoryImpl {
   }
 
   /**
-   * Sincroniza estados de citas antiguas
+   * Sincroniza estados de citas antiguas usando la zona horaria de Chile
    */
   async syncStatuses() {
-    const ahora = new Date();
-    const haceUnaHora = new Date(ahora.getTime() - (60 * 60 * 1000));
+    try {
+      const ahora = new Date();
+      // Formatear hora actual a la zona de Chile (America/Santiago) para evitar desfases con la BD
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Santiago',
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: false
+      });
+      
+      const parts = formatter.formatToParts(ahora);
+      const partVal = (type) => parts.find(p => p.type === type).value;
+      
+      const year = partVal('year');
+      const month = partVal('month').padStart(2, '0');
+      const day = partVal('day').padStart(2, '0');
+      const hour = partVal('hour').padStart(2, '0');
+      const minute = partVal('minute').padStart(2, '0');
+      const second = partVal('second').padStart(2, '0');
+      
+      const localStr = `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+      const localTime = new Date(localStr);
+      
+      // Citas que ocurrieron hace más de 1 hora
+      const haceUnaHora = new Date(localTime.getTime() - (60 * 60 * 1000));
+      const haceUnaHoraStr = haceUnaHora.toISOString().substring(0, 19).replace('T', ' ');
 
-    // Citas que pasaron hace más de una hora y siguen como 'confirmada' -> 'completada'
-    const actualizados = await this.db('Cita')
-      .where('estado', 'confirmada')
-      .where('fecha_hora_inicio', '<', haceUnaHora.toISOString())
-      .update({ estado: 'completada' }); // Cambiamos a 'completada' que es el estado permitido por el CHECK constraint
+      const actualizados = await this.db('Cita')
+        .where('estado', 'confirmada')
+        .where('fecha_hora_inicio', '<', haceUnaHoraStr)
+        .update({ estado: 'completada' });
 
-    return actualizados;
+      return actualizados;
+    } catch (err) {
+      console.error('[syncStatuses] Error sincronizando estados de citas:', err.message);
+      return 0;
+    }
   }
 }
 

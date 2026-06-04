@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { CheckCircle, XCircle, Clock, ChevronLeft } from 'lucide-react';
+import api from '@/lib/api';
 
 const PaymentResultPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
   const [status, setStatus] = useState<'success' | 'failure' | 'pending'>('pending');
+
+  const payment_id = searchParams.get('payment_id') || searchParams.get('collection_id');
+  const payment_status = searchParams.get('status') || searchParams.get('collection_status');
+  const external_reference = searchParams.get('external_reference');
 
   useEffect(() => {
     if (location.pathname.includes('exitoso')) {
@@ -17,6 +22,25 @@ const PaymentResultPage: React.FC = () => {
       setStatus('pending');
     }
   }, [location.pathname]);
+
+  // Sincronización proactiva de pago por redirección (fallback para desarrollo local)
+  useEffect(() => {
+    const syncPayment = async () => {
+      if (payment_id && payment_status && external_reference) {
+        try {
+          console.log(`[Redirection Sync] Sincronizando pago #${payment_id} (${payment_status}) para ${external_reference}...`);
+          await api.post('/pagos/webhook', {
+            id: payment_id,
+            status: payment_status,
+            external_reference: external_reference
+          });
+        } catch (err) {
+          console.error('[Redirection Sync] Error al sincronizar pago:', err);
+        }
+      }
+    };
+    syncPayment();
+  }, [payment_id, payment_status, external_reference]);
 
   const config = {
     success: {

@@ -56,6 +56,39 @@ const UniversalBookingPage: React.FC = () => {
   const [paymentUrl, setPaymentUrl] = useState('');
   const [showWaitingModal, setShowWaitingModal] = useState(false);
 
+  // Estados para la reserva pendiente y cuenta regresiva
+  const [paymentStatus, setPaymentStatus] = useState<'pending' | 'success'>('pending');
+  const [bookingCreationTime, setBookingCreationTime] = useState<number | null>(null);
+  const [timeRemaining, setTimeRemaining] = useState(180); // 3 minutos en segundos
+
+  // Cuenta regresiva del tiempo límite de pago (3 minutos)
+  useEffect(() => {
+    if (!confirmed || paymentStatus !== 'pending' || !bookingCreationTime) return;
+
+    const calculateRemaining = () => {
+      const elapsed = Math.floor((Date.now() - bookingCreationTime) / 1000);
+      return Math.max(0, 180 - elapsed);
+    };
+
+    setTimeRemaining(calculateRemaining());
+
+    const interval = setInterval(() => {
+      const remaining = calculateRemaining();
+      setTimeRemaining(remaining);
+      if (remaining <= 0) {
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [confirmed, paymentStatus, bookingCreationTime]);
+
+  const formatCountdownTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
+
   // Queries
   const { data: barber, isLoading: loadingBarber } = useQuery({
     queryKey: ['barber', id],
@@ -173,7 +206,7 @@ const UniversalBookingPage: React.FC = () => {
         estado: 'pendiente', // Inicia como pendiente hasta que se pague
         metodo_pago: 'mercadopago', // Coincide con el esquema de validación
         origen: 'web_universal',
-        pago_abono: abonoCalculado,
+        pago_abono: 0, // Inicia en 0 porque aún no se ha realizado el pago
         notas: simulatedLook 
           ? `[Simulación de Peinado IA: ${simulatedLook.styleId}] Imagen: ${simulatedLook.url}`
           : ''
@@ -184,12 +217,18 @@ const UniversalBookingPage: React.FC = () => {
       const response = await bookingService.crearCita(payload);
       const id_cita = response.id_cita || response.id;
 
+      setBookingCreationTime(Date.now());
+      setPaymentStatus('pending');
+
       showNotification("¡Reserva confirmada! Generando portal de pago...", "success");
       
       // Esperar un momento para que el usuario lea el mensaje
       setTimeout(async () => {
         try {
-          const resultado = await pagoService.crearPago({ id_cita: Number(id_cita) });
+          const resultado = await pagoService.crearPago({ 
+            id_cita: Number(id_cita),
+            tipo_pago: paymentType
+          });
           setCreatedBookingId(Number(id_cita));
           setPaymentUrl(resultado.url);
           setShowWaitingModal(true);
@@ -641,31 +680,116 @@ const UniversalBookingPage: React.FC = () => {
           </section>
         )}
 
-        {/* --- SUCCESS STATE --- */}
+        {/* --- SUCCESS OR PENDING STATE --- */}
         {confirmed && (
-          <div className="rounded-[4rem] bg-white border-4 border-green-500 p-16 text-center shadow-2xl animate-appearance">
-            <div className="w-32 h-32 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-10 shadow-lg shadow-green-100">
-                <CheckCircle2 size={64} />
+          paymentStatus === 'success' ? (
+            <div className="rounded-[4rem] bg-white border-4 border-green-500 p-16 text-center shadow-2xl animate-appearance">
+              <div className="w-32 h-32 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-10 shadow-lg shadow-green-100">
+                  <CheckCircle2 size={64} />
+              </div>
+              <h3 className="text-5xl font-black text-slate-900 mb-6 tracking-tight">¡Reserva Completada y Confirmada!</h3>
+              <p className="text-xl text-slate-500 font-bold mb-12 max-w-2xl mx-auto leading-relaxed">
+                  Tu cita con {barber.nombre} ha sido agendada exitosamente y el pago de tu abono fue recibido y validado de forma automática por Mercado Pago.
+              </p>
+              <div className="flex flex-col gap-6 sm:flex-row justify-center">
+                <button
+                  onClick={() => navigate('/bookings')}
+                  className="bg-slate-900 text-white px-12 py-6 rounded-full font-black text-xl shadow-2xl hover:scale-105 active:scale-95 transition-all"
+                >
+                  VER MIS CITAS
+                </button>
+                <button
+                  onClick={() => navigate('/')}
+                  className="bg-white text-[#3366FF] border-4 border-blue-50 px-12 py-6 rounded-full font-black text-xl hover:bg-slate-50 active:scale-95 transition-all"
+                >
+                  VOLVER AL INICIO
+                </button>
+              </div>
             </div>
-            <h3 className="text-5xl font-black text-slate-900 mb-6 tracking-tight">¡Reserva Completada y Confirmada!</h3>
-            <p className="text-xl text-slate-500 font-bold mb-12 max-w-2xl mx-auto leading-relaxed">
-                Tu cita con {barber.nombre} ha sido agendada exitosamente y el pago de tu abono fue recibido y validado de forma automática por Mercado Pago.
-            </p>
-            <div className="flex flex-col gap-6 sm:flex-row justify-center">
-              <button
-                onClick={() => navigate('/bookings')}
-                className="bg-slate-900 text-white px-12 py-6 rounded-full font-black text-xl shadow-2xl hover:scale-105 active:scale-95 transition-all"
-              >
-                VER MIS CITAS
-              </button>
-              <button
-                onClick={() => navigate('/')}
-                className="bg-white text-[#3366FF] border-4 border-blue-50 px-12 py-6 rounded-full font-black text-xl hover:bg-slate-50 active:scale-95 transition-all"
-              >
-                VOLVER AL INICIO
-              </button>
+          ) : (
+            <div className={clsx(
+              "rounded-[4rem] bg-white border-4 p-16 text-center shadow-2xl transition-all duration-500",
+              timeRemaining <= 0 ? "border-rose-500" : "border-amber-500"
+            )}>
+              {timeRemaining <= 0 ? (
+                <>
+                  <div className="w-32 h-32 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-10 shadow-lg shadow-rose-100 animate-pulse">
+                      <AlertCircle size={64} />
+                  </div>
+                  <h3 className="text-5xl font-black text-slate-900 mb-6 tracking-tight">¡Tiempo de Reserva Expirado!</h3>
+                  <p className="text-xl text-slate-500 font-bold mb-12 max-w-2xl mx-auto leading-relaxed">
+                      El límite de 3 minutos para completar el pago ha expirado. Para garantizar la disponibilidad de la agenda, la reserva provisional de tu hora ha sido liberada.
+                      <span className="block mt-4 text-sm text-rose-500 font-black uppercase tracking-wider">
+                          Por favor, realiza un nuevo agendamiento.
+                      </span>
+                  </p>
+                  <div className="flex flex-col gap-6 sm:flex-row justify-center">
+                    <button
+                      onClick={() => {
+                        setConfirmed(false);
+                        setStep(2);
+                        setSelectedService(null);
+                        setSelectedTime('');
+                        setCreatedBookingId(null);
+                        setPaymentUrl('');
+                        setBookingCreationTime(null);
+                      }}
+                      className="bg-rose-600 text-white px-12 py-6 rounded-full font-black text-xl shadow-2xl hover:bg-rose-700 hover:scale-105 active:scale-95 transition-all"
+                    >
+                      NUEVO AGENDAMIENTO
+                    </button>
+                    <button
+                      onClick={() => navigate('/')}
+                      className="bg-white text-slate-700 border-4 border-slate-100 px-12 py-6 rounded-full font-black text-xl hover:bg-slate-50 active:scale-95 transition-all"
+                    >
+                      VOLVER AL INICIO
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="w-32 h-32 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-10 shadow-lg shadow-amber-100 animate-pulse">
+                      <Clock size={64} />
+                  </div>
+                  <h3 className="text-5xl font-black text-slate-900 mb-4 tracking-tight">¡Reserva Guardada, Falta Pago!</h3>
+                  
+                  {/* Countdown Badge */}
+                  <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-slate-900 text-white font-black text-sm uppercase tracking-wider mb-8 mx-auto shadow-md">
+                    <span className="relative flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                    </span>
+                    Tiempo restante: <span className="text-amber-400 font-mono text-base ml-1">{formatCountdownTime(timeRemaining)}</span>
+                  </div>
+
+                  <p className="text-xl text-slate-500 font-bold mb-12 max-w-2xl mx-auto leading-relaxed">
+                      Tu cita con {barber.nombre} se encuentra pre-reservada provisionalmente. 
+                      Para confirmarla definitivamente y asegurar tu espacio, debes realizar el pago antes de que se agote el tiempo de espera de 3 minutos.
+                  </p>
+                  
+                  <div className="flex flex-col gap-6 sm:flex-row justify-center">
+                    <button
+                      onClick={() => {
+                        if (paymentUrl) {
+                          window.open(paymentUrl, '_blank');
+                        }
+                        setShowWaitingModal(true);
+                      }}
+                      className="bg-[#3366FF] text-white px-12 py-6 rounded-full font-black text-xl shadow-2xl shadow-blue-200 hover:bg-[#2563EB] hover:scale-105 active:scale-95 transition-all"
+                    >
+                      COMPLETAR PAGO AHORA
+                    </button>
+                    <button
+                      onClick={() => navigate('/bookings')}
+                      className="bg-slate-900 text-white px-12 py-6 rounded-full font-black text-xl shadow-2xl hover:scale-105 active:scale-95 transition-all"
+                    >
+                      PAGAR DESPUÉS / MIS CITAS
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
-          </div>
+          )
         )}
       </div>
 
@@ -674,14 +798,14 @@ const UniversalBookingPage: React.FC = () => {
           isOpen={showWaitingModal}
           onClose={() => {
             setShowWaitingModal(false);
-            // Si cierra el modal antes de que se confirme el pago, lo dejamos en pantalla de éxito pero
-            // mencionamos que está pendiente de pago.
             setConfirmed(true);
+            setPaymentStatus('pending');
           }}
           onSuccess={() => {
             setShowWaitingModal(false);
             showNotification("¡Pago recibido con éxito!", "success");
             setConfirmed(true);
+            setPaymentStatus('success');
           }}
           bookingId={createdBookingId}
           paymentUrl={paymentUrl}

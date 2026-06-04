@@ -13,6 +13,7 @@ interface BookingItem {
   isBarberoView?: boolean;
   montoTotal?: number;
   pagoAbono?: number;
+  createdAt?: string;
 }
 
 interface BookingsSectionProps {
@@ -34,6 +35,7 @@ const BookingsSection: React.FC<BookingsSectionProps> = ({ bookings }) => (
         isBarberoView={item.isBarberoView}
         montoTotal={item.montoTotal}
         pagoAbono={item.pagoAbono}
+        createdAt={item.createdAt}
       />
     ))}
   </div>

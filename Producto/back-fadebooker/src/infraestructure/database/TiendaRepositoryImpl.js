@@ -12,13 +12,34 @@ class TiendaRepositoryImpl extends TiendaRepository {
    * @returns {Promise<Array>} Lista de tiendas
    */
   async findAll(filtros = {}) {
-    let query = db('Tienda').where('este_activa', true)
+    let query = db('Tienda as t')
+      .leftJoin('Reseña as r', 't.id_tienda', '=', 'r.id_tienda')
+      .where('t.este_activa', true)
+      .groupBy('t.id_tienda', 't.id_dueño', 't.nombre_tienda', 't.direccion', 't.ciudad', 't.codigo_postal', 't.telefono_tienda', 't.email_tienda', 't.horario_apertura', 't.horario_cierre', 't.dias_laborales', 't.foto_portada_url', 't.este_activa', 't.createdAt', 't.updatedAt')
+      .select(
+        't.id_tienda',
+        't.id_dueño',
+        't.nombre_tienda',
+        't.direccion',
+        't.ciudad',
+        't.codigo_postal',
+        't.telefono_tienda',
+        't.email_tienda',
+        't.horario_apertura',
+        't.horario_cierre',
+        't.dias_laborales',
+        't.foto_portada_url',
+        't.este_activa',
+        't.createdAt',
+        't.updatedAt',
+        db.raw('ISNULL(AVG(CAST(r.puntuacion AS FLOAT)), 0) as calificacion_promedio')
+      );
 
     if (filtros.ciudad) {
-      query = query.where('ciudad', 'LIKE', `%${filtros.ciudad}%`)
+      query = query.where('t.ciudad', 'LIKE', `%${filtros.ciudad}%`)
     }
 
-    return query.select().orderBy('nombre_tienda')
+    return query.orderBy('t.nombre_tienda')
   }
 
   /**
@@ -27,8 +48,28 @@ class TiendaRepositoryImpl extends TiendaRepository {
    * @returns {Promise<Object>} La tienda o null
    */
   async findById(id_tienda) {
-    return db('Tienda')
-      .where({ id_tienda })
+    return db('Tienda as t')
+      .leftJoin('Reseña as r', 't.id_tienda', '=', 'r.id_tienda')
+      .where({ 't.id_tienda': id_tienda })
+      .groupBy('t.id_tienda', 't.id_dueño', 't.nombre_tienda', 't.direccion', 't.ciudad', 't.codigo_postal', 't.telefono_tienda', 't.email_tienda', 't.horario_apertura', 't.horario_cierre', 't.dias_laborales', 't.foto_portada_url', 't.este_activa', 't.createdAt', 't.updatedAt')
+      .select(
+        't.id_tienda',
+        't.id_dueño',
+        't.nombre_tienda',
+        't.direccion',
+        't.ciudad',
+        't.codigo_postal',
+        't.telefono_tienda',
+        't.email_tienda',
+        't.horario_apertura',
+        't.horario_cierre',
+        't.dias_laborales',
+        't.foto_portada_url',
+        't.este_activa',
+        't.createdAt',
+        't.updatedAt',
+        db.raw('ISNULL(AVG(CAST(r.puntuacion AS FLOAT)), 0) as calificacion_promedio')
+      )
       .first()
   }
 
@@ -38,10 +79,29 @@ class TiendaRepositoryImpl extends TiendaRepository {
    * @returns {Promise<Array>} Lista de tiendas en esa ciudad
    */
   async findByCiudad(ciudad) {
-    return db('Tienda')
-      .where({ ciudad, este_activa: true })
-      .orderBy('nombre_tienda')
-      .select()
+    return db('Tienda as t')
+      .leftJoin('Reseña as r', 't.id_tienda', '=', 'r.id_tienda')
+      .where({ 't.ciudad': ciudad, 't.este_activa': true })
+      .groupBy('t.id_tienda', 't.id_dueño', 't.nombre_tienda', 't.direccion', 't.ciudad', 't.codigo_postal', 't.telefono_tienda', 't.email_tienda', 't.horario_apertura', 't.horario_cierre', 't.dias_laborales', 't.foto_portada_url', 't.este_activa', 't.createdAt', 't.updatedAt')
+      .orderBy('t.nombre_tienda')
+      .select(
+        't.id_tienda',
+        't.id_dueño',
+        't.nombre_tienda',
+        't.direccion',
+        't.ciudad',
+        't.codigo_postal',
+        't.telefono_tienda',
+        't.email_tienda',
+        't.horario_apertura',
+        't.horario_cierre',
+        't.dias_laborales',
+        't.foto_portada_url',
+        't.este_activa',
+        't.createdAt',
+        't.updatedAt',
+        db.raw('ISNULL(AVG(CAST(r.puntuacion AS FLOAT)), 0) as calificacion_promedio')
+      )
   }
 
   /**

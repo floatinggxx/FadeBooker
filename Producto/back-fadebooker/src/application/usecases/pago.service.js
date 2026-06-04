@@ -38,6 +38,10 @@ class PagoService {
       const minutesSinceCreation = (Date.now() - creationTime) / 1000 / 60;
       if (minutesSinceCreation > 3.5 && (cita.pago_abono || 0) === 0) { 
         // Solo aplica el límite de 3 min si no ha pagado nada aún (primera reserva)
+        await this.citaRepository.update(id_cita, {
+          estado: 'cancelada',
+          notas: (cita.notas || '') + ' [Automatización: Cita cancelada por exceder el tiempo de pago (3 minutos)].'
+        });
         throw new Error('La cita ha expirado por tiempo de espera (límite 3 minutos). Por favor genere una nueva cita.');
       }
 
@@ -63,7 +67,7 @@ class PagoService {
           : 'https://fadebooker-backend-ok.azurewebsites.net/api/pagos/webhook', // Fallback hardcoded para producción si falla env
         external_reference: `cita_${id_cita}`,
         expires: true,
-        expiration_date_to: new Date(Date.now() + 10 * 60 * 1000).toISOString() // Expira en 10 minutos para el link de pago
+        expiration_date_to: new Date(Date.now() + 3 * 60 * 1000).toISOString() // Expira en 3 minutos para el link de pago
       };
 
       const response = await preference.create({ body });
@@ -74,6 +78,7 @@ class PagoService {
         id_cita: id_cita,
         monto_pagado: montoAPagar,
         metodo_pago: 'mercadopago',
+        estado_pago: 'pendiente',
         referencia_transaccion: preferenceResult.id
       };
 
@@ -200,6 +205,33 @@ class PagoService {
           };
 
           await this.citaRepository.update(id_cita, citaUpdate);
+
+          // Enviar notificación a Power Automate tras confirmar el pago
+          try {
+            const { enviarReserva } = require('../../infraestructure/automation/PowerAutomateService');
+            const citaDetalle = await this.citaRepository.findByIdConDetalles(id_cita);
+            if (citaDetalle) {
+              const fechaHoraInicio = new Date(citaDetalle.fecha_hora_inicio);
+              const fechaHoraFin = new Date(fechaHoraInicio.getTime() + (citaDetalle.duracion_minutos || 30) * 60000);
+              await enviarReserva({
+                cliente: citaDetalle.cliente_nombre || '',
+                telefono: citaDetalle.cliente_telefono || '',
+                correo: citaDetalle.cliente_email || '',
+                fecha: fechaHoraInicio.toISOString().split('T')[0],
+                hora: fechaHoraInicio.toISOString().split('T')[1].slice(0, 5),
+                fecha_hora_iso: fechaHoraInicio.toISOString(),
+                fecha_hora_fin_iso: fechaHoraFin.toISOString(),
+                duracion: citaDetalle.duracion_minutos || 30,
+                servicio: citaDetalle.nombre_servicio || '',
+                barbero: citaDetalle.barbero_nombre || '',
+                tienda: citaDetalle.nombre_tienda || '',
+                id_cita: citaDetalle.id_cita
+              });
+              console.log(`[PowerAutomate] Notificación de confirmación de pago enviada para cita #${id_cita}`);
+            }
+          } catch (notificationError) {
+            console.error('[PowerAutomate] Error enviando notificación de confirmación:', notificationError.message);
+          }
         }
       }
 
