@@ -171,6 +171,30 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
         }
     }, [formData.id_barbero, formData.fecha]);
 
+    const isSlotAvailable = (slot: any): boolean => {
+        // Si el slot no está disponible según el backend, retornar false
+        if (!slot.disponible) {
+            return false;
+        }
+
+        // Verificar si la fecha es hoy
+        const today = new Date().toISOString().split('T')[0];
+        if (formData.fecha === today) {
+            // Si es hoy, verificar que la hora no haya pasado
+            const now = new Date();
+            const [hours, minutes] = slot.hora.substring(0, 5).split(':');
+            const slotTime = new Date();
+            slotTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+            // Bloquear si la hora es menor o igual a la hora actual
+            if (slotTime <= now) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -371,29 +395,32 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
                                     <div className="relative">
                                         <div className="bg-slate-50 rounded-[2rem] p-4 border-2 border-slate-100">
                                             <div className="max-h-[220px] overflow-y-auto pr-2 custom-scrollbar grid grid-cols-2 gap-2">
-                                                {availability.map(slot => (
+                                                {availability.map(slot => {
+                                                    const isAvailable = isSlotAvailable(slot);
+                                                    return (
                                                     <button
                                                         key={slot.hora}
                                                         type="button"
-                                                        disabled={!slot.disponible}
+                                                        disabled={!isAvailable}
                                                         onClick={() => setFormData({...formData, hora: slot.hora.substring(0, 5)})}
                                                         className={`py-3 px-4 rounded-xl font-black text-sm transition-all flex items-center justify-center gap-2 border-2 ${
                                                             formData.hora === slot.hora.substring(0, 5) 
                                                                 ? 'bg-[#3366FF] text-white border-[#3366FF] shadow-lg shadow-blue-100' 
-                                                                : !slot.disponible 
+                                                                : !isAvailable 
                                                                     ? 'bg-rose-100 text-rose-600 border-rose-200 cursor-not-allowed opacity-90' 
                                                                     : 'bg-white text-slate-600 hover:bg-slate-100 border-slate-50 hover:border-slate-100'
                                                         }`}
-                                                        title={!slot.disponible ? `Ocupado: ${slot.detalle || 'Cita programada'}` : `Reservar a las ${slot.hora.substring(0, 5)}`}
+                                                        title={!isAvailable ? (slot.disponible ? 'Hora pasada' : `Ocupado: ${slot.detalle || 'Cita programada'}`) : `Reservar a las ${slot.hora.substring(0, 5)}`}
                                                     >
-                                                        <Clock size={14} className={!slot.disponible ? 'text-rose-500' : ''} />
+                                                        <Clock size={14} className={!isAvailable ? 'text-rose-500' : ''} />
                                                         {slot.hora.substring(0, 5)}
                                                     </button>
-                                                ))}
-                                                {availability.length === 0 && (
-                                                    <p className="col-span-2 text-center py-10 text-slate-400 font-bold italic">No hay horarios disponibles</p>
-                                                )}
+                                                    );
+                                                })}
                                             </div>
+                                            {availability.length === 0 && (
+                                                <div className="col-span-2 text-center py-10 text-slate-400 font-bold italic">No hay horarios disponibles</div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
