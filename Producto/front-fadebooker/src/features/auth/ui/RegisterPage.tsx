@@ -254,6 +254,14 @@ const RegisterPage: React.FC = () => {
             {errors.contrasenaConfirm && <span className="error-message">{errors.contrasenaConfirm.message}</span>}
           </div>
 
+          <div className="animate-fade-in py-5 px-6 bg-amber-50/60 rounded-[2rem] border-2 border-amber-100 my-4 flex gap-4">
+            <div className="text-3xl shrink-0">💈</div>
+            <div>
+              <p className="font-black text-slate-900 text-sm leading-tight mb-1">¿Eres dueño de una barbería?</p>
+              <p className="text-xs text-slate-600 font-medium leading-relaxed">Regístrate como Barbero. Luego podrás registrar y administrar tu barbería.</p>
+            </div>
+          </div>
+
           <div className="radio-group">
             <label className="radio-option">
               <input type="radio" value="Cliente" {...register('rol')} defaultChecked /> Cliente
