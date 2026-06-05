@@ -50,7 +50,8 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
             cliente_telefono: '',
             fecha: new Date().toISOString().split('T')[0],
             hora: '',
-            notas: ''
+            notas: '',
+            metodo_pago: 'efectivo'
         };
     });
 
@@ -190,6 +191,8 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
                 id_tienda: finalIdTienda,
                 fecha_hora_inicio: `${formData.fecha} ${formData.hora}:00`,
                 monto_total: selectedService?.precio_barbero || selectedService?.precio_base || 0,
+                pago_abono: 0,
+                metodo_pago: formData.metodo_pago,
                 estado: 'confirmada',
                 origen: 'manual'
             });
@@ -306,6 +309,29 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
                                         ))}
                                     </select>
                                 </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Forma de Pago</label>
+                                <div className="grid grid-cols-3 gap-3">
+                                    {['efectivo', 'transferencia', 'mercadopago'].map((method) => (
+                                        <button
+                                            key={method}
+                                            type="button"
+                                            onClick={() => setFormData({...formData, metodo_pago: method})}
+                                            className={`py-4 px-4 rounded-2xl font-black text-sm transition-all border-2 flex items-center justify-center gap-2 ${
+                                                formData.metodo_pago === method
+                                                    ? 'bg-[#3366FF] text-white border-[#3366FF] shadow-lg shadow-blue-100'
+                                                    : 'bg-white text-slate-600 border-slate-50 hover:bg-slate-50'
+                                            }`}
+                                        >
+                                            {method === 'efectivo' ? 'Efectivo' : method === 'transferencia' ? 'Transferencia' : 'Mercado Pago'}
+                                        </button>
+                                    ))}
+                                </div>
+                                <p className="text-xs text-slate-500 mt-2">
+                                    Selecciona cómo pagará el cliente. Si eliges efectivo o transferencia, podrás registrar el pago cuando ocurra en la barbería.
+                                </p>
                             </div>
 
                             <div className="pt-4">

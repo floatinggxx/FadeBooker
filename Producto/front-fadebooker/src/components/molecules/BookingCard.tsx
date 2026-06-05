@@ -7,11 +7,15 @@ import { useNotification } from '@/context/NotificationContext';
 import { parseError } from '@/lib/utils/errorParser';
 import ReviewModal from './ReviewModal';
 import PaymentWaitingModal from './PaymentWaitingModal';
+import BarbieroCancelBookingModal from '@/features/barbero/ui/BarbieroCancelBookingModal';
 
 interface BookingCardProps {
   dateTime: string;
   barberName: string;
   clienteName?: string;
+  clienteEmail?: string;
+  clienteTelefono?: string;
+  barberoId?: number;
   serviceName: string;
   status: string;
   notes?: string;
@@ -49,6 +53,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
   // Estado para modal de confirmación de cancelación
   const [showCancelConfirmModal, setShowCancelConfirmModal] = useState(false);
+  const [showBarberoCancelModal, setShowBarberoCancelModal] = useState(false);
 
   const montoPendiente = (montoTotal || 0) - (pagoAbono || 0);
   const abonoFaltante = Math.max(0, (montoTotal || 0) * 0.5 - (pagoAbono || 0));
@@ -78,6 +83,10 @@ const BookingCard: React.FC<BookingCardProps> = ({
   };
 
   const handleCancelClick = () => {
+    if (isBarberoView) {
+      setShowBarberoCancelModal(true);
+      return;
+    }
     setShowCancelConfirmModal(true);
   };
 
@@ -102,6 +111,12 @@ const BookingCard: React.FC<BookingCardProps> = ({
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handleBarberoCancelSuccess = () => {
+    setShowBarberoCancelModal(false);
+    showNotification('Cita cancelada y cliente notificado', 'success');
+    queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
   };
 
   const handlePaymentSuccess = () => {
@@ -366,6 +381,23 @@ const BookingCard: React.FC<BookingCardProps> = ({
             </div>
           </div>
         </div>
+      )}
+
+      {showBarberoCancelModal && (
+        <BarbieroCancelBookingModal
+          booking={{
+            id_cita: id,
+            id_barbero: barberoId,
+            cliente_nombre: clienteName,
+            cliente_email: clienteEmail,
+            cliente_telefono: clienteTelefono,
+            servicio_nombre: serviceName,
+            fecha_hora_inicio: dateTime,
+            monto_total: montoTotal
+          }}
+          onClose={() => setShowBarberoCancelModal(false)}
+          onSuccess={handleBarberoCancelSuccess}
+        />
       )}
 
       {/* Indicador lateral sutil */}

@@ -16,6 +16,7 @@ const BarberoDashboard: React.FC = () => {
     const [period, setPeriod] = useState<'day' | 'week' | 'month'>('day');
     const [showManualBooking, setShowManualBooking] = useState(false);
     const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
+    const [showBarberoCancelModal, setShowBarberoCancelModal] = useState(false);
     const [activeTab, setActiveTab] = useState<'dashboard' | 'tienda' | 'equipo' | 'servicios'>('dashboard');
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
@@ -414,9 +415,9 @@ const BarberoDashboard: React.FC = () => {
                                                 ? 'bg-green-100 text-green-600' 
                                                 : selectedBooking.estado_pago === 'abonado' 
                                                 ? 'bg-blue-100 text-blue-600' 
-                                                : 'bg-slate-100 text-slate-400'
+                                                : (selectedBooking.pago_abono > 0 ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-400')
                                             }`}>
-                                                {selectedBooking.estado_pago || 'Pendiente'}
+                                                {selectedBooking.estado_pago || (selectedBooking.pago_abono > 0 ? 'Abonado' : 'Pendiente')}
                                             </span>
                                         </div>
                                     </div>
@@ -448,30 +449,32 @@ const BarberoDashboard: React.FC = () => {
                             </div>
 
                             <div className="flex gap-4">
-                                {selectedBooking.estado === 'confirmada' && (
+                                {selectedBooking.estado !== 'cancelada' && selectedBooking.estado !== 'completada' && (
                                     <>
                                         <button 
-                                            disabled={isUpdating || new Date(selectedBooking.fecha_hora_inicio) > new Date()}
-                                            onClick={() => handleUpdateStatus(selectedBooking.id_cita || selectedBooking.id, 'completada')}
-                                            className={`flex-1 py-5 rounded-2xl font-black shadow-xl transition-all flex items-center justify-center gap-3 ${
-                                                new Date(selectedBooking.fecha_hora_inicio) > new Date() 
-                                                ? 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none' 
-                                                : 'bg-[#16a34a] text-white shadow-green-100 hover:bg-[#15803d]'
-                                            }`}
-                                            title={new Date(selectedBooking.fecha_hora_inicio) > new Date() ? "No se puede completar una cita futura" : ""}
-                                        >
-                                            <CheckCircle size={20} /> COMPLETAR
-                                        </button>
-                                        <button 
                                             disabled={isUpdating}
-                                            onClick={() => handleUpdateStatus(selectedBooking.id_cita || selectedBooking.id, 'cancelada')}
+                                            onClick={() => setShowBarberoCancelModal(true)}
                                             className="flex-1 bg-white text-rose-500 border-4 border-rose-50 py-5 rounded-2xl font-black hover:bg-rose-50 transition-all flex items-center justify-center gap-3"
                                         >
-                                            <XCircle size={20} /> CANCELAR
+                                            <XCircle size={20} /> CANCELAR CITA
                                         </button>
+                                        {selectedBooking.estado === 'confirmada' && (
+                                            <button 
+                                                disabled={isUpdating || new Date(selectedBooking.fecha_hora_inicio) > new Date()}
+                                                onClick={() => handleUpdateStatus(selectedBooking.id_cita || selectedBooking.id, 'completada')}
+                                                className={`flex-1 py-5 rounded-2xl font-black shadow-xl transition-all flex items-center justify-center gap-3 ${
+                                                    new Date(selectedBooking.fecha_hora_inicio) > new Date() 
+                                                    ? 'bg-slate-100 text-slate-400 cursor-not-allowed shadow-none' 
+                                                    : 'bg-[#16a34a] text-white shadow-green-100 hover:bg-[#15803d]'
+                                                }`}
+                                                title={new Date(selectedBooking.fecha_hora_inicio) > new Date() ? "No se puede completar una cita futura" : ""}
+                                            >
+                                                <CheckCircle size={20} /> COMPLETAR
+                                            </button>
+                                        )}
                                     </>
                                 )}
-                                {selectedBooking.estado !== 'confirmada' && (
+                                {(selectedBooking.estado === 'cancelada' || selectedBooking.estado === 'completada') && (
                                     <button 
                                         onClick={() => setSelectedBooking(null)}
                                         className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black hover:bg-slate-800 transition-all"
@@ -483,6 +486,19 @@ const BarberoDashboard: React.FC = () => {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {showBarberoCancelModal && selectedBooking && (
+                <BarbieroCancelBookingModal
+                    booking={selectedBooking}
+                    onClose={() => setShowBarberoCancelModal(false)}
+                    onSuccess={() => {
+                        setShowBarberoCancelModal(false);
+                        setSelectedBooking(null);
+                        refetch();
+                        showNotification('Cita cancelada y cliente notificado', 'success');
+                    }}
+                />
             )}
         </main>
     );

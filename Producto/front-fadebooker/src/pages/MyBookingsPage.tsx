@@ -124,6 +124,9 @@ const MyBookingsPage: React.FC = () => {
               clienteName: (c.cliente_nombre && c.cliente_apellido)
                 ? `${c.cliente_nombre} ${c.cliente_apellido}`
                 : c.cliente_nombre || 'Cliente',
+              clienteEmail: c.cliente_email || c.cliente?.email || '',
+              clienteTelefono: c.cliente_telefono || c.cliente?.telefono || '',
+              barberoId: c.id_barbero,
               servicioName: c.servicio_nombre || c.nombre_servicio || (c.servicio?.servicio?.nombre || c.servicio?.nombre || 'Sin datos'),
               estado: c.estado,
               notas: c.notas,

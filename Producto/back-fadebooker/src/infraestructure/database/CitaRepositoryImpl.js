@@ -236,7 +236,7 @@ class CitaRepositoryImpl {
       .where({ id_barbero })
       .where(function() {
         this.whereIn('estado', ['confirmada', 'completada'])
-          .orWhere('estado_pago', 'pagado')
+          .orWhere('pago_abono', '>', 0)
       });
 
     if (period === 'day') {
@@ -257,7 +257,7 @@ class CitaRepositoryImpl {
       .where({ id_barbero })
       .where(function() {
         this.whereIn('estado', ['confirmada', 'completada'])
-          .orWhere('estado_pago', 'pagado')
+          .orWhere('pago_abono', '>', 0)
       });
 
     if (period === 'day') {
@@ -338,11 +338,24 @@ class CitaRepositoryImpl {
     const cita = await this.db('Cita').where({ id_cita: id }).first();
     if (!cita) throw new Error('Cita no encontrada');
 
-    // 2. Actualizar estado_pago a 'pagado' y pago_abono al total (ya que se pagó completo)
-    // Además, cambiar estado a 'confirmada' al estar ya pagada
+    console.log(`[CitaRepositoryImpl] registrarPagoEfectivo invocado para cita ID=${id}, monto_total=${cita.monto_total}, pago_abono=${cita.pago_abono}`);
+
+    // 2. Registrar el pago en la tabla Pago (efectivo completado)
+    const PagoRepositoryImpl = require('./PagoRepositoryImpl');
+    const pagoRepository = new PagoRepositoryImpl();
+
+    await pagoRepository.create({
+      id_cita: id,
+      monto_pagado: cita.monto_total,
+      metodo_pago: 'Efectivo',
+      estado_pago: 'completado',
+      referencia_transaccion: 'EFECTIVO',
+      fecha_pago: new Date()
+    });
+
+    // 3. Actualizar la cita como confirmada y pagada en efectivo
     return this.db('Cita').where({ id_cita: id }).update({
       estado: 'confirmada',
-      estado_pago: 'pagado',
       pago_abono: cita.monto_total,
       metodo_pago: 'Efectivo',
       updatedAt: this.db.raw('GETDATE()')

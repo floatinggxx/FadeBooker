@@ -69,10 +69,10 @@ const BarbieroCancelBookingModal: React.FC<BarbieroCancelBookingModalProps> = ({
     };
 
     return (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden border-8 border-white">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
+            <div className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl border-8 border-white flex flex-col max-h-[90vh]">
                 {/* Header */}
-                <div className="p-8 border-b-4 border-slate-50 flex justify-between items-center bg-gradient-to-r from-slate-50 to-transparent">
+                <div className="p-8 border-b-4 border-slate-50 flex justify-between items-center bg-gradient-to-r from-slate-50 to-transparent flex-shrink-0">
                     <h2 className="text-2xl font-black text-slate-900">
                         {step === 'message' ? 'Cancelar Cita' : 'Opciones de Recuperación'}
                     </h2>
@@ -84,8 +84,8 @@ const BarbieroCancelBookingModal: React.FC<BarbieroCancelBookingModalProps> = ({
                     </button>
                 </div>
 
-                {/* Content */}
-                <div className="p-8 space-y-6">
+                {/* Content - Scrolleable */}
+                <div className="p-8 space-y-6 overflow-y-auto flex-1">
                     {/* Información de la cita */}
                     <div className="bg-slate-50 rounded-[2rem] p-6 space-y-3">
                         <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">
@@ -185,22 +185,6 @@ const BarbieroCancelBookingModal: React.FC<BarbieroCancelBookingModalProps> = ({
                                     </button>
                                 </div>
                             </div>
-
-                            {/* Botones de acción */}
-                            <div className="flex gap-4 pt-4">
-                                <button
-                                    onClick={onClose}
-                                    className="flex-1 bg-slate-100 text-slate-500 py-5 rounded-2xl font-black hover:bg-slate-200 transition-all"
-                                >
-                                    ATRÁS
-                                </button>
-                                <button
-                                    onClick={() => setStep('action')}
-                                    className="flex-1 bg-[#3366FF] text-white py-5 rounded-2xl font-black shadow-xl shadow-blue-100 hover:bg-blue-600 transition-all flex items-center justify-center gap-3"
-                                >
-                                    SIGUIENTE
-                                </button>
-                            </div>
                         </>
                     ) : (
                         <>
@@ -280,23 +264,42 @@ const BarbieroCancelBookingModal: React.FC<BarbieroCancelBookingModalProps> = ({
                                     </button>
                                 </div>
                             </div>
+                        </>
+                    )}
+                </div>
 
-                            {/* Botones finales */}
-                            <div className="flex gap-4 pt-4">
-                                <button
-                                    onClick={() => setStep('message')}
-                                    className="flex-1 bg-slate-100 text-slate-500 py-5 rounded-2xl font-black hover:bg-slate-200 transition-all"
-                                >
-                                    ATRÁS
-                                </button>
-                                <button
-                                    onClick={handleCancelBooking}
-                                    disabled={loading}
-                                    className="flex-1 bg-rose-500 text-white py-5 rounded-2xl font-black shadow-xl shadow-rose-100 hover:bg-rose-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {loading ? 'PROCESANDO...' : 'CANCELAR CITA'}
-                                </button>
-                            </div>
+                {/* Footer con botones - Siempre visible */}
+                <div className="border-t-4 border-slate-50 p-8 bg-slate-50 flex gap-4 flex-shrink-0">
+                    {step === 'message' ? (
+                        <>
+                            <button
+                                onClick={onClose}
+                                className="flex-1 bg-slate-100 text-slate-500 py-5 rounded-2xl font-black hover:bg-slate-200 transition-all"
+                            >
+                                ATRÁS
+                            </button>
+                            <button
+                                onClick={() => setStep('action')}
+                                className="flex-1 bg-[#3366FF] text-white py-5 rounded-2xl font-black shadow-xl shadow-blue-100 hover:bg-blue-600 transition-all flex items-center justify-center gap-3"
+                            >
+                                SIGUIENTE
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <button
+                                onClick={() => setStep('message')}
+                                className="flex-1 bg-slate-100 text-slate-500 py-5 rounded-2xl font-black hover:bg-slate-200 transition-all"
+                            >
+                                ATRÁS
+                            </button>
+                            <button
+                                onClick={handleCancelBooking}
+                                disabled={loading}
+                                className="flex-1 bg-rose-500 text-white py-5 rounded-2xl font-black shadow-xl shadow-rose-100 hover:bg-rose-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {loading ? 'PROCESANDO...' : 'CANCELAR CITA'}
+                            </button>
                         </>
                     )}
                 </div>

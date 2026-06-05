@@ -7,6 +7,9 @@ interface BookingItem {
   hora: string;
   barberoName: string;
   clienteName: string;
+  clienteEmail?: string;
+  clienteTelefono?: string;
+  barberoId?: number;
   servicioName: string;
   estado: string;
   notas?: string;
@@ -29,6 +32,9 @@ const BookingsSection: React.FC<BookingsSectionProps> = ({ bookings }) => (
         dateTime={`${item.fecha} ${item.hora}`}
         barberName={item.barberoName}
         clienteName={item.clienteName}
+        clienteEmail={item.clienteEmail}
+        clienteTelefono={item.clienteTelefono}
+        barberoId={item.barberoId}
         serviceName={item.servicioName}
         status={item.estado}
         notes={item.notas}
