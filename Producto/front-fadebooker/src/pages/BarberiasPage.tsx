@@ -191,7 +191,7 @@ const BarberiasPage: React.FC = () => {
              </h2>
           </div>
           <p className="text-slate-500 font-bold text-lg mb-10 uppercase tracking-tighter">
-            Busca por comuna y encuentra barberías reales y de prueba en todo Santiago.
+            Encuentra disponibilidad y reserva tu cita en minutos.
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
