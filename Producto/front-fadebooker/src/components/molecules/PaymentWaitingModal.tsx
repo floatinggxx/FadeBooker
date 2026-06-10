@@ -49,6 +49,10 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
         external_reference: `cita_${bookingId}`
       });
       setSimulationStatus('success');
+      // Después de simular, esperar 2 segundos y entonces disparar onSuccess para que el polling detecte el cambio
+      setTimeout(() => {
+        onSuccess();
+      }, 2000);
     } catch (err) {
       console.error('[MercadoPago Simulación] Error enviando mock webhook:', err);
       setSimulationStatus('error');

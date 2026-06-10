@@ -1,4 +1,5 @@
 const { client, Preference, Payment } = require('../../config/mercadopago');
+const { sendTelegramMessage } = require('../../infraestructure/notifications/telegram');
 
 class PagoService {
   constructor(pagoRepository, citaRepository) {
@@ -213,24 +214,50 @@ class PagoService {
             if (citaDetalle) {
               const fechaHoraInicio = new Date(citaDetalle.fecha_hora_inicio);
               const fechaHoraFin = new Date(fechaHoraInicio.getTime() + (citaDetalle.duracion_minutos || 30) * 60000);
-              await enviarReserva({
-                cliente: citaDetalle.cliente_nombre || '',
-                telefono: citaDetalle.cliente_telefono || '',
-                correo: citaDetalle.cliente_email || '',
-                fecha: fechaHoraInicio.toISOString().split('T')[0],
-                hora: fechaHoraInicio.toISOString().split('T')[1].slice(0, 5),
-                fecha_hora_iso: fechaHoraInicio.toISOString(),
-                fecha_hora_fin_iso: fechaHoraFin.toISOString(),
-                duracion: citaDetalle.duracion_minutos || 30,
-                servicio: citaDetalle.nombre_servicio || '',
-                barbero: citaDetalle.barbero_nombre || '',
-                tienda: citaDetalle.nombre_tienda || '',
-                id_cita: citaDetalle.id_cita
-              });
-              console.log(`[PowerAutomate] Notificación de confirmación de pago enviada para cita #${id_cita}`);
+              try {
+                await enviarReserva({
+                  cliente: citaDetalle.cliente_nombre || '',
+                  telefono: citaDetalle.cliente_telefono || '',
+                  correo: citaDetalle.cliente_email || '',
+                  fecha: fechaHoraInicio.toISOString().split('T')[0],
+                  hora: fechaHoraInicio.toISOString().split('T')[1].slice(0, 5),
+                  fecha_hora_iso: fechaHoraInicio.toISOString(),
+                  fecha_hora_fin_iso: fechaHoraFin.toISOString(),
+                  duracion: citaDetalle.duracion_minutos || 30,
+                  servicio: citaDetalle.nombre_servicio || '',
+                  barbero: citaDetalle.barbero_nombre || '',
+                  tienda: citaDetalle.nombre_tienda || '',
+                  id_cita: citaDetalle.id_cita
+                });
+                console.log(`[PowerAutomate] Notificación de confirmación de pago enviada para cita #${id_cita}`);
+              } catch (notificationError) {
+                console.error('[PowerAutomate] Error enviando notificación de confirmación:', notificationError.message || notificationError);
+              }
+
+              // Enviar mensaje a Telegram cuando el pago de la cita quede confirmado
+              try {
+                const telegramChatId = process.env.TELEGRAM_CHAT_ID;
+                const fechaHoraTexto = `${fechaHoraInicio.toISOString().split('T')[0]} ${fechaHoraInicio.toISOString().split('T')[1].slice(0, 5)}`;
+                const mensajeTelegram = `Pago confirmado\n` +
+                  `Tu reserva #${id_cita} ha sido confirmada.\n` +
+                  `Servicio: ${citaDetalle.nombre_servicio || 'N/A'}\n` +
+                  `Barbero: ${citaDetalle.barbero_nombre || 'N/A'}\n` +
+                  `Fecha: ${fechaHoraTexto}\n` +
+                  `Monto: $${pago.monto_pagado}`;
+
+                if (telegramChatId) {
+                  console.log('[Telegram] Chat ID disponible, enviando mensaje...');
+                  await sendTelegramMessage(telegramChatId, mensajeTelegram);
+                  console.log(`[Telegram] Intento de envío completado para chat ${telegramChatId} y cita #${id_cita}`);
+                } else {
+                  console.warn('[Telegram] TELEGRAM_CHAT_ID no definido; mensaje no enviado');
+                }
+              } catch (telegramError) {
+                console.error('[Telegram] Error enviando mensaje de confirmación de pago:', telegramError.message || telegramError);
+              }
             }
           } catch (notificationError) {
-            console.error('[PowerAutomate] Error enviando notificación de confirmación:', notificationError.message);
+            console.error('[PowerAutomate] Error enviando notificación de confirmación:', notificationError.message || notificationError);
           }
         }
       }

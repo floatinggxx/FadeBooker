@@ -455,7 +455,25 @@ const UniversalBookingPage: React.FC = () => {
                   className="w-full rounded-[2rem] border-4 border-slate-50 bg-slate-50 p-8 text-3xl font-black text-slate-900 outline-none transition focus:border-[#3366FF] hover:bg-slate-100"
                   value={selectedDate}
                   min={new Date().toISOString().split('T')[0]}
-                  onChange={(e) => setSelectedDate(e.target.value)}
+                  onChange={(e) => {
+                    const newDate = e.target.value;
+                    setSelectedDate(newDate);
+                    // Validar disponibilidad después de actualizar (defer para que la query se ejecute primero)
+                    setTimeout(() => {
+                      const checkDateAvailability = async () => {
+                        try {
+                          const avail = await barberService.getDisponibilidad(Number(id), newDate);
+                          const hasAvailable = avail && avail.some((slot: any) => slot.disponible);
+                          if (!hasAvailable) {
+                            showNotification('No hay citas disponibles ese día. Selecciona otra fecha.', 'warning');
+                          }
+                        } catch (err) {
+                          console.error('Error validating availability:', err);
+                        }
+                      };
+                      checkDateAvailability();
+                    }, 100);
+                  }}
                 />
                 <div className="mt-10 p-6 bg-[#E8F1FF] rounded-[2rem] border border-blue-100">
                     <p className="text-xs font-black uppercase tracking-[0.35em] text-[#3366FF] mb-2">Reserva para:</p>
