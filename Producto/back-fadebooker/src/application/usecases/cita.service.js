@@ -4,6 +4,7 @@ const TelegramNotificationService = require('./telegramNotification.service');
 const TelegramService = require('../../infraestructure/notifications/TelegramService');
 const NotificationLogRepository = require('../../infraestructure/database/NotificationLogRepositoryImpl');
 const NotificationPreferenceRepository = require('../../infraestructure/database/NotificationPreferenceRepositoryImpl');
+const BloqueHorarioRepository = require('../../infraestructure/database/BloqueHorarioRepositoryImpl');
 
 class CitaService {
   constructor(citaRepository, servicioRepository, usuarioRepository) {
@@ -299,7 +300,51 @@ class CitaService {
 
   async obtenerCitasPorBarbero(id_barbero, fecha = null, period = 'day') {
     await this.citaRepository.syncStatuses();
-    return this.citaRepository.findByBarbero(id_barbero, fecha, period)
+
+    // Obtener citas normales
+    const citas = await this.citaRepository.findByBarbero(id_barbero, fecha, period)
+
+    // Si se pidió una fecha específica (o period === 'day'), incluir bloques permanentes
+    try {
+      const bloqueRepo = new BloqueHorarioRepository();
+      let bloques = []
+      if (fecha) {
+        bloques = await bloqueRepo.obtenerPorBarberoYFecha(id_barbero, fecha)
+      } else if (period === 'day') {
+        // obtener bloques del día actual
+        const hoy = new Date().toISOString().split('T')[0]
+        bloques = await bloqueRepo.obtenerPorBarberoYFecha(id_barbero, hoy)
+      }
+
+      // Mapear bloques al mismo formato que las citas para que clientes los vean como reservados
+      const bloquesComoCitas = (bloques || []).map(b => {
+        const inicio = new Date(b.fecha_hora_inicio)
+        const fin = new Date(b.fecha_hora_fin)
+        const duracion_minutos = Math.round((fin - inicio) / 60000)
+        return {
+          id_cita: `bloque_${b.id_bloque}`,
+          id_cliente: null,
+          id_barbero: b.id_barbero,
+          id_servicio: null,
+          id_tienda: null,
+          fecha_hora_inicio: b.fecha_hora_inicio,
+          duracion_minutos,
+          estado: 'confirmada', // mostrar como reservado al cliente
+          monto_total: 0,
+          pago_abono: 0,
+          notas: b.motivo || 'Bloqueo por barbero',
+          motivo_bloque: b.motivo || null
+        }
+      })
+
+      // Fusionar y ordenar por fecha_hora_inicio
+      const combinado = [...(citas || []), ...bloquesComoCitas]
+      combinado.sort((a, b) => new Date(a.fecha_hora_inicio) - new Date(b.fecha_hora_inicio))
+      return combinado
+    } catch (err) {
+      console.error('[CitaService] Error incluyendo BloqueHorario:', err.message)
+      return citas
+    }
   }
 
   async obtenerCitasPorTienda(id_tienda, fecha = null, period = 'day') {
@@ -318,7 +363,32 @@ class CitaService {
 
   async verificarDisponibilidad(idBarbero, fecha, hora, duracion) {
     const fechaHora = `${fecha}T${hora}`
-    return this.citaRepository.verificarDisponibilidad(idBarbero, fechaHora, duracion)
+
+    // Primero verificar contra citas existentes
+    const disponibleCitas = await this.citaRepository.verificarDisponibilidad(idBarbero, fechaHora, duracion)
+    if (!disponibleCitas) return false
+
+    // Luego verificar contra bloques permanentes
+    try {
+      const bloqueRepo = new BloqueHorarioRepository()
+      const fechaSolo = fecha
+      const bloques = await bloqueRepo.obtenerPorBarberoYFecha(idBarbero, fechaSolo)
+      const inicio = new Date(fechaHora)
+      const fin = new Date(inicio.getTime() + duracion * 60000)
+
+      for (const b of (bloques || [])) {
+        const bInicio = new Date(b.fecha_hora_inicio)
+        const bFin = new Date(b.fecha_hora_fin)
+        // si hay solapamiento
+        if (!(fin <= bInicio || inicio >= bFin)) {
+          return false
+        }
+      }
+    } catch (err) {
+      console.error('[CitaService] Error al verificar bloques para disponibilidad:', err.message)
+    }
+
+    return true
   }
 
   async obtenerCitaPorIdConDetalles(id) {

@@ -29,9 +29,14 @@ export const useBarberoDashboard = (idBarbero: number, period: 'day' | 'week' | 
     bookings: bookingsQuery.data,
     info: infoQuery.data,
     isLoading: statsQuery.isLoading || bookingsQuery.isLoading || infoQuery.isLoading,
+    isStatsLoading: statsQuery.isLoading,
+    isBookingsLoading: bookingsQuery.isLoading,
+    isInfoLoading: infoQuery.isLoading,
+    isAnyLoading: statsQuery.isLoading || bookingsQuery.isLoading || infoQuery.isLoading,
     refetch: () => {
       statsQuery.refetch();
       bookingsQuery.refetch();
+      infoQuery.refetch();
     }
   };
 };

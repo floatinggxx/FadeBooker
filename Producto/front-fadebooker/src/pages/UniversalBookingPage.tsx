@@ -552,10 +552,10 @@ const UniversalBookingPage: React.FC = () => {
                         setSelectedTime(slot.hora);
                         setStep(5);
                         }}
-                        className={`rounded-[2.5rem] border-4 p-8 font-black text-2xl transition-all shadow-xl group ${selectedTime === slot.hora ? 'border-[#3366FF] bg-[#3366FF] text-white shadow-blue-200 scale-105' : slot.disponible ? 'border-white bg-white text-slate-900 hover:border-blue-100 hover:scale-105' : 'border-slate-50 bg-slate-50 text-slate-300 cursor-not-allowed opacity-60'}`}
+                        className={`rounded-[2.5rem] border-4 p-8 font-black text-2xl transition-all shadow-xl group ${selectedTime === slot.hora ? 'border-[#3366FF] bg-[#3366FF] text-white shadow-blue-200 scale-105' : slot.disponible ? 'border-white bg-white text-slate-900 hover:border-blue-100 hover:scale-105' : 'border-red-300 bg-red-100 text-red-600 cursor-not-allowed'}`}
                     >
                         {slot.hora}
-                        <div className={clsx("mt-4 text-xs font-black uppercase tracking-widest", slot.disponible ? (selectedTime === slot.hora ? 'text-blue-100' : 'text-[#3366FF]') : 'text-slate-400')}>
+                        <div className={clsx("mt-4 text-xs font-black uppercase tracking-widest", slot.disponible ? (selectedTime === slot.hora ? 'text-blue-100' : 'text-[#3366FF]') : 'text-red-600')}>
                             {slot.disponible ? '✓ LIBRE' : '✖ OCUPADO'}
                         </div>
                     </button>

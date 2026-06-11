@@ -8,6 +8,7 @@ import BarbieroCancelBookingModal from './BarbieroCancelBookingModal';
 import TiendaConfig from './TiendaConfig';
 import BarberosManager from '@/features/barberos/ui/BarberosManager';
 import ServiciosManager from './ServiciosManager';
+import DayAvailability from './DayAvailability';
 import { bookingService } from '@/lib/api/bookingService';
 
 const BarberoDashboard: React.FC = () => {
@@ -28,22 +29,29 @@ const BarberoDashboard: React.FC = () => {
     // Solo enviamos idTienda si el usuario es Dueño para que el hook use el endpoint de tienda
     const idTienda = user?.rol === 'Dueño' ? user?.id_tienda : undefined;
 
-    const { stats, bookings, info, isLoading, refetch } = useBarberoDashboard(idBarbero as number, period, idTienda as number, selectedDate);
+    const { stats, bookings, info, isLoading, isInfoLoading, refetch } = useBarberoDashboard(idBarbero as number, period, idTienda as number, selectedDate);
+
+    const safeBookings = Array.isArray(bookings) ? bookings : [];
 
     const filteredBookings = useMemo(() => {
-        if (!bookings) return [];
-        return bookings.filter((booking: any) => {
-            const matchesSearch = 
-                (booking.cliente_nombre?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                (booking.cliente_apellido?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                (booking.servicio_nombre?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                (booking.fecha_hora_inicio?.includes(searchTerm));
-            
-            const matchesStatus = statusFilter === 'all' || booking.estado === statusFilter;
-            
+        const search = searchTerm.toLowerCase().trim();
+        return safeBookings.filter((booking: any) => {
+            const fieldValues = [
+                booking?.cliente_nombre,
+                booking?.cliente_apellido,
+                booking?.servicio_nombre,
+                booking?.fecha_hora_inicio
+            ];
+
+            const matchesSearch = search === '' || fieldValues.some((value) =>
+                typeof value === 'string' && value.toLowerCase().includes(search)
+            );
+
+            const matchesStatus = statusFilter === 'all' || booking?.estado === statusFilter;
+
             return matchesSearch && matchesStatus;
         });
-    }, [bookings, searchTerm, statusFilter]);
+    }, [safeBookings, searchTerm, statusFilter]);
 
     const handleUpdateStatus = async (id: number, nuevoEstado: string) => {
         if (!id) {
@@ -95,7 +103,7 @@ const BarberoDashboard: React.FC = () => {
         );
     }
 
-    if (isLoading) return (
+    if (!info && isInfoLoading) return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50">
             <div className="w-12 h-12 border-4 border-[#3366FF] border-t-transparent rounded-full animate-spin"></div>
         </div>
@@ -215,13 +223,28 @@ const BarberoDashboard: React.FC = () => {
                                 <div className="relative z-10">
                                     <p className="text-slate-400 font-black text-xs uppercase tracking-widest mb-4">Próxima Cita</p>
                                     <h3 className="text-3xl font-black text-slate-900">
-                                        {stats?.proximaCita ? stats.proximaCita.fecha_hora_inicio.substring(11, 16) : 'Sin citas'}
+                                        {stats?.proximaCita?.fecha_hora_inicio
+                                            ? stats.proximaCita.fecha_hora_inicio.substring(11, 16)
+                                            : 'Sin citas'}
                                     </h3>
                                     <p className="text-slate-500 font-bold text-sm mt-2">
-                                        {stats?.proximaCita ? `${stats.proximaCita.nombre_servicio} - ${stats.proximaCita.cliente_nombre}` : 'Día tranquilo'}
+                                        {stats?.proximaCita?.nombre_servicio && stats?.proximaCita?.cliente_nombre
+                                            ? `${stats.proximaCita.nombre_servicio} - ${stats.proximaCita.cliente_nombre}`
+                                            : 'Día tranquilo'}
                                     </p>
                                 </div>
                             </article>
+                        </div>
+
+                        {/* Disponibilidad del Día */}
+                        <div className="mb-12">
+                            <DayAvailability 
+                                idBarbero={idBarbero as number}
+                                selectedDate={selectedDate}
+                                onDateChange={setSelectedDate}
+                                citas={filteredBookings}
+                                onBlockCreated={refetch}
+                            />
                         </div>
 
                         {/* Agenda */}
@@ -387,9 +410,11 @@ const BarberoDashboard: React.FC = () => {
                                     <div>
                                         <p className="text-slate-400 font-black text-[10px] uppercase tracking-widest mb-1">Fecha y Hora</p>
                                         <p className="text-2xl font-black text-slate-900">
-                                            {new Date(selectedBooking.fecha_hora_inicio).toLocaleDateString('es-CL', { day: 'numeric', month: 'long' })}
+                                            {selectedBooking.fecha_hora_inicio
+                                                ? new Date(selectedBooking.fecha_hora_inicio).toLocaleDateString('es-CL', { day: 'numeric', month: 'long' })
+                                                : 'Fecha no disponible'}
                                         </p>
-                                        <p className="text-slate-500 font-bold">{selectedBooking.fecha_hora_inicio.substring(11, 16)} hrs</p>
+                                        <p className="text-slate-500 font-bold">{selectedBooking.fecha_hora_inicio?.substring(11, 16) ?? 'N/A'} hrs</p>
                                     </div>
                                 </div>
 

@@ -239,6 +239,33 @@ CREATE TABLE dbo.Cita (
 );
 
 /**
+  TABLA: BloqueHorario
+  DESCRIPCIÓN: Bloques horarios bloqueados manualmente por barberos
+  NORMALIZACIÓN: 1NF
+  RELACIÓN: N BloqueHorario : 1 Barbero
+  PROPÓSITO: Permitir que barberos bloqueen manualmente sus horarios (almuerzo, descanso, etc.)
+  
+  NOTA (v1.2.0): Agregada para gestión de disponibilidad diaria
+  - Campos fecha_hora_inicio y fecha_hora_fin definen el rango bloqueado
+  - motivo es informativo para el barbero
+  - estado permite borrado lógico
+*/
+CREATE TABLE dbo.BloqueHorario (
+    id_bloque INT IDENTITY(1,1) PRIMARY KEY,
+    id_barbero INT NOT NULL,
+    fecha_hora_inicio DATETIME2 NOT NULL,
+    fecha_hora_fin DATETIME2 NOT NULL,
+    motivo NVARCHAR(255),  -- Ej: "Almuerzo", "Descanso", "Mantenimiento"
+    estado BIT NOT NULL DEFAULT 1,  -- 1=Activo, 0=Eliminado (borrado lógico)
+    createdAt DATETIME2 DEFAULT GETUTCDATE(),
+    updatedAt DATETIME2 DEFAULT GETUTCDATE(),
+    
+    -- Constraints
+    CONSTRAINT FK_BloqueHorario_Barbero FOREIGN KEY (id_barbero) REFERENCES dbo.Barbero(id_barbero) ON DELETE CASCADE,
+    CONSTRAINT CHK_BloqueHorario_Rango CHECK (fecha_hora_inicio < fecha_hora_fin)
+);
+
+/**
   TABLA: Pago
   DESCRIPCIÓN: Histórico de pagos y transacciones
   NORMALIZACIÓN: 1NF
@@ -374,6 +401,10 @@ CREATE INDEX IX_Resena_Barbero ON dbo.Reseña(id_barbero);
 
 -- Búsqueda de reseñas por tienda
 CREATE INDEX IX_Resena_Tienda ON dbo.Reseña(id_tienda);
+
+-- Búsqueda de bloques horarios por barbero y fecha (crítico para disponibilidad - NUEVO v1.2.0)
+CREATE INDEX IX_BloqueHorario_Barbero ON dbo.BloqueHorario(id_barbero, fecha_hora_inicio)
+WHERE estado = 1;
 
 -- Búsqueda por email (login)
 CREATE UNIQUE INDEX IX_Usuario_Email ON dbo.Usuario(email);

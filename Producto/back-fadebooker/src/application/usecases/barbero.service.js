@@ -40,9 +40,13 @@ class BarberoService {
   }
 
   async obtenerDisponibilidadBarbero(id_barbero, fecha) {
-    const [citas, horarios] = await Promise.all([
+    const BloqueHorarioRepository = require('../../infraestructure/database/BloqueHorarioRepositoryImpl');
+    const bloqueRepo = new BloqueHorarioRepository();
+
+    const [citas, horarios, bloques] = await Promise.all([
       this.barberoRepository.obtenerDisponibilidad(id_barbero, fecha),
-      this.barberoRepository.obtenerHorariosTienda(id_barbero)
+      this.barberoRepository.obtenerHorariosTienda(id_barbero),
+      bloqueRepo.obtenerPorBarberoYFecha(id_barbero, fecha)
     ]);
     
     const slots = [];
@@ -63,21 +67,39 @@ class BarberoService {
       const slotTimeStr = `${hora.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}:00`;
       const slotDate = new Date(`${fecha}T${slotTimeStr}`);
       const slotTime = slotDate.getTime();
+      const slotFin = slotTime + 30 * 60000;
         
-      // Un slot de 30 min está ocupado si alguna cita se solapa con él
+      // Verificar si hay una cita que solape con este slot
       const citaOcupante = citas.find(cita => {
         const citaInicio = new Date(cita.fecha_hora_inicio).getTime();
         const citaFin = citaInicio + (cita.duracion_minutos || 30) * 60000;
-        const slotFin = slotTime + 30 * 60000;
 
         // Solapamiento: (SlotInicio < CitaFin) AND (SlotFin > CitaInicio)
         return (slotTime < citaFin) && (slotFin > citaInicio);
       });
 
+      // Verificar si hay un bloque horario que solape con este slot
+      const bloqueOcupante = (bloques || []).find(bloque => {
+        const bloqueInicio = new Date(bloque.fecha_hora_inicio).getTime();
+        const bloqueFin = new Date(bloque.fecha_hora_fin).getTime();
+
+        // Solapamiento: (SlotInicio < BloqueFin) AND (SlotFin > BloqueInicio)
+        return (slotTime < bloqueFin) && (slotFin > bloqueInicio);
+      });
+
+      const disponible = !citaOcupante && !bloqueOcupante;
+      let detalle = null;
+      
+      if (citaOcupante) {
+        detalle = `Cita ${citaOcupante.estado}`;
+      } else if (bloqueOcupante) {
+        detalle = `Bloqueado${bloqueOcupante.motivo ? ': ' + bloqueOcupante.motivo : ''}`;
+      }
+
       slots.push({
         hora: slotTimeStr,
-        disponible: !citaOcupante,
-        detalle: citaOcupante ? `Cita ${citaOcupante.estado}` : null
+        disponible,
+        detalle
       });
     }
     

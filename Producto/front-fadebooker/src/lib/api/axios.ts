@@ -27,6 +27,15 @@ api.interceptors.response.use(
         isNetworkError: true
       });
     }
+    
+    // Manejar token expirado (401)
+    if (error.response?.status === 401) {
+      console.warn('Token expirado o inválido. Limpiando localStorage y recargando...');
+      localStorage.removeItem('token');
+      localStorage.removeItem('usuario');
+      window.location.href = '/login';
+    }
+    
     return Promise.reject(error);
   }
 );
