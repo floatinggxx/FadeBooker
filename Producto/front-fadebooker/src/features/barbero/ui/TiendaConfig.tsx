@@ -377,6 +377,7 @@ const TiendaConfig: React.FC = () => {
                                         {...register('nombre_tienda', { required: 'El nombre es obligatorio' })}
                                         className="w-full pl-14 pr-6 py-4 bg-white border-2 border-slate-100 focus:border-[#3366FF] rounded-2xl font-bold text-slate-900 outline-none transition-all shadow-sm"
                                         placeholder="Ej. Golden Cuts"
+                                        maxLength={100}
                                     />
                                 </div>
                             </div>
@@ -390,6 +391,7 @@ const TiendaConfig: React.FC = () => {
                                         {...register('ciudad', { required: 'La ciudad es obligatoria' })}
                                         className="w-full pl-14 pr-6 py-4 bg-white border-2 border-slate-100 focus:border-[#3366FF] rounded-2xl font-bold text-slate-900 outline-none transition-all shadow-sm"
                                         placeholder="Ej. Santiago"
+                                        maxLength={80}
                                     />
                                 </div>
                             </div>
@@ -404,6 +406,7 @@ const TiendaConfig: React.FC = () => {
                                     {...register('direccion', { required: 'La dirección es obligatoria' })}
                                     className="w-full pl-14 pr-6 py-4 bg-white border-2 border-slate-100 focus:border-[#3366FF] rounded-2xl font-bold text-slate-900 outline-none transition-all shadow-sm"
                                     placeholder="Av. Principal 123"
+                                        maxLength={150}
                                 />
                             </div>
                         </div>

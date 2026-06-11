@@ -11,6 +11,9 @@ const reporteRoutes = require('./reporte.routes')
 const pagoRoutes = require('./pago.routes')
 const tiendaRoutes = require('./tienda.routes')
 const authMiddleware = require('../middlewares/auth.middleware')
+const phoneVerificationRoutes = require('./phoneVerification.routes')
+const webhookRoutes = require('./webhook.routes')
+const notificationPreferenceRoutes = require('./notificationPreference.routes')
 
 router.get('/health', (req, res) => {
   res.json({
@@ -30,5 +33,8 @@ router.use('/hairstyle', hairstyleRoutes)
 router.use('/reportes', reporteRoutes)
 router.use('/pagos', pagoRoutes)
 router.use('/tiendas', tiendaRoutes)
+router.use('/auth', phoneVerificationRoutes)
+router.use('/webhook', webhookRoutes)
+router.use('/preferences', notificationPreferenceRoutes)
 
 module.exports = router

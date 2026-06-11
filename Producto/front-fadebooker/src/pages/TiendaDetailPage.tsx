@@ -5,6 +5,7 @@ import { Star, MapPin, Clock, Camera, MessageSquare, ChevronRight, Scissors } fr
 import { tiendaService } from '@/lib/api/tiendaService';
 import { PLACEHOLDERS, FALLBACK_URLS } from '@/lib/utils/placeholders';
 import { clsx } from 'clsx';
+import { isTiendaOpen, formatHorarioRange } from '@/lib/utils/tienda';
 
 const TiendaDetailPage: React.FC = () => {
   const { id } = useParams();
@@ -106,6 +107,17 @@ const TiendaDetailPage: React.FC = () => {
                 <p className="text-xl leading-relaxed text-slate-400 max-w-xl">
                   {tiendaData.nombre_tienda} redefine el estilo tradicional con técnicas modernas y atención personalizada de primer nivel.
                 </p>
+
+                <div className="flex items-center gap-3">
+                  {(() => {
+                    const s = isTiendaOpen(tiendaData);
+                    return (
+                      <div className={clsx('px-4 py-2 rounded-2xl font-black text-sm', s.open ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-slate-100 text-slate-600 border border-slate-200')}>
+                        {s.open ? 'Abierto ahora' : 'Cerrado'} • {formatHorarioRange(tiendaData.horario_apertura as any, tiendaData.horario_cierre as any)}
+                      </div>
+                    );
+                  })()}
+                </div>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">

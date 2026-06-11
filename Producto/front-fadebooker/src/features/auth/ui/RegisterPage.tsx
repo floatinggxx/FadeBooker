@@ -169,6 +169,7 @@ const RegisterPage: React.FC = () => {
               })} 
               placeholder="Nombre" 
               className={`input-field ${errors.nombre ? 'input-error' : ''}`} 
+              maxLength={50}
             />
             {errors.nombre && <span className="error-message">{errors.nombre.message}</span>}
           </div>
@@ -178,6 +179,7 @@ const RegisterPage: React.FC = () => {
               {...register('apellido', { required: 'El apellido es obligatorio' })} 
               placeholder="Apellido" 
               className={`input-field ${errors.apellido ? 'input-error' : ''}`} 
+              maxLength={50}
             />
             {errors.apellido && <span className="error-message">{errors.apellido.message}</span>}
           </div>
@@ -193,6 +195,7 @@ const RegisterPage: React.FC = () => {
               })} 
               placeholder="Correo electrónico" 
               className={`input-field ${errors.email ? 'input-error' : ''}`} 
+              maxLength={100}
             />
             {errors.email && <span className="error-message">{errors.email.message}</span>}
           </div>
@@ -205,7 +208,8 @@ const RegisterPage: React.FC = () => {
               })} 
               placeholder="Teléfono (+56 9 XXXX XXXX)" 
               className={`input-field ${errors.telefono ? 'input-error' : ''}`}
-              onChange={handlePhoneChange} 
+              onChange={handlePhoneChange}
+              maxLength={15}
             />
             {errors.telefono && <span className="error-message">{errors.telefono.message}</span>}
           </div>
@@ -325,6 +329,7 @@ const RegisterPage: React.FC = () => {
                     placeholder="Especialidad (ej. Degradados, Barba, Tijera)" 
                     className={`input-field ${errors.especialidad ? 'input-error' : ''}`} 
                     list="specialties-list"
+                    maxLength={100}
                   />
                   <datalist id="specialties-list">
                     {ESPECIALIDADES_SUGERIDAS.map(s => <option key={s} value={s} />)}
@@ -391,6 +396,7 @@ const RegisterPage: React.FC = () => {
                       {...register('tienda_nueva.nombre_tienda', { required: isRegisteringTienda ? 'El nombre de la tienda es obligatorio' : false })} 
                       placeholder="Nombre de tu Barbería" 
                       className="input-field" 
+                      maxLength={100}
                     />
                   </div>
                   <div className="input-container mb-3">
@@ -398,6 +404,7 @@ const RegisterPage: React.FC = () => {
                       {...register('tienda_nueva.direccion', { required: isRegisteringTienda ? 'La dirección es obligatoria' : false })} 
                       placeholder="Dirección" 
                       className="input-field" 
+                      maxLength={150}
                     />
                   </div>
                   <div className="input-container mb-3">

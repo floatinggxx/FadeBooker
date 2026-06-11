@@ -1,0 +1,4 @@
+ms-vscode.wordcount
+shadcnblocks.shadcnblocks
+tomoki1207.pdf
+yuenm18.ooxml-viewer

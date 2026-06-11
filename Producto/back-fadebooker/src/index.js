@@ -30,6 +30,15 @@ try {
     console.log(`✅✅✅ [SUCCESS] SERVIDOR CORRIENDO EN PUERTO ${port} ✅✅✅`);
   })
 
+    // Opcional: iniciar job de limpieza si se configura
+    if (process.env.ENABLE_CLEANUP_JOBS === 'true') {
+      const { cleanupExpired } = require('./infraestructure/jobs/cleanupPhoneVerifications');
+      // Ejecutar cada hora
+      setInterval(() => cleanupExpired(), 1000 * 60 * 60);
+      // Ejecutar al inicio
+      cleanupExpired().catch(err => console.error(err));
+    }
+
   server.on('error', (e) => {
     console.error('💥 [ERROR] Error en el servidor HTTP:', e);
     setTimeout(() => process.exit(1), 1000);

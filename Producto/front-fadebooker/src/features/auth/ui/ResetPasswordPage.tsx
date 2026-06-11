@@ -91,6 +91,7 @@ const ResetPasswordPage: React.FC = () => {
                 type={showPassword ? 'text' : 'password'} 
                 placeholder="Nueva contraseña" 
                 className={`input-field ${errors.nuevaContrasena ? 'input-error' : ''}`} 
+                maxLength={64}
               />
               <button 
                 type="button" 
@@ -113,6 +114,7 @@ const ResetPasswordPage: React.FC = () => {
                 type={showConfirmPassword ? 'text' : 'password'}
                 placeholder="Confirmar contraseña" 
                 className={`input-field ${errors.confirmarContrasena ? 'input-error' : ''}`} 
+                maxLength={64}
               />
               <button 
                 type="button" 

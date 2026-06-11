@@ -1,11 +1,18 @@
 const { enviarReserva } = require('../../infraestructure/automation/PowerAutomateService');
 const resenaRepo = require('../../infraestructure/database/ResenaRepositoryImpl');
+const TelegramNotificationService = require('./telegramNotification.service');
+const TelegramService = require('../../infraestructure/notifications/TelegramService');
+const NotificationLogRepository = require('../../infraestructure/database/NotificationLogRepositoryImpl');
+const NotificationPreferenceRepository = require('../../infraestructure/database/NotificationPreferenceRepositoryImpl');
 
 class CitaService {
   constructor(citaRepository, servicioRepository, usuarioRepository) {
     this.citaRepository = citaRepository;
     this.servicioRepository = servicioRepository;
     this.usuarioRepository = usuarioRepository;
+    const notificationLogRepo = new NotificationLogRepository();
+    const notificationPrefRepo = new NotificationPreferenceRepository();
+    this.telegramNotificationService = new TelegramNotificationService(TelegramService, notificationLogRepo, notificationPrefRepo, usuarioRepository);
   }
 
   async crearCita(data) {
@@ -155,6 +162,9 @@ class CitaService {
     if (estado.toLowerCase() === 'confirmada') {
       try {
         await this.enviarReservaPowerAutomate(id)
+        // Enviar notificación por Telegram (si aplica)
+        const msg = `Tu cita #${id} ha sido confirmada. Fecha: ${new Date().toISOString()}`;
+        await this.telegramNotificationService.sendAppointmentNotification({ userId: null, appointmentId: id, type: 'confirmed', message: msg }).catch(err => console.error('[TelegramNotify] confirmada error', err.message));
       } catch (error) {
         console.error('Error al enviar reserva a Power Automate:', error.message)
       }
@@ -231,6 +241,14 @@ class CitaService {
       ofrecer_reembolso: ofrecer_reembolso ? 1 : 0,
       porcentaje_reembolso
     });
+
+    // Notificar cancelación por Telegram
+    try {
+      const msg = `Tu cita #${id} ha sido cancelada. Motivo: ${motivo || 'No especificado'}`;
+      await this.telegramNotificationService.sendAppointmentNotification({ userId: cita.id_cliente, appointmentId: id, type: 'cancelled', message: msg });
+    } catch (err) {
+      console.error('[TelegramNotify] cancelada error', err.message);
+    }
 
     return {
       mensaje: 'Cita cancelada exitosamente',

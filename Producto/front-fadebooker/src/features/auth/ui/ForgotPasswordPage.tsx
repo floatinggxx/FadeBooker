@@ -60,6 +60,7 @@ const ForgotPasswordPage: React.FC = () => {
               })} 
               placeholder="Tu correo electrónico" 
               className={`input-field ${errors.email ? 'input-error' : ''}`} 
+              maxLength={100}
             />
             {errors.email && <span className="error-message">{errors.email.message}</span>}
           </div>

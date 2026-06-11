@@ -7,7 +7,9 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, type, ...props }, ref) => {
+  ({ className, label, error, type, maxLength, ...props }, ref) => {
+    // Establecer un maxLength por defecto si no se proporciona
+    const safeMaxLength = maxLength !== undefined ? maxLength : 100;
     return (
       <Form.Group className={`mb-3 ${className || ''}`}>
         {label && <Form.Label className="small fw-medium">{label}</Form.Label>}
@@ -15,6 +17,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
           type={type}
           isInvalid={!!error}
           ref={ref as any}
+          maxLength={safeMaxLength}
           {...(props as any)}
         />
         {error && (

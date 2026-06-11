@@ -175,6 +175,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                       onChange={(e) => setEditData({ ...editData, nombre: e.target.value })}
                       className="w-full p-3 rounded-xl border-2 border-slate-100 focus:border-[#3366FF] outline-none transition-all"
                       required
+                      maxLength={50}
                     />
                   </div>
                   <div className="space-y-2">
@@ -187,6 +188,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                       onChange={(e) => setEditData({ ...editData, apellido: e.target.value })}
                       className="w-full p-3 rounded-xl border-2 border-slate-100 focus:border-[#3366FF] outline-none transition-all"
                       required
+                      maxLength={50}
                     />
                   </div>
                 </div>
@@ -201,6 +203,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                     onChange={(e) => setEditData({ ...editData, telefono: e.target.value })}
                     placeholder="+56 9 ..."
                     className="w-full p-3 rounded-xl border-2 border-slate-100 focus:border-[#3366FF] outline-none transition-all"
+                    maxLength={15}
                   />
                 </div>
 

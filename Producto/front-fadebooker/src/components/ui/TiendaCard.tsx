@@ -3,6 +3,7 @@ import { Tienda } from '@/types';
 import { Link } from 'react-router-dom';
 import { Star, MapPin, ArrowRight, ShieldCheck } from 'lucide-react';
 import { PLACEHOLDERS, FALLBACK_URLS } from '@/lib/utils/placeholders';
+import { isTiendaOpen } from '@/lib/utils/tienda';
 
 interface TiendaCardProps {
   tienda: Tienda;
@@ -13,6 +14,7 @@ const TiendaCard: React.FC<TiendaCardProps> = ({ tienda, isSuggested }) => {
   const fotoUrl = tienda.foto_portada_url || PLACEHOLDERS.TIENDA;
   const ratingValue = Number(tienda.calificacion_promedio);
   const hasRating = ratingValue > 0;
+  const openState = isTiendaOpen(tienda);
 
   return (
     <article className="group bg-white border border-slate-200 hover:border-[#3366FF]/20 rounded-[2.5rem] overflow-hidden shadow-xl shadow-slate-200/40 hover:shadow-2xl transition-all duration-500 relative flex flex-col">
@@ -48,18 +50,25 @@ const TiendaCard: React.FC<TiendaCardProps> = ({ tienda, isSuggested }) => {
       {/* Content */}
       <div className="p-8 flex flex-col flex-1">
         <div className="flex-1">
-            <Link to={`/tienda/${tienda.id_tienda}`}>
-                <h3 className="text-3xl font-black text-slate-900 mb-2 leading-tight group-hover:text-[#3366FF] transition-colors">
-                    {tienda.nombre_tienda}
-                </h3>
+          <div className="flex items-start justify-between mb-2">
+            <Link to={`/tienda/${tienda.id_tienda}`} className="flex-1">
+              <h3 className="text-3xl font-black text-slate-900 leading-tight group-hover:text-[#3366FF] transition-colors">
+                {tienda.nombre_tienda}
+              </h3>
             </Link>
+            <div className="ml-4 shrink-0 self-start">
+              <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-black ${openState.open ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>
+              {openState.open ? 'Abierto' : 'Cerrado'}
+              </span>
+            </div>
+          </div>
+
+          <p className="text-slate-400 font-bold uppercase tracking-tighter text-[11px] mb-6 flex items-center gap-2">
+            <MapPin size={14} className="text-rose-500 shrink-0" />
+            <span className="truncate">{tienda.direccion}, {tienda.ciudad}</span>
+          </p>
             
-            <p className="text-slate-400 font-bold uppercase tracking-tighter text-[11px] mb-6 flex items-center gap-2">
-                <MapPin size={14} className="text-rose-500 shrink-0" />
-                <span className="truncate">{tienda.direccion}, {tienda.ciudad}</span>
-            </p>
-            
-            <div className="flex flex-wrap gap-2 mb-8">
+            <div className="flex flex-wrap gap-2 mb-8 mt-2">
                 <span className="bg-slate-50 text-slate-500 px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-widest border border-slate-100">
                     Corte Masculino
                 </span>

@@ -30,6 +30,11 @@ class UsuarioRepositoryImpl {
     return this._mapToDomain(row)
   }
 
+  async findByPhone(phone) {
+    const row = await this.db('Usuario').where({ telefono: phone }).first()
+    return this._mapToDomain(row)
+  }
+
   _mapToDomain(row) {
     if (!row) return null
     return {

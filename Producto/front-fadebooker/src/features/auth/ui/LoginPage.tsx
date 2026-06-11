@@ -62,6 +62,7 @@ const LoginPage: React.FC = () => {
               })} 
               placeholder="Correo electrónico" 
               className={`input-field ${errors.email ? 'input-error' : ''}`} 
+              maxLength={100}
             />
             {errors.email && <span className="error-message">{errors.email.message}</span>}
           </div>
@@ -73,6 +74,7 @@ const LoginPage: React.FC = () => {
                 type={showPassword ? 'text' : 'password'} 
                 placeholder="Contraseña" 
                 className={`input-field ${errors.password ? 'input-error' : ''}`} 
+                maxLength={64}
               />
               <button 
                 type="button" 
