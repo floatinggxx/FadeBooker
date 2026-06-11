@@ -271,7 +271,7 @@ const RegisterPage: React.FC = () => {
               <input type="radio" value="Cliente" {...register('rol')} defaultChecked /> Cliente
             </label>
             <label className="radio-option">
-              <input type="radio" value="Barbero" {...register('rol')} /> Barbero
+              <input type="radio" value="Barbero" {...register('rol')} /> Dueño de barbería
             </label>
             <label className="radio-option">
               <input type="radio" value="Proveedor" {...register('rol')} /> Proveedor
