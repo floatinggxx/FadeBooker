@@ -10,10 +10,15 @@ export interface PagoResponse {
   preference_id: string;
 }
 
+export interface PagoResponseWithCommission extends PagoResponse {
+  montoAPagar: number;
+  comision?: number;
+}
+
 export const pagoService = {
   // Crear preferencia de pago para una cita
-  async crearPago(data: CrearPagoRequest): Promise<PagoResponse> {
-    const response = await api.post<PagoResponse>('/pagos/crear', data);
+  async crearPago(data: CrearPagoRequest): Promise<PagoResponseWithCommission> {
+    const response = await api.post<PagoResponseWithCommission>('/pagos/crear', data);
     return response.data;
   },
 

@@ -74,20 +74,39 @@ class PagoService {
       const response = await preference.create({ body });
       const preferenceResult = response?.body || response?.response || response;
 
-      // Crear registro de pago pendiente
+      // Crear registro de pago pendiente y calcular comisión
+      let comisionAplicada = 0;
+      try {
+        const tiendaId = cita.id_tienda;
+        // Intentar leer la tabla Commission directamente
+        const commissionRow = await this.pagoRepository.db('Commission').where({ id_tienda: tiendaId, activo: 1 }).first();
+        if (commissionRow) {
+          comisionAplicada = Number(((Number(montoAPagar) * Number(commissionRow.porcentaje || 0)) / 100) + Number(commissionRow.fijo || 0));
+        } else {
+          const global = await this.pagoRepository.db('Commission').whereNull('id_tienda').andWhere({ activo: 1 }).first();
+          if (global) comisionAplicada = Number(((Number(montoAPagar) * Number(global.porcentaje || 0)) / 100) + Number(global.fijo || 0));
+        }
+      } catch (e) {
+        console.warn('No se pudo calcular comisión (tabla Commission ausente o error):', e.message || e);
+        comisionAplicada = 0;
+      }
+
       const pagoData = {
         id_cita: id_cita,
         monto_pagado: montoAPagar,
         metodo_pago: 'mercadopago',
         estado_pago: 'pendiente',
-        referencia_transaccion: preferenceResult.id
+        referencia_transaccion: preferenceResult.id,
+        comision: comisionAplicada
       };
 
       await this.pagoRepository.create(pagoData);
 
       return {
         url: preferenceResult.init_point || response.init_point,
-        preference_id: preferenceResult.id || response.id
+        preference_id: preferenceResult.id || response.id,
+        montoAPagar: montoAPagar,
+        comision: comisionAplicada
       };
 
     } catch (error) {

@@ -108,6 +108,14 @@ const TermsAndPrivacyPage: React.FC = () => {
               <p>Recordatorios, confirmaciones (solo con tu consentimiento)</p>
             </div>
           </div>
+          <div className="subsection mt-4">
+            <h4>💼 Suscripciones y Pagos Recurrentes</h4>
+            <p>
+              Si contratas un plan de suscripción como proveedor, guardamos únicamente el registro de la suscripción,
+              su estado, fechas de inicio/fin y el proveedor asociado. Los cobros recurrentes son procesados por
+              Mercado Pago; no almacenamos datos de tarjeta. Puedes cancelar la suscripción desde tu panel en cualquier momento.
+            </p>
+          </div>
         </div>
       ),
     },
@@ -275,7 +283,8 @@ const TermsAndPrivacyPage: React.FC = () => {
               <li>Los pagos se procesan únicamente a través de Mercado Pago (sistema seguro certificado)</li>
               <li>Al confirmar una cita con retención, aceptas debitar el monto acordado</li>
               <li>Las retenciones se aplican según la política de la barbería</li>
-              <li>Los reembolsos se procesan dentro de 3-5 días hábiles</li>
+                <li>Los reembolsos se procesan dentro de 3-5 días hábiles</li>
+                <li>Para suscripciones, los cobros recurrentes mensuales serán visibles en tu cuenta de Mercado Pago y estarán sujetos a las políticas de Mercado Pago.</li>
             </ul>
           </div>
 

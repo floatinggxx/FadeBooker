@@ -50,6 +50,7 @@ const UniversalBookingPage: React.FC = () => {
   const [isBooking, setIsBooking] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [simulatedLook, setSimulatedLook] = useState<{ url: string; styleId: string } | null>(null);
+  const [pageIndex, setPageIndex] = useState(0);
 
   // Estados para el modal de espera del pago
   const [createdBookingId, setCreatedBookingId] = useState<number | null>(null);
@@ -114,11 +115,38 @@ const UniversalBookingPage: React.FC = () => {
     enabled: !!id && !!selectedDate && step === 3,
   });
 
+  // when availability loads or date is selected, set pageIndex to page with first available slot
+  useEffect(() => {
+    if (!availability) return;
+    const idx = computePageIndexFromAvailability(availability);
+    setPageIndex(idx);
+  }, [availability, tienda, selectedService, selectedDate]);
+
   const filteredAvailability = useMemo(() => {
     if (!availability) return [];
     
     // Si la fecha seleccionada es hoy, filtramos los horarios pasados
     const today = new Date().toISOString().split('T')[0];
+    // Obtener apertura/cierre de la tienda si existe
+    const tiendaApertura = tienda?.horario_apertura || '10:00';
+    const tiendaCierre = tienda?.horario_cierre || '20:00';
+
+    const extractHM = (s: any) => {
+      if (!s) return null;
+      const m = String(s).match(/(\d{2}:\d{2})/);
+      return m ? m[1] : null;
+    };
+
+    const parseHM = (hm: string) => {
+      const [h, m] = hm.split(':').map(Number);
+      return (h || 0) * 60 + (m || 0);
+    };
+
+    const aperturaHM = extractHM(tiendaApertura) || '10:00';
+    const cierreHM = extractHM(tiendaCierre) || '20:00';
+    const aperturaMinutes = parseHM(aperturaHM);
+    const cierreMinutes = parseHM(cierreHM);
+
     if (selectedDate === today) {
       const now = new Date();
       const currentHour = now.getHours();
@@ -127,16 +155,157 @@ const UniversalBookingPage: React.FC = () => {
       return availability.map(slot => {
         const [hour, minute] = slot.hora.split(':').map(Number);
         // Deshabilitar si ya pasó la hora o si faltan menos de 15 minutos para la cita
+        const slotMinutes = (hour || 0) * 60 + (minute || 0);
         const isPast = hour < currentHour || (hour === currentHour && minute <= currentMinute + 15);
+
+        // Verificar si slot está dentro del horario de la tienda
+        let withinTienda = false;
+        if (cierreMinutes >= aperturaMinutes) {
+          withinTienda = slotMinutes >= aperturaMinutes && slotMinutes < cierreMinutes;
+        } else {
+          // cierre al día siguiente
+          withinTienda = slotMinutes >= aperturaMinutes || slotMinutes < cierreMinutes;
+        }
+
         return {
           ...slot,
-          disponible: slot.disponible && !isPast
+          disponible: slot.disponible && !isPast && withinTienda
         };
       });
     }
 
-    return availability;
+    // Para fechas futuras, filtrar también por el horario de la tienda
+    return availability.map(slot => {
+      const [hour, minute] = slot.hora.split(':').map(Number);
+      const slotMinutes = (hour || 0) * 60 + (minute || 0);
+      let withinTienda = false;
+      if (cierreMinutes >= aperturaMinutes) {
+        withinTienda = slotMinutes >= aperturaMinutes && slotMinutes < cierreMinutes;
+      } else {
+        withinTienda = slotMinutes >= aperturaMinutes || slotMinutes < cierreMinutes;
+      }
+      return {
+        ...slot,
+        disponible: slot.disponible && withinTienda
+      };
+    });
   }, [availability, selectedDate]);
+
+  // Build full slot list between tienda apertura and cierre and merge backend availability
+  const paginatedSlots = useMemo(() => {
+    if (!tienda) return { pages: [], currentPageIndex: 0 };
+
+    const aperturaHM = (tienda.horario_apertura || '10:00').match(/(\d{2}:\d{2})/)?.[1] || '10:00';
+    const cierreHM = (tienda.horario_cierre || '20:00').match(/(\d{2}:\d{2})/)?.[1] || '20:00';
+    const [ah, am] = aperturaHM.split(':').map(Number);
+    const [ch, cm] = cierreHM.split(':').map(Number);
+    const aperturaMinutes = ah * 60 + am;
+    const cierreMinutes = ch * 60 + cm;
+
+    // Interval: use 60 minutes blocks per request
+    const intervalMinutes = 60;
+
+    const slots: { hora: string; disponible: boolean }[] = [];
+    // generate minutes stepping, handling overnight
+    const pushIf = (m: number) => {
+      const h = Math.floor((m % (24*60)) / 60).toString().padStart(2, '0');
+      const min = (m % 60).toString().padStart(2, '0');
+      slots.push({ hora: `${h}:${min}:00`, disponible: false });
+    };
+
+    if (cierreMinutes >= aperturaMinutes) {
+      for (let m = aperturaMinutes; m < cierreMinutes; m += intervalMinutes) pushIf(m);
+    } else {
+      // wrap to next day
+      for (let m = aperturaMinutes; m < 24*60; m += intervalMinutes) pushIf(m);
+      for (let m = 0; m < cierreMinutes; m += intervalMinutes) pushIf(m);
+    }
+
+    // Map backend availability by hora HH:MM or HH:MM:SS
+    const availMap = new Map<string, any>();
+    (availability || []).forEach((s: any) => {
+      const raw = s.hora || '';
+      const key1 = raw.length === 5 ? `${raw}:00` : raw; // 'HH:MM:00'
+      const key2 = raw.length === 8 ? raw.substring(0,5) : raw; // 'HH:MM'
+      availMap.set(key1, s);
+      availMap.set(key2, s);
+    });
+
+    const merged = slots.map(s => {
+      const keyHHMM = s.hora.substring(0,5);
+      const keyHHMMSS = s.hora.length === 5 ? `${s.hora}:00` : s.hora;
+      const backend = availMap.get(keyHHMMSS) || availMap.get(keyHHMM);
+      return {
+        hora: keyHHMM,
+        disponible: backend ? backend.disponible : true
+      };
+    });
+
+    // Pagination: pages of 8 slots
+    const pageSize = 8;
+    const pages: any[] = [];
+    for (let i = 0; i < merged.length; i += pageSize) pages.push(merged.slice(i, i + pageSize));
+
+    // Find page index that contains first disponible slot
+    let currentPageIndex = 0;
+    for (let pi = 0; pi < pages.length; pi++) {
+      if (pages[pi].some((s: any) => s.disponible)) { currentPageIndex = pi; break; }
+    }
+
+    return { pages, currentPageIndex };
+  }, [tienda, availability, selectedService]);
+
+  // sync pageIndex to paginatedSlots.currentPageIndex when slots change
+  useEffect(() => {
+    setPageIndex(paginatedSlots.currentPageIndex || 0);
+  }, [paginatedSlots.currentPageIndex]);
+
+  // clamp pageIndex if pages length changes
+  useEffect(() => {
+    const maxIndex = Math.max(0, (paginatedSlots.pages?.length || 0) - 1);
+    if (pageIndex > maxIndex) setPageIndex(maxIndex);
+  }, [paginatedSlots.pages?.length]);
+
+  const computePageIndexFromAvailability = (avail: any[]) => {
+    if (!tienda) return 0;
+    const aperturaHM = (tienda.horario_apertura || '10:00').match(/(\d{2}:\d{2})/)?.[1] || '10:00';
+    const cierreHM = (tienda.horario_cierre || '20:00').match(/(\d{2}:\d{2})/)?.[1] || '20:00';
+    const [ah, am] = aperturaHM.split(':').map(Number);
+    const [ch, cm] = cierreHM.split(':').map(Number);
+    const aperturaMinutes = ah * 60 + am;
+    const cierreMinutes = ch * 60 + cm;
+    const intervalMinutes = 60;
+
+    const generated: { hora: string; disponible: boolean }[] = [];
+    const pushIf = (m: number) => {
+      const h = Math.floor((m % (24*60)) / 60).toString().padStart(2, '0');
+      const min = (m % 60).toString().padStart(2, '0');
+      generated.push({ hora: `${h}:${min}:00`, disponible: false });
+    };
+    if (cierreMinutes >= aperturaMinutes) {
+      for (let m = aperturaMinutes; m < cierreMinutes; m += intervalMinutes) pushIf(m);
+    } else {
+      for (let m = aperturaMinutes; m < 24*60; m += intervalMinutes) pushIf(m);
+      for (let m = 0; m < cierreMinutes; m += intervalMinutes) pushIf(m);
+    }
+
+    const availMap = new Map<string, any>();
+    (avail || []).forEach((s: any) => {
+      const key = s.hora.length === 5 ? `${s.hora}:00` : s.hora;
+      availMap.set(key, s);
+    });
+
+    const merged = generated.map(s => {
+      const backend = availMap.get(s.hora);
+      return { hora: s.hora.substring(0,5), disponible: backend ? backend.disponible : true };
+    });
+
+    const pageSize = 8;
+    const pages: any[] = [];
+    for (let i = 0; i < merged.length; i += pageSize) pages.push(merged.slice(i, i + pageSize));
+    for (let pi = 0; pi < pages.length; pi++) if (pages[pi].some((s: any) => s.disponible)) return pi;
+    return 0;
+  };
 
   const isStepCompleted = (currentStep: number) => {
     if (currentStep === 1) return !!barber;
@@ -540,33 +709,75 @@ const UniversalBookingPage: React.FC = () => {
                     ))}
                 </div>
             ) : (
-                <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-                {filteredAvailability && filteredAvailability.length > 0 ? (
-                    filteredAvailability.map((slot: any) => (
-                    <button
-                        key={slot.hora}
-                        type="button"
-                        disabled={!slot.disponible}
+                <div className="space-y-6">
+                  {/* Pagination controls */}
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm text-slate-600">Página {paginatedSlots.pages.length ? pageIndex + 1 : 0} de {paginatedSlots.pages.length}</div>
+                    <div className="flex gap-3">
+                      <button
+                        disabled={pageIndex <= 0}
                         onClick={() => {
-                        if (!slot.disponible) return;
-                        setSelectedTime(slot.hora);
-                        setStep(5);
+                          const idx = Math.max(0, pageIndex - 1);
+                          setSelectedTime('');
+                          setPageIndex(idx);
                         }}
-                        className={`rounded-[2.5rem] border-4 p-8 font-black text-2xl transition-all shadow-xl group ${selectedTime === slot.hora ? 'border-[#3366FF] bg-[#3366FF] text-white shadow-blue-200 scale-105' : slot.disponible ? 'border-white bg-white text-slate-900 hover:border-blue-100 hover:scale-105' : 'border-slate-50 bg-slate-50 text-slate-300 cursor-not-allowed opacity-60'}`}
-                    >
-                        {slot.hora}
-                        <div className={clsx("mt-4 text-xs font-black uppercase tracking-widest", slot.disponible ? (selectedTime === slot.hora ? 'text-blue-100' : 'text-[#3366FF]') : 'text-slate-400')}>
-                            {slot.disponible ? '✓ LIBRE' : '✖ OCUPADO'}
-                        </div>
-                    </button>
-                    ))
-                ) : (
-                    <div className="col-span-full py-20 bg-white rounded-[3rem] text-center border-4 border-dashed border-slate-200">
+                        className="px-4 py-2 rounded-full border bg-white text-slate-700 disabled:opacity-40"
+                      >Anterior</button>
+                      <button
+                        disabled={pageIndex >= Math.max(0, paginatedSlots.pages.length -1)}
+                        onClick={() => {
+                          const idx = Math.min(paginatedSlots.pages.length -1, pageIndex + 1);
+                          setSelectedTime('');
+                          setPageIndex(idx);
+                        }}
+                        className="px-4 py-2 rounded-full border bg-white text-slate-700 disabled:opacity-40"
+                      >Siguiente</button>
+                    </div>
+                  </div>
+
+                  {/* Current page slots */}
+                  <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+                    {paginatedSlots.pages && paginatedSlots.pages.length > 0 ? (
+                      (paginatedSlots.pages[pageIndex] || []).map((slot: any) => {
+                        // determine if past for today
+                        const today = new Date().toISOString().split('T')[0];
+                        let isPast = false;
+                        if (selectedDate === today) {
+                          const now = new Date();
+                          const [h, m] = slot.hora.split(':').map(Number);
+                          const slotMin = h * 60 + m;
+                          const nowMin = now.getHours() * 60 + now.getMinutes();
+                          if (slotMin < nowMin || slotMin <= nowMin + 15) isPast = true;
+                        }
+
+                        const disabled = !slot.disponible || isPast;
+
+                        return (
+                          <button
+                            key={slot.hora}
+                            disabled={disabled}
+                            onClick={() => {
+                              if (disabled) return;
+                              setSelectedTime(slot.hora);
+                              setStep(5);
+                            }}
+                            className={`rounded-[2.5rem] border-4 p-8 font-black text-2xl transition-all shadow-xl group ${selectedTime === slot.hora ? 'border-[#3366FF] bg-[#3366FF] text-white shadow-blue-200 scale-105' : !disabled ? 'border-white bg-white text-slate-900 hover:border-blue-100 hover:scale-105' : 'border-slate-50 bg-slate-50 text-slate-300 cursor-not-allowed opacity-60'}`}
+                          >
+                            {slot.hora}
+                            <div className={clsx("mt-4 text-xs font-black uppercase tracking-widest", !disabled ? (selectedTime === slot.hora ? 'text-blue-100' : 'text-[#3366FF]') : 'text-slate-400')}>
+                                {!disabled ? '✓ LIBRE' : '✖ OCUPADO'}
+                            </div>
+                          </button>
+                        );
+                      })
+                    ) : (
+                      <div className="col-span-full py-20 bg-white rounded-[3rem] text-center border-4 border-dashed border-slate-200">
                         <Clock size={48} className="mx-auto text-slate-300 mb-6" />
                         <h3 className="text-2xl font-black text-slate-900">No hay horarios disponibles</h3>
                         <p className="text-slate-500 font-bold mt-2">Intenta seleccionar otra fecha para este barbero.</p>
-                    </div>
-                )}
+                      </div>
+                    )}
+                  </div>
                 </div>
             )}
           </section>

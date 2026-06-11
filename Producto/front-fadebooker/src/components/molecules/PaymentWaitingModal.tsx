@@ -21,6 +21,8 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
   const [dots, setDots] = useState('');
   const [errorCount, setErrorCount] = useState(0);
   const [isSimulating, setIsSimulating] = useState(false);
+  const [montoAPagar, setMontoAPagar] = useState<number | null>(null);
+  const [comision, setComision] = useState<number | null>(null);
   const [simulationStatus, setSimulationStatus] = useState<'success' | 'error' | null>(null);
   const [timeLeft, setTimeLeft] = useState(180); // 3 minutos para pagar
   const [isExpired, setIsExpired] = useState(false);
@@ -91,6 +93,19 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
         return prev - 1;
       });
     }, 1000);
+
+    // Obtener preferencia y desglose de comisión al abrir el modal
+    (async () => {
+      try {
+        const pref = await pagoService.crearPago({ id_cita: bookingId });
+        // El backend devuelve url ya, pero en este modal normalmente 'paymentUrl' viene del padre.
+        if (typeof (pref as any).montoAPagar !== 'undefined') setMontoAPagar(Number((pref as any).montoAPagar));
+        if (typeof (pref as any).comision !== 'undefined') setComision(Number((pref as any).comision));
+      } catch (err) {
+        // No bloquear: solo mostramos si está disponible
+        console.warn('No se pudo recuperar preferencia/desglose:', err);
+      }
+    })();
 
     // Polling consultando el estado del pago cada 3 segundos
     pollingIntervalRef.current = setInterval(async () => {
@@ -206,6 +221,22 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
                 <XCircle size={16} />
                 Seguir explorando / Pagar después
               </button>
+            </div>
+
+            {/* Desglose de pago */}
+            <div className="mt-4 text-left text-sm">
+              <div className="flex justify-between text-slate-600 mb-1">
+                <span>Subtotal</span>
+                <span className="font-mono">{montoAPagar ? `${montoAPagar.toFixed(2)} MXN` : '-'}</span>
+              </div>
+              <div className="flex justify-between text-slate-600 mb-1">
+                <span>Comisión</span>
+                <span className="font-mono text-rose-600">{comision ? `-${comision.toFixed(2)} MXN` : '0.00 MXN'}</span>
+              </div>
+              <div className="flex justify-between text-slate-900 font-black mt-2 pt-2 border-t">
+                <span>Total</span>
+                <span className="font-mono">{montoAPagar ? `${(montoAPagar - (comision || 0)).toFixed(2)} MXN` : '-'}</span>
+              </div>
             </div>
 
             {/* Helper de desarrollo para simular el pago */}

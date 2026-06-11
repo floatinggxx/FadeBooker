@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.66% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>10/60</span>
+                <span class='fraction'>0/60</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">16.66% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>10/60</span>
+                <span class='fraction'>0/60</span>
             </div>
         
             
@@ -181,17 +181,17 @@
 <a name='L116'></a><a href='#L116'>116</a>
 <a name='L117'></a><a href='#L117'>117</a>
 <a name='L118'></a><a href='#L118'>118</a>
-<a name='L119'></a><a href='#L119'>119</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<a name='L119'></a><a href='#L119'>119</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -298,18 +298,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const BcryptHasher = require('../../../infraestructure/security/BcryptHasher')
-const JwtTokenManager = require('../../../infraestructure/security/JwtTokenManager')
-const UsuarioRepository = require('../../../infraestructure/database/UsuarioRepositoryImpl')
-const UsuarioService = require('../../../application/usecases/usuario.service')
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const BcryptHasher = <span class="cstat-no" title="statement not covered" >require('../../../infraestructure/security/BcryptHasher')</span>
+const JwtTokenManager = <span class="cstat-no" title="statement not covered" >require('../../../infraestructure/security/JwtTokenManager')</span>
+const UsuarioRepository = <span class="cstat-no" title="statement not covered" >require('../../../infraestructure/database/UsuarioRepositoryImpl')</span>
+const UsuarioService = <span class="cstat-no" title="statement not covered" >require('../../../application/usecases/usuario.service')</span>
 &nbsp;
-const hasher = new BcryptHasher()
-const tokenManager = new JwtTokenManager()
-const usuarioRepository = new UsuarioRepository()
-const usuarioService = new UsuarioService(usuarioRepository, hasher, tokenManager)
+const hasher = <span class="cstat-no" title="statement not covered" >new BcryptHasher()</span>
+const tokenManager = <span class="cstat-no" title="statement not covered" >new JwtTokenManager()</span>
+const usuarioRepository = <span class="cstat-no" title="statement not covered" >new UsuarioRepository()</span>
+const usuarioService = <span class="cstat-no" title="statement not covered" >new UsuarioService(usuarioRepository, hasher, tokenManager)</span>
 &nbsp;
-const UsuarioController = {
+const UsuarioController = <span class="cstat-no" title="statement not covered" >{</span>
 <span class="fstat-no" title="function not covered" >  as</span>ync register(req, res) {
 <span class="cstat-no" title="statement not covered" >    try {</span>
 <span class="cstat-no" title="statement not covered" >      console.log(`[DEBUG] Intentando registrar usuario: ${req.body.email}`)</span>
@@ -416,7 +416,7 @@ const UsuarioController = {
   }
 }
 &nbsp;
-module.exports = UsuarioController
+<span class="cstat-no" title="statement not covered" >module.exports = UsuarioController</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -424,7 +424,7 @@ module.exports = UsuarioController
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-04T17:22:49.067Z
+                at 2026-06-11T22:11:34.580Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
