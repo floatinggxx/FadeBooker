@@ -20,6 +20,7 @@ import HelpPage from '@/pages/HelpPage';
 import PaymentResultPage from '@/pages/PaymentResultPage';
 import BarberDashboardPage from '@/pages/BarberDashboardPage';
 import PromocionesPage from '@/pages/PromocionesPage';
+import ProviderSubscriptionPage from '@/pages/ProviderSubscriptionPage';
 import LoginPage from '@/features/auth/ui/LoginPage';
 import RegisterPage from '@/features/auth/ui/RegisterPage';
 import ForgotPasswordPage from '@/features/auth/ui/ForgotPasswordPage';
@@ -145,6 +146,7 @@ function App() {
                   <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
                   <Route path="/barber-dashboard" element={<BarberoRoute><BarberDashboardPage /></BarberoRoute>} />
                   <Route path="/promociones" element={<ProviderRoute><PromocionesPage /></ProviderRoute>} />
+                  <Route path="/subscriptions" element={<ProviderRoute><ProviderSubscriptionPage /></ProviderRoute>} />
                   <Route path="/barbero/:id" element={<UniversalBookingPage />} />
                   <Route path="/tienda/:id" element={<TiendaDetailPage />} />
                   <Route path="/studiodeanger" element={<StudioDangerPage />} />

@@ -8,20 +8,20 @@ class PagoRepositoryImpl extends PagoRepository {
   }
 
   async create(data) {
-    const result = await this.db.raw(`
-      DECLARE @InsertedTable TABLE (id_pago INT);
-      INSERT INTO [dbo].[Pago] (id_cita, monto_pagado, metodo_pago, estado_pago, referencia_transaccion, fecha_pago)
-      OUTPUT INSERTED.id_pago INTO @InsertedTable
-      VALUES (?, ?, ?, ?, ?, ?);
-      SELECT id_pago FROM @InsertedTable;
-    `, [
-      data.id_cita,
-      data.monto_pagado,
-      data.metodo_pago,
-      data.estado_pago,
-      data.referencia_transaccion,
-      data.fecha_pago || new Date()
-    ]);
+    // Soportar almacenamiento de comisión si viene en el objeto data
+    const fields = ['id_cita', 'monto_pagado', 'metodo_pago', 'estado_pago', 'referencia_transaccion', 'fecha_pago'];
+    const values = [data.id_cita, data.monto_pagado, data.metodo_pago, data.estado_pago, data.referencia_transaccion, data.fecha_pago || new Date()];
+    if (typeof data.comision !== 'undefined') {
+      fields.push('comision');
+      values.push(data.comision);
+    }
+
+    const columnsSql = fields.map(f => `[${f}]`).join(', ');
+    const placeholders = values.map(() => '?').join(', ');
+
+    const sql = `\n      DECLARE @InsertedTable TABLE (id_pago INT);\n      INSERT INTO [dbo].[Pago] (${columnsSql})\n      OUTPUT INSERTED.id_pago INTO @InsertedTable\n      VALUES (${placeholders});\n      SELECT id_pago FROM @InsertedTable;\n    `;
+
+    const result = await this.db.raw(sql, values);
 
     const id_pago = result[0].id_pago || (result[0][0] ? result[0][0].id_pago : null);
     return id_pago;
