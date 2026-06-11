@@ -22,7 +22,8 @@ class UsuarioService {
       id_usuario = await this.usuarioRepository.create(userData);
     } catch (err) {
       const msg = err && err.message ? String(err.message).toLowerCase() : '';
-      if (msg.includes('unique') || msg.includes('duplicate') || msg.includes('duplicate key') || msg.includes('violatio') || msg.includes('correo') || msg.includes('email')) {
+      // Detectar errores de constraint UNIQUE del email
+      if (msg.includes('unique') || msg.includes('duplicate key') || msg.includes('violation')) {
         throw new Error('El correo electrónico ya está registrado');
       }
       throw err;
