@@ -8,6 +8,7 @@ import { Eye, EyeOff, Scissors, Store, Briefcase, Plus, AlertCircle, Info, Clock
 import { useNotification } from '@/context/NotificationContext';
 import { parseError } from '@/lib/utils/errorParser';
 import { Tienda, Servicio } from '@/types';
+import { useAuth } from '@/features/auth/hooks/useAuthContext';
 
 type FormData = { 
   nombre: string; 
@@ -63,6 +64,7 @@ const RegisterPage: React.FC = () => {
   
   const navigate = useNavigate();
   const { showNotification } = useNotification();
+  const { login } = useAuth();
   const password = watch('contrasena');
   const rol = watch('rol');
 
@@ -145,9 +147,32 @@ const RegisterPage: React.FC = () => {
         delete registerData.anos_experiencia;
       }
 
-      await authService.register(registerData);
-      showNotification('Registro exitoso. ¡Bienvenido a FadeBooker!', 'success');
-      navigate('/login');
+      try {
+        const result = await authService.register(registerData);
+        if (result && result.user && result.token) {
+          login(result.user, result.token);
+          showNotification('Registro exitoso. Iniciando sesión...', 'success');
+          navigate('/dashboard');
+          return;
+        }
+
+        if (result && result.user) {
+          showNotification('Registro completado. Por favor inicia sesión.', 'success');
+          navigate('/login');
+          return;
+        }
+
+        showNotification('Registro completado. Por favor inicia sesión.', 'success');
+        navigate('/login');
+      } catch (err: any) {
+        const resp = err?.response;
+        if (resp && (resp.status === 201 || resp.status === 200) && (resp.data?.status === 'success' || resp.data?.data)) {
+          showNotification('Registro exitoso. ¡Bienvenido a FadeBooker!', 'success');
+          navigate('/login');
+          return;
+        }
+        throw err;
+      }
     } catch (err: any) {
       showNotification(parseError(err), 'error');
     }

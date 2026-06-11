@@ -177,7 +177,7 @@ const StudioDangerBookingPage: React.FC = () => {
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {availableServices.map((service) => (
                 <button
-                  key={service.id_servicio_barbero}
+                  key={service?.id_servicio_barbero || service?.id}
                   type="button"
                   onClick={() => {
                     setSelectedService(service);

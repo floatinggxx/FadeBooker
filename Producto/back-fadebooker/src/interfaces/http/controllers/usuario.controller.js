@@ -14,11 +14,13 @@ const UsuarioController = {
       console.log(`[DEBUG] Intentando registrar usuario: ${req.body.email}`)
       const user = await usuarioService.registrar(req.body)
       console.log(`[DEBUG] Usuario registrado exitosamente: ${req.body.email}`)
+      const token = tokenManager.sign({ id: user.id_usuario, email: user.email, rol: user.rol })
 
       return res.status(201).json({
         status: 'success',
         message: 'Usuario registrado correctamente',
-        data: user
+        data: user,
+        token
       })
     } catch (error) {
       if (error && error.name === 'ZodError') {

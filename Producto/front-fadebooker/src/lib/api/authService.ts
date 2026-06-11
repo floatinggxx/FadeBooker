@@ -20,14 +20,16 @@ export const authService = {
     };
   },
 
-  async register(data: RegisterRequest): Promise<Usuario> {
+  async register(data: RegisterRequest): Promise<any> {
     const response = await api.post<any>('/usuarios/register', data);
-    // El backend devuelve { status, message, data: user } en UsuarioController.js
     if (response.data?.status === 'success' && response.data?.data) {
       const user = response.data.data;
       return {
-        ...user,
-        id: (user.id_usuario || user.id)?.toString() || ''
+        user: {
+          ...user,
+          id: (user.id_usuario || user.id)?.toString() || ''
+        },
+        token: response.data.token
       };
     }
     return response.data;

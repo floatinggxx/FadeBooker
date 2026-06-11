@@ -66,7 +66,7 @@ const BarberDetailPage: React.FC = () => {
       const cita = await bookingService.crearCita({
         clienteId: Number(user.id_usuario || user.id),
         barberoId: Number(barber.id_barbero || barber.id),
-        servicioBarberoId: Number(selectedService.id_servicio_barbero || selectedService.id),
+        servicioBarberoId: Number(selectedService?.id_servicio_barbero || selectedService?.id),
         fecha: selectedDate,
         hora: selectedTime,
       });
@@ -164,10 +164,11 @@ const BarberDetailPage: React.FC = () => {
             <>
               {renderHeader("Selecciona un servicio", "Especialistas en fades y cortes de tendencia. Elige tu servicio y potencia tu imagen.")}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {services?.map((s) => (
+                {(services || []).filter(Boolean).map((s) => (
                   <button
-                    key={s.id_servicio_barbero || s.id}
+                    key={s?.id_servicio_barbero || s?.id}
                     onClick={() => {
+                      if (!s) return;
                       setSelectedService(s);
                       nextStep();
                     }}

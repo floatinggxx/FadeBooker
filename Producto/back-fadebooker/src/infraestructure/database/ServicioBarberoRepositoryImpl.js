@@ -70,7 +70,7 @@ class ServicioBarberoRepositoryImpl {
    * @returns {Promise<number>} ID de la nueva relación (id_servicio_barbero)
    */
   async create(id_servicio, id_barbero, precio_barbero = null, tiempo_servicio_minutos = null) {
-    const [id] = await this.db('ServicioBarbero').insert({
+    const result = await this.db('ServicioBarbero').insert({
       id_servicio,
       id_barbero,
       precio_barbero,
@@ -79,7 +79,21 @@ class ServicioBarberoRepositoryImpl {
       createdAt: new Date(),
       updatedAt: new Date()
     })
-    return id.id_servicio_barbero || id
+
+    if (!result) {
+      throw new Error('No se pudo crear la relación Servicio-Barbero');
+    }
+
+    const id = Array.isArray(result) ? result[0] : result;
+    if (id === undefined || id === null) {
+      throw new Error('No se devolvió el identificador del ServicioBarbero');
+    }
+
+    if (typeof id === 'object') {
+      return id.id_servicio_barbero || id;
+    }
+
+    return id;
   }
 
   /**

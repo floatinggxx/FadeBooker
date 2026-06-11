@@ -44,8 +44,8 @@ class UsuarioService {
       });
     }
 
-    // Si el rol es Barbero, Dueño o Proveedor, crear la entidad Barbero y sus servicios
-    if (userData.rol === 'Barbero' || userData.rol === 'Dueño' || userData.rol === 'Proveedor') {
+    // Si el rol es Barbero o Proveedor, crear la entidad Barbero y sus servicios
+    if (userData.rol === 'Barbero' || userData.rol === 'Proveedor') {
       const BarberoRepository = require('../../infraestructure/database/BarberoRepositoryImpl');
       const barberoRepo = new BarberoRepository();
       
@@ -58,11 +58,15 @@ class UsuarioService {
       });
 
       // Si vienen servicios, asociarlos
-      if (servicios && Array.isArray(servicios)) {
+      const servicioIds = Array.isArray(servicios)
+        ? servicios.map(s => Number(s)).filter(n => !Number.isNaN(n))
+        : [];
+
+      if (servicioIds.length > 0) {
         const ServicioBarberoRepository = require('../../infraestructure/database/ServicioBarberoRepositoryImpl');
         const servicioBarberoRepo = new ServicioBarberoRepository();
         
-        for (const id_servicio of servicios) {
+        for (const id_servicio of servicioIds) {
           await servicioBarberoRepo.create(id_servicio, id_barbero);
         }
       }
