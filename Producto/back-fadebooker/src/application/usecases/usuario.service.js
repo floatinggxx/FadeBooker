@@ -17,7 +17,16 @@ class UsuarioService {
       }
     }
 
-    const id_usuario = await this.usuarioRepository.create(userData);
+    let id_usuario;
+    try {
+      id_usuario = await this.usuarioRepository.create(userData);
+    } catch (err) {
+      const msg = err && err.message ? String(err.message).toLowerCase() : '';
+      if (msg.includes('unique') || msg.includes('duplicate') || msg.includes('duplicate key') || msg.includes('violatio') || msg.includes('correo') || msg.includes('email')) {
+        throw new Error('El correo electrónico ya está registrado');
+      }
+      throw err;
+    }
     let final_id_tienda = id_tienda;
 
     // Si hay tienda nueva, crearla primero
