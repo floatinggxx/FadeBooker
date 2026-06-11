@@ -10,11 +10,11 @@ class UsuarioService {
     
     userData.contrasena = await this.hasher.hash(userData.contrasena);
     
-    // Si hay una tienda nueva o viene como Proveedor, el usuario se registra como Dueño/Proveedor
-    if (tienda_nueva || userData.rol === 'Proveedor') {
-      if (!userData.rol || userData.rol === 'Cliente') {
-        userData.rol = 'Dueño';
-      }
+    // Si se está registrando una tienda nueva, el usuario debe ser Dueño
+    if (tienda_nueva) {
+      userData.rol = 'Dueño';
+    } else if (userData.rol === 'Proveedor') {
+      userData.rol = 'Proveedor';
     }
 
     let id_usuario;
