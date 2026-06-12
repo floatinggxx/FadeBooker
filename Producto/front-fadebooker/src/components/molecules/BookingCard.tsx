@@ -30,6 +30,9 @@ const BookingCard: React.FC<BookingCardProps> = ({
   dateTime, 
   barberName, 
   clienteName,
+  clienteEmail,
+  clienteTelefono,
+  barberoId,
   serviceName, 
   status = 'pendiente', 
   notes,
@@ -387,10 +390,10 @@ const BookingCard: React.FC<BookingCardProps> = ({
         <BarbieroCancelBookingModal
           booking={{
             id_cita: id,
-            id_barbero: barberoId,
-            cliente_nombre: clienteName,
-            cliente_email: clienteEmail,
-            cliente_telefono: clienteTelefono,
+            id_barbero: barberoId ?? undefined,
+            cliente_nombre: clienteName ?? undefined,
+            cliente_email: clienteEmail ?? undefined,
+            cliente_telefono: clienteTelefono ?? undefined,
             servicio_nombre: serviceName,
             fecha_hora_inicio: dateTime,
             monto_total: montoTotal

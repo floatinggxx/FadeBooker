@@ -16,6 +16,7 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
   isOpen,
   onClose,
   onSuccess,
+  onExpire,
   bookingId,
   paymentUrl,
 }) => {

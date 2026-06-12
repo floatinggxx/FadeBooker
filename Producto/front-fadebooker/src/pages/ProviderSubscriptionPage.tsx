@@ -25,7 +25,7 @@ const ProviderSubscriptionPage: React.FC = () => {
     setMessage(null)
       try {
       setShowConfirm(false)
-      const res: any = await subscriptionService.createSubscription({ provider_id: providerId, tier_id: selectedTier })
+      const res: any = await subscriptionService.createSubscription({ provider_id: Number(providerId), tier_id: Number(selectedTier) })
       setMessage(`Suscripción creada: ${res.id}`)
       // Si la API retorna una URL de pago, redirigimos al proveedor
       if (res.paymentUrl) {

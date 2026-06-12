@@ -6,6 +6,7 @@ export interface Usuario {
   apellido?: string; // Agregado
   email: string;
   telefono?: string; // Agregado
+  fotoUrl?: string;
   contrasena?: string;
   rol: 'Cliente' | 'Barbero' | 'Dueño' | 'Proveedor' | 'Admin';
   id_tienda?: number; // Agregado para barberos
@@ -69,6 +70,7 @@ export interface Tienda {
   horario_apertura?: string;
   horario_cierre?: string;
   dias_laborales?: string;
+  comision_porcentaje?: number;
   foto_portada_url?: string;
   calificacion_promedio?: number;
   este_activa?: boolean | number;
@@ -85,7 +87,10 @@ export interface Servicio {
   nombre_servicio?: string; // Alineado con BD
   descripcion?: string;
   duracion_minutos: number;
+  duracion?: number;
   precio_base: number;
+  precioBase?: number; // alias
+  precio?: number; // alias used in some components
   activo: boolean;
 }
 
@@ -93,19 +98,29 @@ export interface ServicioBarbero {
   id_servicio_barbero: number;
   id_barbero: number;
   id_servicio: number;
+  servicioBarberoId?: number;
+  // compatibility aliases used across the codebase
+  id?: number;
   precio_barbero?: number;
+  precio?: number;
   tiempo_servicio_minutos?: number;
+  duracion?: number;
   disponible: boolean;
   servicio?: Servicio;
+  nombre_servicio?: string;
+  descripcion?: string;
 }
 
 // Citas
 export interface Cita {
   id?: string | number;
   id_cita?: string | number; // Alineado con BD
-  clienteId: string | number;
-  barberoId: string | number;
-  servicioBarberoId: string | number;
+  clienteId?: string | number;
+  id_cliente?: string | number;
+  barberoId?: string | number;
+  id_barbero?: string | number;
+  servicioBarberoId?: string | number;
+  id_servicio?: string | number;
   fecha: string; // formato: YYYY-MM-DD
   hora: string; // formato: HH:mm
   estado: 'pendiente' | 'confirmada' | 'completada' | 'cancelada';
@@ -118,17 +133,51 @@ export interface Cita {
 }
 
 export interface CreateCitaRequest {
-  id_cliente: number;
-  id_barbero: number;
-  id_servicio: number;
-  id_tienda: number;
+  // Support both backend (snake_case) and frontend (camelCase) keys
+  id_cliente?: number;
+  clienteId?: number;
+  id_barbero?: number;
+  barberoId?: number;
+  id_servicio?: number;
+  servicioId?: number;
+  id_tienda?: number;
+  tiendaId?: number;
   fecha_hora_inicio: string;
   duracion_minutos: number;
+  duracionMinutos?: number;
+  duracion?: number;
+  servicioBarberoId?: number;
+  fecha?: string;
+  hora?: string;
   monto_total: number;
+  montoBase?: number;
+  comision?: number;
+  comision_porcentaje?: number;
   metodo_pago?: string;
   pago_abono?: number;
   notas?: string;
   origen?: string;
+}
+
+// Barbero type (compatibility) — many components expect this named export
+export interface Barbero {
+  id?: number;
+  id_barbero?: number;
+  nombre: string;
+  apellido?: string;
+  descripcion?: string;
+  especialidad?: string;
+  foto_perfil_url?: string;
+  fotoUrl?: string;
+  activo?: boolean | number;
+  anos_experiencia?: number;
+  calificacion_promedio?: number;
+  id_tienda?: number;
+  comision_porcentaje?: number;
+}
+
+export interface BarberoWithServices extends Barbero {
+  servicios?: ServicioBarbero[];
 }
 
 // Clientes
@@ -150,6 +199,7 @@ export interface Horario {
   diaSemana: number; // 0-6 (lunes-domingo)
   horaInicio: string; // HH:mm
   horaFin: string; // HH:mm
+  fotoUrl?: string;
   disponible: boolean;
   createdAt?: string;
   updatedAt?: string;

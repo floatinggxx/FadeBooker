@@ -67,6 +67,10 @@ const BarberDetailPage: React.FC = () => {
         clienteId: Number(user.id_usuario || user.id),
         barberoId: Number(barber.id_barbero || barber.id),
         servicioBarberoId: Number(selectedService?.id_servicio_barbero || selectedService?.id),
+        id_servicio: Number(selectedService?.id_servicio_barbero || selectedService?.id),
+        fecha_hora_inicio: `${selectedDate}T${selectedTime}:00`,
+        duracion_minutos: Number(selectedService?.duracion ?? selectedService?.servicio?.duracion ?? 60),
+        monto_total: Number(selectedService?.precio ?? selectedService?.precio_barbero ?? selectedService?.servicio?.precioBase ?? 0),
         fecha: selectedDate,
         hora: selectedTime,
       });

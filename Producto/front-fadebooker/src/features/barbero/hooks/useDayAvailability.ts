@@ -27,11 +27,10 @@ export const useDayAvailability = (idBarbero: number, fecha: string, citas: any[
     queryKey: ['bloques', idBarbero, fecha],
     queryFn: () => availabilityService.getBloquesPorFecha(idBarbero, fecha),
     enabled: Boolean(idBarbero && fecha),
-    staleTime: 1000 * 60,
-    cacheTime: 1000 * 60 * 5
+    staleTime: 1000 * 60 * 5,
   })
 
-  const bloques: BloqueHorario[] = bloquesQuery.data || []
+  const bloques: BloqueHorario[] = (bloquesQuery.data as BloqueHorario[]) || []
 
   const generarHorariosDelDia = useCallback((): HorarioBloque[] => {
     const horarios: HorarioBloque[] = []

@@ -142,7 +142,7 @@ const DayAvailability: React.FC<DayAvailabilityProps> = ({
             {horario.tipo === 'bloque' && (
               <button
                 onClick={() => {
-                  setBloqueAEliminar(horario.id_bloque || null)
+                  setBloqueAEliminar(horario.id_bloque ? Number(horario.id_bloque) : null)
                 }}
                 className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg hover:bg-red-600"
                 title="Eliminar reserva de barbero"

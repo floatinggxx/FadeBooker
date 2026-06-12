@@ -51,12 +51,20 @@ const BookingForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
 
     try {
       const [fecha, hora] = data.fechaHora.split('T');
+      const servicioSeleccionado = services.find(s => String(s.id) === String(data.servicioBarberoId) || String(s.id_servicio_barbero) === String(data.servicioBarberoId));
+      const duracion = Number(servicioSeleccionado?.duracion ?? servicioSeleccionado?.servicio?.duracion ?? 60);
+      const monto = Number(servicioSeleccionado?.precio ?? servicioSeleccionado?.precio_barbero ?? servicioSeleccionado?.servicio?.precioBase ?? 0);
       await bookingService.crearCita({
         clienteId: Number(user.id || user.id_usuario),
         barberoId: Number(data.barberoId),
         servicioBarberoId: Number(data.servicioBarberoId),
-        fecha,
-        hora,
+        id_servicio: Number(data.servicioBarberoId),
+        fecha_hora_inicio: `${fecha}T${hora}:00`,
+        duracion_minutos: duracion,
+        duracion: duracion,
+        monto_total: monto,
+        fecha: fecha,
+        hora: hora,
       });
       alert('Reserva creada correctamente');
       onSuccess && onSuccess();
@@ -81,8 +89,8 @@ const BookingForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
           <option value="">Seleccione</option>
           {serviceLoading && <option disabled>Cargando servicios...</option>}
           {services.map(s => (
-            <option key={s.id} value={s.id}>
-              {s.servicio?.nombre || `Servicio ${s.servicioId || s.id}`} — {(s.duracion ?? s.servicio?.duracion) || 'N/A'} min
+            <option key={s.id || s.id_servicio_barbero} value={s.id || s.id_servicio_barbero}>
+              {s.servicio?.nombre || `Servicio ${s.servicio?.id_servicio || s.id || s.id_servicio_barbero}`} — {(((s.duracion ?? s.servicio?.duracion) || s.servicio?.duracion_minutos) || 'N/A')} min
             </option>
           ))}
         </select>

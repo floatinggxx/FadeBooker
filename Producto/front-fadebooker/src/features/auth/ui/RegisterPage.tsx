@@ -368,7 +368,7 @@ const RegisterPage: React.FC = () => {
                   <Clock size={18} className="input-icon" />
                   <input 
                     type="number"
-                    {...register('anos_experiencia', { valueAsNumber: true })} 
+                    {...register('anos_experiencia' as any, { valueAsNumber: true })}
                     placeholder="Años de experiencia" 
                     className="input-field" 
                   />

@@ -18,7 +18,8 @@ const TestimonialsSection: React.FC = () => {
 
       for (const tienda of topTiendas) {
         try {
-          const resenas = await tiendaService.getResenasByTienda(tienda.id_tienda);
+          const tiendaId = tienda?.id_tienda ?? tienda?.id ?? 0;
+          const resenas = await tiendaService.getResenasByTienda(tiendaId as string | number);
           const resenasConTienda = resenas.map((r: any) => ({
             name: `${r.nombre} ${r.apellido[0]}.`,
             quote: r.comentario,

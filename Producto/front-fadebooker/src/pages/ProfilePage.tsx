@@ -26,11 +26,11 @@ const ProfilePage: React.FC = () => {
     onSuccess: (result) => {
       queryClient.setQueryData(['my-profile'], (old: any) => ({
         ...old,
-        fotoUrl: result.fotoUrl
+        fotoUrl: (result as any).fotoUrl
       }));
       
       // Actualizar el contexto de auth para que se vea en el Header/Sidebar
-      updateUser({ fotoUrl: result.fotoUrl });
+      updateUser({ fotoUrl: (result as any).fotoUrl } as any);
       
       queryClient.invalidateQueries({ queryKey: ['my-profile'] });
     },
@@ -46,7 +46,7 @@ const ProfilePage: React.FC = () => {
       email={data?.email || user?.email || 'No registrado'}
       phone={data?.telefono || user?.telefono || ''}
       role={data?.rol || user?.rol || 'Cliente'}
-      fotoUrl={data?.fotoUrl || user?.fotoUrl}
+      fotoUrl={(data?.fotoUrl as any) || ((user as any)?.fotoUrl as any)}
       createdAt={data?.createdAt || user?.createdAt || ''}
       isUpdating={mutation.isPending}
       onUpdate={async (newData) => {
