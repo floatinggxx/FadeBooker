@@ -18,7 +18,11 @@ export const bookingService = {
   async listCitas(clienteId?: number): Promise<Cita[]> {
     const params = clienteId ? { clienteId } : {};
     const response = await api.get<Cita[]>('/citas', { params });
-    return response.data;
+    // Mapear nombres de tienda desde la API (compatibilidad con backend)
+    return (response.data || []).map(c => ({
+      ...c,
+      tiendaName: c.tienda_nombre || c.tiendaName || c.tienda || null
+    }));
   },
 
   // Listar citas de un cliente específico
@@ -26,7 +30,10 @@ export const bookingService = {
     const response = await api.get<Cita[]>('/citas', {
       params: { clienteId }
     });
-    return response.data;
+    return (response.data || []).map(c => ({
+      ...c,
+      tiendaName: c.tienda_nombre || c.tiendaName || c.tienda || null
+    }));
   },
 
   // Listar citas de un barbero específico
@@ -34,7 +41,10 @@ export const bookingService = {
     const response = await api.get<Cita[]>('/citas', {
       params: { barberoId }
     });
-    return response.data;
+    return (response.data || []).map(c => ({
+      ...c,
+      tiendaName: c.tienda_nombre || c.tiendaName || c.tienda || null
+    }));
   },
 
   // Actualizar estado de una cita
@@ -62,7 +72,11 @@ export const bookingService = {
     });
     // Filtrar solo citas futuras en el frontend
     const ahora = new Date();
-    return response.data.filter(cita => {
+    const datos = (response.data || []).map(c => ({
+      ...c,
+      tiendaName: c.tienda_nombre || c.tiendaName || c.tienda || null
+    }));
+    return datos.filter(cita => {
       const citaDate = new Date(`${cita.fecha} ${cita.hora}`);
       return citaDate > ahora;
     });
@@ -77,7 +91,10 @@ export const bookingService = {
   // Obtener mis citas (alias para listCitas sin parámetros, el backend filtra por JWT)
   async getMyBookings(): Promise<Cita[]> {
     const response = await api.get<Cita[]>('/citas');
-    return response.data;
+    return (response.data || []).map(c => ({
+      ...c,
+      tiendaName: c.tienda_nombre || c.tiendaName || c.tienda || null
+    }));
   },
 
   // Dejar una reseña

@@ -173,9 +173,23 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
 
     const isSlotAvailable = (slot: any): boolean => {
         // Si el slot no está disponible según el backend, retornar false
-        if (!slot.disponible) {
-            return false;
-        }
+            // Si el backend marca explícitamente disponible=false, respetarlo
+            if (slot.disponible === false) {
+                return false;
+            }
+
+            // Si el slot tiene un estado (viene de una cita) sólo bloquearlo cuando esté confirmada
+            if (slot.estado) {
+                try {
+                    if ((slot.estado as string).toLowerCase() !== 'confirmada') {
+                        // no está confirmada -> considerar libre
+                        return true;
+                    }
+                    // si es 'confirmada', se seguirá el flujo y podrá bloquearse más abajo
+                } catch (e) {
+                    // en caso de datos inesperados, seguir con la lógica por defecto
+                }
+            }
 
         // Verificar si la fecha es hoy
         const today = new Date().toISOString().split('T')[0];

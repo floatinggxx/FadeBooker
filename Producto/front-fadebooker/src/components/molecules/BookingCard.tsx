@@ -226,9 +226,14 @@ const BookingCard: React.FC<BookingCardProps> = ({
                   {isBarberoView ? 'Cliente' : 'Barbero'}
                 </p>
                 <p className="font-black text-slate-800">{isBarberoView ? clienteName : barberName}</p>
-                {tiendaName && (
-                  <p className="text-xs text-slate-400 font-medium mt-1">En: {tiendaName}</p>
-                )}
+                {/* Reservar siempre espacio visual para la tienda (placeholder si falta) */}
+                <p className="text-xs text-slate-400 font-medium mt-1 h-4">
+                  {tiendaName ? (
+                    <>En: {tiendaName}</>
+                  ) : (
+                    <span className="inline-block w-36 h-3 bg-slate-100 rounded-md" aria-hidden="true" />
+                  )}
+                </p>
               </div>
             </div>
 

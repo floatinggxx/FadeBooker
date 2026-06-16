@@ -88,13 +88,15 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
 
   async obtenerDisponibilidad(id_barbero, fecha) {
     // Obtener citas del barbero en la fecha para verificar disponibilidad
+    // Sólo traer citas que efectivamente bloquean horarios: confirmadas o en progreso.
+    // Evitamos traer 'pendiente' o 'completada' para que no aparezcan como ocupadas.
     return db('Cita')
       .where({ id_barbero })
       .whereBetween('fecha_hora_inicio', [
         `${fecha} 00:00:00`,
         `${fecha} 23:59:59`
       ])
-      .whereIn('estado', ['confirmada', 'en_progreso', 'completada', 'pendiente'])
+      .whereIn('estado', ['confirmada', 'en_progreso'])
       .select('id_cita', 'fecha_hora_inicio', 'duracion_minutos', 'estado')
   }
 
