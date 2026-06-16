@@ -6,7 +6,7 @@ const schemas = swagger.components.schemas;
 
 schemas.UsuarioRegistro.example = {
   email: "nuevo_cliente@example.com",
-  contrasena: "Password123!",
+  contrasena: "<REPLACE_WITH_SECURE_PASSWORD>",
   nombre: "Juan",
   apellido: "Perez",
   telefono: "+56912345678",
@@ -15,7 +15,7 @@ schemas.UsuarioRegistro.example = {
 
 schemas.LoginRequest.example = {
   email: "admin@fadebooker.com",
-  contrasena: "Admin2026!"
+  contrasena: "<REPLACE_WITH_SECURE_PASSWORD>"
 };
 
 schemas.ClienteInput.example = {

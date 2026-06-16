@@ -34,7 +34,7 @@ const BarberosManager: React.FC = () => {
         apellido: '',
         email: '',
         telefono: '',
-        contrasena: 'Pass123*', // Password temporal
+        contrasena: '', // No hardcoded password
         especialidad: 'Corte Clásico',
         anos_experiencia: 1,
         tarifa_base: 0
@@ -94,7 +94,7 @@ const BarberosManager: React.FC = () => {
                 apellido: '',
                 email: '',
                 telefono: '',
-                contrasena: 'Pass123*',
+                contrasena: '',
                 especialidad: 'Corte Clásico',
                 anos_experiencia: 1,
                 tarifa_base: 0

@@ -3,9 +3,10 @@ const http = require('http');
 const jwt = require('jsonwebtoken');
 
 // Generar token válido en tiempo de ejecución
+const jwtSecret = process.env.JWT_SECRET || 'dev_test_secret';
 const token = jwt.sign(
   { id_usuario: 5, email: 'barbero@test.local', rol: 'Barbero', id_barbero: 5 },
-  'secret_key_temporal',
+  jwtSecret,
   { expiresIn: '1h' }
 );
 
