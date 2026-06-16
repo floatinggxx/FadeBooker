@@ -1,11 +1,12 @@
 # 🎭 FadeBooker
 
-Plataforma de gestión de citas para servicios de barbería y fotografía relacional.
+FadeBooker es una plataforma completa y entregada para la gestión de citas y servicios de barbería y fotografía.
 
 ## 🚀 Estado del Proyecto
-- **Backend:** 98% completo (Node.js + Arquitectura Hexagonal).
-- **Frontend:** En migración a **Feature-Based Architecture** (React + Tailwind + Bootstrap).
-- **Infraestructura:** Desplegado en Azure (App Service + SQL Server).
+- **Proyecto:** Completado y listo para producción.
+- **Backend:** Implementado con Node.js siguiendo Arquitectura Hexagonal; API desplegada.
+- **Frontend:** Cliente React (Vite) finalizado y desplegado.
+- **Infraestructura:** Despliegue en Azure (App Service + Azure SQL) y servicios integrados.
 
 ## 🛠️ Tecnologías Principales
 - **Backend:** Node.js, Express, Knex.js, Zod, JWT.
@@ -13,10 +14,12 @@ Plataforma de gestión de citas para servicios de barbería y fotografía relaci
 - **Servicios:** Cloudinary (Imágenes), Mercado Pago (Pagos), Azure (Cloud).
 
 ## 📂 Estructura del Proyecto
-- `Producto/back-fadebooker/`: API REST siguiendo Arquitectura Hexagonal.
+- `Producto/back-fadebooker/`: API REST (Arquitectura Hexagonal).
 - `Producto/front-fadebooker/`: Cliente web React (Vite).
 - `Documentación/`: Documentación técnica consolidada, diagramas ER y flujos.
 
+## 📄 Documentación principal
+- Referencia técnica completa (PDF): [Documentación Técnica — README-fadebooker](Documentación/Documentos/README-fadebooker.pdf)
 ## ⚙️ Configuración del Backend (.env)
 Para el correcto funcionamiento de Cloudinary y la base de datos:
 ```env
@@ -135,3 +138,6 @@ docker run -d -p 4173:4173 fadebooker-frontend
 - El backend usa `dotenv` para cargar variables desde `.env`.
 - La configuración de la base de datos está en `Producto/back-fadebooker/src/config/knexfile.js`.
 - El frontend consume la API usando `import.meta.env.VITE_API_BASE_URL`.
+
+---
+Este repositorio contiene la versión finalizada de FadeBooker; para detalles de despliegue, arquitectura y operación consulte el PDF de referencia enlazado arriba.

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000">
+  <style>
+    .table { fill:#f8f9fb; stroke:#34495e; stroke-width:1.2 }
+    .title { font: bold 12px Arial; fill:#1f3a4b }
+    .col { font: 11px Arial; fill:#102027 }
+    .pk { fill:#c0392b }
+    .fk { fill:#2980b9 }
+    .edge { stroke:#2c3e50; stroke-width:1 }
+  </style>
+
+  <!-- Usuario -->
+  <g transform="translate(40,40)">
+    <rect class="table" width="260" height="140" rx="8"/>
+    <text class="title" x="12" y="20">Usuario</text>
+    <text class="col pk" x="12" y="42">PK id_usuario : int</text>
+    <text class="col" x="12" y="60">email : nvarchar</text>
+    <text class="col" x="12" y="78">contrasena : nvarchar</text>
+    <text class="col" x="12" y="96">nombre, apellido, rol, estado</text>
+  </g>
+
+  <!-- Tienda -->
+  <g transform="translate(340,40)">
+    <rect class="table" width="260" height="160" rx="8"/>
+    <text class="title" x="12" y="20">Tienda</text>
+    <text class="col pk" x="12" y="42">PK id_tienda : int</text>
+    <text class="col fk" x="12" y="60">FK id_dueño : int</text>
+    <text class="col" x="12" y="78">nombre_tienda, direccion, ciudad</text>
+  </g>
+
+  <!-- Barbero -->
+  <g transform="translate(340,240)">
+    <rect class="table" width="260" height="140" rx="8"/>
+    <text class="title" x="12" y="20">Barbero</text>
+    <text class="col pk" x="12" y="42">PK id_barbero : int</text>
+    <text class="col fk" x="12" y="60">FK id_usuario : int</text>
+    <text class="col fk" x="12" y="78">FK id_tienda : int</text>
+    <text class="col" x="12" y="96">especialidad, tarifa_base, activo</text>
+  </g>
+
+  <!-- Servicio -->
+  <g transform="translate(680,40)">
+    <rect class="table" width="260" height="140" rx="8"/>
+    <text class="title" x="12" y="20">Servicio</text>
+    <text class="col pk" x="12" y="42">PK id_servicio : int</text>
+    <text class="col" x="12" y="60">nombre_servicio, duracion_minutos, precio_base</text>
+  </g>
+
+  <!-- ServicioBarbero -->
+  <g transform="translate(680,240)">
+    <rect class="table" width="300" height="140" rx="8"/>
+    <text class="title" x="12" y="20">ServicioBarbero</text>
+    <text class="col pk" x="12" y="42">PK id_servicio_barbero : int</text>
+    <text class="col fk" x="12" y="60">FK id_servicio : int</text>
+    <text class="col fk" x="12" y="78">FK id_barbero : int</text>
+    <text class="col" x="12" y="96">precio_barbero, disponible</text>
+  </g>
+
+  <!-- Cita -->
+  <g transform="translate(40,420)">
+    <rect class="table" width="300" height="160" rx="8"/>
+    <text class="title" x="12" y="20">Cita</text>
+    <text class="col pk" x="12" y="42">PK id_cita : int</text>
+    <text class="col fk" x="12" y="60">FK id_cliente : int</text>
+    <text class="col fk" x="12" y="78">FK id_barbero : int</text>
+    <text class="col fk" x="12" y="96">FK id_servicio : int</text>
+    <text class="col" x="12" y="114">fecha_hora_inicio, duracion_minutos, estado, monto_total</text>
+  </g>
+
+  <!-- Pago -->
+  <g transform="translate(380,440)">
+    <rect class="table" width="240" height="100" rx="8"/>
+    <text class="title" x="12" y="20">Pago</text>
+    <text class="col pk" x="12" y="42">PK id_pago : int</text>
+    <text class="col fk" x="12" y="60">FK id_cita : int</text>
+    <text class="col" x="12" y="78">monto_pagado, estado_pago</text>
+  </g>
+
+  <!-- Reseña -->
+  <g transform="translate(760,440)">
+    <rect class="table" width="260" height="120" rx="8"/>
+    <text class="title" x="12" y="20">Reseña</text>
+    <text class="col pk" x="12" y="42">PK id_resena : int</text>
+    <text class="col fk" x="12" y="60">FK id_cita : int</text>
+    <text class="col" x="12" y="78">puntuacion, comentario</text>
+  </g>
+
+  <!-- Edges -->
+  <line class="edge" x1="160" y1="120" x2="340" y2="120" />
+  <line class="edge" x1="420" y1="160" x2="420" y2="240" />
+  <line class="edge" x1="560" y1="120" x2="680" y2="120" />
+  <line class="edge" x1="520" y1="320" x2="680" y2="320" />
+  <line class="edge" x1="200" y1="480" x2="420" y2="480" />
+  <line class="edge" x1="320" y1="520" x2="320" y2="560" />
+
+  <text x="10" y="980" font-size="11" fill="#444">Diagrama ER simplificado generado desde la base de datos (FadeBooker_DB) el 2026-06-15.</text>
+</svg>

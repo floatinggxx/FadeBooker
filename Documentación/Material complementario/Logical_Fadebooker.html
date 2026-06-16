@@ -1,64 +1,106 @@
-<html>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!doctype html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Logical — FadeBooker (Diagrama ER actualizado)</title>
+	<style>
+		body{font-family:Arial,Helvetica,sans-serif;color:#222;margin:18px}
+		h1{font-size:20px;color:#0b486b}
+		.notice{background:#f1f8fb;border-left:4px solid #2b9ed8;padding:10px;margin-bottom:12px}
+		.diagram {max-width:1200px;margin:12px 0}
+		/* Responsive SVG container */
+		.svg-wrap{width:100%;max-width:1400px;margin:0 auto;overflow:auto}
+		.svg-wrap svg{width:100%;height:auto;display:block}
+		.schema {margin-top:20px}
+		/* Match Relational style: yellow boxes with blue stroke */
+		.table-block{background:rgb(255,255,180);border:2px solid rgb(0,0,255);padding:10px;margin:8px 0;border-radius:4px}
+		.table-title{font-weight:bold;color:rgb(0,0,255)}
+		.col-list{font-family:monospace;font-size:13px;margin-top:6px;color:#000}
+		.sym-pk{display:inline-block;background:#ff8345;color:#fff;padding:1px 6px;border-radius:3px;font-weight:bold;margin-right:6px}
+		.sym-fk{display:inline-block;background:#13bf3b;color:#fff;padding:1px 6px;border-radius:3px;font-weight:bold;margin-right:6px}
+		.sym-uk{display:inline-block;background:#0064fb;color:#fff;padding:1px 6px;border-radius:3px;font-weight:bold;margin-right:6px}
+		.sym-pf{display:inline-block;background:#000;color:#fff;padding:1px 6px;border-radius:3px;font-weight:bold;margin-right:6px}
+		a.btn{background:#2b9ed8;color:white;padding:6px 10px;border-radius:4px;text-decoration:none}
+	</style>
+</head>
+<body>
 
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"  width="826" height="622">
-<defs id="dmw_defs" >
-<svg id="fk_sym" viewBox="0 0 48.665 48.665" style="enable-background:new 0 0 48.665 48.665;" >
-<g>
-<path d="M40.332,31.592c-2.377,0-4.515,1-6.033,2.598l-17.737-8.686c0.061-0.406,0.103-0.82,0.103-1.246    c0-0.414-0.04-0.818-0.098-1.215l17.711-8.589c1.519,1.609,3.666,2.619,6.054,2.619c4.603,0,8.333-3.731,8.333-8.333    c0-4.603-3.73-8.333-8.333-8.333s-8.333,3.73-8.333,8.333c0,0.414,0.04,0.817,0.098,1.215l-17.709,8.589    c-1.519-1.609-3.666-2.619-6.054-2.619C3.73,15.925,0,19.656,0,24.258c0,4.603,3.73,8.333,8.333,8.333    c2.377,0,4.515-1,6.033-2.596l17.736,8.685c-0.062,0.406-0.104,0.82-0.104,1.245c0,4.604,3.73,8.333,8.333,8.333    s8.333-3.729,8.333-8.333C48.665,35.322,44.935,31.592,40.332,31.592z" fill="#13bf3b"/>
-</g>
-</svg>
-<svg id="pk_sym" viewBox="0 0 480.509 480.509" style="enable-background:new 0 0 480.509 480.509;" >
-<g>
-<path d="M418.119,331.046c4.094,4.374,7.766,8.186,10.996,11.416c3.237,3.238,6.714,6.376,10.427,9.422   c3.71,3.042,6.427,4.568,8.135,4.568c3.241,0,9.517-4.661,18.843-13.99c9.328-9.321,13.989-15.604,13.989-18.842   c0-1.523-2.714-5.421-8.138-11.704c-5.421-6.276-12.364-13.702-20.838-22.271c-8.473-8.565-16.703-16.744-24.694-24.55   c-8.001-7.81-15.8-15.373-23.417-22.703c-7.611-7.327-11.992-11.56-13.135-12.703c-1.902-1.902-4.093-2.853-6.563-2.853   c-3.237,0-9.521,4.661-18.843,13.988c-9.328,9.322-13.989,15.605-13.989,18.843c0,1.711,1.522,4.421,4.568,8.138   c3.046,3.71,6.188,7.187,9.421,10.424c3.23,3.23,7.047,6.899,11.42,10.992c4.377,4.093,6.848,6.423,7.423,6.995l-27.408,27.404   L254.954,222.268c24.94-33.498,37.408-68.236,37.408-104.211c0-31.024-9.761-56.293-29.263-75.801   c-19.512-19.511-44.778-29.265-75.805-29.265c-30.454,0-60.244,9.042-89.363,27.119c-29.121,18.083-52.727,41.686-70.808,70.808   C9.042,140.038,0,169.828,0,200.28c0,31.029,9.753,56.286,29.265,75.803c19.511,19.517,44.777,29.27,75.801,29.27   c35.976,0,70.71-12.467,104.212-37.407l191.574,191.579c5.332,5.328,11.796,7.994,19.417,7.994c7.991,0,15.704-3.72,23.12-11.14   c7.426-7.426,11.143-15.129,11.143-23.127c0-7.617-2.666-14.092-7.994-19.417l-62.811-62.811l27.405-27.404   C411.699,324.195,414.033,326.666,418.119,331.046z M221.556,161.458c-10.656,10.657-23.601,15.987-38.828,15.987   c-7.996,0-15.896-1.812-23.7-5.43c3.617,7.808,5.426,15.706,5.426,23.7c0,15.229-5.327,28.171-15.987,38.828   c-10.66,10.655-23.606,15.986-38.831,15.986c-15.227,0-28.168-5.325-38.828-15.986c-10.657-10.657-15.987-23.599-15.987-38.828   c0-15.227,5.327-28.171,15.987-38.828C81.464,146.23,94.409,140.9,109.636,140.9c7.992,0,15.893,1.809,23.695,5.424   c-3.616-7.804-5.424-15.706-5.424-23.699c0-15.227,5.327-28.171,15.987-38.828c10.66-10.657,23.604-15.987,38.831-15.987   c15.227,0,28.171,5.327,38.828,15.987c10.657,10.66,15.987,23.601,15.987,38.828C237.539,137.852,232.209,150.797,221.556,161.458z   " fill="#ff8345"/>
-</g>
-</svg>
-<svg id="uk_sym" viewBox="0 0 490 490" style="enable-background:new 0 0 490 490;" >
-<g>
-	<polygon points="236.99,11.41 0,246.348 236.99,478.678 236.99,350.609 129.864,245 236.99,139.391  " fill="#0064fb"/>
-<polygon points="253.01,478.59 490,243.651 253.01,11.322 253.01,139.391 360.136,245 253.01,350.609  " fill="#0064fb"/>
-</g>
-</svg>
-<svg id="link_sym" viewBox="0 0 1000 900" style="enable-background:new 0 0 1000 900;" >
-<g>
-<path fill="black" d="M660.224 422.656c6.976 16.192-0.512 35.008-16.768 42.048-16.128 6.976-34.944-0.448-41.984-16.768-8.448-19.776-20.736-37.696-36.224-53.248-64.64-64.64-177.344-64.64-241.92 0l-145.216 145.28c-66.688 66.688-66.688 175.232 0 241.984 66.688 66.688 175.104 66.752 241.92 0l92.8-92.864c12.48-12.48 32.768-12.48 45.248 0s12.48 32.768 0 45.248l-92.8 92.864c-91.648 91.648-240.832 91.52-332.416 0-91.712-91.648-91.712-240.832 0-332.48l145.216-145.28c44.352-44.416 103.424-68.864 166.272-68.864s121.792 24.448 166.208 68.864c21.248 21.312 38.016 45.952 49.664 73.216zM891.136 401.344l-145.216 145.216c-88.768 88.832-243.712 88.832-332.416 0-21.312-21.312-38.080-45.952-49.728-73.216-7.040-16.256 0.448-35.072 16.704-42.048 16.064-6.784 35.008 0.512 41.984 16.768 8.512 19.776 20.8 37.696 36.288 53.248 64.64 64.64 177.344 64.64 241.92 0l145.216-145.216c66.688-66.688 66.688-175.232 0-241.984-66.752-66.624-175.168-66.688-241.92 0l-92.8 92.864c-12.48 12.48-32.768 12.48-45.248 0s-12.48-32.768 0-45.248l92.8-92.864c45.824-45.824 105.984-68.736 166.208-68.736s120.448 22.912 166.272 68.736c91.584 91.648 91.584 240.768-0.064 332.48z" />
-</g>
-</svg>
-<clipPath clipPathUnits="userSpaceOnUse" id="clipPath2_0_">
-<rect x="0" y="0" width="123" height="77" />
-</clipPath>
-<clipPath clipPathUnits="userSpaceOnUse" id="clipPath11_0_">
-<rect x="0" y="0" width="447" height="256" />
-</clipPath>
-<clipPath clipPathUnits="userSpaceOnUse" id="clipPath10_0_">
-<rect x="0" y="0" width="130" height="74" />
-</clipPath>
-<clipPath clipPathUnits="userSpaceOnUse" id="clipPath9_0_">
-<rect x="0" y="0" width="112" height="111" />
-</clipPath>
-<clipPath clipPathUnits="userSpaceOnUse" id="clipPath3_0_">
-<rect x="0" y="0" width="144" height="93" />
-</clipPath>
-<clipPath clipPathUnits="userSpaceOnUse" id="clipPath8_0_">
-<rect x="0" y="0" width="125" height="86" />
-</clipPath>
-<clipPath clipPathUnits="userSpaceOnUse" id="clipPath4_0_">
-<rect x="0" y="0" width="146" height="62" />
-</clipPath>
-<clipPath clipPathUnits="userSpaceOnUse" id="clipPath1_0_">
-<rect x="0" y="0" width="153" height="98" />
-</clipPath>
-<clipPath clipPathUnits="userSpaceOnUse" id="clipPath5_0_">
-<rect x="0" y="0" width="135" height="109" />
-</clipPath>
-<clipPath clipPathUnits="userSpaceOnUse" id="clipPath7_0_">
-<rect x="0" y="0" width="140" height="69" />
-</clipPath>
-<clipPath clipPathUnits="userSpaceOnUse" id="clipPath6_0_">
-<rect x="0" y="0" width="165" height="76" />
-</clipPath>
-</defs>
-<g stroke-linecap="butt" >
+<h1>Diagrama ER actualizado — FadeBooker</h1>
+
+<div class="notice">
+	<strong>Generado desde la base de datos:</strong> Esquema leído del servidor <code>fadebooker-server-v2.database.windows.net</code> (base: <code>FadeBooker_DB</code>) el 2026-06-15.
+	<div style="margin-top:6px">Archivo Draw.io: <a class="btn" href="FadeBooker_ER_3NF_updated.drawio">Descargar .drawio</a> — SVG incrustado abajo para vista rápida.</div>
+</div>
+
+
+<div class="diagram">
+    <h2>Visualización (SVG)</h2>
+    <div>
+        <div class="svg-wrap">
+            <img src="FadeBooker_ER_3NF_updated.svg" alt="Diagrama ER — FadeBooker" style="width:100%;height:auto;display:block;" />
+        </div>
+    </div>
+</div>
+
+<div class="schema">
+	<h2>Esquema de tablas y columnas (resumen)</h2>
+	<p>Listado generado automáticamente a partir del diseñador de esquema. Si quieres que incluya tipos completos o constraints adicionales, indícamelo.</p>
+
+	<!-- Tabla: Usuario -->
+	<div class="table-block">
+		<div class="table-title">Usuario</div>
+		<div class="col-list"><span class="sym-pk">PK</span> id_usuario : int<br/><span class="sym-uk">U</span> email : nvarchar<br/>contrasena : nvarchar<br/>nombre : nvarchar<br/>apellido : nvarchar<br/>telefono : nvarchar<br/>rol : nvarchar<br/>estado : bit<br/>foto_perfil_url : nvarchar<br/>fecha_registro : datetime2<br/>ultimo_login : datetime2<br/>createdAt : datetime2<br/>updatedAt : datetime2<br/>telegram_id : bigint<br/>phone_verified : bit<br/>verified_phone : nvarchar</div>
+	</div>
+
+	<div class="table-block">
+		<div class="table-title">Tienda</div>
+		<div class="col-list"><span class="sym-pk">PK</span> id_tienda : int<br/><span class="sym-fk">FK</span> id_dueño : int<br/>nombre_tienda : nvarchar<br/>direccion : nvarchar<br/>ciudad : nvarchar<br/>codigo_postal : nvarchar<br/>telefono_tienda : nvarchar<br/>email_tienda : nvarchar<br/>horario_apertura : time<br/>horario_cierre : time<br/>dias_laborales : nvarchar<br/>foto_portada_url : nvarchar<br/>calificacion_promedio : decimal<br/>este_activa : bit<br/>createdAt : datetime2<br/>updatedAt : datetime2</div>
+	</div>
+
+	<div class="table-block">
+		<div class="table-title">Barbero</div>
+		<div class="col-list"><span class="sym-pk">PK</span> id_barbero : int<br/><span class="sym-fk">FK</span> id_usuario : int<br/><span class="sym-fk">FK</span> id_tienda : int<br/>especialidad : nvarchar<br/>anos_experiencia : int<br/>tarifa_base : decimal<br/>foto_perfil_url : nvarchar<br/>calificacion_promedio : decimal<br/>total_resenas : int<br/>activo : bit<br/>createdAt : datetime2<br/>updatedAt : datetime2</div>
+	</div>
+
+	<div class="table-block">
+		<div class="table-title">Servicio</div>
+		<div class="col-list"><span class="sym-pk">PK</span> id_servicio : int<br/>nombre_servicio : nvarchar<br/>descripcion : nvarchar<br/>duracion_minutos : int<br/>precio_base : decimal<br/>activo : bit<br/>createdAt : datetime2<br/>updatedAt : datetime2</div>
+	</div>
+
+	<div class="table-block">
+		<div class="table-title">ServicioBarbero</div>
+		<div class="col-list"><span class="sym-pk">PK</span> id_servicio_barbero : int<br/><span class="sym-fk">FK</span> id_servicio : int<br/><span class="sym-fk">FK</span> id_barbero : int<br/>precio_barbero : decimal<br/>tiempo_servicio_minutos : int<br/>disponible : bit<br/>createdAt : datetime2<br/>updatedAt : datetime2</div>
+	</div>
+
+	<div class="table-block">
+		<div class="table-title">Cita</div>
+		<div class="col-list"><span class="sym-pk">PK</span> id_cita : int<br/><span class="sym-fk">FK</span> id_cliente : int<br/><span class="sym-fk">FK</span> id_barbero : int<br/><span class="sym-fk">FK</span> id_servicio : int<br/><span class="sym-fk">FK</span> id_tienda : int<br/>fecha_hora_inicio : datetime2<br/>duracion_minutos : int<br/>estado : nvarchar<br/>monto_total : decimal<br/>pago_abono : decimal<br/>metodo_pago : nvarchar<br/>notas : nvarchar<br/>createdAt : datetime2<br/>updatedAt : datetime2</div>
+	</div>
+
+	<div class="table-block">
+		<div class="table-title">Pago</div>
+		<div class="col-list"><span class="sym-pk">PK</span> id_pago : int<br/><span class="sym-fk">FK</span> id_cita : int<br/>monto_pagado : decimal<br/>metodo_pago : nvarchar<br/>estado_pago : nvarchar<br/>referencia_transaccion : nvarchar<br/>fecha_pago : datetime2<br/>createdAt : datetime2<br/>comision : decimal</div>
+	</div>
+
+	<div class="table-block">
+		<div class="table-title">Reseña</div>
+		<div class="col-list"><span class="sym-pk">PK</span> id_resena : int<br/><span class="sym-fk">FK</span> id_cita : int<br/><span class="sym-fk">FK</span> id_cliente : int<br/><span class="sym-fk">FK</span> id_barbero : int<br/><span class="sym-fk">FK</span> id_tienda : int<br/>puntuacion : int<br/>comentario : nvarchar<br/>fecha_resena : datetime2<br/>createdAt : datetime2</div>
+	</div>
+
+	<div class="table-block">
+		<div class="table-title">BloqueHorario</div>
+		<div class="col-list"><span class="sym-pk">PK</span> id_bloque : int<br/><span class="sym-fk">FK</span> id_barbero : int<br/>fecha_hora_inicio : datetime2<br/>fecha_hora_fin : datetime2<br/>motivo : nvarchar<br/>estado : bit<br/>createdAt : datetime2<br/>updatedAt : datetime2</div>
+	</div>
+
+	<div class="table-block">
+		<div class="table-title">Auditoría y auxiliares</div>
+		<div class="col-list">AuditoriaPreciosServicio, AuditoriaCancelacion, LogErrores, Commission, Subscription, NotificationLog, NotificationPreferences, PhoneVerifications</div>
+	</div>
+</footer>
+
+</body>
+</html>
 <path stroke="rgb(0,0,0)" fill="none" stroke-opacity="1.0"  stroke-dasharray="8,8" stroke-width="1" d="M716 536 L716 518" />
 <path stroke="rgb(0,0,0)" fill="none" stroke-opacity="1.0"  stroke-width="1" d="M716 500 L716 518" />
 <path stroke-dasharray="none" d="M722.0 500.0 L716.0 512.0 L710.0 500.0" fill="white" stroke-width="1" stroke-opacity="1.0" stroke="rgb(0,0,0)" />
