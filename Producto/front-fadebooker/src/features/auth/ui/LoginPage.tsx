@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { authService } from '@/lib/api/authService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { useNotification } from '@/context/NotificationContext';
 import { parseError } from '@/lib/utils/errorParser';
 
@@ -14,6 +14,7 @@ const LoginPage: React.FC = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
   const { login, isAuthenticated } = useAuth();
   const { showNotification } = useNotification();
+  const [formError, setFormError] = useState<string | null>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const from = (location.state as { from?: { pathname?: string } })?.from?.pathname || '/dashboard';
@@ -24,6 +25,7 @@ const LoginPage: React.FC = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
+      setFormError(null);
       const resp = await authService.login(data.email, data.password);
       if (resp?.token) {
         login({ 
@@ -37,10 +39,10 @@ const LoginPage: React.FC = () => {
         showNotification(`¡Bienvenido de nuevo, ${resp.nombre}!`, 'success');
         navigate(from, { replace: true });
       } else {
-        showNotification('Respuesta inválida del servidor', 'error');
+        setFormError('Respuesta inválida del servidor');
       }
     } catch (err: any) {
-      showNotification(parseError(err), 'error');
+      setFormError(parseError(err));
     }
   };
 
@@ -49,6 +51,12 @@ const LoginPage: React.FC = () => {
       <div className="auth-card">
         <h1>Iniciar sesión</h1>
         <p className="auth-subtitle">Accede a tu cuenta para gestionar tus citas y ver las mejores barberías.</p>
+        {formError && (
+          <div className="form-alert form-alert-error">
+            <div className="form-alert-icon"><AlertCircle size={18} /></div>
+            <div className="form-alert-text">{formError}</div>
+          </div>
+        )}
         
         <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
           <div className="input-container">

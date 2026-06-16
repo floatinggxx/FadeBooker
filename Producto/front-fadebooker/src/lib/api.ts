@@ -20,8 +20,14 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/login';
+      // No redirigir si estamos en login (para permitir que se muestren errores de credenciales)
+      const isLoginRoute = window.location.pathname === '/login' || window.location.pathname === '/register';
+      const isAuthEndpoint = error.config?.url?.includes('/usuarios/login') || error.config?.url?.includes('/usuarios/register');
+      
+      if (!isLoginRoute && !isAuthEndpoint) {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

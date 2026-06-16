@@ -64,6 +64,7 @@ const RegisterPage: React.FC = () => {
   
   const navigate = useNavigate();
   const { showNotification } = useNotification();
+  const [formError, setFormError] = useState<string | null>(null);
   const { login } = useAuth();
   const password = watch('contrasena');
   const rol = watch('rol');
@@ -118,6 +119,7 @@ const RegisterPage: React.FC = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
+      setFormError(null);
       // Limpieza de datos antes de enviar (excluimos contrasenaConfirm)
       const { contrasenaConfirm, ...prepData } = data;
       const registerData: any = { ...prepData };
@@ -174,7 +176,7 @@ const RegisterPage: React.FC = () => {
         throw err;
       }
     } catch (err: any) {
-      showNotification(parseError(err), 'error');
+      setFormError(parseError(err));
     }
   };
 
@@ -183,6 +185,12 @@ const RegisterPage: React.FC = () => {
       <div className="auth-card">
         <h1>Crear cuenta</h1>
         <p className="auth-subtitle">Regístrate para ver barberías cercanas, agendar citas y gestionar tu perfil.</p>
+        {formError && (
+          <div className="form-alert form-alert-error">
+            <div className="form-alert-icon"><AlertCircle size={18} /></div>
+            <div className="form-alert-text">{formError}</div>
+          </div>
+        )}
         
         <form onSubmit={handleSubmit(onSubmit)} className="auth-form">
           {/* ... existing fields ... */}
@@ -281,14 +289,6 @@ const RegisterPage: React.FC = () => {
               </button>
             </div>
             {errors.contrasenaConfirm && <span className="error-message">{errors.contrasenaConfirm.message}</span>}
-          </div>
-
-          <div className="animate-fade-in py-5 px-6 bg-amber-50/60 rounded-[2rem] border-2 border-amber-100 my-4 flex gap-4">
-            <div className="text-3xl shrink-0">💈</div>
-            <div>
-              <p className="font-black text-slate-900 text-sm leading-tight mb-1">¿Eres dueño de una barbería?</p>
-              <p className="text-xs text-slate-600 font-medium leading-relaxed">Regístrate como Barbero. Luego podrás registrar y administrar tu barbería.</p>
-            </div>
           </div>
 
           <div className="radio-group">
