@@ -16,7 +16,10 @@
     <text class="col pk" x="12" y="42">PK id_usuario : int</text>
     <text class="col" x="12" y="60">email : nvarchar</text>
     <text class="col" x="12" y="78">contrasena : nvarchar</text>
-    <text class="col" x="12" y="96">nombre, apellido, rol, estado</text>
+    <text class="col" x="12" y="96">nombre : nvarchar</text>
+    <text class="col" x="12" y="114">apellido : nvarchar</text>
+    <text class="col" x="12" y="132">rol : nvarchar</text>
+    <text class="col" x="12" y="150">estado : bit</text>
   </g>
 
   <!-- Tienda -->
@@ -25,7 +28,9 @@
     <text class="title" x="12" y="20">Tienda</text>
     <text class="col pk" x="12" y="42">PK id_tienda : int</text>
     <text class="col fk" x="12" y="60">FK id_dueño : int</text>
-    <text class="col" x="12" y="78">nombre_tienda, direccion, ciudad</text>
+    <text class="col" x="12" y="78">nombre_tienda : nvarchar</text>
+    <text class="col" x="12" y="96">direccion : nvarchar</text>
+    <text class="col" x="12" y="114">ciudad : nvarchar</text>
   </g>
 
   <!-- Barbero -->
@@ -35,7 +40,9 @@
     <text class="col pk" x="12" y="42">PK id_barbero : int</text>
     <text class="col fk" x="12" y="60">FK id_usuario : int</text>
     <text class="col fk" x="12" y="78">FK id_tienda : int</text>
-    <text class="col" x="12" y="96">especialidad, tarifa_base, activo</text>
+    <text class="col" x="12" y="96">especialidad : nvarchar</text>
+    <text class="col" x="12" y="114">tarifa_base : decimal</text>
+    <text class="col" x="12" y="132">activo : bit</text>
   </g>
 
   <!-- Servicio -->
@@ -43,7 +50,9 @@
     <rect class="table" width="260" height="140" rx="8"/>
     <text class="title" x="12" y="20">Servicio</text>
     <text class="col pk" x="12" y="42">PK id_servicio : int</text>
-    <text class="col" x="12" y="60">nombre_servicio, duracion_minutos, precio_base</text>
+    <text class="col" x="12" y="60">nombre_servicio : nvarchar</text>
+    <text class="col" x="12" y="78">duracion_minutos : int</text>
+    <text class="col" x="12" y="96">precio_base : decimal</text>
   </g>
 
   <!-- ServicioBarbero -->
@@ -53,7 +62,8 @@
     <text class="col pk" x="12" y="42">PK id_servicio_barbero : int</text>
     <text class="col fk" x="12" y="60">FK id_servicio : int</text>
     <text class="col fk" x="12" y="78">FK id_barbero : int</text>
-    <text class="col" x="12" y="96">precio_barbero, disponible</text>
+    <text class="col" x="12" y="96">precio_barbero : decimal</text>
+    <text class="col" x="12" y="114">disponible : bit</text>
   </g>
 
   <!-- Cita -->
@@ -64,7 +74,10 @@
     <text class="col fk" x="12" y="60">FK id_cliente : int</text>
     <text class="col fk" x="12" y="78">FK id_barbero : int</text>
     <text class="col fk" x="12" y="96">FK id_servicio : int</text>
-    <text class="col" x="12" y="114">fecha_hora_inicio, duracion_minutos, estado, monto_total</text>
+    <text class="col" x="12" y="114">fecha_hora_inicio : datetime2</text>
+    <text class="col" x="12" y="132">duracion_minutos : int</text>
+    <text class="col" x="12" y="150">estado : nvarchar</text>
+    <text class="col" x="12" y="168">monto_total : decimal</text>
   </g>
 
   <!-- Pago -->
@@ -73,7 +86,8 @@
     <text class="title" x="12" y="20">Pago</text>
     <text class="col pk" x="12" y="42">PK id_pago : int</text>
     <text class="col fk" x="12" y="60">FK id_cita : int</text>
-    <text class="col" x="12" y="78">monto_pagado, estado_pago</text>
+    <text class="col" x="12" y="78">monto_pagado : decimal</text>
+    <text class="col" x="12" y="96">estado_pago : nvarchar</text>
   </g>
 
   <!-- Reseña -->
@@ -82,7 +96,8 @@
     <text class="title" x="12" y="20">Reseña</text>
     <text class="col pk" x="12" y="42">PK id_resena : int</text>
     <text class="col fk" x="12" y="60">FK id_cita : int</text>
-    <text class="col" x="12" y="78">puntuacion, comentario</text>
+    <text class="col" x="12" y="78">puntuacion : int</text>
+    <text class="col" x="12" y="96">comentario : nvarchar</text>
   </g>
 
   <!-- Edges -->

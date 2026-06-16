@@ -319,7 +319,15 @@ class CitaRepositoryImpl {
   }
 
   async update(id, data) {
-    return this.db('Cita').where({ id_cita: id }).update(data)
+    try {
+      console.log(`[CitaRepositoryImpl] update called for id=${id} with data=${JSON.stringify(data)}`);
+      const res = await this.db('Cita').where({ id_cita: id }).update(Object.assign({}, data, { updatedAt: this.db.raw('GETDATE()') }));
+      console.log(`[CitaRepositoryImpl] update result for id=${id}: rowsAffected=${res}`);
+      return res;
+    } catch (err) {
+      console.error(`[CitaRepositoryImpl] Error updating cita ${id}:`, err.message || err);
+      throw err;
+    }
   }
 
   async registrarAuditoriaCancelacion(data) {

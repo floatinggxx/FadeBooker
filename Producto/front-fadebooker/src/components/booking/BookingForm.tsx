@@ -2,6 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { barberService } from '@/lib/api/barberService';
 import { bookingService } from '@/lib/api/bookingService';
+import { pagoService } from '@/lib/api/pagoService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import { Barbero, ServicioBarbero } from '@/types';
 
@@ -54,7 +55,7 @@ const BookingForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
       const servicioSeleccionado = services.find(s => String(s.id) === String(data.servicioBarberoId) || String(s.id_servicio_barbero) === String(data.servicioBarberoId));
       const duracion = Number(servicioSeleccionado?.duracion ?? servicioSeleccionado?.servicio?.duracion ?? 60);
       const monto = Number(servicioSeleccionado?.precio ?? servicioSeleccionado?.precio_barbero ?? servicioSeleccionado?.servicio?.precioBase ?? 0);
-      await bookingService.crearCita({
+      const cita = await bookingService.crearCita({
         clienteId: Number(user.id || user.id_usuario),
         barberoId: Number(data.barberoId),
         servicioBarberoId: Number(data.servicioBarberoId),
@@ -66,6 +67,19 @@ const BookingForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
         fecha: fecha,
         hora: hora,
       });
+
+      // Si la reserva se creó correctamente, intentamos iniciar creación de pago
+      try {
+        const payment = await pagoService.crearPago({ id_cita: Number((cita as any).id_cita || (cita as any).id) });
+        // Abrir pasarela en ventana nueva
+        const win = window.open('about:blank', '_blank');
+        if (win) win.location.href = payment.url;
+        // Mostrar mensaje y navegar a la vista de reservas (o dejar que el callback lo maneje)
+      } catch (payErr) {
+        // Si falla iniciar pago, solo notificar y continuar
+        console.warn('No se pudo iniciar el pago automáticamente', payErr);
+      }
+
       alert('Reserva creada correctamente');
       onSuccess && onSuccess();
     } catch (err: any) {

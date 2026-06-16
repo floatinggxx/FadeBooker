@@ -32,14 +32,20 @@ export const useDayAvailability = (idBarbero: number, fecha: string, citas: any[
 
   const bloques: BloqueHorario[] = (bloquesQuery.data as BloqueHorario[]) || []
 
-  const generarHorariosDelDia = useCallback((): HorarioBloque[] => {
+    const generarHorariosDelDia = useCallback((): HorarioBloque[] => {
     const horarios: HorarioBloque[] = []
+
+      // Filtrar citas para este barbero (asegurar que no se mezclen citas de otros barberos)
+      const citasDelBarbero = (citas || []).filter((c: any) => {
+        if (!c) return false
+        return Number(c.id_barbero || c.barberoId || c.barbero_id) === Number(idBarbero)
+      })
 
     for (let hora = 9; hora < 18; hora++) {
       for (let minutos = 0; minutos < 60; minutos += 30) {
         const horaFormato = `${String(hora).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`
 
-        const citaEnHorario = citas.find((cita: any) => {
+        const citaEnHorario = citasDelBarbero.find((cita: any) => {
           const horaInicio = cita?.fecha_hora_inicio?.substring(11, 16)
           return horaInicio === horaFormato && cita.estado !== 'cancelada'
         })

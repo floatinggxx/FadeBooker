@@ -25,9 +25,11 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
   const [isSimulating, setIsSimulating] = useState(false);
   const [montoAPagar, setMontoAPagar] = useState<number | null>(null);
   const [comision, setComision] = useState<number | null>(null);
+  const [totalNeto, setTotalNeto] = useState<number | null>(null);
   const [simulationStatus, setSimulationStatus] = useState<'success' | 'error' | null>(null);
   const [timeLeft, setTimeLeft] = useState(180); // 3 minutos para pagar
   const [isExpired, setIsExpired] = useState(false);
+  const [localPaymentUrl, setLocalPaymentUrl] = useState<string | null>(null);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const formatTime = (seconds: number) => {
@@ -102,9 +104,20 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
     (async () => {
       try {
         const pref = await pagoService.crearPago({ id_cita: bookingId });
-        // El backend devuelve url ya, pero en este modal normalmente 'paymentUrl' viene del padre.
-        if (typeof (pref as any).montoAPagar !== 'undefined') setMontoAPagar(Number((pref as any).montoAPagar));
+        // Backend fields: montoBase, comision, montoConComision, url
+        if (typeof (pref as any).montoBase !== 'undefined') setMontoAPagar(Number((pref as any).montoBase));
         if (typeof (pref as any).comision !== 'undefined') setComision(Number((pref as any).comision));
+        if (typeof (pref as any).montoConComision !== 'undefined') setTotalNeto(Number((pref as any).montoConComision));
+        // If backend doesn't return commission info, fallback to 5% and compute totalNeto = subtotal + commission
+        if (typeof (pref as any).comision === 'undefined' && typeof (pref as any).montoBase !== 'undefined') {
+          const fallbackCom = Math.round(Number((pref as any).montoBase) * 0.05);
+          setComision(Number(fallbackCom));
+          setTotalNeto(Number(Number((pref as any).montoBase) + fallbackCom));
+        }
+        // If backend returned a url, store it locally so the "Ir a Pestaña de Pago" button works
+        if ((pref as any).url) {
+          setLocalPaymentUrl((pref as any).url);
+        }
       } catch (err) {
         // No bloquear: solo mostramos si está disponible
         console.warn('No se pudo recuperar preferencia/desglose:', err);
@@ -144,7 +157,8 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
   if (!isOpen) return null;
 
   const handleOpenAgain = () => {
-    window.open(paymentUrl, '_blank');
+    const urlToOpen = localPaymentUrl || paymentUrl || (window as any).paymentUrlFromPref || null;
+    if (urlToOpen) window.open(urlToOpen, '_blank');
   };
 
   return (
@@ -231,15 +245,15 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
             <div className="mt-4 text-left text-sm">
               <div className="flex justify-between text-slate-600 mb-1">
                 <span>Subtotal</span>
-                <span className="font-mono">{montoAPagar ? `${montoAPagar.toFixed(2)} MXN` : '-'}</span>
+                <span className="font-mono">{montoAPagar ? `${montoAPagar.toFixed(2)} pesos chilenos (CLP)` : '-'}</span>
               </div>
               <div className="flex justify-between text-slate-600 mb-1">
                 <span>Comisión</span>
-                <span className="font-mono text-rose-600">{comision ? `-${comision.toFixed(2)} MXN` : '0.00 MXN'}</span>
+                <span className="font-mono text-rose-600">{comision ? `+${comision.toFixed(2)} pesos chilenos (CLP)` : '0.00 pesos chilenos (CLP)'}</span>
               </div>
               <div className="flex justify-between text-slate-900 font-black mt-2 pt-2 border-t">
                 <span>Total</span>
-                <span className="font-mono">{montoAPagar ? `${(montoAPagar - (comision || 0)).toFixed(2)} MXN` : '-'}</span>
+                <span className="font-mono">{totalNeto ? `${totalNeto.toFixed(2)} pesos chilenos (CLP)` : (montoAPagar ? `${(montoAPagar + (comision || 0)).toFixed(2)} pesos chilenos (CLP)` : '-')}</span>
               </div>
             </div>
 

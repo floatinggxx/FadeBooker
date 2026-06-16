@@ -242,8 +242,8 @@ const UniversalBookingPage: React.FC = () => {
       const fechaHoraInicio = `${selectedDate}T${timeStr}`;
       
       const basePrice = Number(selectedService.precio_barbero || selectedService.precio || selectedService.servicio?.precio_base || 0);
-      // Comisión: preferir configuración de tienda, luego del barbero, por defecto 10%
-      const commissionRate = Number(tienda?.comision_porcentaje ?? barber?.comision_porcentaje ?? 0.1);
+      // Comisión: preferir configuración de tienda, luego del barbero, por defecto 5%
+      const commissionRate = Number(tienda?.comision_porcentaje ?? barber?.comision_porcentaje ?? 0.05);
       const commissionAmount = Math.round(basePrice * commissionRate);
       // monto total incluye comisión
       const total = basePrice + commissionAmount;

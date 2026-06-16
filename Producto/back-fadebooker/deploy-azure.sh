@@ -41,7 +41,8 @@ az acr login --name "$ACR_NAME"
 # 3. Build de la imagen Docker
 # Asumimos que el script se ejecuta desde la raíz de back-fadebooker o desde /scripts
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+# Build context should be the back-fadebooker folder where this script lives
+PROJECT_ROOT="$SCRIPT_DIR"
 
 echo -e "${BLUE}📦 Construyendo imagen Docker: ${IMAGE_NAME}:${TAG}...${NC}"
 docker build -t "$IMAGE_NAME:$TAG" "$PROJECT_ROOT"
