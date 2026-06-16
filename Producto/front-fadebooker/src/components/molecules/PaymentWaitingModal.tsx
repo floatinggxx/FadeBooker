@@ -10,6 +10,12 @@ interface PaymentWaitingModalProps {
   onExpire?: () => void;
   bookingId: number;
   paymentUrl: string;
+  paymentType?: 'total' | 'abono';
+  initialPref?: {
+    montoBase?: number;
+    comision?: number;
+    montoConComision?: number;
+  };
 }
 
 const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
@@ -19,6 +25,8 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
   onExpire,
   bookingId,
   paymentUrl,
+  paymentType,
+  initialPref,
 }) => {
   const [dots, setDots] = useState('');
   const [errorCount, setErrorCount] = useState(0);
@@ -103,16 +111,27 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
     // Obtener preferencia y desglose de comisión al abrir el modal
     (async () => {
       try {
-        const pref = await pagoService.crearPago({ id_cita: bookingId });
-        // Backend fields: montoBase, comision, montoConComision, url
-        if (typeof (pref as any).montoBase !== 'undefined') setMontoAPagar(Number((pref as any).montoBase));
-        if (typeof (pref as any).comision !== 'undefined') setComision(Number((pref as any).comision));
-        if (typeof (pref as any).montoConComision !== 'undefined') setTotalNeto(Number((pref as any).montoConComision));
-        // If backend doesn't return commission info, fallback to 5% and compute totalNeto = subtotal + commission
-        if (typeof (pref as any).comision === 'undefined' && typeof (pref as any).montoBase !== 'undefined') {
-          const fallbackCom = Math.round(Number((pref as any).montoBase) * 0.05);
-          setComision(Number(fallbackCom));
-          setTotalNeto(Number(Number((pref as any).montoBase) + fallbackCom));
+        let pref: any = null;
+        // If parent already provided initial preference (from BookingCard), use it
+        if ((initialPref && (initialPref.montoBase || initialPref.comision || initialPref.montoConComision))) {
+          pref = initialPref;
+        } else {
+          pref = await pagoService.crearPago({ id_cita: bookingId, tipo_pago: paymentType });
+        }
+        // Backend fields: 'montoBase' | 'montoAPagar' (legacy), 'comision', 'montoConComision' | 'montoConComision'
+        const subtotal = (pref as any).montoBase ?? (pref as any).montoAPagar ?? (pref as any).monto_base ?? null;
+        const comm = (pref as any).comision ?? (pref as any).commission ?? null;
+        const net = (pref as any).montoConComision ?? (pref as any).monto_con_comision ?? (pref as any).montoPagado ?? null;
+
+        if (subtotal !== null && typeof subtotal !== 'undefined') setMontoAPagar(Number(subtotal));
+        if (comm !== null && typeof comm !== 'undefined') setComision(Number(comm));
+        if (net !== null && typeof net !== 'undefined') setTotalNeto(Number(net));
+
+        // Fallback: if backend didn't return commission info, compute a default 5%
+        if ((comm === null || typeof comm === 'undefined') && subtotal !== null && typeof subtotal !== 'undefined') {
+          const fallbackCom = Math.round(Number(subtotal) * 0.05);
+          if (comision === null) setComision(Number(fallbackCom));
+          if (totalNeto === null) setTotalNeto(Number(Number(subtotal) + fallbackCom));
         }
         // If backend returned a url, store it locally so the "Ir a Pestaña de Pago" button works
         if ((pref as any).url) {
@@ -241,19 +260,23 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
               </button>
             </div>
 
-            {/* Desglose de pago */}
+            {/* Desglose de pago: Pago completo, Pago abono (50%), Comisión (5% del total), Total a pagar = Abono + Comisión */}
             <div className="mt-4 text-left text-sm">
               <div className="flex justify-between text-slate-600 mb-1">
-                <span>Subtotal</span>
+                <span>Pago completo</span>
                 <span className="font-mono">{montoAPagar ? `${montoAPagar.toFixed(2)} pesos chilenos (CLP)` : '-'}</span>
+              </div>
+              <div className="flex justify-between text-slate-600 mb-1">
+                <span>Pago abono (50%)</span>
+                <span className="font-mono">{montoAPagar ? `${Math.round(montoAPagar * 0.5).toFixed(2)} pesos chilenos (CLP)` : '-'}</span>
               </div>
               <div className="flex justify-between text-slate-600 mb-1">
                 <span>Comisión</span>
                 <span className="font-mono text-rose-600">{comision ? `+${comision.toFixed(2)} pesos chilenos (CLP)` : '0.00 pesos chilenos (CLP)'}</span>
               </div>
               <div className="flex justify-between text-slate-900 font-black mt-2 pt-2 border-t">
-                <span>Total</span>
-                <span className="font-mono">{totalNeto ? `${totalNeto.toFixed(2)} pesos chilenos (CLP)` : (montoAPagar ? `${(montoAPagar + (comision || 0)).toFixed(2)} pesos chilenos (CLP)` : '-')}</span>
+                <span>Total a pagar</span>
+                <span className="font-mono">{montoAPagar ? `${(Math.round(montoAPagar * 0.5) + (comision || 0)).toFixed(2)} pesos chilenos (CLP)` : '-'}</span>
               </div>
             </div>
 

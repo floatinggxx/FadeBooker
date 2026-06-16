@@ -242,12 +242,14 @@ const UniversalBookingPage: React.FC = () => {
       const fechaHoraInicio = `${selectedDate}T${timeStr}`;
       
       const basePrice = Number(selectedService.precio_barbero || selectedService.precio || selectedService.servicio?.precio_base || 0);
-      // Comisión: preferir configuración de tienda, luego del barbero, por defecto 5%
-      const commissionRate = Number(tienda?.comision_porcentaje ?? barber?.comision_porcentaje ?? 0.05);
-      const commissionAmount = Math.round(basePrice * commissionRate);
-      // monto total incluye comisión
+      // Comisión: preferir configuración de tienda (porcentaje en formato 5 = 5%), luego del barbero, por defecto 5
+      const commissionRatePercent = Number(tienda?.comision_porcentaje ?? barber?.comision_porcentaje ?? 5);
+      const commissionAmount = Math.round(basePrice * (commissionRatePercent / 100));
+      // monto total incluye comisión sobre el total
       const total = basePrice + commissionAmount;
-      const abonoCalculado = paymentType === 'abono' ? Math.round(total * 0.5) : total;
+      // El abono corresponde al 50% del total del servicio (sin comisión), pero al realizar el abono se cobra además la comisión completa sobre el total
+      const abonoServicio = Math.round(basePrice * 0.5);
+      const abonoCalculado = paymentType === 'abono' ? abonoServicio : total;
 
       const duracionDefault = 60; // usar 60 minutos como duración por defecto
       const duration = Number(selectedService.tiempo_servicio_minutos || selectedService.duracion || selectedService.servicio?.duracion_minutos || duracionDefault);
@@ -259,14 +261,16 @@ const UniversalBookingPage: React.FC = () => {
         id_tienda: tiendaId,
         fecha_hora_inicio: fechaHoraInicio,
         duracion_minutos: duration,
-        monto_total: total,
+        // Guardar el monto_total como el precio base del servicio (sin comisión). La comisión se almacena por separado.
+        monto_total: basePrice,
         monto_base: basePrice,
         comision: commissionAmount,
-        comision_porcentaje: commissionRate,
+        comision_porcentaje: commissionRatePercent,
         estado: 'pendiente', // Inicia como pendiente hasta que se pague
         metodo_pago: 'mercadopago', // Coincide con el esquema de validación
         origen: 'web_universal',
-        pago_abono: abonoCalculado,
+        // pago_abono en la base de datos representa el monto ya pagado; inicialmente es 0 (no se ha pagado aún)
+        pago_abono: 0,
         notas: simulatedLook 
           ? `[Simulación de Peinado IA: ${simulatedLook.styleId}] Imagen: ${simulatedLook.url}`
           : ''
@@ -294,6 +298,20 @@ const UniversalBookingPage: React.FC = () => {
           setShowWaitingModal(true);
         } catch (pagoErr) {
           console.error("Error al iniciar pago:", pagoErr);
+          const msg = (pagoErr && pagoErr.response && pagoErr.response.data && (pagoErr.response.data.error || pagoErr.response.data.message)) || pagoErr.message || String(pagoErr);
+          // Si el backend indica que el abono ya fue cubierto, intentar crear preferencia para pagar el total
+          if (String(msg).toLowerCase().includes('abono') && paymentType === 'abono') {
+            try {
+              const retry = await pagoService.crearPago({ id_cita: Number(id_cita), tipo_pago: 'total' });
+              setCreatedBookingId(Number(id_cita));
+              setPaymentUrl(retry.url);
+              setShowWaitingModal(true);
+              return;
+            } catch (retryErr) {
+              console.error('Retry pagando total falló:', retryErr);
+            }
+          }
+
           showNotification("Cita creada, pero no se pudo iniciar el pago. Puedes pagarla en 'Mis Citas'.", "warning");
           setConfirmed(true);
         }

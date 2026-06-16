@@ -18,7 +18,12 @@ const PagoController = {
       const resultado = await pagoService.crearPreferenciaPago(id_cita, tipo_pago);
       res.json(resultado);
     } catch (error) {
-      console.error('Error en crearPreferencia:', error);
+      console.error('Error en crearPreferencia:', error && error.message ? error.message : error);
+      // Errores de validación o de negocio deben responderse con 400 para que el frontend pueda mostrar mensajes claros
+      const msg = error && error.message ? error.message : 'Error desconocido al crear preferencia';
+      if (typeof msg === 'string' && (msg.includes('La cita ya') || msg.includes('abono') || msg.includes('expir') || msg.includes('inválido'))) {
+        return res.status(400).json({ error: msg });
+      }
       next(error);
     }
   },

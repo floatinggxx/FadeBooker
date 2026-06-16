@@ -8,15 +8,29 @@ class PagoService {
   }
 
   async crearPreferenciaPago(id_cita, tipo_pago = 'total') {
+    let cita;
+    let montoAPagar;
+    let comisionAplicada;
+
     try {
       // Obtener datos de la cita
-      const cita = await this.citaRepository.findById(id_cita);
+      cita = await this.citaRepository.findById(id_cita);
+      // Fallback a versión con detalles si las columnas monto_total/pago_abono vienen nulas
+      if (cita && (cita.monto_total === null || cita.pago_abono === null)) {
+        try {
+          const detalle = await this.citaRepository.findByIdConDetalles(id_cita);
+          if (detalle) cita = Object.assign({}, cita, detalle);
+        } catch (eDet) {
+          console.warn('No se pudo obtener cita con detalles:', eDet.message || eDet);
+        }
+      }
+
       if (!cita) {
         throw new Error('Cita no encontrada');
       }
 
       // Calcular monto a pagar
-      let montoAPagar = 0;
+      montoAPagar = 0;
       const montoPendiente = cita.monto_total - (cita.pago_abono || 0);
 
       if (tipo_pago === 'abono') {
@@ -48,7 +62,7 @@ class PagoService {
 
       // Calcular comisión ANTES de crear la preferencia y sumarla al unit_price
       // Fuente de verdad para la tasa: 1) fila específica en tabla Commission por tienda, 2) fila global en Commission, 3) env var COMMISSION_RATE, 4) default 5%
-      let comisionAplicada = 0;
+      comisionAplicada = 0;
       try {
         const tiendaId = cita.id_tienda;
 
@@ -77,8 +91,9 @@ class PagoService {
         const fijoFuente = commissionRow ? Number(commissionRow.fijo || 0)
                           : (globalRow ? Number(globalRow.fijo || 0) : 0);
 
-        // Calcular comisión como (porcentaje * montoAPagar / 100) + fijo
-        const rawComision = (Number(montoAPagar) * porcentajeFuente / 100) + fijoFuente;
+        // Calcular comisión como (porcentaje * monto_total / 100) + fijo
+        // Reglas: la comisión se calcula sobre el total de la cita (no sobre el abono parcial)
+        const rawComision = (Number(cita.monto_total) * porcentajeFuente / 100) + fijoFuente;
 
         // Si la tienda tiene suscripción VIP que exime comisiones, anular la comisión
         try {
@@ -108,8 +123,12 @@ class PagoService {
               console.log('Dedupe: pago pendiente encontrado para cita', id_cita, pagoPendiente);
             }
             // Devolver información útil al frontend para evitar crear nuevas preferencias
+            // Si no tenemos init_point almacenado, intentar construir una URL de redirección a Mercado Pago usando la referencia
+            const fallbackUrl = pagoPendiente.referencia_transaccion
+              ? `https://www.mercadopago.cl/checkout/v1/redirect?pref_id=${pagoPendiente.referencia_transaccion}`
+              : null;
             return {
-              url: pagoPendiente.init_point || null,
+              url: pagoPendiente.init_point || pagoPendiente.url || fallbackUrl,
               preference_id: pagoPendiente.referencia_transaccion || null,
               montoBase: pagoPendiente.monto_base || montoAPagar,
               comision: typeof pagoPendiente.comision !== 'undefined' ? pagoPendiente.comision : comisionAplicada,

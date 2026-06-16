@@ -87,7 +87,10 @@ class BarberoService {
         return (slotTime < bloqueFin) && (slotFin > bloqueInicio);
       });
 
-      const disponible = !citaOcupante && !bloqueOcupante;
+      // Considerar indisponible si el slot corresponde a una hora pasada
+      const ahora = Date.now();
+      const esPasado = slotFin <= ahora;
+      const disponible = !citaOcupante && !bloqueOcupante && !esPasado;
       let detalle = null;
       
       if (citaOcupante) {

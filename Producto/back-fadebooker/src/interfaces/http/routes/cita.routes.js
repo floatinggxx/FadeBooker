@@ -13,6 +13,8 @@ router.get('/:id', citaController.obtenerPorId)
 router.post('/:id/pago-efectivo', citaController.registrarPagoEfectivo)
 router.post('/:id/resena', citaController.crearResena)
 router.post('/:id/cancelar', citaController.cancelar)
+// Ruta de administración/QA: forzar estado confirmada
+router.post('/:id/forzar-confirmada', citaController.forzarConfirmada)
 router.put('/:id/estado', validateRequest({ body: actualizarEstadoSchema }), citaController.cambiarEstado)
 router.delete('/:id', citaController.eliminar)
 

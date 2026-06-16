@@ -16,6 +16,7 @@ interface BookingCardProps {
   clienteEmail?: string;
   clienteTelefono?: string;
   barberoId?: number;
+  tiendaName?: string;
   serviceName: string;
   status: string;
   notes?: string;
@@ -33,6 +34,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
   clienteEmail,
   clienteTelefono,
   barberoId,
+  tiendaName,
   serviceName, 
   status = 'pendiente', 
   notes,
@@ -53,6 +55,11 @@ const BookingCard: React.FC<BookingCardProps> = ({
   // Estados para el modal de espera del pago
   const [showWaitingModal, setShowWaitingModal] = useState(false);
   const [paymentUrl, setPaymentUrl] = useState('');
+  const [initialPref, setInitialPref] = useState<{
+    montoBase?: number;
+    comision?: number;
+    montoConComision?: number;
+  } | null>(null);
 
   // Estado para modal de confirmación de cancelación
   const [showCancelConfirmModal, setShowCancelConfirmModal] = useState(false);
@@ -73,10 +80,27 @@ const BookingCard: React.FC<BookingCardProps> = ({
         tipo_pago: outcomeType
       });
       setPaymentUrl(resultado.url);
+      // store preference breakdown to show immediately in modal
+      setInitialPref({
+        montoBase: resultado.montoBase ?? resultado.monto_base ?? montoTotal,
+        comision: resultado.comision ?? resultado.comision_calculada ?? resultado.comision_total ?? null,
+        montoConComision: resultado.montoConComision ?? resultado.monto_con_comision ?? null
+      });
       if (paymentWindow) {
-        paymentWindow.location.href = resultado.url;
+        if (resultado && resultado.url) {
+          paymentWindow.location.href = resultado.url;
+        } else {
+          // Si no hay URL devuelta, cerramos la ventana y alertamos
+          paymentWindow.close();
+          console.warn('crearPago no devolvió URL de pago:', resultado);
+          showNotification('No se pudo iniciar pasarela de pago (falta URL).', 'error');
+        }
       }
       setShowWaitingModal(true);
+      // Pass initial pref so modal doesn't refetch unnecessarily
+      setTimeout(() => {
+        // noop, modal reads paymentUrl and will fetch pref if needed
+      }, 0);
     } catch (err: any) {
       if (paymentWindow) paymentWindow.close();
       showNotification(parseError(err), "error");
@@ -202,6 +226,9 @@ const BookingCard: React.FC<BookingCardProps> = ({
                   {isBarberoView ? 'Cliente' : 'Barbero'}
                 </p>
                 <p className="font-black text-slate-800">{isBarberoView ? clienteName : barberName}</p>
+                {tiendaName && (
+                  <p className="text-xs text-slate-400 font-medium mt-1">En: {tiendaName}</p>
+                )}
               </div>
             </div>
 
@@ -338,6 +365,8 @@ const BookingCard: React.FC<BookingCardProps> = ({
           onSuccess={handlePaymentSuccess}
           bookingId={id}
           paymentUrl={paymentUrl}
+          paymentType={paymentType}
+          initialPref={initialPref ?? undefined}
         />
       )}
 

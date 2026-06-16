@@ -17,6 +17,7 @@ interface BookingItem {
   montoTotal?: number;
   pagoAbono?: number;
   createdAt?: string;
+  tiendaName?: string;
 }
 
 interface BookingsSectionProps {
@@ -35,6 +36,7 @@ const BookingsSection: React.FC<BookingsSectionProps> = ({ bookings }) => (
         clienteEmail={item.clienteEmail}
         clienteTelefono={item.clienteTelefono}
         barberoId={item.barberoId}
+        tiendaName={item.tiendaName}
         serviceName={item.servicioName}
         status={item.estado}
         notes={item.notas}

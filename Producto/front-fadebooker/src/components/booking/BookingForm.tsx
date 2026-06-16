@@ -73,7 +73,14 @@ const BookingForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
         const payment = await pagoService.crearPago({ id_cita: Number((cita as any).id_cita || (cita as any).id) });
         // Abrir pasarela en ventana nueva
         const win = window.open('about:blank', '_blank');
-        if (win) win.location.href = payment.url;
+        if (win) {
+          if (payment && payment.url) {
+            win.location.href = payment.url;
+          } else {
+            win.close();
+            console.warn('crearPago no devolvió URL de pago (booking form):', payment);
+          }
+        }
         // Mostrar mensaje y navegar a la vista de reservas (o dejar que el callback lo maneje)
       } catch (payErr) {
         // Si falla iniciar pago, solo notificar y continuar

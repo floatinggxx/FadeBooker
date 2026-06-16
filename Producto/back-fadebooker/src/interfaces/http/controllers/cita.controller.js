@@ -85,16 +85,9 @@ class CitaController {
     try {
       const { clienteId, barberoId, tiendaId, fecha, period } = req.query
       
-      // Intentar auto-completar citas si el repositorio lo permite
-      // Nota: Aquí se accede al repo directamente o vía service. 
-      // Para mantener compatibilidad con la lógica previa:
-      try {
-        if (this.citaService.citaRepository && this.citaService.citaRepository.autoCompletarCitasVencidas) {
-           await this.citaService.citaRepository.autoCompletarCitasVencidas();
-        }
-      } catch (syncErr) {
-        console.error('[CitaController] Error en sincronización de estados:', syncErr.message);
-      }
+      // NOTE: Eliminada la llamada automática a autoCompletarCitasVencidas
+      // para evitar que listar cambie el estado de citas durante peticiones de lectura.
+      // La sincronización de estados debe realizarse por un job programado o una acción explícita de admin.
 
       let citas
       if (clienteId !== undefined) {
@@ -174,6 +167,19 @@ class CitaController {
       res.json({ mensaje: 'Cita eliminada' })
     } catch (error) {
       res.status(400).json({ error: error.message })
+    }
+  }
+
+  // ADMIN: Forzar estado 'confirmada' en una cita (útil para QA)
+  forzarConfirmada = async (req, res) => {
+    try {
+      const { id } = req.params;
+      console.log(`[CitaController] Forzando estado 'confirmada' para cita ID=${id}`);
+      await this.citaService.actualizarEstado(id, 'confirmada');
+      res.json({ mensaje: `Cita ${id} marcada como 'confirmada'` });
+    } catch (error) {
+      console.error('[CitaController] Error forzando confirmada:', error.message);
+      res.status(400).json({ error: error.message });
     }
   }
 }

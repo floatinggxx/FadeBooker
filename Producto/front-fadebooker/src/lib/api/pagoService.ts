@@ -11,8 +11,9 @@ export interface PagoResponse {
 }
 
 export interface PagoResponseWithCommission extends PagoResponse {
-  montoAPagar: number;
+  montoBase?: number;
   comision?: number;
+  montoConComision?: number;
 }
 
 export const pagoService = {
@@ -31,6 +32,9 @@ export const pagoService = {
   // Redirigir a Mercado Pago
   async procesarPago(id_cita: number): Promise<void> {
     const resultado = await this.crearPago({ id_cita });
-    window.location.href = resultado.url;
+    // Abrir en nueva pestaña para mantener la app en primer plano
+    if (resultado && resultado.url) {
+      window.open(resultado.url, '_blank');
+    }
   }
 };

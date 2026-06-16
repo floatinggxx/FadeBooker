@@ -138,12 +138,14 @@ class CitaRepositoryImpl {
       .leftJoin('Barbero as b', 'c.id_barbero', 'b.id_barbero')
       .leftJoin('Usuario as u', 'b.id_usuario', 'u.id_usuario')
       .leftJoin('Servicio as s', 'c.id_servicio', 's.id_servicio')
+      .leftJoin('Tienda as t', 'c.id_tienda', 't.id_tienda')
       .where('c.id_cliente', id_cliente)
       .select(
         'c.*',
         'u.nombre as barbero_nombre',
         'u.apellido as barbero_apellido',
-        's.nombre_servicio as servicio_nombre'
+        's.nombre_servicio as servicio_nombre',
+        't.nombre_tienda as tienda_nombre'
       )
       .orderBy('c.fecha_hora_inicio', 'desc')
   }
@@ -533,13 +535,12 @@ class CitaRepositoryImpl {
       const localStr = `${year}-${month}-${day}T${hour}:${minute}:${second}`;
       const localTime = new Date(localStr);
       
-      // Citas que ocurrieron hace más de 1 hora
-      const haceUnaHora = new Date(localTime.getTime() - (60 * 60 * 1000));
-      const haceUnaHoraStr = haceUnaHora.toISOString().substring(0, 19).replace('T', ' ');
-
+      // Marcar como completada solo si la fecha de fin (fecha_hora_inicio + duracion_minutos)
+      // ya pasó respecto al tiempo local actual. Evita asumir 1 hora fija.
+      // Usamos DATEADD para SQL Server: DATEADD(minute, duracion_minutos, fecha_hora_inicio) < GETDATE()
       const actualizados = await this.db('Cita')
         .where('estado', 'confirmada')
-        .where('fecha_hora_inicio', '<', haceUnaHoraStr)
+        .whereRaw("DATEADD(minute, ISNULL(duracion_minutos, 60), fecha_hora_inicio) < GETDATE()")
         .update({ estado: 'completada' });
 
       return actualizados;

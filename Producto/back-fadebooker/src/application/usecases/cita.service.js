@@ -72,6 +72,26 @@ class CitaService {
     }
 
     // 4. Verificar disponibilidad (no solapamientos)
+    // Validación: no permitir crear citas en el pasado
+    const ahora = new Date();
+    // Parsear la fecha/hora propuesta como LOCAL explicitamente para evitar diferencias de zona
+    const raw = String(data.fecha_hora_inicio || '');
+    const parts = raw.split(/[-T:\s]/).map(p => Number(p));
+    let fechaInicioPropuesta;
+    if (parts.length >= 6 && parts.every(p => !Number.isNaN(p))) {
+      // parts: [YYYY, MM, DD, hh, mm, ss]
+      fechaInicioPropuesta = new Date(parts[0], parts[1] - 1, parts[2], parts[3], parts[4], parts[5]);
+    } else {
+      fechaInicioPropuesta = new Date(raw);
+    }
+
+    if (isNaN(fechaInicioPropuesta.getTime())) {
+      throw new Error('Fecha/hora inválida para la cita. Revise el formato.');
+    }
+
+    if (fechaInicioPropuesta.getTime() < ahora.getTime()) {
+      throw new Error('No se puede crear una cita en el pasado. Por favor seleccione una fecha/hora válida.');
+    }
     const esDisponible = await this.citaRepository.verificarDisponibilidad(
       data.id_barbero, 
       data.fecha_hora_inicio, 
