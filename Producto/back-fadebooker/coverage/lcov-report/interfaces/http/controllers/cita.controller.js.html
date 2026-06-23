@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">28.43% </span>
+                <span class="strong">28.3% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>29/102</span>
+                <span class='fraction'>30/106</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">14.7% </span>
+                <span class="strong">16.66% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>5/34</span>
+                <span class='fraction'>5/30</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20% </span>
+                <span class="strong">18.18% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/10</span>
+                <span class='fraction'>2/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">28.43% </span>
+                <span class="strong">28.3% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>29/102</span>
+                <span class='fraction'>30/106</span>
             </div>
         
             
@@ -244,7 +244,13 @@
 <a name='L179'></a><a href='#L179'>179</a>
 <a name='L180'></a><a href='#L180'>180</a>
 <a name='L181'></a><a href='#L181'>181</a>
-<a name='L182'></a><a href='#L182'>182</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L182'></a><a href='#L182'>182</a>
+<a name='L183'></a><a href='#L183'>183</a>
+<a name='L184'></a><a href='#L184'>184</a>
+<a name='L185'></a><a href='#L185'>185</a>
+<a name='L186'></a><a href='#L186'>186</a>
+<a name='L187'></a><a href='#L187'>187</a>
+<a name='L188'></a><a href='#L188'>188</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -334,13 +340,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -419,6 +418,19 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -512,16 +524,9 @@ class CitaController {
 <span class="cstat-no" title="statement not covered" >    try {</span>
       const { clienteId, barberoId, tiendaId, fecha, period } = <span class="cstat-no" title="statement not covered" >req.query</span>
       
-      // Intentar auto-completar citas si el repositorio lo permite
-      // Nota: Aquí se accede al repo directamente o vía service. 
-      // Para mantener compatibilidad con la lógica previa:
-<span class="cstat-no" title="statement not covered" >      try {</span>
-<span class="cstat-no" title="statement not covered" >        if (this.citaService.citaRepository &amp;&amp; this.citaService.citaRepository.autoCompletarCitasVencidas) {</span>
-<span class="cstat-no" title="statement not covered" >           await this.citaService.citaRepository.autoCompletarCitasVencidas();</span>
-        }
-      } catch (syncErr) {
-<span class="cstat-no" title="statement not covered" >        console.error('[CitaController] Error en sincronización de estados:', syncErr.message);</span>
-      }
+      // NOTE: Eliminada la llamada automática a autoCompletarCitasVencidas
+      // para evitar que listar cambie el estado de citas durante peticiones de lectura.
+      // La sincronización de estados debe realizarse por un job programado o una acción explícita de admin.
 &nbsp;
       let citas
 <span class="cstat-no" title="statement not covered" >      if (clienteId !== undefined) {</span>
@@ -603,6 +608,19 @@ class CitaController {
 <span class="cstat-no" title="statement not covered" >      res.status(400).json({ error: error.message })</span>
     }
   }
+&nbsp;
+  // ADMIN: Forzar estado 'confirmada' en una cita (útil para QA)
+  forzarConfirmada = <span class="fstat-no" title="function not covered" >as</span>ync (req, res) =&gt; {
+<span class="cstat-no" title="statement not covered" >    try {</span>
+      const { id } = <span class="cstat-no" title="statement not covered" >req.params;</span>
+<span class="cstat-no" title="statement not covered" >      console.log(`[CitaController] Forzando estado 'confirmada' para cita ID=${id}`);</span>
+<span class="cstat-no" title="statement not covered" >      await this.citaService.actualizarEstado(id, 'confirmada');</span>
+<span class="cstat-no" title="statement not covered" >      res.json({ mensaje: `Cita ${id} marcada como 'confirmada'` });</span>
+    } catch (error) {
+<span class="cstat-no" title="statement not covered" >      console.error('[CitaController] Error forzando confirmada:', error.message);</span>
+<span class="cstat-no" title="statement not covered" >      res.status(400).json({ error: error.message });</span>
+    }
+  }
 }
 &nbsp;
 module.exports = CitaController
@@ -613,7 +631,7 @@ module.exports = CitaController
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-11T22:11:34.580Z
+                at 2026-06-16T21:25:23.780Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

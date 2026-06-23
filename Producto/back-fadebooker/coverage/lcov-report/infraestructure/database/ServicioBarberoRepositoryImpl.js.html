@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/22</span>
+                <span class='fraction'>0/29</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/8</span>
+                <span class='fraction'>0/18</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/22</span>
+                <span class='fraction'>0/29</span>
             </div>
         
             
@@ -296,7 +296,21 @@
 <a name='L231'></a><a href='#L231'>231</a>
 <a name='L232'></a><a href='#L232'>232</a>
 <a name='L233'></a><a href='#L233'>233</a>
-<a name='L234'></a><a href='#L234'>234</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L234'></a><a href='#L234'>234</a>
+<a name='L235'></a><a href='#L235'>235</a>
+<a name='L236'></a><a href='#L236'>236</a>
+<a name='L237'></a><a href='#L237'>237</a>
+<a name='L238'></a><a href='#L238'>238</a>
+<a name='L239'></a><a href='#L239'>239</a>
+<a name='L240'></a><a href='#L240'>240</a>
+<a name='L241'></a><a href='#L241'>241</a>
+<a name='L242'></a><a href='#L242'>242</a>
+<a name='L243'></a><a href='#L243'>243</a>
+<a name='L244'></a><a href='#L244'>244</a>
+<a name='L245'></a><a href='#L245'>245</a>
+<a name='L246'></a><a href='#L246'>246</a>
+<a name='L247'></a><a href='#L247'>247</a>
+<a name='L248'></a><a href='#L248'>248</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -375,6 +389,20 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -601,7 +629,7 @@ class ServicioBarberoRepositoryImpl {
    * @returns {Promise&lt;number&gt;} ID de la nueva relación (id_servicio_barbero)
    */
 <span class="fstat-no" title="function not covered" >  as</span>ync create(id_servicio, id_barbero, precio_barbero = <span class="branch-0 cbranch-no" title="branch not covered" >null,</span> tiempo_servicio_minutos = <span class="branch-0 cbranch-no" title="branch not covered" >null)</span> {
-    const [id] = <span class="cstat-no" title="statement not covered" >await this.db('ServicioBarbero').insert({</span>
+    const result = <span class="cstat-no" title="statement not covered" >await this.db('ServicioBarbero').insert({</span>
       id_servicio,
       id_barbero,
       precio_barbero,
@@ -610,7 +638,21 @@ class ServicioBarberoRepositoryImpl {
       createdAt: new Date(),
       updatedAt: new Date()
     })
-<span class="cstat-no" title="statement not covered" >    return id.id_servicio_barbero || id</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (!result) {</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error('No se pudo crear la relación Servicio-Barbero');</span>
+    }
+&nbsp;
+    const id = <span class="cstat-no" title="statement not covered" >Array.isArray(result) ? result[0] : result;</span>
+<span class="cstat-no" title="statement not covered" >    if (id === undefined || id === null) {</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error('No se devolvió el identificador del ServicioBarbero');</span>
+    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (typeof id === 'object') {</span>
+<span class="cstat-no" title="statement not covered" >      return id.id_servicio_barbero || id;</span>
+    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    return id;</span>
   }
 &nbsp;
   /**
@@ -769,7 +811,7 @@ class ServicioBarberoRepositoryImpl {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-11T22:11:34.580Z
+                at 2026-06-16T21:25:23.780Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
