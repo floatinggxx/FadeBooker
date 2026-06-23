@@ -1,44 +1,143 @@
-# 🤖 Ecosistema de Agentes Inteligentes — FadeBooker
+# 🎭 FadeBooker
 
-Este directorio contiene la configuración del sistema de agentes personalizados para **FadeBooker**, optimizado para el desarrollo ágil, la documentación automatizada y el análisis de negocio.
+FadeBooker es una plataforma completa y entregada para la gestión de citas y servicios de barbería y fotografía.
 
-## 🏛️ Arquitectura de Coordinación (3 Niveles)
+## 🚀 Estado del Proyecto
+- **Proyecto:** Completado y listo para producción.
+- **Backend:** Implementado con Node.js siguiendo Arquitectura Hexagonal; API desplegada.
+- **Frontend:** Cliente React (Vite) finalizado y desplegado.
+- **Infraestructura:** Despliegue en Azure (App Service + Azure SQL) y servicios integrados.
 
-1.  **Orquestador Principal (`@system-orchestrator`)**: Punto de entrada único. Analiza tu petición y delega al área técnica correspondiente.
-2.  **Orquestadores de Dominio**: Especialistas en áreas macro (Programación, Documentación, Datos).
-3.  **Agentes Especialistas**: Expertos en tareas granulares (Frontend, Backend, DB, DevOps, Seguridad, etc.).
+## 🛠️ Tecnologías Principales
+- **Backend:** Node.js, Express, Knex.js, Zod, JWT.
+- **Frontend:** React 18, Vite, Tailwind CSS, Lucide React.
+- **Servicios:** Cloudinary (Imágenes), Mercado Pago (Pagos), Azure (Cloud).
 
-## 📁 Estructura del Ecosistema
+## 📂 Estructura del Proyecto
+- `Producto/back-fadebooker/`: API REST (Arquitectura Hexagonal).
+- `Producto/front-fadebooker/`: Cliente web React (Vite).
+- `Documentación/`: Documentación técnica consolidada, diagramas ER y flujos.
 
+## 📄 Documentación principal
+- Referencia técnica completa (PDF): [Documentación Técnica — README-fadebooker](Documentación/Documentos/README-fadebooker.pdf)
+## ⚙️ Configuración del Backend (.env)
+Para el correcto funcionamiento de Cloudinary y la base de datos:
+```env
+DB_SERVER=...
+CLOUDINARY_CLOUD_NAME=fadebooker
+CLOUDINARY_UPLOAD_PRESET=fadebooker_uploads
+...
 ```
-.github/
-├── system-orchestrator.agent.md    # Punto de partida recomendado
-├── AGENTS.md                        # Registro maestro y mapa de estados
-├── copilot-instructions.md          # Reglas de oro y stack tecnológico
-└── agents/
-    ├── programming/                 # Desarrollo de Software (React, Node, SQL)
-    ├── study/                       # Gestión de Knowledge Base y Documentos
-    ├── data/                        # Métricas y Business Intelligence
-    └── support/                     # Soporte Git/GitHub
-```
 
-## 🚀 Cómo usar los Agentes
-
-Para obtener los mejores resultados, **comienza tus peticiones con @system-orchestrator**. Él se encargará de llamar a los agentes necesarios.
-
-### Ejemplos de uso:
-
--   **Desarrollo Completo**: `@system-orchestrator: Implementa el sistema de reseñas de barberos, incluyendo DB, API y Frontend.`
--   **Análisis de Documentación**: `@system-orchestrator: Resume el Acta de Constitución y dime si mis últimos cambios cumplen los requerimientos.`
--   **Gestión Git**: `@system-orchestrator: Revisa mis cambios y prepara un commit siguiendo el estándar.`
--   **Métricas de Negocio**: `@system-orchestrator: Analiza las tendencias de ventas de este mes basándote en los logs de Mercado Pago.`
-
-## 🛠️ Stack Tecnológico de Referencia
-
--   **Backend**: Node.js 20, Hexagonal Architecture, Knex.js.
--   **Frontend**: React 18, Vite, Tailwind CSS.
--   **BD**: Azure SQL Server.
--   **Integraciones**: Mercado Pago v2, Cloudinary.
+## 🔗 Enlaces del Ecosistema
+- **API Health:** [https://fadebooker-backend-ok.azurewebsites.net/api/health](https://fadebooker-backend-ok.azurewebsites.net/api/health)
+- **Documentación API:** [Indice de Endpoints](Documentación/md-fuente/INDICE_ENDPOINTS.md)
+- **Estado de Agentes:** [.github/AGENTS.md](.github/AGENTS.md)
 
 ---
-Para más detalles sobre cada agente y su responsabilidad, consulta [AGENTS.md](AGENTS.md).
+*Este proyecto es parte del ecosistema FadeBooker para la automatización de barberías y servicios fotográficos.*
+
+```bash
+git clone <repositorio> FadeBooker
+cd FadeBooker
+```
+
+2. Instalar dependencias del backend:
+
+```bash
+cd Producto/back-fadebooker
+npm install
+```
+
+3. Instalar dependencias del frontend:
+
+```bash
+cd ../front-fadebooker
+npm install
+```
+
+## Configuración de entorno
+
+1. Copiar archivo de ejemplo del backend:
+
+```bash
+cd ../back-fadebooker
+copy .env.example .env
+```
+
+2. Editar `.env` con los valores de la base de datos y servicios:
+
+- `DB_SERVER`
+- `DB_NAME`
+- `DB_USER`
+- `DB_PASSWORD`
+- `PORT`
+- `NODE_ENV`
+- `MP_ACCESS_TOKEN`
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
+- `EMAIL_HOST`
+- `EMAIL_PORT`
+- `EMAIL_USER`
+- `EMAIL_PASS`
+- `FRONTEND_URL`
+
+3. En el frontend, si se usa la API local, no es necesario modificar nada. Si se ejecuta en otro servidor, crear o actualizar el archivo `.env` en `Producto/front-fadebooker/` con:
+
+```bash
+VITE_API_BASE_URL=http://localhost:3000/api
+VITE_API_URL=http://localhost:3000/api
+```
+
+## Ejecutar localmente
+
+### Backend
+
+```bash
+cd Producto/back-fadebooker
+npm start
+```
+
+El backend quedará disponible en `http://localhost:3000`.
+
+### Frontend
+
+```bash
+cd Producto/front-fadebooker
+npm run dev
+```
+
+El frontend quedará disponible en `http://localhost:5173`.
+
+## Despliegue con Docker
+
+### Backend
+
+```bash
+cd Producto/back-fadebooker
+docker build -t fadebooker-backend .
+docker run -d -p 3000:3000 --env-file .env fadebooker-backend
+```
+
+### Frontend
+
+```bash
+cd Producto/front-fadebooker
+docker build -t fadebooker-frontend .
+docker run -d -p 4173:4173 fadebooker-frontend
+```
+
+## Verificación
+
+- Backend: `http://localhost:3000/api/health`
+- Frontend: `http://localhost:5173`
+
+## Notas finales
+
+- El backend usa `dotenv` para cargar variables desde `.env`.
+- La configuración de la base de datos está en `Producto/back-fadebooker/src/config/knexfile.js`.
+- El frontend consume la API usando `import.meta.env.VITE_API_BASE_URL`.
+
+---
+Este repositorio contiene la versión finalizada de FadeBooker; para detalles de despliegue, arquitectura y operación consulte el PDF de referencia enlazado arriba.
