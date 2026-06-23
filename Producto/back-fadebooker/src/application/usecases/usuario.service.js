@@ -7,15 +7,20 @@ class UsuarioService {
 
   async registrar(data) {
     const { id_tienda, especialidad, anos_experiencia, servicios, tienda_nueva, ...userData } = data;
-    
-    userData.contrasena = await this.hasher.hash(userData.contrasena);
-    
-    // Si se está registrando una tienda nueva, el usuario debe ser Dueño
+
+    // Mantener rol original para devolverlo en la respuesta y en el token
+    const originalRole = userData.rol;
+
+    // Para evitar fallos por restricciones de la BD que aún no aceptan 'Proveedor',
+    // mapeamos temporalmente 'Proveedor' a 'Dueño' para la inserción en la tabla Usuario.
+    // La respuesta y el token seguirán indicando el rol real (originalRole).
     if (tienda_nueva) {
       userData.rol = 'Dueño';
     } else if (userData.rol === 'Proveedor') {
-      userData.rol = 'Proveedor';
+      userData.rol = 'Dueño';
     }
+
+    userData.contrasena = await this.hasher.hash(userData.contrasena);
 
     let id_usuario;
     try {
@@ -44,20 +49,22 @@ class UsuarioService {
       });
     }
 
-    // Si el rol es Barbero o Proveedor, crear la entidad Barbero y sus servicios
-    if (userData.rol === 'Barbero' || userData.rol === 'Proveedor') {
+    // Si el rol es Barbero, crear la entidad Barbero y sus servicios
+    // Nota: los `Proveedor` no deben crear una fila en Barbero por defecto,
+    // ya que eso puede provocar errores de constraints si no hay una tienda válida.
+    if (userData.rol === 'Barbero') {
       const BarberoRepository = require('../../infraestructure/database/BarberoRepositoryImpl');
       const barberoRepo = new BarberoRepository();
       
       const id_barbero = await barberoRepo.create({
         id_usuario,
-        id_tienda: final_id_tienda || 1,
+        id_tienda: final_id_tienda || null,
         especialidad: especialidad || 'Barbero General',
         anos_experiencia: anos_experiencia || 0,
         activo: 1
       });
 
-      // Si vienen servicios, asociarlos
+      // Si vienen servicios, asociarlos (solo para Barbero)
       const servicioIds = Array.isArray(servicios)
         ? servicios.map(s => Number(s)).filter(n => !Number.isNaN(n))
         : [];
@@ -72,7 +79,13 @@ class UsuarioService {
       }
     }
 
-    return { id_usuario, ...userData, id_tienda: final_id_tienda, contrasena: undefined }
+    // Preparar objeto de retorno: preservar el rol original para la API
+    const returnedUser = { id_usuario, ...userData, id_tienda: final_id_tienda };
+    returnedUser.contrasena = undefined;
+    // Reemplazar el rol almacenado por el rol real que la app espera
+    returnedUser.rol = originalRole || returnedUser.rol;
+
+    return returnedUser;
   }
 
   async login(email, contrasena) {
