@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./Producto/back-fadebooker
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./Producto/back-fadebooker/.env
+    environment:
+      - PORT=3000
+      - NODE_ENV=development
+    restart: always
+
+  frontend:
+    build:
+      context: ./Producto/front-fadebooker
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:3000/api
+        - VITE_API_BASE_URL=http://localhost:3000/api
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: always
