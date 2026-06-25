@@ -43,6 +43,16 @@ const BarberoRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+const BookingsRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, user } = useAuth();
+  const location = useLocation();
+
+  if (!isAuthenticated) return <Navigate to="/login" replace state={{ from: location }} />;
+  if (user?.rol === 'Dueño' || user?.rol === 'Proveedor') return <Navigate to="/subscriptions" replace />;
+
+  return <>{children}</>;
+};
+
 const ProviderRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, user } = useAuth();
   const location = useLocation();
@@ -105,11 +115,18 @@ const AppHeader = () => {
                   </Link>
                 )}
                 {(user?.rol === 'Dueño' || user?.rol === 'Proveedor') && (
-                  <Link to="/promociones" className="link-button text-[#3366FF] font-black">
-                    {user?.rol === 'Proveedor' ? 'Panel Proveedor' : 'Promociones'}
-                  </Link>
+                  <>
+                    <Link to="/subscriptions" className="link-button text-[#3366FF] font-black">
+                      Suscripciones
+                    </Link>
+                    <Link to="/promociones" className="link-button text-[#3366FF] font-black">
+                      {user?.rol === 'Proveedor' ? 'Panel Proveedor' : 'Promociones'}
+                    </Link>
+                  </>
                 )}
-                <Link to="/bookings" className="link-button">Citas</Link>
+                {(user?.rol === 'Cliente' || user?.rol === 'Barbero') && (
+                  <Link to="/bookings" className="link-button">Citas</Link>
+                )}
                 <Link to="/profile" className="link-button">Mi perfil</Link>
                 <button onClick={logout} className="button button-secondary w-full md:w-auto">Cerrar sesión</button>
               </>
@@ -152,7 +169,7 @@ function App() {
                   <Route path="/studiodeanger" element={<StudioDangerPage />} />
                   <Route path="/studiodeanger/reservar" element={<StudioDangerBookingPage />} />
                   <Route path="/booking/new" element={<PrivateRoute><BookingPage /></PrivateRoute>} />
-                  <Route path="/bookings" element={<PrivateRoute><MyBookingsPage /></PrivateRoute>} />
+                  <Route path="/bookings" element={<BookingsRoute><MyBookingsPage /></BookingsRoute>} />
                   <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
                   <Route path="/barberias" element={<BarberiasPage />} />
                   <Route path="/pago-exitoso" element={<PaymentResultPage />} />

@@ -11,6 +11,7 @@ const DashboardPage: React.FC = () => {
   const { data: bookings } = useQuery({
     queryKey: ['my-bookings-summary'],
     queryFn: () => bookingService.getMyBookings(),
+    enabled: user?.rol !== 'Proveedor' && user?.rol !== 'Dueño',
   });
 
   // Filter bookings dynamically
@@ -28,20 +29,13 @@ const DashboardPage: React.FC = () => {
     return bookings.filter((b: any) => b.estado?.toLowerCase() === 'completada').length;
   }, [bookings]);
 
-  const cards = [
+  const defaultCards = [
     {
       title: 'Mi Perfil',
       description: 'Gestiona tu información personal y foto.',
       icon: <User className="text-[#3366FF]" size={24} />,
       link: '/profile',
       color: 'bg-blue-50'
-    },
-    {
-      title: 'Mis Citas',
-      description: 'Revisa tus citas próximas y pasadas.',
-      icon: <Calendar className="text-emerald-500" size={24} />,
-      link: '/bookings',
-      color: 'bg-emerald-50'
     },
     {
       title: 'Explorar',
@@ -59,16 +53,45 @@ const DashboardPage: React.FC = () => {
     }
   ];
 
-  // Si es proveedor, añadimos tarjeta de promociones
-  if (user?.rol === 'Proveedor') {
-    cards.splice(1, 0, {
+  const providerCards = [
+    {
+      title: 'Mi Perfil',
+      description: 'Gestiona tu información personal y foto.',
+      icon: <User className="text-[#3366FF]" size={24} />,
+      link: '/profile',
+      color: 'bg-blue-50'
+    },
+    {
+      title: 'Suscripción',
+      description: 'Administra tu plan de visibilidad y beneficios.',
+      icon: <Ticket className="text-emerald-500" size={24} />,
+      link: '/subscriptions',
+      color: 'bg-emerald-50'
+    },
+    {
       title: 'Promociones',
-      description: 'Publica anuncios y ofertas para barberías.',
+      description: 'Publica anuncios y ofertas para tus servicios.',
       icon: <Ticket className="text-amber-500" size={24} />,
       link: '/promociones',
       color: 'bg-amber-50'
-    });
-  }
+    }
+  ];
+
+  const cards = user?.rol === 'Proveedor' || user?.rol === 'Dueño'
+    ? providerCards
+    : user?.rol === 'Barbero'
+      ? [
+          ...defaultCards.slice(0, 1),
+          {
+            title: 'Mis Citas',
+            description: 'Revisa tus citas próximas y pasadas.',
+            icon: <Calendar className="text-emerald-500" size={24} />,
+            link: '/bookings',
+            color: 'bg-emerald-50'
+          },
+          ...defaultCards.slice(1)
+        ]
+      : defaultCards;
 
   return (
     <div className="page-content container animate-fade-in">
@@ -134,43 +157,54 @@ const DashboardPage: React.FC = () => {
 
         {/* Columna Derecha: Resumen de actividad */}
         <div className="space-y-8">
-          <section className="card-surface p-6">
-            <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-              <Clock className="text-[#3366FF]" size={20} />
-              Próximas Citas
-            </h2>
-            
-            <div className="space-y-4">
-              {upcomingBookings && upcomingBookings.length > 0 ? (
-                upcomingBookings.map((booking: any) => (
-                  <div key={booking.id_cita} className="p-4 border border-slate-100 rounded-xl hover:bg-slate-50 transition-colors">
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="text-xs font-black uppercase tracking-tighter text-[#3366FF] bg-blue-50 px-2 py-1 rounded">
-                        {new Date(booking.fecha_hora_inicio).toLocaleDateString()}
-                      </span>
-                      <span className="text-xs text-slate-400">
-                        {new Date(booking.fecha_hora_inicio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
+          {user?.rol !== 'Proveedor' && user?.rol !== 'Dueño' ? (
+            <section className="card-surface p-6">
+              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <Clock className="text-[#3366FF]" size={20} />
+                Próximas Citas
+              </h2>
+              
+              <div className="space-y-4">
+                {upcomingBookings && upcomingBookings.length > 0 ? (
+                  upcomingBookings.map((booking: any) => (
+                    <div key={booking.id_cita} className="p-4 border border-slate-100 rounded-xl hover:bg-slate-50 transition-colors">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-xs font-black uppercase tracking-tighter text-[#3366FF] bg-blue-50 px-2 py-1 rounded">
+                          {new Date(booking.fecha_hora_inicio).toLocaleDateString()}
+                        </span>
+                        <span className="text-xs text-slate-400">
+                          {new Date(booking.fecha_hora_inicio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                      <p className="font-bold text-slate-800">{booking.nombre_servicio || 'Servicio de Barbería'}</p>
+                      <p className="text-sm text-slate-500">{booking.nombre_barberia || 'Barbería'}</p>
                     </div>
-                    <p className="font-bold text-slate-800">{booking.nombre_servicio || 'Servicio de Barbería'}</p>
-                    <p className="text-sm text-slate-500">{booking.nombre_barberia || 'Barbería'}</p>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <div className="bg-slate-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <Calendar className="text-slate-300" size={24} />
+                    </div>
+                    <p className="text-sm text-slate-500">No tienes citas próximas confirmadas.</p>
+                    <Link to="/barberias" className="text-xs text-[#3366FF] font-bold mt-2 inline-block">Agendar ahora</Link>
                   </div>
-                ))
-              ) : (
-                <div className="text-center py-8">
-                  <div className="bg-slate-50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Calendar className="text-slate-300" size={24} />
-                  </div>
-                  <p className="text-sm text-slate-500">No tienes citas próximas confirmadas.</p>
-                  <Link to="/barberias" className="text-xs text-[#3366FF] font-bold mt-2 inline-block">Agendar ahora</Link>
-                </div>
-              )}
-            </div>
-            
-            <Link to="/bookings" className="block text-center mt-6 text-sm font-bold text-slate-400 hover:text-[#3366FF] transition-colors">
-              Ver todas mis citas
-            </Link>
-          </section>
+                )}
+                
+                <Link to="/bookings" className="block text-center mt-6 text-sm font-bold text-slate-400 hover:text-[#3366FF] transition-colors">
+                  Ver todas mis citas
+                </Link>
+              </div>
+            </section>
+          ) : (
+            <section className="card-surface p-6">
+              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <Ticket className="text-[#3366FF]" size={20} />
+                Suscripciones y ventajas
+              </h2>
+              <p className="text-slate-600 mb-4">Gestiona tu plan de suscripción para mejorar visibilidad, promociones y prioridad en la plataforma.</p>
+              <Link to="/subscriptions" className="inline-flex items-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-xl font-bold">Ir a suscripciones</Link>
+            </section>
+          )}
 
           <section className="card-surface p-6 bg-gradient-to-br from-white to-blue-50/30">
             <div className="flex items-center gap-3 mb-4">

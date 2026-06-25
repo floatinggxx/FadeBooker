@@ -22,11 +22,35 @@ if (docker compose version *>$null) {
 
 Write-Host "Docker y Compose detectados correctamente. Usando: $DockerComposeCmd`n" -ForegroundColor Green
 
-# 3. Limpiar contenedores previos
+# Definir ruta raíz del proyecto
+$root = Split-Path -Parent $MyInvocation.MyCommand.Path
+
+# 3. Validar archivo .env del backend
+$backendEnvPath = Join-Path $root "Producto\back-fadebooker\.env"
+$rootEnvPath = Join-Path $root ".env"
+$backendEnvExamplePath = Join-Path $root "Producto\back-fadebooker\.env.example"
+
+if (-not (Test-Path $backendEnvPath)) {
+    if (Test-Path $rootEnvPath) {
+        Write-Host "No se encontró Producto/back-fadebooker/.env, pero sí se encontró .env en la raíz." -ForegroundColor Yellow
+        Write-Host "Copiando .env raíz a Producto/back-fadebooker/.env para Docker Compose..." -ForegroundColor Yellow
+        Copy-Item $rootEnvPath $backendEnvPath -Force
+    } elseif (Test-Path $backendEnvExamplePath) {
+        Write-Host "No se encontró Producto/back-fadebooker/.env. Creando una copia de .env.example..." -ForegroundColor Yellow
+        Copy-Item $backendEnvExamplePath $backendEnvPath -Force
+        Write-Host "Por favor completa los valores en Producto/back-fadebooker/.env antes de volver a ejecutar." -ForegroundColor Red
+        Exit 1
+    } else {
+        Write-Error "No se encontró .env en Producto/back-fadebooker ni .env en la raíz ni .env.example en Producto/back-fadebooker."
+        Exit 1
+    }
+}
+
+# 4. Limpiar contenedores previos
 Write-Host "Limpiando contenedores antiguos si existen..." -ForegroundColor Yellow
 Invoke-Expression "$DockerComposeCmd down"
 
-# 4. Construir y levantar
+# 5. Construir y levantar
 Write-Host "Compilando imágenes y levantando servicios..." -ForegroundColor Yellow
 Invoke-Expression "$DockerComposeCmd up --build -d"
 
