@@ -11,6 +11,12 @@ vi.mock('@/lib/api/pagoService', () => ({
   },
 }));
 
+vi.mock('@/lib/api/bookingService', () => ({
+  bookingService: {
+    cancelarCita: vi.fn(),
+  },
+}));
+
 const createTestQueryClient = () =>
   new QueryClient({
     defaultOptions: {
@@ -60,5 +66,28 @@ describe('BookingCard Component', () => {
     fireEvent.click(btn);
 
     expect(screen.getByText(/Tu Opinión/i)).toBeDefined();
+  });
+
+  it('debe llamar onRemove al pulsar el botón de eliminar', () => {
+    const onRemove = vi.fn();
+    render(<BookingCard {...defaultProps} onRemove={onRemove} />, { wrapper: TestWrapper });
+
+    fireEvent.click(screen.getByRole('button', { name: /eliminar cita/i }));
+
+    expect(onRemove).toHaveBeenCalledWith(1);
+  });
+
+  it('debe mostrar la URL y la imagen generada por IA cuando estén disponibles', () => {
+    render(
+      <BookingCard
+        {...defaultProps}
+        aiImageUrl="https://example.com/ia-style.jpg"
+      />,
+      { wrapper: TestWrapper }
+    );
+
+    expect(screen.getByText(/diseño ia/i)).toBeDefined();
+    expect(screen.getByRole('link', { name: /https:\/\/example\.com\/ia-style\.jpg/i })).toHaveAttribute('href', 'https://example.com/ia-style.jpg');
+    expect(screen.getByAltText(/imagen generada por ia/i)).toBeInTheDocument();
   });
 });

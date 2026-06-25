@@ -59,6 +59,11 @@ export const bookingService = {
     return response.data;
   },
 
+  // Eliminar una cita
+  async eliminarCita(citaId: number): Promise<void> {
+    await api.delete(`/citas/${citaId}`);
+  },
+
   // Actualizar una cita
   async updateCita(citaId: number, data: Partial<Cita>): Promise<Cita> {
     const response = await api.put<Cita>(`/citas/${citaId}`, data);

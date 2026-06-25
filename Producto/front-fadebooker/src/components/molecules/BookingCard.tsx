@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, User, Scissors, Info, CheckCircle2, XCircle, Clock, CreditCard, Star } from 'lucide-react';
+import { Calendar, User, Scissors, Info, CheckCircle2, XCircle, Clock, CreditCard, Star, Trash2 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useQueryClient } from '@tanstack/react-query';
 import { pagoService } from '@/lib/api/pagoService';
@@ -25,6 +25,8 @@ interface BookingCardProps {
   montoTotal?: number;
   pagoAbono?: number;
   createdAt?: string;
+  aiImageUrl?: string;
+  onRemove?: (id?: number) => void;
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({ 
@@ -42,11 +44,14 @@ const BookingCard: React.FC<BookingCardProps> = ({
   id,
   montoTotal = 0,
   pagoAbono = 0,
-  createdAt
+  createdAt,
+  aiImageUrl,
+  onRemove
 }) => {
   const queryClient = useQueryClient();
   const { showNotification } = useNotification();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [isReviewed, setIsReviewed] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
@@ -115,6 +120,17 @@ const BookingCard: React.FC<BookingCardProps> = ({
       return;
     }
     setShowCancelConfirmModal(true);
+  };
+
+  const handleRemoveClick = async () => {
+    if (!id || isRemoving) return;
+
+    setIsRemoving(true);
+    try {
+      await onRemove?.(id);
+    } finally {
+      setIsRemoving(false);
+    }
   };
 
   const handleConfirmCancel = async () => {
@@ -252,6 +268,25 @@ const BookingCard: React.FC<BookingCardProps> = ({
               <p className="text-sm text-slate-600 font-medium italic">"{notes}"</p>
             </div>
           )}
+
+          {aiImageUrl && (
+            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Diseño IA</p>
+              <a
+                href={aiImageUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-2 inline-flex break-all text-sm font-semibold text-blue-600 hover:underline"
+              >
+                {aiImageUrl}
+              </a>
+              <img
+                src={aiImageUrl}
+                alt="Imagen generada por IA"
+                className="mt-3 h-40 w-full rounded-2xl object-cover shadow-sm"
+              />
+            </div>
+          )}
         </div>
 
         {/* Status Badge & Actions */}
@@ -308,6 +343,17 @@ const BookingCard: React.FC<BookingCardProps> = ({
               Cancelar Cita
             </button>
           )}
+
+          <button
+            type="button"
+            onClick={handleRemoveClick}
+            disabled={isRemoving}
+            className="w-full flex items-center justify-center gap-2 border-2 border-rose-100 text-rose-500 hover:bg-rose-50 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all disabled:opacity-50"
+            aria-label="Eliminar cita"
+          >
+            <Trash2 size={16} />
+            {isRemoving ? 'Eliminando...' : 'Eliminar Cita'}
+          </button>
 
           <button 
             onClick={() => setShowDetails(!showDetails)}

@@ -4,7 +4,7 @@ const citaSchema = z.object({
   id_cliente: z.coerce.number().int().positive().optional(),
   id_barbero: z.coerce.number().int().positive(),
   id_servicio: z.coerce.number().int().positive(),
-  id_tienda: z.coerce.number().int().positive(),
+  id_tienda: z.coerce.number().int().positive().optional().nullable(),
   fecha_hora_inicio: z.string().refine((val) => {
     const date = new Date(val.replace(' ', 'T')) // Normalizar para Zod y JS
     return !isNaN(date.getTime())

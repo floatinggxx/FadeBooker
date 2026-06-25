@@ -10,7 +10,13 @@ const usuarioSchema = z.object({
   id_tienda: z.union([z.number().int(), z.string().transform(v => v === '' ? undefined : Number(v))]).optional(),
   especialidad: z.string().max(100).optional(),
   anos_experiencia: z.union([z.number().int(), z.string().transform(v => v === '' ? undefined : Number(v))]).optional().nullable(),
-  servicios: z.array(z.number().int()).optional()
+  servicios: z.array(z.number().int()).optional(),
+  tienda_nueva: z.object({
+    nombre_tienda: z.string().min(2).max(150),
+    direccion: z.string().min(2).max(250),
+    ciudad: z.string().min(2).max(100),
+    comuna: z.string().min(2).max(100).optional()
+  }).optional()
 })
 
 const loginSchema = z.object({

@@ -419,30 +419,6 @@ export const HaircutSimulator: React.FC<HaircutSimulatorProps> = ({ onSimulation
             </div>
           </div>
 
-          {/* AI vs traditional toggle */}
-          <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Sparkles className={`h-5 w-5 ${useAI ? 'text-amber-500' : 'text-slate-400'}`} />
-              <div>
-                <p className="text-xs font-semibold text-slate-800">IA Generativa (Cloudinary Replace)</p>
-                <p className="text-[10px] text-slate-500">Reemplaza el cabello de la foto mediante redes neuronales en tiempo real.</p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setUseAI(!useAI)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
-                useAI ? 'bg-blue-600' : 'bg-slate-300'
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  useAI ? 'translate-x-6' : 'translate-x-1'
-                }`}
-              />
-            </button>
-          </div>
-
           {/* Gender selection */}
           <div className="space-y-2">
             <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Selecciona el género del peinado</label>
@@ -542,26 +518,7 @@ export const HaircutSimulator: React.FC<HaircutSimulatorProps> = ({ onSimulation
               </p>
             </div>
 
-            {/* Checkbox to send resulting simulation to the barber */}
-            {simulationResult && (
-              <div className="bg-emerald-50 border border-emerald-200/50 rounded-lg p-4 flex items-start space-x-3 mt-4">
-                <input
-                  id="wantToAttachCheckbox"
-                  type="checkbox"
-                  checked={wantToAttach}
-                  onChange={(e) => handleAttachmentChange(e.target.checked)}
-                  className="mt-1 h-4 w-4 text-emerald-600 border-slate-300 rounded focus:ring-emerald-500"
-                />
-                <div className="text-xs">
-                  <label htmlFor="wantToAttachCheckbox" className="font-bold text-slate-800 cursor-pointer block select-none">
-                    ✨ ¡Quiero enviar este corte a mi barbero!
-                  </label>
-                  <p className="text-slate-600 mt-1">
-                    Al marcar esta casilla, el enlace de la imagen generada de <strong className="text-slate-800">{availableStyles.find(x => x.id === selectedStyle)?.name}</strong> se integrará automáticamente en las observaciones para que el barbero asignado pueda visualizar el objetivo visual solicitado.
-                  </p>
-                </div>
-              </div>
-            )}
+            
           </div>
         </div>
       )}

@@ -39,11 +39,12 @@ class UsuarioService {
     if (tienda_nueva) {
       const TiendaRepository = require('../../infraestructure/database/TiendaRepositoryImpl');
       const tiendaRepo = new TiendaRepository();
-      
+
       final_id_tienda = await tiendaRepo.create({
         nombre_tienda: tienda_nueva.nombre_tienda,
         direccion: tienda_nueva.direccion,
         ciudad: tienda_nueva.ciudad,
+        comuna: tienda_nueva.comuna || null,
         id_dueño: id_usuario,
         este_activa: 1
       });
@@ -100,7 +101,7 @@ class UsuarioService {
       throw new Error('Credenciales inválidas')
     }
 
-    const token = this.tokenManager.sign({ id: usuario.id_usuario, email: usuario.email });
+    const token = this.tokenManager.sign({ id: usuario.id_usuario, email: usuario.email, rol: usuario.rol });
 
     // Actualizar último login
     await this.usuarioRepository.update(usuario.id_usuario, { ultimo_login: new Date() });

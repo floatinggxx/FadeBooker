@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/21</span>
+                <span class='fraction'>0/34</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/10</span>
+                <span class='fraction'>0/35</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/21</span>
+                <span class='fraction'>0/34</span>
             </div>
         
             
@@ -242,7 +242,29 @@
 <a name='L177'></a><a href='#L177'>177</a>
 <a name='L178'></a><a href='#L178'>178</a>
 <a name='L179'></a><a href='#L179'>179</a>
-<a name='L180'></a><a href='#L180'>180</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L180'></a><a href='#L180'>180</a>
+<a name='L181'></a><a href='#L181'>181</a>
+<a name='L182'></a><a href='#L182'>182</a>
+<a name='L183'></a><a href='#L183'>183</a>
+<a name='L184'></a><a href='#L184'>184</a>
+<a name='L185'></a><a href='#L185'>185</a>
+<a name='L186'></a><a href='#L186'>186</a>
+<a name='L187'></a><a href='#L187'>187</a>
+<a name='L188'></a><a href='#L188'>188</a>
+<a name='L189'></a><a href='#L189'>189</a>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a>
+<a name='L193'></a><a href='#L193'>193</a>
+<a name='L194'></a><a href='#L194'>194</a>
+<a name='L195'></a><a href='#L195'>195</a>
+<a name='L196'></a><a href='#L196'>196</a>
+<a name='L197'></a><a href='#L197'>197</a>
+<a name='L198'></a><a href='#L198'>198</a>
+<a name='L199'></a><a href='#L199'>199</a>
+<a name='L200'></a><a href='#L200'>200</a>
+<a name='L201'></a><a href='#L201'>201</a>
+<a name='L202'></a><a href='#L202'>202</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -356,13 +378,35 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -534,21 +578,43 @@ class TiendaRepositoryImpl extends TiendaRepository {
    */
 <span class="fstat-no" title="function not covered" >  as</span>ync create(data) {
 <span class="cstat-no" title="statement not covered" >    try {</span>
+      const { comuna, ...safeData } = <span class="cstat-no" title="statement not covered" >data || {};</span>
+      const insertPayload = <span class="cstat-no" title="statement not covered" >{</span>
+        ...safeData,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      if (comuna !== undefined &amp;&amp; comuna !== null &amp;&amp; comuna !== '') {</span>
+<span class="cstat-no" title="statement not covered" >        insertPayload.comuna = comuna;</span>
+      }
+&nbsp;
       const result = <span class="cstat-no" title="statement not covered" >await db('Tienda')</span>
-        .insert({
-          ...data,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        })
+        .insert(insertPayload)
         .returning('id_tienda')
-      
+&nbsp;
 <span class="cstat-no" title="statement not covered" >      if (result &amp;&amp; Array.isArray(result) &amp;&amp; result.length &gt; 0) {</span>
         const id = <span class="cstat-no" title="statement not covered" >result[0]</span>
 <span class="cstat-no" title="statement not covered" >        return typeof id === 'object' ? id.id_tienda : id</span>
       }
 <span class="cstat-no" title="statement not covered" >      return result</span>
     } catch (error) {
-<span class="cstat-no" title="statement not covered" >      throw error</span>
+      const message = <span class="cstat-no" title="statement not covered" >error &amp;&amp; error.message ? String(error.message) : '';</span>
+<span class="cstat-no" title="statement not covered" >      if (message.includes("invalid column name 'comuna'") || message.includes("does not have a column named 'comuna'") || message.includes("unknown column 'comuna'")) {</span>
+        const { comuna, ...safeData } = <span class="cstat-no" title="statement not covered" >data || {};</span>
+        const fallbackPayload = <span class="cstat-no" title="statement not covered" >{</span>
+          ...safeData,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        const result = <span class="cstat-no" title="statement not covered" >await db('Tienda').insert(fallbackPayload).returning('id_tienda');</span>
+<span class="cstat-no" title="statement not covered" >        if (result &amp;&amp; Array.isArray(result) &amp;&amp; result.length &gt; 0) {</span>
+          const id = <span class="cstat-no" title="statement not covered" >result[0];</span>
+<span class="cstat-no" title="statement not covered" >          return typeof id === 'object' ? id.id_tienda : id;</span>
+        }
+<span class="cstat-no" title="statement not covered" >        return result;</span>
+      }
+<span class="cstat-no" title="statement not covered" >      throw error;</span>
     }
   }
 &nbsp;
@@ -607,7 +673,7 @@ class TiendaRepositoryImpl extends TiendaRepository {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-16T21:25:23.780Z
+                at 2026-06-25T23:14:04.750Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

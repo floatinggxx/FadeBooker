@@ -25,6 +25,7 @@ type FormData = {
     nombre_tienda: string;
     direccion: string;
     ciudad: string;
+    comuna?: string;
   };
   acceptTerms?: boolean;
 };
@@ -302,11 +303,11 @@ const RegisterPage: React.FC = () => {
               <input type="radio" value="Cliente" {...register('rol')} defaultChecked /> Cliente
             </label>
             <label className="radio-option">
-              <input type="radio" value="Barbero" {...register('rol')} /> Dueño de barbería
+              <input type="radio" value="Dueño" {...register('rol')} /> Dueño de barbería
             </label>
           </div>
 
-          {rol === 'Barbero' && (
+          {(rol === 'Dueño' || rol === 'Barbero') && (
             <div className="barber-extra-fields animate-fade-in">
               <div className="section-divider">
                 <span>Información Profesional</span>
@@ -317,7 +318,7 @@ const RegisterPage: React.FC = () => {
                   <Briefcase size={18} className="input-icon" />
                   <input 
                     {...register('especialidad', { 
-                      required: rol === 'Barbero' ? 'La especialidad es obligatoria' : false 
+                      required: (rol === 'Barbero' || rol === 'Dueño') ? 'La especialidad es obligatoria' : false 
                     })} 
                     placeholder="Especialidad (ej. Degradados, Barba, Tijera)" 
                     className={`input-field ${errors.especialidad ? 'input-error' : ''}`} 
@@ -343,7 +344,38 @@ const RegisterPage: React.FC = () => {
                 </div>
               </div>
 
-              {isRegisteringTienda && (
+              {!isRegisteringTienda ? (
+                <div className="input-container">
+                  <div className="input-with-icon">
+                    <Store size={18} className="input-icon" />
+                    <select 
+                      {...register('id_tienda', { 
+                        required: (rol === 'Barbero' || rol === 'Dueño') && !isRegisteringTienda ? 'Debes seleccionar una barbería' : false 
+                      })}
+                      className={`input-field ${errors.id_tienda ? 'input-error' : ''}`}
+                    >
+                      <option value="">Selecciona tu Barbería</option>
+                      {tiendas.map(tienda => (
+                        <option key={tienda.id_tienda} value={tienda.id_tienda}>
+                          {tienda.nombre_tienda} - {tienda.ciudad}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {errors.id_tienda && <span className="error-message">{errors.id_tienda.message}</span>}
+                  
+                  <button 
+                    type="button" 
+                    className="link-alt text-sm mt-2 flex items-center gap-1"
+                    onClick={() => {
+                      setIsRegisteringTienda(true);
+                      setValue('id_tienda', undefined);
+                    }}
+                  >
+                    <Plus size={14} /> ¿No aparece tu barbería? Inscríbela aquí
+                  </button>
+                </div>
+              ) : (
                 <div className="new-tienda-fields animate-fade-in">
                   <div className="info-alert mb-4">
                     <Info size={20} className="text-blue-500" />
@@ -373,6 +405,13 @@ const RegisterPage: React.FC = () => {
                     <input 
                       {...register('tienda_nueva.ciudad', { required: isRegisteringTienda ? 'La ciudad es obligatoria' : false })} 
                       placeholder="Ciudad" 
+                      className="input-field" 
+                    />
+                  </div>
+                  <div className="input-container mb-3">
+                    <input 
+                      {...register('tienda_nueva.comuna', { required: isRegisteringTienda ? 'La comuna es obligatoria' : false })} 
+                      placeholder="Comuna" 
                       className="input-field" 
                     />
                   </div>
@@ -419,7 +458,7 @@ const RegisterPage: React.FC = () => {
                     );
                   })}
                 </div>
-                {(rol === 'Barbero' || isRegisteringTienda) && selectedServices.length === 0 && (
+                {(rol === 'Barbero' || rol === 'Dueño' || isRegisteringTienda) && selectedServices.length === 0 && (
                   <div className="flex items-center gap-2 mt-3 text-rose-500 font-bold text-xs animate-shake">
                     <AlertCircle size={14} />
                     <span>Debes seleccionar al menos un servicio</span>
@@ -432,7 +471,7 @@ const RegisterPage: React.FC = () => {
           <button 
             type="submit" 
             className="button button-primary button-glow"
-            disabled={((rol === 'Barbero' || isRegisteringTienda) && selectedServices.length === 0)}
+            disabled={((rol === 'Barbero' || rol === 'Dueño' || isRegisteringTienda) && selectedServices.length === 0)}
           >
             {isRegisteringTienda ? 'Registrar Tienda y Usuario' : 'Registrar'}
           </button>

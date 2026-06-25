@@ -26,7 +26,10 @@ describe('CitaController', () => {
       agendarCita: jest.fn(),
       getCitaById: jest.fn(),
       cancelarCita: jest.fn(),
-      crearResena: jest.fn()
+      crearResena: jest.fn(),
+      obtenerCitasPorCliente: jest.fn(),
+      obtenerCitasPorBarbero: jest.fn(),
+      obtenerCitasPorTienda: jest.fn()
     };
     citaController = new CitaController(mockCitaService);
     
@@ -60,6 +63,20 @@ describe('CitaController', () => {
 
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({ error: 'Service Error' });
+    });
+  });
+
+  describe('listar', () => {
+    test('debe filtrar por el usuario autenticado cuando el token usa id_usuario', async () => {
+      req.query = {};
+      req.user = { id_usuario: 42, rol: 'Cliente' };
+      mockCitaService.obtenerCitasPorCliente.mockResolvedValue([{ id_cita: 10 }]);
+
+      await citaController.listar(req, res, next);
+
+      expect(mockCitaService.obtenerCitasPorCliente).toHaveBeenCalledWith(42);
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith([{ id_cita: 10 }]);
     });
   });
 });

@@ -111,21 +111,43 @@ class TiendaRepositoryImpl extends TiendaRepository {
    */
   async create(data) {
     try {
+      const { comuna, ...safeData } = data || {};
+      const insertPayload = {
+        ...safeData,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+
+      if (comuna !== undefined && comuna !== null && comuna !== '') {
+        insertPayload.comuna = comuna;
+      }
+
       const result = await db('Tienda')
-        .insert({
-          ...data,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        })
+        .insert(insertPayload)
         .returning('id_tienda')
-      
+
       if (result && Array.isArray(result) && result.length > 0) {
         const id = result[0]
         return typeof id === 'object' ? id.id_tienda : id
       }
       return result
     } catch (error) {
-      throw error
+      const message = error && error.message ? String(error.message) : '';
+      if (message.includes("invalid column name 'comuna'") || message.includes("does not have a column named 'comuna'") || message.includes("unknown column 'comuna'")) {
+        const { comuna, ...safeData } = data || {};
+        const fallbackPayload = {
+          ...safeData,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        const result = await db('Tienda').insert(fallbackPayload).returning('id_tienda');
+        if (result && Array.isArray(result) && result.length > 0) {
+          const id = result[0];
+          return typeof id === 'object' ? id.id_tienda : id;
+        }
+        return result;
+      }
+      throw error;
     }
   }
 

@@ -44,7 +44,7 @@ const TermsAndPrivacyPage: React.FC = () => {
           </p>
           <div className="info-box">
             <strong>🏢 Responsable del Tratamiento:</strong><br/>
-            FadeBooker S.A. | Argentina<br/>
+            FadeBooker S.A. | Chile<br/>
             <strong>📧 Contacto de Privacidad:</strong> privacy@fadebooker.com<br/>
             <strong>📋 Última Actualización:</strong> 2 de Junio de 2026
           </div>

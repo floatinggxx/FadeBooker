@@ -54,6 +54,7 @@ export interface RegisterRequest {
     nombre_tienda: string;
     direccion: string;
     ciudad: string;
+    comuna?: string;
   };
 }
 

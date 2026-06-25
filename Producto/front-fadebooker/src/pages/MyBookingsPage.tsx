@@ -1,17 +1,19 @@
-import React, { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { bookingService } from '@/lib/api/bookingService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import BookingsSection from '@/components/organisms/BookingsSection';
-import { Search, Filter, X } from 'lucide-react';
+import { Search, Filter, X, Trash2 } from 'lucide-react';
 
 const MyBookingsPage: React.FC = () => {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const userId = user ? Number(user.id_usuario || user.id) : undefined;
   const isBarbero = user?.rol === 'Barbero' || user?.rol === 'Dueño';
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [appointments, setAppointments] = useState<any[]>([]);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['my-bookings', userId, user?.rol],
@@ -24,10 +26,42 @@ const MyBookingsPage: React.FC = () => {
     enabled: !!userId,
   });
 
+  useEffect(() => {
+    if (data) {
+      setAppointments(data);
+    }
+  }, [data]);
+
+  const handleRemoveAppointment = async (appointmentId?: number) => {
+    if (!appointmentId) return;
+
+    try {
+      await bookingService.eliminarCita(appointmentId);
+      setAppointments((current) => current.filter((c: any) => (c.id_cita ?? c.id) !== appointmentId));
+      queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
+    } catch (error) {
+      console.error('Error al eliminar la cita:', error);
+    }
+  };
+
+  const handleRemoveAllAppointments = async () => {
+    if (!appointments.length) return;
+
+    try {
+      await Promise.all(
+        appointments.map((appointment: any) => bookingService.eliminarCita(Number(appointment.id_cita ?? appointment.id)))
+      );
+      setAppointments([]);
+      queryClient.invalidateQueries({ queryKey: ['my-bookings'] });
+    } catch (error) {
+      console.error('Error al eliminar todas las citas:', error);
+    }
+  };
+
   const filteredAppointments = useMemo(() => {
-    if (!data) return [];
+    if (!appointments.length) return [];
     
-    return data.filter((c: any) => {
+    return appointments.filter((c: any) => {
       const barberoNombre = (c.barbero_nombre && c.barbero_apellido) 
         ? `${c.barbero_nombre} ${c.barbero_apellido}` 
         : c.barbero_nombre || c.barbero?.nombre || '';
@@ -37,14 +71,23 @@ const MyBookingsPage: React.FC = () => {
         : c.cliente_nombre || '';
 
       const servicioNombre = c.servicio_nombre || c.nombre_servicio || c.servicio?.nombre || '';
+      const fecha = c.fecha_hora_inicio ? c.fecha_hora_inicio.split('T')[0] : c.fecha || '';
+      const hora = c.fecha_hora_inicio ? c.fecha_hora_inicio.split('T')[1]?.substring(0, 5) : c.hora || '';
+      const searchText = [
+        barberoNombre,
+        clienteNombre,
+        servicioNombre,
+        c.id_cita?.toString(),
+        fecha,
+        hora,
+        c.fecha,
+        c.hora,
+        c.fecha_hora_inicio,
+      ].join(' ').toLowerCase();
       
-      const searchMatch = 
-        barberoNombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        clienteNombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        servicioNombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.id_cita?.toString().includes(searchTerm);
+      const searchMatch = searchText.includes(searchTerm.toLowerCase());
 
-      const statusMatch = statusFilter === 'all' || c.estado.toLowerCase() === statusFilter.toLowerCase();
+      const statusMatch = statusFilter === 'all' || (c.estado || '').toLowerCase() === statusFilter.toLowerCase();
       
       return searchMatch && statusMatch;
     }).sort((a: any, b: any) => {
@@ -52,7 +95,7 @@ const MyBookingsPage: React.FC = () => {
       const dateB = b.fecha_hora_inicio ? new Date(b.fecha_hora_inicio).getTime() : new Date(`${b.fecha} ${b.hora}`).getTime();
       return dateB - dateA;
     });
-  }, [data, searchTerm, statusFilter]);
+  }, [appointments, searchTerm, statusFilter]);
 
   if (!userId) {
     return <div className="page-content container text-center py-20">Inicia sesión para ver tus citas y gestionar tus reservas.</div>;
@@ -82,7 +125,7 @@ const MyBookingsPage: React.FC = () => {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#3366FF] transition-colors" size={20} />
               <input 
                 type="text"
-                placeholder="Buscar por barbero, servicio..."
+                placeholder="Buscar por fecha, hora, barbero o servicio"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-12 pr-10 py-4 bg-white border-2 border-slate-100 rounded-2xl w-full sm:w-64 outline-none focus:border-[#3366FF] transition-all font-medium text-slate-700"
@@ -93,6 +136,15 @@ const MyBookingsPage: React.FC = () => {
                 </button>
               )}
             </div>
+
+            <button
+              type="button"
+              onClick={handleRemoveAllAppointments}
+              className="flex items-center gap-2 rounded-2xl border-2 border-rose-100 bg-white px-4 py-3 text-sm font-black uppercase tracking-widest text-rose-500 transition-all hover:bg-rose-50"
+            >
+              <Trash2 size={16} />
+              Borrar todo
+            </button>
 
             {/* Filtro de Estado */}
             <div className="relative">
@@ -114,6 +166,7 @@ const MyBookingsPage: React.FC = () => {
 
         {filteredAppointments.length ? (
           <BookingsSection
+            onRemove={handleRemoveAppointment}
             bookings={filteredAppointments.map((c: any) => ({
               id: c.id_cita || c.id,
               fecha: c.fecha_hora_inicio ? c.fecha_hora_inicio.split('T')[0] : c.fecha,
@@ -133,7 +186,8 @@ const MyBookingsPage: React.FC = () => {
               isBarberoView: isBarbero,
               montoTotal: c.monto_total,
               pagoAbono: c.pago_abono,
-              createdAt: c.createdAt
+              createdAt: c.createdAt,
+              aiImageUrl: c.ai_image_url || c.aiImageUrl || c.simulatedImageUrl || c.imagen_url || c.imagenUrl || c.image_url
             }))}
           />
         ) : (

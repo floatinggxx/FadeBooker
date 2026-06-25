@@ -89,6 +89,12 @@ class CitaController {
       // para evitar que listar cambie el estado de citas durante peticiones de lectura.
       // La sincronización de estados debe realizarse por un job programado o una acción explícita de admin.
 
+      const resolveAuthenticatedUserId = (user) => {
+        if (!user) return null;
+        const userId = user.id_usuario ?? user.id ?? user.userId ?? user.user_id;
+        return userId !== undefined && userId !== null ? Number(userId) : null;
+      };
+
       let citas
       if (clienteId !== undefined) {
         const id = parseInt(clienteId, 10)
@@ -102,12 +108,15 @@ class CitaController {
       } else if (req.user) {
         // Si el usuario está autenticado pero no hay parámetros de query,
         // devolver solo sus citas (como cliente o barbero)
-        const userId = req.user.id;
+        const userId = resolveAuthenticatedUserId(req.user);
         const rol = req.user.rol;
+        const normalizedRol = String(rol || '').toLowerCase();
         
-        if (rol === 'Cliente' || rol === 'Proveedor') {
+        if (!userId) {
+          citas = [];
+        } else if (normalizedRol === 'cliente' || normalizedRol === 'proveedor' || normalizedRol === 'dueño') {
           citas = await this.citaService.obtenerCitasPorCliente(userId);
-        } else if (rol === 'Barbero') {
+        } else if (normalizedRol === 'barbero') {
           citas = await this.citaService.obtenerCitasPorBarbero(userId);
         } else {
           citas = [];

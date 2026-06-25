@@ -18,13 +18,15 @@ interface BookingItem {
   pagoAbono?: number;
   createdAt?: string;
   tiendaName?: string;
+  aiImageUrl?: string;
 }
 
 interface BookingsSectionProps {
   bookings: BookingItem[];
+  onRemove?: (id?: number) => void;
 }
 
-const BookingsSection: React.FC<BookingsSectionProps> = ({ bookings }) => (
+const BookingsSection: React.FC<BookingsSectionProps> = ({ bookings, onRemove }) => (
   <div className="grid gap-8">
     {bookings.map((item) => (
       <BookingCard
@@ -44,6 +46,8 @@ const BookingsSection: React.FC<BookingsSectionProps> = ({ bookings }) => (
         montoTotal={item.montoTotal}
         pagoAbono={item.pagoAbono}
         createdAt={item.createdAt}
+        aiImageUrl={item.aiImageUrl}
+        onRemove={onRemove}
       />
     ))}
   </div>

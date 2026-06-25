@@ -1,4 +1,4 @@
-const PagoService = require('../../../src/application/usecases/pago.service');
+const PagoService = require('../../src/application/usecases/pago.service');
 
 describe('PagoService.crearPreferenciaPago - comisión y montos', () => {
   let mockPagoRepo;
@@ -33,7 +33,7 @@ describe('PagoService.crearPreferenciaPago - comisión y montos', () => {
 
     // Inject mock Preference into module by temporarily requiring the service and replacing Preference
     jest.resetModules();
-    const modulePath = '../../../src/application/usecases/pago.service';
+    const modulePath = '../../src/application/usecases/pago.service';
     const svcModule = require(modulePath);
 
     // Monkeypatch the Preference used inside the module

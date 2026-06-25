@@ -111,7 +111,7 @@ const UniversalBookingPage: React.FC = () => {
   const { data: availability, isLoading: loadingAvailability } = useQuery({
     queryKey: ['availability', id, selectedDate],
     queryFn: () => barberService.getDisponibilidad(Number(id), selectedDate),
-    enabled: !!id && !!selectedDate && step === 4,
+    enabled: !!id && !!selectedDate && (step === 4 || step === 5),
   });
 
   const filteredAvailability = useMemo(() => {
@@ -622,7 +622,7 @@ const UniversalBookingPage: React.FC = () => {
               <button
                 type="button"
                 disabled={!selectedDate}
-                onClick={() => setStep(4)}
+                onClick={() => setStep(5)}
                 className="bg-[#3366FF] text-white px-12 py-5 rounded-full font-black text-xl shadow-xl shadow-blue-200 disabled:opacity-50"
               >
                 VER HORARIOS <ArrowRight className="inline ml-2" />

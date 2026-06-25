@@ -13,8 +13,9 @@ class PagoService {
     let comisionAplicada;
 
     try {
-      // Obtener datos de la cita
-      cita = await this.citaRepository.findById(id_cita);
+      // Obtener datos de la cita para pagos usando una lectura directa que no filtre por soft-delete
+      const findCitaMethod = this.citaRepository.findByIdForPayment || this.citaRepository.findById;
+      cita = await findCitaMethod.call(this.citaRepository, id_cita);
       // Fallback a versión con detalles si las columnas monto_total/pago_abono vienen nulas
       if (cita && (cita.monto_total === null || cita.pago_abono === null)) {
         try {

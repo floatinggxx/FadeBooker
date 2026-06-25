@@ -12,6 +12,21 @@ class CitaRepositoryImpl {
     this.db = db
   }
 
+  _excludeDeleted(query, alias = '') {
+    const column = alias ? `${alias}.estado` : 'estado';
+    const notesColumn = alias ? `${alias}.notas` : 'notas';
+
+    return query.where(function () {
+      this.where(function () {
+        this.whereRaw(`ISNULL(${notesColumn}, '') NOT LIKE '%[soft-delete]%'`);
+      }).orWhereNull(notesColumn);
+    }).where(function () {
+      this.where(function () {
+        this.where(column, '!=', 'eliminada');
+      }).orWhereNull(column);
+    });
+  }
+
   async create(data) {
     console.log('--- DEBUG: Entrando a CitaRepositoryImpl.create (SQL RAW) ---');
     console.log('--- Datos recibidos:', JSON.stringify(data));
@@ -122,24 +137,30 @@ class CitaRepositoryImpl {
   }
 
   async findById(id) {
+    return this._excludeDeleted(this.db('Cita').where({ id_cita: id }), '').first()
+  }
+
+  async findByIdForPayment(id) {
     return this.db('Cita').where({ id_cita: id }).first()
   }
 
   async findByClienteId(id_cliente) {
-    return this.db('Cita').where({ id_cliente }).orderBy('fecha_hora_inicio', 'desc').select()
+    return this._excludeDeleted(this.db('Cita').where({ id_cliente }).orderBy('fecha_hora_inicio', 'desc'), '').select()
   }
 
   async findByBarberoId(id_barbero) {
-    return this.db('Cita').where({ id_barbero }).orderBy('fecha_hora_inicio', 'desc').select()
+    return this._excludeDeleted(this.db('Cita').where({ id_barbero }).orderBy('fecha_hora_inicio', 'desc'), '').select()
   }
 
   async findByCliente(id_cliente) {
-    return this.db('Cita as c')
+    const query = this.db('Cita as c')
       .leftJoin('Barbero as b', 'c.id_barbero', 'b.id_barbero')
       .leftJoin('Usuario as u', 'b.id_usuario', 'u.id_usuario')
       .leftJoin('Servicio as s', 'c.id_servicio', 's.id_servicio')
       .leftJoin('Tienda as t', 'c.id_tienda', 't.id_tienda')
-      .where('c.id_cliente', id_cliente)
+      .where('c.id_cliente', id_cliente);
+
+    return this._excludeDeleted(query, 'c')
       .select(
         'c.*',
         'u.nombre as barbero_nombre',
@@ -173,7 +194,7 @@ class CitaRepositoryImpl {
       }
     }
 
-    return query.select(
+    return this._excludeDeleted(query, 'c').select(
       'c.*',
       'u_c.nombre as cliente_nombre',
       'u_c.apellido as cliente_apellido',
@@ -206,7 +227,7 @@ class CitaRepositoryImpl {
       }
     }
 
-    return query.select(
+    return this._excludeDeleted(query, 'c').select(
       'c.*',
       'u_c.nombre as cliente_nombre',
       'u_c.apellido as cliente_apellido',
@@ -217,11 +238,11 @@ class CitaRepositoryImpl {
   }
 
   async findAll() {
-    return this.db('Cita as c')
+    return this._excludeDeleted(this.db('Cita as c')
       .leftJoin('Usuario as u_c', 'c.id_cliente', 'u_c.id_usuario')
       .leftJoin('Barbero as b', 'c.id_barbero', 'b.id_barbero')
       .leftJoin('Usuario as u_b', 'b.id_usuario', 'u_b.id_usuario')
-      .leftJoin('Servicio as s', 'c.id_servicio', 's.id_servicio')
+      .leftJoin('Servicio as s', 'c.id_servicio', 's.id_servicio'), 'c')
       .select(
         'c.*',
         'u_c.nombre as cliente_nombre',
@@ -234,8 +255,7 @@ class CitaRepositoryImpl {
   }
 
   async getStats(id_barbero, period = 'day') {
-    let query = this.db('Cita')
-      .where({ id_barbero })
+    let query = this._excludeDeleted(this.db('Cita').where({ id_barbero }), '')
       .where(function() {
         this.whereIn('estado', ['confirmada', 'completada'])
           .orWhere('pago_abono', '>', 0)
@@ -255,8 +275,7 @@ class CitaRepositoryImpl {
     ).first();
 
     // Obtener tendencia diaria para el periodo
-    let trendQuery = this.db('Cita')
-      .where({ id_barbero })
+    let trendQuery = this._excludeDeleted(this.db('Cita').where({ id_barbero }), '')
       .where(function() {
         this.whereIn('estado', ['confirmada', 'completada'])
           .orWhere('pago_abono', '>', 0)
@@ -294,8 +313,7 @@ class CitaRepositoryImpl {
 
     console.log(`[Disponibilidad] Verificando para barbero ${id_barbero} entre ${inicioStr} y ${finStr}`);
 
-    const solapamientos = await this.db('Cita')
-      .where('id_barbero', id_barbero) // FILTRO CRÍTICO POR BARBERO
+    const solapamientos = await this._excludeDeleted(this.db('Cita').where('id_barbero', id_barbero), '')
       .whereIn('estado', ['confirmada', 'no_presentado', 'completada', 'pendiente'])
       .where(function() {
         this.where(function() {
@@ -317,7 +335,7 @@ class CitaRepositoryImpl {
   }
 
   async findAll() {
-    return this.db('Cita').orderBy('fecha_hora_inicio', 'desc').select()
+    return this._excludeDeleted(this.db('Cita'), '').orderBy('fecha_hora_inicio', 'desc').select()
   }
 
   async update(id, data) {
@@ -402,19 +420,22 @@ class CitaRepositoryImpl {
   }
 
   async delete(id) {
-    return this.db('Cita').where({ id_cita: id }).del()
+    return this.db('Cita').where({ id_cita: id }).update({
+      estado: 'cancelada',
+      notas: this.db.raw("ISNULL(notas, '') + CASE WHEN LEN(ISNULL(notas, '')) > 0 THEN ' ' ELSE '' END + '[soft-delete]'"),
+      updatedAt: this.db.raw('GETDATE()')
+    })
   }
 
   async findByFecha(fecha) {
     // Asegurarse de quitar la 'Z' o cualquier formato que confunda a MSSQL
     const fechaLimpia = fecha.split('T')[0] 
-    return this.db('Cita')
-      .whereRaw('CAST(fecha_hora_inicio AS DATE) = ?', [fechaLimpia])
-      .select()
+    return this._excludeDeleted(this.db('Cita')
+      .whereRaw('CAST(fecha_hora_inicio AS DATE) = ?', [fechaLimpia]), '').select()
   }
 
   async findByEstado(estado) {
-    return this.db('Cita').where({ estado }).select()
+    return this._excludeDeleted(this.db('Cita').where({ estado }), '').select()
   }
 
   /**
