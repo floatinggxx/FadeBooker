@@ -125,7 +125,7 @@ const AppHeader = () => {
                   </>
                 )}
                 {(user?.rol === 'Cliente' || user?.rol === 'Barbero') && (
-                  <Link to="/bookings" className="link-button">Citas</Link>
+                  <Link to="/bookings" className="link-button">Mis citas</Link>
                 )}
                 <Link to="/profile" className="link-button">Mi perfil</Link>
                 <button onClick={logout} className="button button-secondary w-full md:w-auto">Cerrar sesión</button>
