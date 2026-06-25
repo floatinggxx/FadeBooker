@@ -11,7 +11,7 @@ const DashboardPage: React.FC = () => {
   const { data: bookings } = useQuery({
     queryKey: ['my-bookings-summary'],
     queryFn: () => bookingService.getMyBookings(),
-    enabled: user?.rol !== 'Proveedor' && user?.rol !== 'Dueño',
+    enabled: user?.rol !== 'Dueño',
   });
 
   // Filter bookings dynamically
@@ -53,7 +53,7 @@ const DashboardPage: React.FC = () => {
     }
   ];
 
-  const providerCards = [
+  const ownerCards = [
     {
       title: 'Mi Perfil',
       description: 'Gestiona tu información personal y foto.',
@@ -77,8 +77,8 @@ const DashboardPage: React.FC = () => {
     }
   ];
 
-  const cards = user?.rol === 'Proveedor' || user?.rol === 'Dueño'
-    ? providerCards
+  const cards = user?.rol === 'Dueño'
+    ? ownerCards
     : user?.rol === 'Barbero'
       ? [
           ...defaultCards.slice(0, 1),
@@ -157,7 +157,7 @@ const DashboardPage: React.FC = () => {
 
         {/* Columna Derecha: Resumen de actividad */}
         <div className="space-y-8">
-          {user?.rol !== 'Proveedor' && user?.rol !== 'Dueño' ? (
+          {user?.rol !== 'Dueño' ? (
             <section className="card-surface p-6">
               <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <Clock className="text-[#3366FF]" size={20} />

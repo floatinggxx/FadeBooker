@@ -98,7 +98,7 @@ const PromocionesManager: React.FC = () => {
             </div>
             <div className="inline-flex items-center gap-3 rounded-3xl bg-white/10 px-5 py-4 text-sm font-bold uppercase tracking-[0.24em]">
               <Briefcase size={20} aria-hidden="true" />
-              {user?.rol || 'Proveedor'}
+              {user?.rol || 'Usuario'}
             </div>
           </div>
         </div>

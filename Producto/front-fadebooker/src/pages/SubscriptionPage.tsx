@@ -3,18 +3,21 @@ import { useAuth } from '@/features/auth/hooks/useAuthContext'
 import { subscriptionService } from '@/lib/api/subscriptionService'
 
 const tiers = [
-  { id: 1, name: 'Básico', price: 29.99, benefits: ['Visibilidad básica', 'Soporte por email'] },
-  { id: 2, name: 'Pro', price: 59.99, benefits: ['Visibilidad destacada', 'Promociones', 'Soporte prioritario'] },
-  { id: 3, name: 'Premium', price: 99.99, benefits: ['Panel avanzado', 'Analytics', 'Soporte 24/7'] }
+  { id: 1, name: 'Básico', price: 29990, benefits: ['Visibilidad básica', 'Soporte por email'] },
+  { id: 2, name: 'Pro', price: 59990, benefits: ['Visibilidad destacada', 'Promociones', 'Soporte prioritario'] },
+  { id: 3, name: 'Premium', price: 99990, benefits: ['Panel avanzado', 'Analytics', 'Soporte 24/7'] }
 ]
 
-const ProviderSubscriptionPage: React.FC = () => {
+const formatPrice = (value: number) =>
+  new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(value)
+
+const SubscriptionPage: React.FC = () => {
   const [selectedTier, setSelectedTier] = useState<number | null>(null)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
 
   const { user } = useAuth();
-  const providerId = user?.id ?? 123 // fallback for non-auth flows
+  const currentUserId = user?.id ?? 123 // fallback for non-auth flows
 
   // local modal state
   const [showConfirm, setShowConfirm] = useState(false)
@@ -25,9 +28,9 @@ const ProviderSubscriptionPage: React.FC = () => {
     setMessage(null)
       try {
       setShowConfirm(false)
-      const res: any = await subscriptionService.createSubscription({ provider_id: Number(providerId), tier_id: Number(selectedTier) })
+      const res: any = await subscriptionService.createSubscription({ provider_id: Number(currentUserId), tier_id: Number(selectedTier) })
       setMessage(`Suscripción creada: ${res.id}`)
-      // Si la API retorna una URL de pago, redirigimos al proveedor
+      // Si la API retorna una URL de pago, redirigimos al usuario
       if (res.paymentUrl) {
         window.location.href = res.paymentUrl
       }
@@ -55,7 +58,7 @@ const ProviderSubscriptionPage: React.FC = () => {
             <p className="text-sm text-slate-600">{t.benefits.join(' • ')}</p>
             <div className="mt-4 flex items-baseline justify-between">
               <div>
-                <div className="text-2xl font-black">${t.price}</div>
+                <div className="text-2xl font-black">{formatPrice(t.price)}</div>
                 <div className="text-xs text-slate-500">/ mes</div>
               </div>
               <button onClick={() => setSelectedTier(t.id)} className="px-4 py-2 rounded-lg bg-slate-50 border">Seleccionar</button>
@@ -85,4 +88,4 @@ const ProviderSubscriptionPage: React.FC = () => {
   )
 }
 
-export default ProviderSubscriptionPage
+export default SubscriptionPage

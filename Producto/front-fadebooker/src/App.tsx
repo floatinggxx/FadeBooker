@@ -20,7 +20,7 @@ import HelpPage from '@/pages/HelpPage';
 import PaymentResultPage from '@/pages/PaymentResultPage';
 import BarberDashboardPage from '@/pages/BarberDashboardPage';
 import PromocionesPage from '@/pages/PromocionesPage';
-import ProviderSubscriptionPage from '@/pages/ProviderSubscriptionPage';
+import SubscriptionPage from '@/pages/SubscriptionPage';
 import LoginPage from '@/features/auth/ui/LoginPage';
 import RegisterPage from '@/features/auth/ui/RegisterPage';
 import ForgotPasswordPage from '@/features/auth/ui/ForgotPasswordPage';
@@ -48,17 +48,17 @@ const BookingsRoute = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
 
   if (!isAuthenticated) return <Navigate to="/login" replace state={{ from: location }} />;
-  if (user?.rol === 'Dueño' || user?.rol === 'Proveedor') return <Navigate to="/subscriptions" replace />;
+  if (user?.rol === 'Dueño') return <Navigate to="/subscriptions" replace />;
 
   return <>{children}</>;
 };
 
-const ProviderRoute = ({ children }: { children: React.ReactNode }) => {
+const OwnerRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, user } = useAuth();
   const location = useLocation();
 
   if (!isAuthenticated) return <Navigate to="/login" replace state={{ from: location }} />;
-  if (user?.rol !== 'Dueño' && user?.rol !== 'Proveedor') return <Navigate to="/" replace />;
+  if (user?.rol !== 'Dueño') return <Navigate to="/" replace />;
 
   return <>{children}</>;
 };
@@ -104,7 +104,7 @@ const AppHeader = () => {
         <div className={`header-right ${isMenuOpen ? 'mobile-open' : ''}`}>
           <nav className="header-links">
             <Link to="/" className="link-button">Inicio</Link>
-            {( !isAuthenticated || user?.rol === 'Cliente' || user?.rol === 'Proveedor') && (
+            {( !isAuthenticated || user?.rol === 'Cliente') && (
               <Link to="/barberias" className="link-button">Barberías</Link>
             )}
             {isAuthenticated ? (
@@ -114,13 +114,13 @@ const AppHeader = () => {
                     {user?.rol === 'Dueño' ? 'Panel Dueño' : 'Panel Barbero'}
                   </Link>
                 )}
-                {(user?.rol === 'Dueño' || user?.rol === 'Proveedor') && (
+                {user?.rol === 'Dueño' && (
                   <>
                     <Link to="/subscriptions" className="link-button text-[#3366FF] font-black">
                       Suscripciones
                     </Link>
                     <Link to="/promociones" className="link-button text-[#3366FF] font-black">
-                      {user?.rol === 'Proveedor' ? 'Panel Proveedor' : 'Promociones'}
+                      Promociones
                     </Link>
                   </>
                 )}
@@ -162,8 +162,8 @@ function App() {
                   <Route path="/terms-and-privacy" element={<TermsAndPrivacyPage />} />
                   <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
                   <Route path="/barber-dashboard" element={<BarberoRoute><BarberDashboardPage /></BarberoRoute>} />
-                  <Route path="/promociones" element={<ProviderRoute><PromocionesPage /></ProviderRoute>} />
-                  <Route path="/subscriptions" element={<ProviderRoute><ProviderSubscriptionPage /></ProviderRoute>} />
+                  <Route path="/promociones" element={<OwnerRoute><PromocionesPage /></OwnerRoute>} />
+                  <Route path="/subscriptions" element={<OwnerRoute><SubscriptionPage /></OwnerRoute>} />
                   <Route path="/barbero/:id" element={<UniversalBookingPage />} />
                   <Route path="/tienda/:id" element={<TiendaDetailPage />} />
                   <Route path="/studiodeanger" element={<StudioDangerPage />} />
