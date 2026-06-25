@@ -111,7 +111,7 @@ const UniversalBookingPage: React.FC = () => {
   const { data: availability, isLoading: loadingAvailability } = useQuery({
     queryKey: ['availability', id, selectedDate],
     queryFn: () => barberService.getDisponibilidad(Number(id), selectedDate),
-    enabled: !!id && !!selectedDate && step === 3,
+    enabled: !!id && !!selectedDate && step === 4,
   });
 
   const filteredAvailability = useMemo(() => {
@@ -190,8 +190,9 @@ const UniversalBookingPage: React.FC = () => {
   const isStepCompleted = (currentStep: number) => {
     if (currentStep === 1) return !!barber;
     if (currentStep === 2) return !!selectedService;
-    if (currentStep === 3) return !!selectedDate;
-    if (currentStep === 4) return !!selectedTime;
+    if (currentStep === 3) return true; // El paso de Foto IA es opcional y siempre accesible una vez se selecciona servicio
+    if (currentStep === 4) return !!selectedDate;
+    if (currentStep === 5) return !!selectedTime;
     return false;
   };
 
@@ -372,12 +373,14 @@ const UniversalBookingPage: React.FC = () => {
         </div>
 
         {/* Steps Navigator */}
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-6">
           {[
             { title: 'Barbero', subtitle: barber.nombre },
             { title: 'Servicio', subtitle: selectedService ? 'Seleccionado' : 'Pendiente' },
+            { title: 'Foto IA', subtitle: simulatedLook ? 'Listo' : 'Opcional' },
             { title: 'Fecha', subtitle: selectedDate ? 'Seleccionada' : 'Pendiente' },
-            { title: 'Hora', subtitle: selectedTime ? 'Seleccionada' : 'Pendiente' }
+            { title: 'Hora', subtitle: selectedTime ? 'Seleccionada' : 'Pendiente' },
+            { title: 'Confirmación', subtitle: step === 6 ? 'Último' : 'Pendiente' }
           ].map((item, index) => (
             <div
               key={item.title}
@@ -496,14 +499,33 @@ const UniversalBookingPage: React.FC = () => {
               ))
               ) : (
                 <div className="col-span-full py-20 text-center bg-white rounded-[3rem] shadow-xl">
-                    <p className="text-slate-400 font-black uppercase tracking-widest mb-4">No hay servicios registrados</p>
+                    <p className="text-slate-400 font-black uppercase tracking-[0.35em] mb-4">No hay servicios registrados</p>
                     <p className="text-xl font-bold text-slate-800">Este barbero aún no ha configurado sus servicios.</p>
                 </div>
               )}
             </div>
+          </section>
+        )}
 
-            {/* Haircut Simulator integration */}
-            <div className="pt-6">
+        {/* --- STEP 3: FOTO IA --- */}
+        {step === 3 && (
+          <section className="space-y-8 animate-fade-in-up">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm uppercase tracking-[0.35em] text-slate-500 font-black">Foto IA</p>
+                <h2 className="mt-3 text-4xl font-black text-slate-900">Personaliza tu corte con la simulación IA</h2>
+                <p className="mt-4 text-slate-600 leading-relaxed">Sube una foto o usa tu cámara para probar un estilo y enviarlo a tu barbero.</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setStep(2)}
+                className="rounded-full border border-slate-200 bg-white px-7 py-3 text-sm font-black uppercase tracking-[0.35em] text-slate-600 shadow-sm transition hover:bg-slate-50"
+              >
+                ← Cambiar Servicio
+              </button>
+            </div>
+
+            <div className="rounded-[3rem] border border-slate-100 bg-white p-8 shadow-xl">
               <HaircutSimulator
                 onSimulationComplete={(url, styleId) => {
                   if (url && styleId) {
@@ -514,11 +536,29 @@ const UniversalBookingPage: React.FC = () => {
                 }}
               />
             </div>
+
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <button
+                type="button"
+                onClick={() => setStep(4)}
+                className="w-full sm:w-auto py-3 px-6 bg-slate-900 text-white rounded-full font-black text-base shadow-lg shadow-slate-200 hover:bg-slate-800 transition-all"
+              >
+                Seguir sin hacerlo
+              </button>
+              <button
+                type="button"
+                disabled={!simulatedLook}
+                onClick={() => setStep(4)}
+                className="w-full sm:w-auto py-3 px-6 bg-[#3366FF] text-white rounded-full font-black text-base shadow-lg shadow-blue-200 hover:bg-[#2a5dd9] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Enviarlo con la imagen
+              </button>
+            </div>
           </section>
         )}
 
-        {/* --- STEP 3: FECHA --- */}
-        {step === 3 && (
+        {/* --- STEP 4: FECHA --- */}
+        {step === 4 && (
           <section className="space-y-8 animate-fade-in-up">
             <div>
               <p className="text-sm uppercase tracking-[0.35em] text-slate-500 font-black">Fecha</p>
@@ -591,8 +631,8 @@ const UniversalBookingPage: React.FC = () => {
           </section>
         )}
 
-        {/* --- STEP 4: HORA --- */}
-        {step === 4 && (
+        {/* --- STEP 5: HORA --- */}
+        {step === 5 && (
           <section className="space-y-8 animate-fade-in-up">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -604,7 +644,7 @@ const UniversalBookingPage: React.FC = () => {
                 </div>
                 <button
                 type="button"
-                onClick={() => setStep(3)}
+                onClick={() => setStep(4)}
                 className="rounded-full border border-slate-200 bg-white px-7 py-3 text-sm font-black uppercase tracking-[0.35em] text-slate-600 shadow-sm transition hover:bg-slate-50"
               >
                 ← CAMBIAR FECHA
@@ -630,7 +670,7 @@ const UniversalBookingPage: React.FC = () => {
                     // Normalizamos a HH:mm conservando solo hora y minutos
                     const horaSimple = slot.hora.slice(0,5);
                     setSelectedTime(horaSimple);
-                    setStep(5);
+                    setStep(6);
                     }}
                     className={`rounded-[2.5rem] border-4 p-8 font-black text-2xl transition-all shadow-xl group ${selectedTime === slot.hora.slice(0,5) ? 'border-[#3366FF] bg-[#3366FF] text-white shadow-blue-200 scale-105' : slot.disponible ? 'border-white bg-white text-slate-900 hover:border-blue-100 hover:scale-105' : 'border-red-300 bg-red-100 text-red-600 cursor-not-allowed'}`}
                   >
@@ -652,8 +692,8 @@ const UniversalBookingPage: React.FC = () => {
           </section>
         )}
 
-        {/* --- STEP 5: RESUMEN --- */}
-        {step === 5 && !confirmed && (
+        {/* --- STEP 6: RESUMEN --- */}
+        {step === 6 && !confirmed && (
           <section className="space-y-8 animate-fade-in-up">
             <div>
               <p className="text-sm uppercase tracking-[0.35em] text-slate-500 font-black">Confirmación</p>
