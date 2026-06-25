@@ -69,6 +69,12 @@ const RegisterPage: React.FC = () => {
   const password = watch('contrasena');
   const rol = watch('rol');
 
+  // Si el usuario selecciona 'Barbero' (Dueño de barbería), asumimos que quiere registrar su tienda
+  // y mostramos directamente los campos para crear una nueva tienda en lugar de seleccionar una existente.
+  useEffect(() => {
+    setIsRegisteringTienda(rol === 'Barbero');
+  }, [rol]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -337,38 +343,7 @@ const RegisterPage: React.FC = () => {
                 </div>
               </div>
 
-              {!isRegisteringTienda ? (
-                <div className="input-container">
-                  <div className="input-with-icon">
-                    <Store size={18} className="input-icon" />
-                    <select 
-                      {...register('id_tienda', { 
-                        required: rol === 'Barbero' && !isRegisteringTienda ? 'Debes seleccionar una barbería' : false 
-                      })}
-                      className={`input-field ${errors.id_tienda ? 'input-error' : ''}`}
-                    >
-                      <option value="">Selecciona tu Barbería</option>
-                      {tiendas.map(tienda => (
-                        <option key={tienda.id_tienda} value={tienda.id_tienda}>
-                          {tienda.nombre_tienda} - {tienda.ciudad}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  {errors.id_tienda && <span className="error-message">{errors.id_tienda.message}</span>}
-                  
-                  <button 
-                    type="button" 
-                    className="link-alt text-sm mt-2 flex items-center gap-1"
-                    onClick={() => {
-                      setIsRegisteringTienda(true);
-                      setValue('id_tienda', undefined);
-                    }}
-                  >
-                    <Plus size={14} /> ¿No aparece tu barbería? Inscríbela aquí
-                  </button>
-                </div>
-              ) : (
+              {isRegisteringTienda && (
                 <div className="new-tienda-fields animate-fade-in">
                   <div className="info-alert mb-4">
                     <Info size={20} className="text-blue-500" />
@@ -406,11 +381,12 @@ const RegisterPage: React.FC = () => {
                     type="button" 
                     className="link-alt text-sm flex items-center gap-1"
                     onClick={() => {
+                      // Permitir volver a la vista previa (no muestra select por diseño), limpiar campos de tienda nueva
                       setIsRegisteringTienda(false);
                       setValue('tienda_nueva', undefined);
                     }}
                   >
-                    Volver a la lista de barberías
+                    Volver
                   </button>
                 </div>
               )}
