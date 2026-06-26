@@ -2,18 +2,16 @@ import React, { useState } from 'react';
 import FAQItem from '../molecules/FAQItem';
 
 const faqs = [
-  { question: '¿Por qué no cargan las barberías?', answer: 'Si no aparecen barberías, lo más probable es que el backend no esté activo o que la base de datos no esté conectada. El frontend solicita la lista a /api/barberos, por lo que ambos deben estar funcionando. Verifica que el servidor esté corriendo en el puerto correcto.' },
-  { question: '¿Qué hacer si el registro falla?', answer: 'Verifica que la API esté corriendo y que la variable VITE_API_URL apunte al servidor correcto. Si el backend está activo, revisa el mensaje de error que devuelve la API y usa un email único.' },
   { question: '¿Cómo puedo actualizar mi perfil?', answer: 'Ingresa a la sección "Mi Perfil" cuando hayas iniciado sesión. Ahí podrás editar tus datos personales y ver la información actualizada en tiempo real.' },
   { question: '¿Cómo agendo una cita?', answer: 'En "Barberías", selecciona un barbero y un servicio disponible, elige fecha y hora, y confirma la reserva. Después podrás ver tus citas en "Mis Citas" con todos los detalles.' },
   { question: '¿Cómo cancelo una cita?', answer: 'Desde la sección "Mis Citas", selecciona la cita que deseas cancelar y confirma la acción. Recibirás la cancelación en tu perfil.' },
-  { question: '¿Es seguro mi información?', answer: 'Sí. FadeBooker utiliza autenticación JWT segura y guarda tus datos de forma confiable en el backend.' }
+  { question: '¿Es seguro mi información?', answer: 'Sí. FadeBooker utiliza autenticación segura y guarda tus datos de forma confiable.' }
 ];
 
 const supportCards = [
-  { title: 'Conexión de barberías', description: 'Si no ves resultados, revisa que el backend esté activo y la base de datos conectada.', theme: 'blue' },
-  { title: 'Registro y login', description: 'El registro crea tu usuario en la BD. El login solo funciona con un token válido.', theme: 'red' },
-  { title: 'Gestión de citas', description: 'Agenda, edita o cancela tus citas desde el panel de usuario.', theme: 'green' }
+  { title: '📍 Encuentra tu barbería', description: 'Explora barberías disponibles y encuentra la que mejor se adapte a tu estilo y ubicación.', theme: 'blue' },
+  { title: '🔐 Acceso seguro', description: 'Crea tu cuenta o inicia sesión para gestionar tus reservas de forma rápida y segura.', theme: 'red' },
+  { title: '🗓️ Gestiona tus reservas', description: 'Reserva, reprograma o cancela tus citas cuando lo necesites.', theme: 'green' }
 ];
 
 const FAQSection: React.FC = () => {
@@ -58,7 +56,7 @@ const FAQSection: React.FC = () => {
 
       <div className="card-surface help-contact-card">
         <h2>¿Aún no encuentras tu respuesta?</h2>
-        <p>Escríbenos a <a href="mailto:soporte@fadebooker.com" className="text-accent underline">soporte@fadebooker.com</a> y te ayudaremos a revisar backend, API y conexión.</p>
+        <p>Escríbenos a <a href="mailto:soporte@fadebooker.com" className="text-accent underline">soporte@fadebooker.com</a> y te ayudaremos de manera personalizada.</p>
       </div>
     </section>
   );
