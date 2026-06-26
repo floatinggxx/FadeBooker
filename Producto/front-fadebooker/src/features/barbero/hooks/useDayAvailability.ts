@@ -56,8 +56,22 @@ export const useDayAvailability = (idBarbero: number, fecha: string, citas: any[
           return horaInicioBloque && horaFinBloque && horaFormato >= horaInicioBloque && horaFormato < horaFinBloque
         })
 
-        const slotDate = new Date(`${fecha}T${horaFormato}:00`)
-        const pasado = slotDate.getTime() < Date.now()
+        const slotDateString = `${fecha}T${horaFormato}:00`
+        const now = new Date()
+        const formatter = new Intl.DateTimeFormat('en-US', {
+          timeZone: 'America/Santiago',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        })
+        const parts = formatter.formatToParts(now)
+        const part = (type: string) => parts.find((p) => p.type === type)?.value || '00'
+        const nowChileString = `${part('year')}-${part('month')}-${part('day')}T${part('hour')}:${part('minute')}:${part('second')}`
+        const pasado = slotDateString < nowChileString
 
         if (citaEnHorario) {
           horarios.push({

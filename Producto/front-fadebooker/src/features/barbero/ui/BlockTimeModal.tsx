@@ -25,6 +25,39 @@ const BlockTimeModal: React.FC<BlockTimeModalProps> = ({
   const [duracion, setDuracion] = useState('30') // minutos
   const [isCreating, setIsCreating] = useState(false)
 
+  const getChileNowString = () => {
+    const now = new Date()
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/Santiago',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    })
+
+    const parts = formatter.formatToParts(now)
+    const part = (type: string) => parts.find((p) => p.type === type)?.value || '00'
+
+    return `${part('year')}-${part('month')}-${part('day')}T${part('hour')}:${part('minute')}:${part('second')}`
+  }
+
+  const addMinutesToChileDateTime = (fecha: string, hora: string, minutos: number) => {
+    const [year, month, day] = fecha.split('-').map(Number)
+    const [hour, minute] = hora.split(':').map(Number)
+    const totalMinutes = hour * 60 + minute + minutos
+    const endDay = Math.floor(totalMinutes / 1440)
+    const endHour = Math.floor((totalMinutes % 1440 + 1440) % 1440 / 60)
+    const endMinute = (totalMinutes % 60 + 60) % 60
+
+    const pad = (value: number) => String(value).padStart(2, '0')
+    const resultDay = day + endDay
+
+    return `${year}-${pad(month)}-${pad(resultDay)}T${pad(endHour)}:${pad(endMinute)}:00`
+  }
+
   const handleConfirm = async () => {
     if (!motivo.trim()) {
       showNotification('Por favor ingresa un motivo del bloqueo', 'error')
@@ -33,21 +66,17 @@ const BlockTimeModal: React.FC<BlockTimeModalProps> = ({
 
     setIsCreating(true)
     try {
-      // Calcular hora de fin
-      const [horaNum, minNum] = hora.split(':').map(Number)
       const fechaHoraInicio = `${fecha}T${hora}:00`
-      const fechaInicioDate = new Date(fechaHoraInicio)
-      if (fechaInicioDate.getTime() < Date.now()) {
+      const fechaHoraInicioChile = fechaHoraInicio
+      const ahoraChile = getChileNowString()
+
+      if (fechaHoraInicioChile < ahoraChile) {
         showNotification('No puedes bloquear un horario que ya pasó', 'error')
         setIsCreating(false)
         return
       }
 
-      const dateObj = new Date(fechaHoraInicio)
-      dateObj.setMinutes(dateObj.getMinutes() + parseInt(duracion))
-      
-      const horaFin = `${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}`
-      const fechaHoraFin = `${fecha}T${horaFin}:00`
+      const fechaHoraFin = addMinutesToChileDateTime(fecha, hora, parseInt(duracion, 10))
 
       await availabilityService.crearBloque(
         idBarbero,
