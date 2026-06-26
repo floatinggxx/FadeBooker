@@ -271,7 +271,8 @@ class CitaRepositoryImpl {
 
     const result = await query.select(
       this.db.raw('ISNULL(SUM(pago_abono), 0) as ingresos'),
-      this.db.raw('COUNT(*) as totalServicios')
+      this.db.raw('COUNT(*) as totalServicios'),
+      this.db.raw('ISNULL(SUM(duracion_minutos), 0) as totalDuracionMinutos')
     ).first();
 
     // Obtener tendencia diaria para el periodo
@@ -298,6 +299,7 @@ class CitaRepositoryImpl {
     return {
       ingresos: result?.ingresos || 0,
       totalServicios: result?.totalServicios || 0,
+      totalDuracionMinutos: result?.totalDuracionMinutos || 0,
       period,
       trend
     };
@@ -448,9 +450,11 @@ class CitaRepositoryImpl {
    */
   async validarServicioBarbero(id_barbero, id_servicio) {
     const result = await this.db('ServicioBarbero')
-      .where('id_barbero', id_barbero)
-      .where('id_servicio', id_servicio)
-      .where('disponible', true)
+      .join('Barbero as b', 'ServicioBarbero.id_barbero', '=', 'b.id_barbero')
+      .where('ServicioBarbero.id_barbero', id_barbero)
+      .where('ServicioBarbero.id_servicio', id_servicio)
+      .where('ServicioBarbero.disponible', true)
+      .where('b.activo', true)
       .first()
     return !!result
   }

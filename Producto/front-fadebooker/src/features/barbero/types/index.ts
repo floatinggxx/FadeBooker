@@ -1,6 +1,7 @@
 export interface BarberoStats {
   ingresos: number;
   totalServicios: number;
+  totalDuracionMinutos?: number;
   period: 'day' | 'week' | 'month';
 }
 

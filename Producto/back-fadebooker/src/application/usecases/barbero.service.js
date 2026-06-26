@@ -43,6 +43,14 @@ class BarberoService {
     const BloqueHorarioRepository = require('../../infraestructure/database/BloqueHorarioRepositoryImpl');
     const bloqueRepo = new BloqueHorarioRepository();
 
+    const barbero = await this.barberoRepository.findById(id_barbero)
+    if (!barbero) {
+      throw new Error('Barbero no encontrado')
+    }
+    if (!barbero.activo) {
+      throw new Error('El barbero está inactivo y no tiene disponibilidad')
+    }
+
     const [citas, horarios, bloques] = await Promise.all([
       this.barberoRepository.obtenerDisponibilidad(id_barbero, fecha),
       this.barberoRepository.obtenerHorariosTienda(id_barbero),

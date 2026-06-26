@@ -86,6 +86,20 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
     return db('Barbero').where({ id_barbero }).update({ updatedAt: db.raw('GETDATE()') })
   }
 
+  async update(id_barbero, data) {
+    const updateData = { ...data }
+
+    if (updateData.activo !== undefined) {
+      updateData.activo = updateData.activo ? 1 : 0
+    }
+
+    delete updateData.id
+    delete updateData.id_barbero
+    delete updateData.id_usuario
+
+    return db('Barbero').where({ id_barbero }).update(updateData)
+  }
+
   async obtenerDisponibilidad(id_barbero, fecha) {
     // Obtener citas del barbero en la fecha para verificar disponibilidad
     // Sólo traer citas que efectivamente bloquean horarios: confirmadas o en progreso.

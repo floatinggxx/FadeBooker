@@ -52,14 +52,21 @@ const BarberDetailPage: React.FC = () => {
     enabled: !!barber?.id_tienda,
   });
 
+  const isBarberInactive = barber?.activo === 0 || barber?.activo === false;
+
   const { data: availability, isLoading: loadingAvailability } = useQuery({
     queryKey: ['availability', id, selectedDate],
     queryFn: () => barberService.getDisponibilidad(Number(id), selectedDate),
-    enabled: !!id && !!selectedDate && step === 3,
+    enabled: !!id && !!selectedDate && step === 3 && !isBarberInactive,
   });
 
   const handleBooking = async () => {
     if (!user || !selectedService || !selectedDate || !selectedTime || !barber) return;
+
+    if (isBarberInactive) {
+      alert('Este barbero está inactivo y no puede reservarse en este momento.');
+      return;
+    }
     
     setIsBooking(true);
     try {
@@ -151,6 +158,12 @@ const BarberDetailPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#E5E7EB] pt-12 pb-24 px-6">
       <div className="max-w-6xl mx-auto">
+        {isBarberInactive && (
+          <div className="mb-8 rounded-[2rem] border border-red-200 bg-red-50 p-6 text-red-800 shadow-sm">
+            <p className="font-black text-xl">Este barbero está actualmente inactivo.</p>
+            <p className="mt-2 text-sm text-red-700">No puede reservarse ni mostrar horarios disponibles mientras permanezca desactivado.</p>
+          </div>
+        )}
         {/* Navigation */}
         <button 
           onClick={prevStep}
@@ -171,12 +184,13 @@ const BarberDetailPage: React.FC = () => {
                 {(services || []).filter(Boolean).map((s) => (
                   <button
                     key={s?.id_servicio_barbero || s?.id}
+                    disabled={isBarberInactive}
                     onClick={() => {
-                      if (!s) return;
+                      if (!s || isBarberInactive) return;
                       setSelectedService(s);
                       nextStep();
                     }}
-                    className="group bg-[#3366FF] hover:bg-[#2952CC] active:bg-[#1E3D99] text-white p-8 rounded-[2rem] shadow-xl border-4 border-transparent hover:border-white/20 transition-all flex flex-col items-center justify-center gap-2"
+                    className={`group p-8 rounded-[2rem] shadow-xl border-4 transition-all flex flex-col items-center justify-center gap-2 ${isBarberInactive ? 'bg-slate-200 text-slate-500 border-slate-200 cursor-not-allowed' : 'bg-[#3366FF] hover:bg-[#2952CC] active:bg-[#1E3D99] text-white border-transparent hover:border-white/20'}`}
                   >
                     <span className="text-2xl font-black tracking-tight group-hover:scale-105 transition-transform">
                       {s.servicio?.nombre_servicio || s.servicio?.nombre}
@@ -219,6 +233,10 @@ const BarberDetailPage: React.FC = () => {
               {loadingAvailability ? (
                 <div className="flex justify-center py-20">
                    <div className="w-10 h-10 border-4 border-rose-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : isBarberInactive ? (
+                <div className="col-span-full text-center py-10 bg-red-50 rounded-3xl text-red-700 font-bold italic border border-red-200">
+                  Este barbero está inactivo. No es posible consultar horarios hasta que se reactive.
                 </div>
               ) : (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

@@ -89,6 +89,12 @@ export const barberService = {
     return response.data;
   },
 
+  // Obtener estadísticas del barbero (mes, semana, día)
+  async getBarberoStats(barberoId: number, period: 'day' | 'week' | 'month' = 'month'): Promise<{ ingresos: number; totalServicios: number; totalDuracionMinutos?: number; period: string; }> {
+    const response = await api.get(`/barberos/${barberoId}/stats`, { params: { period } });
+    return response.data;
+  },
+
   // Obtener servicios de un barbero
   async getServicios(barberoId: number): Promise<ServicioBarbero[]> {
     const response = await api.get<any[]>(`/barberos/${barberoId}/servicios`);

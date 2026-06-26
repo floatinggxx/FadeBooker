@@ -108,10 +108,12 @@ const UniversalBookingPage: React.FC = () => {
     enabled: !!barber?.id_tienda,
   });
 
+  const isBarberInactive = barber?.activo === 0 || barber?.activo === false;
+
   const { data: availability, isLoading: loadingAvailability } = useQuery({
     queryKey: ['availability', id, selectedDate],
     queryFn: () => barberService.getDisponibilidad(Number(id), selectedDate),
-    enabled: !!id && !!selectedDate && (step === 4 || step === 5),
+    enabled: !!id && !!selectedDate && !isBarberInactive && (step === 4 || step === 5),
   });
 
   const filteredAvailability = useMemo(() => {
@@ -206,6 +208,11 @@ const UniversalBookingPage: React.FC = () => {
     if (!user || !selectedService || !selectedDate || !selectedTime || !barber) {
         showNotification("Faltan datos para completar la reserva", "warning");
         return;
+    }
+
+    if (isBarberInactive) {
+      showNotification('El barbero seleccionado está inactivo y no puede reservarse.', 'warning');
+      return;
     }
     
     setIsBooking(true);
@@ -373,6 +380,12 @@ const UniversalBookingPage: React.FC = () => {
         </div>
 
         {/* Steps Navigator */}
+        {isBarberInactive && (
+          <div className="rounded-[2rem] border border-red-200 bg-red-50 p-6 text-red-800">
+            <p className="font-black text-lg">Este barbero está actualmente inactivo.</p>
+            <p className="text-sm text-red-700 mt-2">No puede reservarse ni aparece con horarios disponibles mientras esté desactivado.</p>
+          </div>
+        )}
         <div className="grid gap-4 md:grid-cols-6">
           {[
             { title: 'Barbero', subtitle: barber.nombre },
@@ -803,7 +816,7 @@ const UniversalBookingPage: React.FC = () => {
 
                    <button
                     onClick={handleBooking}
-                    disabled={isBooking}
+                    disabled={isBooking || isBarberInactive}
                     className="w-full py-8 bg-[#3366FF] text-white rounded-[2.5rem] font-black text-2xl shadow-2xl shadow-blue-200 hover:bg-[#2563EB] active:scale-95 transition-all flex items-center justify-center gap-4 disabled:opacity-50"
                   >
                     {isBooking ? (

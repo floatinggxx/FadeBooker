@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">1.65% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>3/181</span>
+                <span class='fraction'>0/181</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/117</span>
+                <span class='fraction'>0/119</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">2.56% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/39</span>
+                <span class='fraction'>0/39</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">1.76% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>3/170</span>
+                <span class='fraction'>0/170</span>
             </div>
         
             
@@ -637,7 +637,11 @@
 <a name='L572'></a><a href='#L572'>572</a>
 <a name='L573'></a><a href='#L573'>573</a>
 <a name='L574'></a><a href='#L574'>574</a>
-<a name='L575'></a><a href='#L575'>575</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L575'></a><a href='#L575'>575</a>
+<a name='L576'></a><a href='#L576'>576</a>
+<a name='L577'></a><a href='#L577'>577</a>
+<a name='L578'></a><a href='#L578'>578</a>
+<a name='L579'></a><a href='#L579'>579</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -648,7 +652,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -909,6 +913,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -943,6 +948,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1087,6 +1093,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1211,7 +1219,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">const db = require('../../db/knex')
+<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const db = <span class="cstat-no" title="statement not covered" >require('../../db/knex')</span>
 &nbsp;
 /**
  * CitaRepositoryImpl
@@ -1221,8 +1229,8 @@
  * - Mejora de verificarDisponibilidad para usar lógica correcta con Knex
  */
 class CitaRepositoryImpl {
-  constructor() {
-    this.db = db
+<span class="fstat-no" title="function not covered" >  co</span>nstructor() {
+<span class="cstat-no" title="statement not covered" >    this.db = db</span>
   }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  _e</span>xcludeDeleted(query, alias = <span class="branch-0 cbranch-no" title="branch not covered" >'')</span> {
@@ -1484,7 +1492,8 @@ class CitaRepositoryImpl {
 &nbsp;
     const result = <span class="cstat-no" title="statement not covered" >await query.select(</span>
       this.db.raw('ISNULL(SUM(pago_abono), 0) as ingresos'),
-      this.db.raw('COUNT(*) as totalServicios')
+      this.db.raw('COUNT(*) as totalServicios'),
+      this.db.raw('ISNULL(SUM(duracion_minutos), 0) as totalDuracionMinutos')
     ).first();
 &nbsp;
     // Obtener tendencia diaria para el periodo
@@ -1511,6 +1520,7 @@ class CitaRepositoryImpl {
 <span class="cstat-no" title="statement not covered" >    return {</span>
       ingresos: result?.ingresos || 0,
       totalServicios: result?.totalServicios || 0,
+      totalDuracionMinutos: result?.totalDuracionMinutos || 0,
       period,
       trend
     };
@@ -1661,9 +1671,11 @@ class CitaRepositoryImpl {
    */
 <span class="fstat-no" title="function not covered" >  as</span>ync validarServicioBarbero(id_barbero, id_servicio) {
     const result = <span class="cstat-no" title="statement not covered" >await this.db('ServicioBarbero')</span>
-      .where('id_barbero', id_barbero)
-      .where('id_servicio', id_servicio)
-      .where('disponible', true)
+      .join('Barbero as b', 'ServicioBarbero.id_barbero', '=', 'b.id_barbero')
+      .where('ServicioBarbero.id_barbero', id_barbero)
+      .where('ServicioBarbero.id_servicio', id_servicio)
+      .where('ServicioBarbero.disponible', true)
+      .where('b.activo', true)
       .first()
 <span class="cstat-no" title="statement not covered" >    return !!result</span>
   }
@@ -1785,14 +1797,14 @@ class CitaRepositoryImpl {
   }
 }
 &nbsp;
-module.exports = CitaRepositoryImpl</pre></td></tr></table></pre>
+<span class="cstat-no" title="statement not covered" >module.exports = CitaRepositoryImpl</span></pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-25T23:14:04.750Z
+                at 2026-06-26T15:43:12.603Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -5,12 +5,14 @@ const TelegramService = require('../../infraestructure/notifications/TelegramSer
 const NotificationLogRepository = require('../../infraestructure/database/NotificationLogRepositoryImpl');
 const NotificationPreferenceRepository = require('../../infraestructure/database/NotificationPreferenceRepositoryImpl');
 const BloqueHorarioRepository = require('../../infraestructure/database/BloqueHorarioRepositoryImpl');
+const BarberoRepository = require('../../infraestructure/database/BarberoRepositoryImpl');
 
 class CitaService {
-  constructor(citaRepository, servicioRepository, usuarioRepository) {
+  constructor(citaRepository, servicioRepository, usuarioRepository, barberoRepository = new BarberoRepository()) {
     this.citaRepository = citaRepository;
     this.servicioRepository = servicioRepository;
     this.usuarioRepository = usuarioRepository;
+    this.barberoRepository = barberoRepository;
     const notificationLogRepo = new NotificationLogRepository();
     const notificationPrefRepo = new NotificationPreferenceRepository();
     this.telegramNotificationService = new TelegramNotificationService(TelegramService, notificationLogRepo, notificationPrefRepo, usuarioRepository);
@@ -18,6 +20,14 @@ class CitaService {
 
   async crearCita(data) {
     // 1. Validar que el barbero puede realizar el servicio
+    const barbero = await this.barberoRepository.findById(data.id_barbero)
+    if (!barbero) {
+      throw new Error('Barbero no encontrado')
+    }
+    if (!barbero.activo) {
+      throw new Error('El barbero está inactivo y no puede recibir reservas')
+    }
+
     const puedeHacerServicio = await this.citaRepository.validarServicioBarbero(data.id_barbero, data.id_servicio)
     if (!puedeHacerServicio) {
       throw new Error('El barbero no ofrece este servicio o no está disponible')
@@ -382,6 +392,14 @@ class CitaService {
   }
 
   async verificarDisponibilidad(idBarbero, fecha, hora, duracion) {
+    const barbero = await this.barberoRepository.findById(idBarbero)
+    if (!barbero) {
+      throw new Error('Barbero no encontrado')
+    }
+    if (!barbero.activo) {
+      return false
+    }
+
     const fechaHora = `${fecha}T${hora}`
 
     // Primero verificar contra citas existentes

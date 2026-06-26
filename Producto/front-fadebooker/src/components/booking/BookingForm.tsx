@@ -58,6 +58,7 @@ const BookingForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
       const cita = await bookingService.crearCita({
         clienteId: Number(user.id || user.id_usuario),
         barberoId: Number(data.barberoId),
+        id_barbero: Number(data.barberoId),
         servicioBarberoId: Number(data.servicioBarberoId),
         id_servicio: Number(data.servicioBarberoId),
         fecha_hora_inicio: `${fecha}T${hora}:00`,

@@ -19,6 +19,7 @@ import {
     Check
 } from 'lucide-react';
 import { Barbero } from '@/types';
+import { BarberoStats } from '@/features/barbero/types';
 import { parseError } from '@/lib/utils/errorParser';
 
 const BarberosManager: React.FC = () => {
@@ -27,6 +28,8 @@ const BarberosManager: React.FC = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [showAddModal, setShowAddModal] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [barberoStats, setBarberoStats] = useState<Record<number, BarberoStats>>({});
+    const [isStatsLoading, setIsStatsLoading] = useState(false);
 
     // Form state for new barber
     const [newBarber, setNewBarber] = useState({
@@ -56,6 +59,28 @@ const BarberosManager: React.FC = () => {
     useEffect(() => {
         fetchBarberos();
     }, [user]);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            if (!barberos.length) return;
+            setIsStatsLoading(true);
+            try {
+                const entries = await Promise.all(
+                    barberos.map(async (barbero) => {
+                        const stats = await barberService.getBarberoStats(Number(barbero.id_barbero), 'month');
+                        return [Number(barbero.id_barbero), stats] as const;
+                    })
+                );
+                setBarberoStats(Object.fromEntries(entries));
+            } catch (error) {
+                console.error('Error fetching barbero stats:', error);
+            } finally {
+                setIsStatsLoading(false);
+            }
+        };
+
+        fetchStats();
+    }, [barberos]);
 
     const handleAddBarber = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -110,13 +135,14 @@ const BarberosManager: React.FC = () => {
 
     const toggleBarberoStatus = async (barbero: Barbero) => {
         try {
-            const newStatus = barbero.activo ? 0 : 1;
+            const newStatus = !Boolean(barbero.activo);
             await barberService.updateBarbero(Number(barbero.id_barbero), { activo: newStatus });
             setBarberos(prev => prev.map(b => 
                 b.id_barbero === barbero.id_barbero ? { ...b, activo: newStatus } : b
             ));
         } catch (error) {
             console.error('Error updating status:', error);
+            alert('No se pudo cambiar el estado del barbero. Revisa la consola para más detalles.');
         }
     };
 
@@ -179,19 +205,48 @@ const BarberosManager: React.FC = () => {
                                     </p>
                                 </div>
 
-                                <div className="pt-4 border-t border-slate-50 flex justify-between items-center">
-                                    <div className="flex gap-2">
-                                        <div className="bg-slate-50 p-2 rounded-lg" title="Años de experiencia">
-                                            <Award size={14} className="text-slate-400" />
-                                            <span className="text-[10px] font-black ml-1">{barbero.anos_experiencia}y</span>
+                                <div className="pt-4 border-t border-slate-50 space-y-4">
+                                    <div className="grid grid-cols-3 gap-3">
+                                        <div className="bg-slate-50 p-4 rounded-3xl text-center">
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Ingresos / mes</p>
+                                            <p className="text-lg font-black text-slate-900 mt-2">
+                                                {barberoStats[Number(barbero.id_barbero)] ?
+                                                    new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP' }).format(barberoStats[Number(barbero.id_barbero)].ingresos)
+                                                    : (isStatsLoading ? 'Cargando...' : '0 CLP')}
+                                            </p>
+                                        </div>
+                                        <div className="bg-slate-50 p-4 rounded-3xl text-center">
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Citas / mes</p>
+                                            <p className="text-lg font-black text-slate-900 mt-2">
+                                                {barberoStats[Number(barbero.id_barbero)] ?
+                                                    barberoStats[Number(barbero.id_barbero)].totalServicios
+                                                    : (isStatsLoading ? '...' : '0')}
+                                            </p>
+                                        </div>
+                                        <div className="bg-slate-50 p-4 rounded-3xl text-center">
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Horas agendadas</p>
+                                            <p className="text-lg font-black text-slate-900 mt-2">
+                                                {barberoStats[Number(barbero.id_barbero)] ?
+                                                    `${((barberoStats[Number(barbero.id_barbero)].totalDuracionMinutos || 0) / 60).toFixed(1)}h`
+                                                    : (isStatsLoading ? '...' : '0h')}
+                                            </p>
                                         </div>
                                     </div>
-                                    <button 
-                                        onClick={() => toggleBarberoStatus(barbero)}
-                                        className={`px-4 py-2 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all ${barbero.activo ? 'bg-slate-100 text-slate-500 hover:bg-rose-50 hover:text-rose-500' : 'bg-[#16a34a] text-white hover:bg-[#15803d]'}`}
-                                    >
-                                        {barbero.activo ? 'Desactivar' : 'Activar'}
-                                    </button>
+
+                                    <div className="flex justify-between items-center">
+                                        <div className="flex gap-2">
+                                            <div className="bg-slate-50 p-2 rounded-lg" title="Años de experiencia">
+                                                <Award size={14} className="text-slate-400" />
+                                                <span className="text-[10px] font-black ml-1">{barbero.anos_experiencia}y</span>
+                                            </div>
+                                        </div>
+                                        <button 
+                                            onClick={() => toggleBarberoStatus(barbero)}
+                                            className={`px-4 py-2 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all ${barbero.activo ? 'bg-slate-100 text-slate-500 hover:bg-rose-50 hover:text-rose-500' : 'bg-[#16a34a] text-white hover:bg-[#15803d]'}`}
+                                        >
+                                            {barbero.activo ? 'Desactivar' : 'Activar'}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </article>

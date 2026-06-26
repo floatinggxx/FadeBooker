@@ -18,6 +18,7 @@ describe('CitaService (Reseñas)', () => {
   let mockCitaRepo;
   let mockServicioRepo;
   let mockUsuarioRepo;
+  let mockBarberoRepo;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -31,8 +32,9 @@ describe('CitaService (Reseñas)', () => {
     };
     mockServicioRepo = { findById: jest.fn() };
     mockUsuarioRepo = { findById: jest.fn(), findByEmail: jest.fn(), create: jest.fn(), update: jest.fn() };
+    mockBarberoRepo = { findById: jest.fn() };
     
-    citaService = new CitaService(mockCitaRepo, mockServicioRepo, mockUsuarioRepo);
+    citaService = new CitaService(mockCitaRepo, mockServicioRepo, mockUsuarioRepo, mockBarberoRepo);
   });
 
   describe('crearResena', () => {
@@ -75,6 +77,32 @@ describe('CitaService (Reseñas)', () => {
 
       await expect(citaService.crearResena(citaId, resenaData))
         .rejects.toThrow('Ya has dejado una reseña para esta cita');
+    });
+  });
+
+  describe('crearCita', () => {
+    test('debe fallar si el barbero está inactivo', async () => {
+      mockBarberoRepo.findById.mockResolvedValue({ id_barbero: 1, activo: 0 });
+
+      await expect(citaService.crearCita({
+        id_barbero: 1,
+        id_servicio: 10,
+        id_cliente: 100,
+        fecha_hora_inicio: '2025-01-01T10:00:00',
+        duracion_minutos: 60,
+        monto_total: 15000,
+        estado: 'pendiente'
+      })).rejects.toThrow('El barbero está inactivo y no puede recibir reservas');
+
+      expect(mockCitaRepo.validarServicioBarbero).not.toHaveBeenCalled();
+    });
+
+    test('verificarDisponibilidad devuelve falso si el barbero está inactivo', async () => {
+      mockBarberoRepo.findById.mockResolvedValue({ id_barbero: 1, activo: 0 });
+
+      const disponible = await citaService.verificarDisponibilidad(1, '2025-01-01', '10:00:00', 60);
+      expect(disponible).toBe(false);
+      expect(mockCitaRepo.verificarDisponibilidad).not.toHaveBeenCalled();
     });
   });
 
