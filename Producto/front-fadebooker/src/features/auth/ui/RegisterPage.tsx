@@ -416,17 +416,7 @@ const RegisterPage: React.FC = () => {
                     />
                   </div>
 
-                  <button 
-                    type="button" 
-                    className="link-alt text-sm flex items-center gap-1"
-                    onClick={() => {
-                      // Permitir volver a la vista previa (no muestra select por diseño), limpiar campos de tienda nueva
-                      setIsRegisteringTienda(false);
-                      setValue('tienda_nueva', undefined);
-                    }}
-                  >
-                    Volver
-                  </button>
+                  {/* Botón 'Volver' removido para evitar borrar el contexto de inscripción de la barbería */}
                 </div>
               )}
 
