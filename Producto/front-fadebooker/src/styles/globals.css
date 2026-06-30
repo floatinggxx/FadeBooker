@@ -1373,6 +1373,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #991b1b;
   align-items: center;
   box-shadow: 0 18px 50px rgba(239, 68, 68, 0.08);
+  margin-bottom: 0.75rem;
 }
 
 .form-alert-icon {

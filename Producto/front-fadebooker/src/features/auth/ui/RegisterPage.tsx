@@ -45,6 +45,7 @@ const RegisterPage: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [tiendas, setTiendas] = useState<Tienda[]>([]);
   const [serviciosDisponibles, setServiciosDisponibles] = useState<Servicio[]>([]);
+  const [displayServicios, setDisplayServicios] = useState<Array<{ id: string; nombre: string; descripcion?: string; ids: number[] }>>([]);
   const [selectedServices, setSelectedServices] = useState<number[]>([]);
   const [isRegisteringTienda, setIsRegisteringTienda] = useState(false);
   
@@ -73,7 +74,7 @@ const RegisterPage: React.FC = () => {
   // Si el usuario selecciona 'Barbero' (Dueño de barbería), asumimos que quiere registrar su tienda
   // y mostramos directamente los campos para crear una nueva tienda en lugar de seleccionar una existente.
   useEffect(() => {
-    setIsRegisteringTienda(rol === 'Barbero');
+    setIsRegisteringTienda(rol === 'Dueño' || rol === 'Barbero');
   }, [rol]);
 
   useEffect(() => {
@@ -85,6 +86,35 @@ const RegisterPage: React.FC = () => {
         ]);
         setTiendas(tiendasData);
         setServiciosDisponibles(serviciosData);
+
+        // Normalize, rename and deduplicate servicios for display
+        const replacements: { [k: string]: string } = {
+          'corte pelo dama': 'Corte cabello dama'
+        };
+        const subtitles: { [k: string]: string } = {
+          'corte pelo dama': 'Corte de dama'
+        };
+
+        const map = new Map<string, { nombre: string; descripcion?: string; ids: number[] }>();
+        serviciosData.forEach(s => {
+          const rawName = (s.nombre_servicio || s.nombre || '').trim();
+          const lower = rawName.toLowerCase();
+          const replaced = Object.keys(replacements).includes(lower) ? replacements[lower] : rawName;
+          const key = replaced.toLowerCase().replace(/\s+/g, ' ').trim();
+          const subtitle = Object.keys(subtitles).includes(lower) ? subtitles[lower] : undefined;
+          if (!map.has(key)) {
+            map.set(key, { nombre: replaced, descripcion: s.descripcion || subtitle, ids: [Number(s.id_servicio || s.id || 0)] });
+          } else {
+            // append underlying id to preserve selection behavior
+            const entry = map.get(key)!;
+            entry.ids.push(Number(s.id_servicio || s.id || 0));
+            // ensure we have a description set (prefer existing)
+            if (!entry.descripcion && subtitle) entry.descripcion = subtitle;
+          }
+        });
+
+        const displays = Array.from(map.entries()).map(([key, v], idx) => ({ id: `ds-${idx}`, nombre: v.nombre, descripcion: v.descripcion, ids: v.ids }));
+        setDisplayServicios(displays);
       } catch (error) {
         console.error('Error fetching data for registration:', error);
       }
@@ -97,6 +127,22 @@ const RegisterPage: React.FC = () => {
       const updated = prev.includes(id) 
         ? prev.filter(s => s !== id) 
         : [...prev, id];
+      setValue('servicios', updated);
+      return updated;
+    });
+  };
+
+  const handleDisplayServiceToggle = (ids: number[]) => {
+    setSelectedServices(prev => {
+      const anySelected = ids.some(i => prev.includes(i));
+      let updated: number[];
+      if (anySelected) {
+        // remove all underlying ids
+        updated = prev.filter(p => !ids.includes(p));
+      } else {
+        // add all underlying ids
+        updated = [...prev, ...ids.filter(i => !prev.includes(i))];
+      }
       setValue('servicios', updated);
       return updated;
     });
@@ -344,38 +390,7 @@ const RegisterPage: React.FC = () => {
                 </div>
               </div>
 
-              {!isRegisteringTienda ? (
-                <div className="input-container">
-                  <div className="input-with-icon">
-                    <Store size={18} className="input-icon" />
-                    <select 
-                      {...register('id_tienda', { 
-                        required: (rol === 'Barbero' || rol === 'Dueño') && !isRegisteringTienda ? 'Debes seleccionar una barbería' : false 
-                      })}
-                      className={`input-field ${errors.id_tienda ? 'input-error' : ''}`}
-                    >
-                      <option value="">Selecciona tu Barbería</option>
-                      {tiendas.map(tienda => (
-                        <option key={tienda.id_tienda} value={tienda.id_tienda}>
-                          {tienda.nombre_tienda} - {tienda.ciudad}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  {errors.id_tienda && <span className="error-message">{errors.id_tienda.message}</span>}
-                  
-                  <button 
-                    type="button" 
-                    className="link-alt text-sm mt-2 flex items-center gap-1"
-                    onClick={() => {
-                      setIsRegisteringTienda(true);
-                      setValue('id_tienda', undefined);
-                    }}
-                  >
-                    <Plus size={14} /> ¿No aparece tu barbería? Inscríbela aquí
-                  </button>
-                </div>
-              ) : (
+              {isRegisteringTienda && (
                 <div className="new-tienda-fields animate-fade-in">
                   <div className="info-alert mb-4">
                     <Info size={20} className="text-blue-500" />
@@ -415,8 +430,6 @@ const RegisterPage: React.FC = () => {
                       className="input-field" 
                     />
                   </div>
-
-                  {/* Botón 'Volver' removido para evitar borrar el contexto de inscripción de la barbería */}
                 </div>
               )}
 
@@ -428,21 +441,21 @@ const RegisterPage: React.FC = () => {
                 <p className="text-[11px] text-slate-400 font-bold mb-4 uppercase tracking-wider ml-1">Selecciona todos los que apliquen</p>
                 
                 <div className="services-list">
-                  {serviciosDisponibles.map(servicio => {
-                    const isActive = selectedServices.includes(Number(servicio.id_servicio));
+                  {displayServicios.map(serv => {
+                    const isActive = serv.ids.some(i => selectedServices.includes(i));
                     return (
                       <label 
-                        key={servicio.id_servicio} 
+                        key={serv.id} 
                         className={`service-checkbox-item ${isActive ? 'active' : ''}`}
                       >
                         <input
                           type="checkbox"
                           checked={isActive}
-                          onChange={() => handleServiceToggle(Number(servicio.id_servicio))}
+                          onChange={() => handleDisplayServiceToggle(serv.ids)}
                         />
                         <div className="flex flex-col">
-                          <span className="service-name">{servicio.nombre_servicio || servicio.nombre}</span>
-                          {servicio.descripcion && <span className="service-desc">{servicio.descripcion}</span>}
+                          <span className="service-name">{serv.nombre}</span>
+                          {serv.descripcion && <span className="service-desc">{serv.descripcion}</span>}
                         </div>
                       </label>
                     );
