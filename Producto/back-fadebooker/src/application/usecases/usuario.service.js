@@ -43,8 +43,8 @@ class UsuarioService {
       final_id_tienda = await tiendaRepo.create({
         nombre_tienda: tienda_nueva.nombre_tienda,
         direccion: tienda_nueva.direccion,
-        ciudad: tienda_nueva.ciudad,
-        comuna: tienda_nueva.comuna || null,
+        comuna: tienda_nueva.comuna,
+        region: tienda_nueva.region || null,
         id_dueño: id_usuario,
         este_activa: 1
       });

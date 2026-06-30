@@ -24,8 +24,8 @@ type FormData = {
   tienda_nueva?: {
     nombre_tienda: string;
     direccion: string;
-    ciudad: string;
-    comuna?: string;
+    comuna: string;
+    region?: string;
   };
   acceptTerms?: boolean;
 };
@@ -403,7 +403,7 @@ const RegisterPage: React.FC = () => {
                       <option value="">Selecciona tu Barbería</option>
                       {tiendas.map(tienda => (
                         <option key={tienda.id_tienda} value={tienda.id_tienda}>
-                          {tienda.nombre_tienda} - {tienda.ciudad}
+                          {tienda.nombre_tienda} - {tienda.comuna || (tienda as any).ciudad}
                         </option>
                       ))}
                     </select>
@@ -449,8 +449,8 @@ const RegisterPage: React.FC = () => {
                   </div>
                   <div className="input-container mb-3">
                     <input 
-                      {...register('tienda_nueva.ciudad', { required: isRegisteringTienda ? 'La ciudad es obligatoria' : false })} 
-                      placeholder="Ciudad" 
+                      {...register('tienda_nueva.region', { required: isRegisteringTienda ? 'La región es obligatoria' : false })} 
+                      placeholder="Región (ej. Región Metropolitana de Santiago)" 
                       className="input-field" 
                     />
                   </div>

@@ -14,8 +14,8 @@ const usuarioSchema = z.object({
   tienda_nueva: z.object({
     nombre_tienda: z.string().min(2).max(150),
     direccion: z.string().min(2).max(250),
-    ciudad: z.string().min(2).max(100),
-    comuna: z.string().min(2).max(100).optional()
+    comuna: z.string().min(2).max(100),
+    region: z.string().min(2).max(100).optional()
   }).optional()
 })
 

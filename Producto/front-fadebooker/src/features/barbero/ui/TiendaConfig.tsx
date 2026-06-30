@@ -383,14 +383,28 @@ const TiendaConfig: React.FC = () => {
                             </div>
 
                             <div className="space-y-2">
-                                <label htmlFor="ciudad" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Ciudad</label>
+                                <label htmlFor="region" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Región</label>
                                 <div className="relative">
                                     <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={18} aria-hidden="true" />
                                     <input 
-                                        id="ciudad"
-                                        {...register('ciudad', { required: 'La ciudad es obligatoria' })}
+                                        id="region"
+                                        {...register('region', { required: 'La región es obligatoria' })}
                                         className="w-full pl-14 pr-6 py-4 bg-white border-2 border-slate-100 focus:border-[#3366FF] rounded-2xl font-bold text-slate-900 outline-none transition-all shadow-sm"
-                                        placeholder="Ej. Santiago"
+                                        placeholder="Región Metropolitana de Santiago"
+                                        maxLength={100}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="comuna" className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Comuna</label>
+                                <div className="relative">
+                                    <MapPin className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300" size={18} aria-hidden="true" />
+                                    <input 
+                                        id="comuna"
+                                        {...register('comuna', { required: 'La comuna es obligatoria' })}
+                                        className="w-full pl-14 pr-6 py-4 bg-white border-2 border-slate-100 focus:border-[#3366FF] rounded-2xl font-bold text-slate-900 outline-none transition-all shadow-sm"
+                                        placeholder="Ej. Providencia"
                                         maxLength={80}
                                     />
                                 </div>

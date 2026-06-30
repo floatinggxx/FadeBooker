@@ -135,8 +135,8 @@ const BarberiasPage: React.FC = () => {
   const isRegionMetropolitana = selectedRegion?.nombre === 'Región Metropolitana de Santiago';
 
   const { data: tiendas, isLoading, error } = useQuery({
-    queryKey: ['tiendas', selectedComuna],
-    queryFn: () => tiendaService.listTiendas(selectedComuna),
+    queryKey: ['tiendas', selectedComuna, selectedRegion?.nombre],
+    queryFn: () => tiendaService.listTiendas({ comuna: selectedComuna, region: selectedRegion?.nombre }),
     enabled: true, // Siempre cargamos desde la base de datos
   });
 
@@ -148,7 +148,9 @@ const BarberiasPage: React.FC = () => {
     let result = tiendasData;
 
     if (selectedComuna) {
-      result = result.filter(t => t.ciudad === selectedComuna);
+      result = result.filter(t => t.comuna === selectedComuna);
+    } else if (selectedRegion) {
+      result = result.filter(t => t.region === selectedRegion.nombre);
     }
 
     if (user?.rol === 'Barbero' && user.id_tienda) {
@@ -158,7 +160,7 @@ const BarberiasPage: React.FC = () => {
     return result.filter(t => 
       t.nombre_tienda.toLowerCase().includes(search.toLowerCase())
     );
-  }, [tiendasData, selectedComuna, search, user]);
+  }, [tiendasData, selectedComuna, selectedRegion, search, user]);
 
   const sugerencias = useMemo(() => {
     if (filteredTiendas.length > 0) return [];

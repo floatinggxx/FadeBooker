@@ -25,8 +25,12 @@ class TiendaService {
     return await this.barberoRepository.findByTienda(id_tienda)
   }
 
-  async buscarTiendasPorCiudad(ciudad) {
-    return await this.tiendaRepository.findByCiudad(ciudad)
+  async buscarTiendasPorComuna(comuna) {
+    return await this.tiendaRepository.findByComuna(comuna)
+  }
+
+  async buscarTiendasPorRegion(region) {
+    return await this.tiendaRepository.findByRegion(region)
   }
 
   async getResenas(id_tienda) {

@@ -127,7 +127,7 @@ const TiendaDetailPage: React.FC = () => {
                     <span className="text-xs uppercase tracking-[0.35em] text-slate-500 font-black">Ubicación</span>
                   </div>
                   <p className="text-lg font-bold text-white mb-1">{tiendaData.direccion}</p>
-                  <p className="text-slate-400 font-medium">{tiendaData.ciudad}, Chile</p>
+                  <p className="text-slate-400 font-medium">{tiendaData.comuna || (tiendaData as any).ciudad}, Chile</p>
                 </div>
                 <div className="rounded-[2.5rem] bg-white/5 p-7 border border-white/10 backdrop-blur-md">
                   <div className="flex items-center gap-3 mb-3">

@@ -10,8 +10,12 @@ class TiendaRepository {
     throw new Error('Método findById() debe ser implementado')
   }
 
-  async findByCiudad(ciudad) {
-    throw new Error('Método findByCiudad() debe ser implementado')
+  async findByComuna(comuna) {
+    throw new Error('Método findByComuna() debe ser implementado')
+  }
+
+  async findByRegion(region) {
+    throw new Error('Método findByRegion() debe ser implementado')
   }
 
   async create(data) {

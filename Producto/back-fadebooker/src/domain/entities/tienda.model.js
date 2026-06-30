@@ -1,10 +1,11 @@
 class Tienda {
-  constructor({ id_tienda, id_dueño, nombre_tienda, direccion, ciudad, codigo_postal, telefono_tienda, email_tienda, horario_apertura, horario_cierre, dias_laborales, foto_portada_url, calificacion_promedio, este_activa, createdAt, updatedAt }) {
+  constructor({ id_tienda, id_dueño, nombre_tienda, direccion, comuna, region, codigo_postal, telefono_tienda, email_tienda, horario_apertura, horario_cierre, dias_laborales, foto_portada_url, calificacion_promedio, este_activa, createdAt, updatedAt }) {
     this.id_tienda = id_tienda
     this.id_dueño = id_dueño
     this.nombre_tienda = nombre_tienda
     this.direccion = direccion
-    this.ciudad = ciudad
+    this.comuna = comuna
+    this.region = region
     this.codigo_postal = codigo_postal
     this.telefono_tienda = telefono_tienda
     this.email_tienda = email_tienda

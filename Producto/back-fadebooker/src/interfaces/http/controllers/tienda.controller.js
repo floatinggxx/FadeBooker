@@ -9,12 +9,12 @@ const tiendaService = new TiendaService(tiendaRepository, barberoRepository);
 const TiendaController = {
   /**
    * GET /api/tiendas
-   * Lista todas las tiendas, permite filtrar por ciudad
+   * Lista todas las tiendas, permite filtrar por comuna o región
    */
   async obtenerTodas(req, res) {
     try {
-      const { ciudad } = req.query
-      const tiendas = await tiendaService.obtenerTodasLasTiendas({ ciudad })
+      const { comuna, region } = req.query
+      const tiendas = await tiendaService.obtenerTodasLasTiendas({ comuna, region })
       res.json(tiendas)
     } catch (error) {
       res.status(400).json({ error: error.message })
@@ -68,13 +68,27 @@ const TiendaController = {
   },
 
   /**
-   * GET /api/tiendas/ciudad/:ciudad
-   * Busca tiendas por ciudad
+   * GET /api/tiendas/comuna/:comuna
+   * Busca tiendas por comuna
    */
-  async buscarPorCiudad(req, res) {
+  async buscarPorComuna(req, res) {
     try {
-      const { ciudad } = req.params
-      const tiendas = await tiendaService.buscarTiendasPorCiudad(ciudad)
+      const { comuna } = req.params
+      const tiendas = await tiendaService.buscarTiendasPorComuna(comuna)
+      res.json(tiendas)
+    } catch (error) {
+      res.status(400).json({ error: error.message })
+    }
+  },
+
+  /**
+   * GET /api/tiendas/region/:region
+   * Busca tiendas por región
+   */
+  async buscarPorRegion(req, res) {
+    try {
+      const { region } = req.params
+      const tiendas = await tiendaService.buscarTiendasPorRegion(region)
       res.json(tiendas)
     } catch (error) {
       res.status(400).json({ error: error.message })
