@@ -140,53 +140,21 @@ const UniversalBookingPage: React.FC = () => {
     return availability;
   }, [availability, selectedDate]);
 
-    // Agrupar disponibilidad en bloques de 60 minutos (hora en punto)
-    const hourlyAvailability = useMemo(() => {
+    // Usar directamente los slots devueltos por el backend (ya están en bloques de 1 hora)
+    const hourlyAvailability = React.useMemo(() => {
       if (!filteredAvailability) return [];
-
-      // Determinar hora de apertura y cierre: preferir tienda, si no usar availability
-      const parseHour = (timeStr?: string) => {
-        if (!timeStr) return null;
-        // Buscar primer patrón HH:MM en la cadena, p. ej. "09:00" dentro de "09:00 hrs - 18:00 hrs"
-        const match = timeStr.match(/(\d{1,2}:\d{2})/);
-        if (!match) return null;
-        const parts = match[1].split(':').map(Number);
-        if (parts.length === 0 || Number.isNaN(parts[0])) return null;
-        return parts[0];
-      };
-
-      let aperturaHour = parseHour(tienda?.horario_apertura) ?? null;
-      let cierreHour = parseHour(tienda?.horario_cierre) ?? null;
-
-      // Si tienda no tiene horario, derivar del availability (min/max horas)
-      if ((aperturaHour === null || cierreHour === null) && filteredAvailability.length > 0) {
-        const hours = filteredAvailability.map((s: any) => Number(s.hora.split(':')[0]));
-        const validHours = hours.filter(h => !Number.isNaN(h));
-        if (validHours.length > 0) {
-          const minH = Math.min(...validHours);
-          const maxH = Math.max(...validHours);
-          if (aperturaHour === null) aperturaHour = minH;
-          if (cierreHour === null) cierreHour = maxH + 1; // cierre exclusivo
-        }
+      // Filter out any slot where hora (start) is >= tienda cierre if tienda tiene horario
+      let cierreHour: number | null = null;
+      if (tienda?.horario_cierre) {
+        const match = String(tienda.horario_cierre).match(/(\d{1,2}):(\d{2})/);
+        if (match) cierreHour = Number(match[1]);
       }
 
-      if (aperturaHour === null || cierreHour === null) return [];
-
-      // Asegurar rango válido
-      if (cierreHour <= aperturaHour) cierreHour = aperturaHour + 1;
-
-      // Incluir cierreHour como hora final disponible (p. ej. 09:00 .. 18:00 inclusive)
-      const hourly: Array<{ hora: string; disponible: boolean }> = [];
-      for (let h = aperturaHour; h <= cierreHour; h++) {
-        const horaLabel = `${String(h).padStart(2, '0')}:00:00`;
-        const disponible = filteredAvailability.some((s: any) => {
-          const [sh, sm] = s.hora.split(':').map(Number);
-          return sh === h && s.disponible;
-        });
-        hourly.push({ hora: horaLabel, disponible });
+      const slots = filteredAvailability.map((s: any) => ({ hora: s.hora, disponible: s.disponible, detalle: s.detalle }));
+      if (cierreHour !== null) {
+        return slots.filter((s: any) => Number(s.hora.split(':')[0]) < cierreHour);
       }
-
-      return hourly;
+      return slots;
     }, [filteredAvailability, tienda]);
 
   const isStepCompleted = (currentStep: number) => {
@@ -288,6 +256,20 @@ const UniversalBookingPage: React.FC = () => {
       
       const response = await bookingService.crearCita(payload);
       const id_cita = response.id_cita || response.id;
+
+      // Invalidate cached bookings so dashboard and bookings lists refresh immediately
+      try {
+        // react-query client is not directly imported here; use window.__REACT_QUERY_CLIENT if available
+        // This is a lightweight fallback for environments where the QueryClient is exposed globally during runtime.
+        const qc = (window as any).__REACT_QUERY_CLIENT;
+        if (qc && typeof qc.invalidateQueries === 'function') {
+          qc.invalidateQueries(['my-bookings-summary']);
+          qc.invalidateQueries(['my-bookings']);
+          qc.invalidateQueries(['citas']);
+        }
+      } catch (e) {
+        console.warn('No se pudo invalidar cache de React Query automáticamente:', e);
+      }
 
       setBookingCreationTime(Date.now());
       setPaymentStatus('pending');

@@ -14,14 +14,29 @@ const DashboardPage: React.FC = () => {
     enabled: user?.rol !== 'Dueño',
   });
 
-  // Filter bookings dynamically
+  // Filter bookings dynamically: show future bookings except cancelled/eliminada
+  const [showAll, setShowAll] = React.useState(false);
   const upcomingBookings = React.useMemo(() => {
     if (!bookings) return [];
-    // Filter appointments with state 'confirmada' or 'Confirmada'
-    return bookings
-      .filter((b: any) => b.estado?.toLowerCase() === 'confirmada')
-      .slice(0, 3);
-  }, [bookings]);
+    const ahora = new Date();
+    const filtered = bookings
+      .filter((b: any) => {
+        const estado = b.estado?.toLowerCase();
+        if (estado === 'cancelada' || estado === 'eliminada') return false;
+        // Normalizar fecha/hora: prefer fecha_hora_inicio, si no usar fecha+hora
+        const fechaHora = b.fecha_hora_inicio || (b.fecha && b.hora ? `${b.fecha}T${b.hora}` : null);
+        if (!fechaHora) return true; // si no tenemos fecha, mantener
+        const d = new Date(fechaHora);
+        return d >= ahora;
+      })
+      .sort((a: any, b: any) => {
+        const fa = new Date(a.fecha_hora_inicio || (a.fecha && a.hora ? `${a.fecha}T${a.hora}` : 0)).getTime();
+        const fb = new Date(b.fecha_hora_inicio || (b.fecha && b.hora ? `${b.fecha}T${b.hora}` : 0)).getTime();
+        return fa - fb;
+      });
+
+    return showAll ? filtered : filtered.slice(0, 5);
+  }, [bookings, showAll]);
 
   const completedBookingsCount = React.useMemo(() => {
     if (!bookings) return 0;
@@ -190,6 +205,18 @@ const DashboardPage: React.FC = () => {
                   </div>
                 )}
                 
+                {(!showAll && bookings && bookings.filter((b: any) => {
+                    const estado = b.estado?.toLowerCase();
+                    if (estado === 'cancelada' || estado === 'eliminada') return false;
+                    const fechaHora = b.fecha_hora_inicio || (b.fecha && b.hora ? `${b.fecha}T${b.hora}` : null);
+                    if (!fechaHora) return true;
+                    return new Date(fechaHora) >= new Date();
+                  }).length > 5) && (
+                  <div className="text-center mt-4">
+                    <button onClick={() => setShowAll(true)} className="text-sm font-bold text-[#3366FF]">Ver más</button>
+                  </div>
+                )}
+
                 <Link to="/bookings" className="block text-center mt-6 text-sm font-bold text-slate-400 hover:text-[#3366FF] transition-colors">
                   Ver todas mis citas
                 </Link>

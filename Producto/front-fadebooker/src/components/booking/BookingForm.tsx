@@ -13,7 +13,7 @@ type FormData = {
 };
 
 const BookingForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
-  const { register, handleSubmit, watch, setValue } = useForm<FormData>();
+  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<FormData>();
   const { user } = useAuth();
   const [barbers, setBarbers] = React.useState<Barbero[]>([]);
   const [services, setServices] = React.useState<ServicioBarbero[]>([]);
@@ -45,6 +45,19 @@ const BookingForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
   }, [barberoId, setValue]);
 
   const onSubmit = async (data: FormData) => {
+    // Validar que la fecha seleccionada no sea pasada
+    try {
+      const selected = new Date(data.fechaHora);
+      const now = new Date();
+      if (isNaN(selected.getTime())) throw new Error('Fecha inválida');
+      if (selected < now) {
+        alert('No puedes reservar en una fecha/hora pasada. Por favor selecciona un horario futuro.');
+        return;
+      }
+    } catch (e: any) {
+      alert(e?.message || 'Fecha inválida');
+      return;
+    }
     if (!user) {
       alert('Debes iniciar sesión para agendar una reserva.');
       return;
@@ -121,7 +134,22 @@ const BookingForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
 
       <div>
         <label className="block">Fecha y hora</label>
-        <input {...register('fechaHora', { required: true })} type="datetime-local" className="w-full border p-2 rounded" />
+        <input
+          {...register('fechaHora', {
+            required: 'Debe seleccionar fecha y hora',
+            validate: (value) => {
+              if (!value) return 'Debe seleccionar fecha y hora';
+              const selected = new Date(value);
+              if (isNaN(selected.getTime())) return 'Fecha inválida';
+              if (selected < new Date()) return 'No puedes seleccionar una fecha/hora pasada';
+              return true;
+            }
+          })}
+          type="datetime-local"
+          className="w-full border p-2 rounded"
+          min={new Date().toISOString().slice(0,16)}
+        />
+        {errors.fechaHora && <p className="text-sm text-red-600 mt-2">{errors.fechaHora.message as any}</p>}
       </div>
 
       <div>
