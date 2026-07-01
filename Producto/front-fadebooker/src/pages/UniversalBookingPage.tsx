@@ -55,6 +55,7 @@ const UniversalBookingPage: React.FC = () => {
   const [createdBookingId, setCreatedBookingId] = useState<number | null>(null);
   const [paymentUrl, setPaymentUrl] = useState('');
   const [showWaitingModal, setShowWaitingModal] = useState(false);
+  const [paymentPref, setPaymentPref] = useState<any | null>(null);
 
   // Estados para la reserva pendiente y cuenta regresiva
   const [paymentStatus, setPaymentStatus] = useState<'pending' | 'success'>('pending');
@@ -285,6 +286,7 @@ const UniversalBookingPage: React.FC = () => {
           });
           setCreatedBookingId(Number(id_cita));
           setPaymentUrl(resultado.url);
+          setPaymentPref(resultado);
           setShowWaitingModal(true);
         } catch (pagoErr) {
           console.error("Error al iniciar pago:", pagoErr);
@@ -942,6 +944,8 @@ const UniversalBookingPage: React.FC = () => {
           }}
           bookingId={createdBookingId}
           paymentUrl={paymentUrl}
+          paymentType={paymentPref?.tipo_pago ?? paymentType}
+          initialPref={paymentPref ?? undefined}
         />
       )}
     </div>

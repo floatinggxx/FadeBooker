@@ -21,7 +21,16 @@ class PagoRepositoryImpl extends PagoRepository {
 
     const sql = `\n      DECLARE @InsertedTable TABLE (id_pago INT);\n      INSERT INTO [dbo].[Pago] (${columnsSql})\n      OUTPUT INSERTED.id_pago INTO @InsertedTable\n      VALUES (${placeholders});\n      SELECT id_pago FROM @InsertedTable;\n    `;
 
-    const result = await this.db.raw(sql, values);
+    let result;
+    try {
+      result = await this.db.raw(sql, values);
+    } catch (error) {
+      console.error('--- ERROR en insert Pago - SQL:', sql);
+      console.error('--- ERROR en insert Pago - values:', JSON.stringify(values));
+      console.error('--- ERROR en insert Pago - error:', error && (error.message || error));
+      // Re-lanzar para que el handler superior registre también la traza
+      throw error;
+    }
 
     const id_pago = result[0].id_pago || (result[0][0] ? result[0][0].id_pago : null);
     return id_pago;

@@ -45,6 +45,52 @@ const PagoController = {
     }
   },
 
+  async simular(req, res) {
+    try {
+      if (process.env.NODE_ENV === 'production') {
+        return res.status(403).json({ error: 'Simulación de pagos no está permitida en producción' });
+      }
+
+      const { id_cita, monto, referencia } = req.body;
+      if (!id_cita) return res.status(400).json({ error: 'id_cita es requerido para simular pago' });
+
+      console.log('[PagoController.simular] petición simulación recibida:', { id_cita, monto, referencia });
+      // Crear registro de pago completado directamente
+      // Limitar el monto aplicado para no exceder monto_total de la cita
+      const cita = await citaRepository.findById(id_cita);
+      if (!cita) return res.status(404).json({ error: 'Cita no encontrada' });
+      const montoTotal = Number(cita.monto_total || 0);
+      const pagoActual = Number(cita.pago_abono || 0);
+      const montoSolicitado = Number(monto || 0);
+      const montoAplicable = Math.min(montoSolicitado, Math.max(0, montoTotal - pagoActual));
+
+      const pagoData = {
+        id_cita: id_cita,
+        monto_pagado: montoAplicable,
+        monto_base: montoAplicable,
+        metodo_pago: 'sandbox_simulado',
+        estado_pago: 'completado',
+        referencia_transaccion: referencia || `sim_${Date.now()}`,
+        fecha_pago: new Date()
+      };
+
+      const id_pago = await pagoRepository.create(pagoData);
+
+      // Actualizar la cita como confirmada y sumar el abono (capped)
+      const nuevoAbono = pagoActual + montoAplicable;
+      await citaRepository.update(id_cita, {
+        pago_abono: nuevoAbono,
+        metodo_pago: 'sandbox_simulado',
+        estado: 'confirmada'
+      });
+
+      return res.json({ success: true, id_pago, id_cita, monto_aplicado: montoAplicable, monto_solicitado: montoSolicitado });
+    } catch (err) {
+      console.error('Error simulando pago:', err);
+      return res.status(500).json({ error: err.message || String(err) });
+    }
+  },
+
   async obtenerPagosCita(req, res) {
     try {
       const { id_cita } = req.params;
