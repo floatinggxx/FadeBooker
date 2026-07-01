@@ -62,9 +62,9 @@ class BarberoService {
     // Parsear horarios de la tienda
     const parseTimeField = (val) => {
       if (!val) return { h: 0, m: 0 };
-      // Si es un objeto Date (Knex/tedious a veces devuelve Date), usar UTC para evitar shift local
+      // Si es un objeto Date (Knex/tedious a veces devuelve Date), usar la hora local del objeto
       if (val instanceof Date) {
-        return { h: val.getUTCHours(), m: val.getUTCMinutes() };
+        return { h: val.getHours(), m: val.getMinutes() };
       }
 
       // Si viene en formato ISO '1970-01-01T09:00:00.000Z' o similar, extraer la parte T sin conversión
@@ -114,16 +114,10 @@ class BarberoService {
     };
 
     // Use 60-minute blocks (1-hour) per product requirement
-    // If times look like UTC-shifted (apertura muy temprano), apply a local offset heuristic
-    let adjustedHoraApertura = horaApertura;
-    let adjustedHoraCierre = horaCierre;
-    // Heurística: si apertura < 8 (probablemente UTC shift) y cierre está relativamente temprano, sumar +3 horas
-    if (horaApertura < 8 && horaCierre <= 17) {
-      adjustedHoraApertura = horaApertura + 3;
-      adjustedHoraCierre = horaCierre + 3;
-    }
-    const adjustedStartMinutes = adjustedHoraApertura * 60 + minApertura;
-    const adjustedEndMinutes = adjustedHoraCierre * 60 + minCierre;
+    // No aplicar heurísticas de desplazamiento horario aquí: asumimos que los valores
+    // devolvidos por `obtenerHorariosTienda` ya están en la zona horaria local de la tienda.
+    const adjustedStartMinutes = horaApertura * 60 + minApertura;
+    const adjustedEndMinutes = horaCierre * 60 + minCierre;
 
     for (let totalMin = adjustedStartMinutes; totalMin < adjustedEndMinutes; totalMin += 60) {
       const hora = Math.floor(totalMin / 60);
