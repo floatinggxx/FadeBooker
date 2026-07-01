@@ -114,7 +114,7 @@ class CitaController {
         
         if (!userId) {
           citas = [];
-        } else if (normalizedRol === 'cliente' || normalizedRol === 'proveedor' || normalizedRol === 'dueño') {
+        } else if (normalizedRol === 'cliente' || normalizedRol === 'dueño') {
           citas = await this.citaService.obtenerCitasPorCliente(userId);
         } else if (normalizedRol === 'barbero') {
           citas = await this.citaService.obtenerCitasPorBarbero(userId);

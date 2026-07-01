@@ -111,8 +111,8 @@ const TermsAndPrivacyPage: React.FC = () => {
           <div className="subsection mt-4">
             <h4>💼 Suscripciones y Pagos Recurrentes</h4>
             <p>
-              Si contratas un plan de suscripción como proveedor, guardamos únicamente el registro de la suscripción,
-              su estado, fechas de inicio/fin y el proveedor asociado. Los cobros recurrentes son procesados por
+              Si contratas un plan de suscripción como barbero o dueño de barbería, guardamos únicamente el registro de la suscripción,
+              su estado, fechas de inicio/fin y la barbería asociada. Los cobros recurrentes son procesados por
               Mercado Pago; no almacenamos datos de tarjeta. Puedes cancelar la suscripción desde tu panel en cualquier momento.
             </p>
           </div>
@@ -248,7 +248,7 @@ const TermsAndPrivacyPage: React.FC = () => {
           </p>
           <div className="info-box">
             <strong>Última Actualización:</strong> 2 de Junio de 2026<br/>
-            <strong>Efectivo para:</strong> Todos los usuarios, clientes, barberos y proveedores
+            <strong>Efectivo para:</strong> Todos los usuarios, clientes, barberos y dueños de barbería
           </div>
         </div>
       ),
