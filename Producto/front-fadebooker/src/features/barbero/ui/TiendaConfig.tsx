@@ -128,25 +128,43 @@ const TiendaConfig: React.FC = () => {
                 calificacion_promedio, 
                 este_activa,
                 horarios_json, // Evitar si no está mapeado
+                galeria, // explícitamente extraer y no reenviarlo
                 ...cleanData 
             } = data as any;
 
-            const updateData = {
+            // Do NOT send `galeria` as part of the generic update payload.
+            // Some DB schemas for this project do not have a `galeria` column and
+            // attempting to update it causes SQL errors like "Invalid column name 'galeria'".
+            // Images are uploaded/managed via `updateTiendaGallery` (used in image upload handlers).
+            const updateData: any = {
                 ...cleanData,
                 dias_laborales: selectedDays.join(', '),
-                galeria: JSON.stringify(gallery)
             };
 
             await tiendaService.updateTienda(user.id_tienda, updateData);
-            
+
             // 🔄 Actualizar estado local para reflejar los datos guardados inmediatamente
             setTienda(prev => prev ? { ...prev, ...updateData } : null);
-            
+
             showNotification('¡Datos de la barbería actualizados correctamente!', 'success');
         } catch (error: any) {
             console.error('Error updating tienda:', error);
-            const errorMsg = error.response?.data?.message || error.response?.data?.error || error.message || 'Error desconocido';
-            showNotification(`Error al guardar cambios: ${errorMsg}`, 'error');
+            // Detect common SQL error about invalid column and present a friendlier message
+            const raw = error.response?.data || error.message || String(error);
+            let errorMsg = 'Error al guardar cambios';
+            try {
+                const text = JSON.stringify(raw);
+                if (/Invalid column name\s+'galeria'/i.test(text)) {
+                    errorMsg = 'No se pudo actualizar galería: la columna `galeria` no existe en esta base de datos. Las imágenes se gestionan desde el panel de galería.';
+                } else if (error.response?.data?.message) {
+                    errorMsg = error.response.data.message;
+                } else if (error.message) {
+                    errorMsg = error.message;
+                }
+            } catch (e) {
+                errorMsg = error.message || String(error);
+            }
+            showNotification(`${errorMsg}`, 'error');
         } finally {
             setIsSaving(false);
         }
