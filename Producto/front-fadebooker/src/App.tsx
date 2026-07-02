@@ -17,8 +17,6 @@ import DashboardPage from '@/pages/DashboardPage';
 import HelpPage from '@/pages/HelpPage';
 import PaymentResultPage from '@/pages/PaymentResultPage';
 import BarberDashboardPage from '@/pages/BarberDashboardPage';
-import PromocionesPage from '@/pages/PromocionesPage';
-import SubscriptionPage from '@/pages/SubscriptionPage';
 import LoginPage from '@/features/auth/ui/LoginPage';
 import RegisterPage from '@/features/auth/ui/RegisterPage';
 import ForgotPasswordPage from '@/features/auth/ui/ForgotPasswordPage';
@@ -151,8 +149,7 @@ function App() {
                   <Route path="/terms-and-privacy" element={<TermsAndPrivacyPage />} />
                   <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
                   <Route path="/barber-dashboard" element={<BarberoRoute><BarberDashboardPage /></BarberoRoute>} />
-                  <Route path="/promociones" element={<OwnerRoute><PromocionesPage /></OwnerRoute>} />
-                  <Route path="/subscriptions" element={<OwnerRoute><SubscriptionPage /></OwnerRoute>} />
+                  {/* Promociones and Subscriptions routes removed from router */}
                   <Route path="/barbero/:id" element={<UniversalBookingPage />} />
                   <Route path="/tienda/:id" element={<TiendaDetailPage />} />
                   <Route path="/booking/new" element={<PrivateRoute><BookingPage /></PrivateRoute>} />
