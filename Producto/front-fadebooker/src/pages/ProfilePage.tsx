@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { userService } from '@/lib/api/userService';
+import { tiendaService } from '@/lib/api/tiendaService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import ProfileSection from '@/components/organisms/ProfileSection';
 
@@ -11,6 +12,12 @@ const ProfilePage: React.FC = () => {
     queryKey: ['my-profile'],
     queryFn: userService.getPerfil,
     enabled: !!token,
+  });
+
+  const tiendaQuery = useQuery({
+    queryKey: ['tienda', data?.id_tienda ?? user?.id_tienda],
+    queryFn: () => tiendaService.getTiendaById(data?.id_tienda ?? user?.id_tienda!),
+    enabled: !!(data?.id_tienda ?? user?.id_tienda),
   });
 
   const mutation = useMutation({
@@ -48,6 +55,7 @@ const ProfilePage: React.FC = () => {
       role={data?.rol || user?.rol || 'Cliente'}
       fotoUrl={(data?.fotoUrl as any) || ((user as any)?.fotoUrl as any)}
       createdAt={data?.createdAt || user?.createdAt || ''}
+      tiendaName={tiendaQuery.data?.nombre_tienda || ''}
       isUpdating={mutation.isPending}
       onUpdate={async (newData) => {
         await mutation.mutateAsync(newData);

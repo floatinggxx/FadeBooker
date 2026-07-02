@@ -11,6 +11,7 @@ interface ProfileSectionProps {
   phone: string;
   role: string;
   createdAt: string;
+  tiendaName?: string;
   fotoUrl?: string;
   isUpdating?: boolean;
   onUpdate: (data: { nombre: string; apellido: string; telefono: string }) => Promise<void>;
@@ -25,6 +26,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   phone, 
   role, 
   createdAt, 
+  tiendaName,
   fotoUrl, 
   isUpdating: isUpdatingExternal,
   onUpdate, 
@@ -151,6 +153,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 <ProfileDetailRow label="Nombre Completo" value={name} />
                 <ProfileDetailRow label="Correo Electrónico" value={email} />
                 <ProfileDetailRow label="Teléfono" value={phone || 'No especificado'} />
+                {tiendaName && <ProfileDetailRow label="Barbería" value={tiendaName} />}
                 <ProfileDetailRow label="Miembro desde" value={createdAt ? new Date(createdAt).toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'} />
                 
                 <div className="mt-8 pt-8 border-t-2 border-slate-50">
