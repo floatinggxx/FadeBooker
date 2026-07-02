@@ -6,9 +6,54 @@ class UsuarioRepositoryImpl {
   }
 
   async create(data) {
+    // Normalizar rol: primera letra mayúscula y resto minúscula
+    const normalizeRol = (r) => {
+      if (!r || typeof r !== 'string') return r
+      const trimmed = r.trim()
+      if (trimmed.length === 0) return r
+      return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase()
+    }
+
+    const payload = { ...data }
+    if (payload.rol !== undefined) payload.rol = normalizeRol(payload.rol)
+
+    // Normalizar telefono a formato +56912345678
+    const normalizePhone = (p) => {
+      if (!p || typeof p !== 'string') return p
+      // eliminar espacios y caracteres comunes
+      let digits = p.replace(/[^0-9]/g, '')
+      if (digits.length === 0) return p
+
+      // casos comunes:
+      // 9xxxxxxxx -> agregar country code 56
+      // 56 9xxxxxxxx -> prefijar +
+      // 0 9xxxxxxxx -> quitar 0 agregar +56
+      if (/^9\d{8}$/.test(digits)) {
+        return '+56' + digits
+      }
+      if (/^56?9\d{8}$/.test(digits)) {
+        // asegurarse de que empieza con 56
+        if (digits.startsWith('56')) return '+' + digits
+        return '+56' + digits.slice(digits.indexOf('9'))
+      }
+      if (/^0?9\d{8}$/.test(digits)) {
+        // quitar cero inicial
+        const nd = digits.replace(/^0/, '')
+        return '+56' + nd
+      }
+
+      // si ya tiene country code con 56 y resto, asegurar prefijo +
+      if (/^56\d{8,}$/.test(digits)) return '+' + digits
+
+      // fallback: devolver con + si no existe
+      return '+' + digits
+    }
+
+    if (payload.telefono !== undefined) payload.telefono = normalizePhone(payload.telefono)
+
     // Manejo robusto para Azure SQL (MSSQL/Tedious) y otros adaptadores
     const result = await this.db('Usuario')
-      .insert(data)
+      .insert(payload)
       .returning('id_usuario')
 
     // Knex puede devolver diferentes formatos según el cliente (array o objeto)
