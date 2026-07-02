@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">3.41% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/119</span>
+                <span class='fraction'>4/117</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/81</span>
+                <span class='fraction'>0/73</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">10% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/10</span>
+                <span class='fraction'>1/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">3.47% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/117</span>
+                <span class='fraction'>4/115</span>
             </div>
         
             
@@ -304,18 +304,11 @@
 <a name='L239'></a><a href='#L239'>239</a>
 <a name='L240'></a><a href='#L240'>240</a>
 <a name='L241'></a><a href='#L241'>241</a>
-<a name='L242'></a><a href='#L242'>242</a>
-<a name='L243'></a><a href='#L243'>243</a>
-<a name='L244'></a><a href='#L244'>244</a>
-<a name='L245'></a><a href='#L245'>245</a>
-<a name='L246'></a><a href='#L246'>246</a>
-<a name='L247'></a><a href='#L247'>247</a>
-<a name='L248'></a><a href='#L248'>248</a>
-<a name='L249'></a><a href='#L249'>249</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L242'></a><a href='#L242'>242</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -323,14 +316,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -349,14 +337,12 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -559,11 +545,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">class UsuarioService {
-<span class="fstat-no" title="function not covered" >  co</span>nstructor(usuarioRepository, hasher, tokenManager) {
-<span class="cstat-no" title="statement not covered" >    this.usuarioRepository = usuarioRepository;</span>
-<span class="cstat-no" title="statement not covered" >    this.hasher = hasher;</span>
-<span class="cstat-no" title="statement not covered" >    this.tokenManager = tokenManager;</span>
+<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">class UsuarioService {
+  constructor(usuarioRepository, hasher, tokenManager) {
+    this.usuarioRepository = usuarioRepository;
+    this.hasher = hasher;
+    this.tokenManager = tokenManager;
   }
 &nbsp;
 <span class="fstat-no" title="function not covered" >  as</span>ync registrar(data) {
@@ -572,12 +558,7 @@
     // Mantener rol original para devolverlo en la respuesta y en el token
     const originalRole = <span class="cstat-no" title="statement not covered" >userData.rol;</span>
 &nbsp;
-    // Para evitar fallos por restricciones de la BD que aún no aceptan 'Proveedor',
-    // mapeamos temporalmente 'Proveedor' a 'Dueño' para la inserción en la tabla Usuario.
-    // La respuesta y el token seguirán indicando el rol real (originalRole).
 <span class="cstat-no" title="statement not covered" >    if (tienda_nueva) {</span>
-<span class="cstat-no" title="statement not covered" >      userData.rol = 'Dueño';</span>
-    } else <span class="cstat-no" title="statement not covered" >if (userData.rol === 'Proveedor') {</span>
 <span class="cstat-no" title="statement not covered" >      userData.rol = 'Dueño';</span>
     }
 &nbsp;
@@ -601,10 +582,10 @@
       const TiendaRepository = <span class="cstat-no" title="statement not covered" >require('../../infraestructure/database/TiendaRepositoryImpl');</span>
       const tiendaRepo = <span class="cstat-no" title="statement not covered" >new TiendaRepository();</span>
 &nbsp;
+      // `ciudad` column may not exist in all DB schemas; do not send it to avoid SQL errors
 <span class="cstat-no" title="statement not covered" >      final_id_tienda = await tiendaRepo.create({</span>
         nombre_tienda: tienda_nueva.nombre_tienda,
         direccion: tienda_nueva.direccion,
-        ciudad: tienda_nueva.ciudad,
         comuna: tienda_nueva.comuna || null,
         id_dueño: id_usuario,
         este_activa: 1
@@ -612,8 +593,6 @@
     }
 &nbsp;
     // Si el rol es Barbero, crear la entidad Barbero y sus servicios
-    // Nota: los `Proveedor` no deben crear una fila en Barbero por defecto,
-    // ya que eso puede provocar errores de constraints si no hay una tienda válida.
 <span class="cstat-no" title="statement not covered" >    if (userData.rol === 'Barbero') {</span>
       const BarberoRepository = <span class="cstat-no" title="statement not covered" >require('../../infraestructure/database/BarberoRepositoryImpl');</span>
       const barberoRepo = <span class="cstat-no" title="statement not covered" >new BarberoRepository();</span>
@@ -670,15 +649,15 @@
     // Quitar contraseña de la respuesta
     const { contrasena: _, ...usuarioSinPassword } = <span class="cstat-no" title="statement not covered" >usuario</span>
 &nbsp;
-    // Si es barbero, dueño o proveedor, incluir id_tienda
-<span class="cstat-no" title="statement not covered" >    if (usuario.rol === 'Barbero' || usuario.rol === 'Dueño' || usuario.rol === 'Proveedor') {</span>
+    // Si es barbero o dueño, incluir id_tienda
+<span class="cstat-no" title="statement not covered" >    if (usuario.rol === 'Barbero' || usuario.rol === 'Dueño') {</span>
       const BarberoRepository = <span class="cstat-no" title="statement not covered" >require('../../infraestructure/database/BarberoRepositoryImpl');</span>
       const barberoRepo = <span class="cstat-no" title="statement not covered" >new BarberoRepository();</span>
       const barbero = <span class="cstat-no" title="statement not covered" >await barberoRepo.findByUsuarioId(usuario.id_usuario);</span>
 <span class="cstat-no" title="statement not covered" >      if (barbero) {</span>
 <span class="cstat-no" title="statement not covered" >        usuarioSinPassword.id_tienda = barbero.id_tienda;</span>
 <span class="cstat-no" title="statement not covered" >        usuarioSinPassword.id_barbero = barbero.id_barbero;</span>
-      } else <span class="cstat-no" title="statement not covered" >if (usuario.rol === 'Dueño' || usuario.rol === 'Proveedor') {</span>
+      } else <span class="cstat-no" title="statement not covered" >if (usuario.rol === 'Dueño') {</span>
         const TiendaRepository = <span class="cstat-no" title="statement not covered" >require('../../infraestructure/database/TiendaRepositoryImpl');</span>
         const tiendaRepo = <span class="cstat-no" title="statement not covered" >new TiendaRepository();</span>
         const tiendas = <span class="cstat-no" title="statement not covered" >await tiendaRepo.findAll({ id_dueño: usuario.id_usuario });</span>
@@ -698,15 +677,15 @@
 <span class="cstat-no" title="statement not covered" >    if (usuario) {</span>
       const { contrasena, ...usuarioSinPassword } = <span class="cstat-no" title="statement not covered" >usuario</span>
       
-      // Si es barbero, dueño o proveedor, incluir id_tienda e id_barbero
-<span class="cstat-no" title="statement not covered" >      if (usuario.rol === 'Barbero' || usuario.rol === 'Dueño' || usuario.rol === 'Proveedor') {</span>
+      // Si es barbero o dueño, incluir id_tienda e id_barbero
+<span class="cstat-no" title="statement not covered" >      if (usuario.rol === 'Barbero' || usuario.rol === 'Dueño') {</span>
         const BarberoRepository = <span class="cstat-no" title="statement not covered" >require('../../infraestructure/database/BarberoRepositoryImpl');</span>
         const barberoRepo = <span class="cstat-no" title="statement not covered" >new BarberoRepository();</span>
         const barbero = <span class="cstat-no" title="statement not covered" >await barberoRepo.findByUsuarioId(usuario.id_usuario);</span>
 <span class="cstat-no" title="statement not covered" >        if (barbero) {</span>
 <span class="cstat-no" title="statement not covered" >          usuarioSinPassword.id_tienda = barbero.id_tienda;</span>
 <span class="cstat-no" title="statement not covered" >          usuarioSinPassword.id_barbero = barbero.id_barbero;</span>
-        } else <span class="cstat-no" title="statement not covered" >if (usuario.rol === 'Dueño' || usuario.rol === 'Proveedor') {</span>
+        } else <span class="cstat-no" title="statement not covered" >if (usuario.rol === 'Dueño') {</span>
           const misTiendas = <span class="cstat-no" title="statement not covered" >await require('../../db/knex')('Tienda').where({ id_dueño: usuario.id_usuario, este_activa: true }).first();</span>
 <span class="cstat-no" title="statement not covered" >          if (misTiendas) {</span>
 <span class="cstat-no" title="statement not covered" >            usuarioSinPassword.id_tienda = misTiendas.id_tienda;</span>
@@ -807,14 +786,14 @@
   }
 }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >module.exports = UsuarioService</span></pre></td></tr></table></pre>
+module.exports = UsuarioService</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-26T15:43:12.603Z
+                at 2026-07-02T21:10:35.331Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

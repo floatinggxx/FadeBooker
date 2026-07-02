@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">18.75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>3/16</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/2</span>
+                <span class='fraction'>1/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">18.75% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>3/16</span>
             </div>
         
             
@@ -95,41 +95,41 @@
 <a name='L30'></a><a href='#L30'>30</a>
 <a name='L31'></a><a href='#L31'>31</a>
 <a name='L32'></a><a href='#L32'>32</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// Simple in-memory rate limiter por IP y por phone (suficiente para MVP/pruebas)
-const rateMap = <span class="cstat-no" title="statement not covered" >new Map();</span>
+const rateMap = new Map();
 &nbsp;
-function <span class="fstat-no" title="function not covered" >rateLimiter(</span>{ windowMs = <span class="branch-0 cbranch-no" title="branch not covered" >5 * 60 * 1000,</span> max = <span class="branch-0 cbranch-no" title="branch not covered" >5,</span> keyPrefix = <span class="branch-0 cbranch-no" title="branch not covered" >'ip' </span>} = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
-<span class="cstat-no" title="statement not covered" >  return <span class="fstat-no" title="function not covered" >(r</span>eq, res, next) =&gt; {</span>
+function rateLimiter({ windowMs = <span class="branch-0 cbranch-no" title="branch not covered" >5 * 60 * 1000,</span> max = <span class="branch-0 cbranch-no" title="branch not covered" >5,</span> keyPrefix = <span class="branch-0 cbranch-no" title="branch not covered" >'ip' </span>} = <span class="branch-0 cbranch-no" title="branch not covered" >{})</span> {
+  return <span class="fstat-no" title="function not covered" >(r</span>eq, res, next) =&gt; {
 <span class="cstat-no" title="statement not covered" >    try {</span>
       const key = <span class="cstat-no" title="statement not covered" >keyPrefix === 'phone' ? (req.body &amp;&amp; req.body.phone) || 'unknown_phone' : req.ip || req.connection.remoteAddress || 'unknown_ip';</span>
       const now = <span class="cstat-no" title="statement not covered" >Date.now();</span>
@@ -155,7 +155,7 @@ function <span class="fstat-no" title="function not covered" >rateLimiter(</span
   };
 }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >module.exports = rateLimiter;</span>
+module.exports = rateLimiter;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -163,7 +163,7 @@ function <span class="fstat-no" title="function not covered" >rateLimiter(</span
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-06-26T15:43:12.603Z
+                at 2026-07-02T21:10:35.331Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>
