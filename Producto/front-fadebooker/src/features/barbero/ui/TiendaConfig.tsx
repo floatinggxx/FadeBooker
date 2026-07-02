@@ -382,10 +382,22 @@ const TiendaConfig: React.FC = () => {
 
                 {/* Columna Derecha: Datos y Galería */}
                 <div className="lg:col-span-2 space-y-10">
-                    <div className="space-y-6 bg-slate-50/50 p-8 rounded-[2.5rem]">
-                        <h3 className="font-black text-slate-900 text-sm uppercase mb-4 flex items-center gap-2 border-b-2 border-slate-100 pb-4">
-                            <Store size={18} className="text-[#3366FF]" aria-hidden="true" /> Información General
-                        </h3>
+                    <div className="space-y-6 bg-slate-50/50 p-6 md:p-8 rounded-[2.5rem]">
+                        <div className="flex items-start justify-between gap-4 mb-4 border-b-2 border-slate-100 pb-4">
+                            <h3 className="font-black text-slate-900 text-sm uppercase flex items-center gap-2">
+                                <Store size={18} className="text-[#3366FF]" aria-hidden="true" /> Información General
+                            </h3>
+                            <div className="ml-4">
+                                <button 
+                                    type="submit"
+                                    disabled={isSaving}
+                                    className="flex items-center gap-2 bg-[#3366FF] text-white px-6 py-2 rounded-2xl font-black shadow-md hover:scale-105 active:scale-95 disabled:opacity-50 text-xs uppercase tracking-widest"
+                                >
+                                    <Save size={16} />
+                                    {isSaving ? 'GUARDANDO...' : 'GUARDAR'}
+                                </button>
+                            </div>
+                        </div>
                         <input type="hidden" {...register('foto_portada_url')} />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
@@ -445,16 +457,7 @@ const TiendaConfig: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="flex justify-end pt-4">
-                            <button 
-                                type="submit" 
-                                disabled={isSaving}
-                                className="flex items-center gap-3 bg-[#3366FF] text-white px-10 py-4 rounded-2xl font-black shadow-xl shadow-blue-200 hover:scale-105 active:scale-95 disabled:opacity-50 transition-all text-xs uppercase tracking-widest"
-                            >
-                                <Save size={18} />
-                                {isSaving ? 'GUARDANDO...' : 'GUARDAR CAMBIOS'}
-                            </button>
-                        </div>
+                        {/* Save button moved to the header for a cleaner layout */}
                     </div>
 
                     {/* Galería Section */}
