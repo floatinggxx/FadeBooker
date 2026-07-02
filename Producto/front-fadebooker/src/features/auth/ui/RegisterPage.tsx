@@ -28,6 +28,10 @@ type FormData = {
     ciudad: string;
     region?: any;
     comuna?: string;
+    codigo_postal?: string;
+    telefono_tienda?: string;
+    email_tienda?: string;
+    dias_laborales?: string[];
   };
   acceptTerms?: boolean;
 };
@@ -118,11 +122,11 @@ const RegisterPage: React.FC = () => {
             const key = replaced.toLowerCase().replace(/\s+/g, ' ').trim();
             const subtitle = Object.keys(subtitles).includes(lower) ? subtitles[lower] : undefined;
             if (!map.has(key)) {
-              map.set(key, { nombre: replaced, descripcion: s.descripcion || subtitle, ids: [Number(s.id_servicio || s.id || 0)] });
+              map.set(key, { nombre: replaced, descripcion: s.descripcion || subtitle, ids: [Number(s.id_servicio || 0)] });
             } else {
               // append underlying id to preserve selection behavior
               const entry = map.get(key)!;
-              entry.ids.push(Number(s.id_servicio || s.id || 0));
+              entry.ids.push(Number(s.id_servicio || 0));
               // ensure we have a description set (prefer existing)
               if (!entry.descripcion && subtitle) entry.descripcion = subtitle;
             }
@@ -219,6 +223,23 @@ const RegisterPage: React.FC = () => {
         registerData.servicios = selectedServices;
         if (isRegisteringTienda) {
           registerData.rol = 'Dueño';
+        }
+        // Si hay tienda nueva, asegurarse de enviar campos completos y formateados
+        if (registerData.tienda_nueva) {
+          const tn = registerData.tienda_nueva as any;
+          // asegurar dias_laborales como array de strings
+          tn.dias_laborales = Array.isArray(tn.dias_laborales) ? tn.dias_laborales : (tn.dias_laborales ? [tn.dias_laborales] : []);
+          // si region viene como id, convertir a nombre si está en el state
+          if (tn.region) {
+            const r = regions.find(rr => String(rr.id) === String(tn.region));
+            tn.region = r ? r.name : tn.region;
+          }
+          // validaciones básicas antes de enviar
+          if (!tn.codigo_postal) throw new Error('Código postal de la tienda es obligatorio');
+          if (tn.email_tienda && !/^\S+@\S+\.\S+$/.test(tn.email_tienda)) throw new Error('Email de la tienda inválido');
+          if (tn.telefono_tienda && !/^\+?\d[\d\s-]{6,}$/.test(tn.telefono_tienda)) throw new Error('Teléfono de la tienda inválido');
+          // asignar de vuelta
+          registerData.tienda_nueva = tn;
         }
       } else {
         delete registerData.especialidad;
@@ -416,38 +437,6 @@ const RegisterPage: React.FC = () => {
                 </div>
               </div>
 
-              {!isRegisteringTienda ? (
-                <div className="input-container">
-                  <div className="input-with-icon">
-                    <Store size={18} className="input-icon" />
-                    <select 
-                      {...register('id_tienda', { 
-                        required: (rol === 'Barbero' || rol === 'Dueño') && !isRegisteringTienda ? 'Debes seleccionar una barbería' : false 
-                      })}
-                      className={`input-field ${errors.id_tienda ? 'input-error' : ''}`}
-                    >
-                      <option value="">Selecciona tu Barbería</option>
-                      {tiendas.map(tienda => (
-                        <option key={tienda.id_tienda} value={tienda.id_tienda}>
-                          {tienda.nombre_tienda} - {tienda.comuna || (tienda as any).ciudad}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  {errors.id_tienda && <span className="error-message">{errors.id_tienda.message}</span>}
-                  
-                  <button 
-                    type="button" 
-                    className="link-alt text-sm mt-2 flex items-center gap-1"
-                    onClick={() => {
-                      setIsRegisteringTienda(true);
-                      setValue('id_tienda', undefined);
-                    }}
-                  >
-                    <Plus size={14} /> ¿No aparece tu barbería? Inscríbela aquí
-                  </button>
-                </div>
-              ) : (
                 <div className="new-tienda-fields animate-fade-in">
                   <div className="info-alert mb-4">
                     <Info size={20} className="text-blue-500" />
@@ -493,7 +482,7 @@ const RegisterPage: React.FC = () => {
                         <option key={r.id} value={r.id}>{r.name}</option>
                       ))}
                     </select>
-                    {errors.tienda_nueva?.region && <span className="error-message">{errors.tienda_nueva.region.message}</span>}
+                      {errors.tienda_nueva?.region && <span className="error-message">{(errors.tienda_nueva.region as any).message}</span>}
                   </div>
 
                   <div className="input-container mb-3">
@@ -507,21 +496,44 @@ const RegisterPage: React.FC = () => {
                         <option key={c.id} value={c.name}>{c.name}</option>
                       ))}
                     </select>
-                    {errors.tienda_nueva?.comuna && <span className="error-message">{errors.tienda_nueva.comuna.message}</span>}
+                    {errors.tienda_nueva?.comuna && <span className="error-message">{(errors.tienda_nueva.comuna as any).message}</span>}
                   </div>
-
-                  <button 
-                    type="button" 
-                    className="link-alt text-sm flex items-center gap-1"
-                    onClick={() => {
-                      setIsRegisteringTienda(false);
-                      setValue('tienda_nueva', undefined);
-                    }}
-                  >
-                    Volver a la lista de barberías
-                  </button>
+                  <div className="input-container mb-3">
+                    <input
+                      {...register('tienda_nueva.codigo_postal')}
+                      placeholder="Código postal"
+                      className="input-field"
+                      maxLength={20}
+                    />
+                  </div>
+                  <div className="input-container mb-3">
+                    <input
+                      {...register('tienda_nueva.telefono_tienda')}
+                      placeholder="Teléfono de la tienda"
+                      className="input-field"
+                      maxLength={20}
+                    />
+                  </div>
+                  <div className="input-container mb-3">
+                    <input
+                      {...register('tienda_nueva.email_tienda')}
+                      placeholder="Email de la tienda"
+                      className="input-field"
+                      maxLength={100}
+                    />
+                  </div>
+                  <div className="input-container mb-3">
+                    <label className="block text-sm font-bold mb-2">Días laborales</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'].map(d => (
+                        <label key={d} className="checkbox-option">
+                          <input type="checkbox" value={d} {...register('tienda_nueva.dias_laborales')} /> {d}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              )}
+
 
               <div className="services-selection">
                 <label className="label-text">
@@ -553,7 +565,7 @@ const RegisterPage: React.FC = () => {
                     })
                   ) : (
                     serviciosDisponibles.map(servicio => {
-                      const idNum = Number(servicio.id_servicio || servicio.id || 0);
+                      const idNum = Number(servicio.id_servicio || 0);
                       const isActive = selectedServices.includes(idNum);
                       return (
                         <label key={idNum} className={`service-checkbox-item ${isActive ? 'active' : ''}`}>

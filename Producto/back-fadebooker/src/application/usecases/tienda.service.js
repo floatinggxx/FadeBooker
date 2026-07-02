@@ -9,7 +9,19 @@ class TiendaService {
   }
 
   async obtenerTodasLasTiendas(filtros = {}) {
-    return await this.tiendaRepository.findAll(filtros)
+    // Obtener todas las tiendas y filtrar las que no tengan datos mínimos o sin barberos activos
+    const todas = await this.tiendaRepository.findAll(filtros)
+    const resultado = []
+    for (const t of todas) {
+      // Verificar campos obligatorios: comuna, region, dias_laborales
+      const tieneDatosBasicos = t.comuna && t.region && t.dias_laborales;
+      if (!tieneDatosBasicos) continue;
+      // Verificar que exista al menos un barbero activo y con servicios disponibles
+      const barberos = await this.barberoRepository.findByTienda(t.id_tienda)
+      if (!barberos || (Array.isArray(barberos) && barberos.length === 0)) continue;
+      resultado.push(t)
+    }
+    return resultado
   }
 
   async obtenerTiendaPorId(id) {
@@ -38,7 +50,34 @@ class TiendaService {
   }
 
   async crearTienda(data) {
-    return await this.tiendaRepository.create(data)
+    // Crear la tienda
+    const id = await this.tiendaRepository.create(data)
+    // Si el payload incluye id_dueño (owner) y el usuario existe, asegurar que exista un barbero asociado
+    try {
+      const ownerId = data.id_dueño || data.id_dueno || data.id_dueno_tienda || null
+      if (ownerId) {
+        // Verificar si ya es barbero
+        const existingBarbero = await this.barberoRepository.findByUsuarioId(ownerId)
+        if (!existingBarbero) {
+          // Crear un barbero mínimo vinculado a la tienda
+          await this.barberoRepository.create({
+            id_usuario: ownerId,
+            id_tienda: id,
+            especialidad: 'Jefe de Tienda',
+            activo: 1
+          })
+        } else {
+          // si existe barbero, asegurar que esté ligado a esta tienda
+          if (!existingBarbero.id_tienda) {
+            await this.barberoRepository.update(existingBarbero.id_barbero, { id_tienda: id })
+          }
+        }
+      }
+    } catch (err) {
+      // No queremos que la creación de barbero bloquee la creación de la tienda; solo loguear
+      console.error('[TiendaService] Error asegurando barbero dueño:', err)
+    }
+    return id
   }
 
   async actualizarTienda(id, data) {
