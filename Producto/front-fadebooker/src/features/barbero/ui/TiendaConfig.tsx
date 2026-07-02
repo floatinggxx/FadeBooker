@@ -289,7 +289,7 @@ const TiendaConfig: React.FC = () => {
                                                 type="time"
                                                 step="600"
                                                 {...register('horario_apertura')}
-                                                className="bg-transparent font-black text-slate-800 text-3xl outline-none focus:text-[#3366FF] transition-colors w-full min-w-[140px]"
+                                                className="bg-transparent font-black text-slate-800 text-3xl outline-none focus:text-[#3366FF] transition-colors w-28 md:w-36 text-right font-mono"
                                             />
                                         </div>
                                     </div>
@@ -308,7 +308,7 @@ const TiendaConfig: React.FC = () => {
                                                 type="time"
                                                 step="600"
                                                 {...register('horario_cierre')}
-                                                className="bg-transparent font-black text-slate-800 text-3xl outline-none focus:text-[#3366FF] transition-colors w-full min-w-[140px]"
+                                                className="bg-transparent font-black text-slate-800 text-3xl outline-none focus:text-[#3366FF] transition-colors w-28 md:w-36 text-right font-mono"
                                             />
                                         </div>
                                     </div>
