@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { authService } from '@/lib/api/authService';
 import { tiendaService } from '@/lib/api/tiendaService';
 import { serviceService } from '@/lib/api/serviceService';
+import { locationService } from '@/lib/api/locationService';
 import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff, Scissors, Store, Briefcase, Plus, AlertCircle, Info, Clock, Check } from 'lucide-react';
 import { useNotification } from '@/context/NotificationContext';
@@ -25,6 +26,7 @@ type FormData = {
     nombre_tienda: string;
     direccion: string;
     ciudad: string;
+    region?: any;
     comuna?: string;
   };
   acceptTerms?: boolean;
@@ -48,6 +50,8 @@ const RegisterPage: React.FC = () => {
   const [displayServicios, setDisplayServicios] = useState<Array<{ id: string; nombre: string; descripcion?: string; ids: number[] }>>([]);
   const [selectedServices, setSelectedServices] = useState<number[]>([]);
   const [isRegisteringTienda, setIsRegisteringTienda] = useState(false);
+  const [regions, setRegions] = useState<Array<{ id: any; name: string }>>([]);
+  const [comunas, setComunas] = useState<Array<{ id: any; name: string }>>([]);
   
   const { 
     register, 
@@ -80,46 +84,68 @@ const RegisterPage: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [tiendasData, serviciosData] = await Promise.all([
+        const results = await Promise.allSettled([
           tiendaService.listTiendas(),
           serviceService.listServicios()
         ]);
-        setTiendas(tiendasData);
-        setServiciosDisponibles(serviciosData);
 
-        // Normalize, rename and deduplicate servicios for display
-        const replacements: { [k: string]: string } = {
-          'corte pelo dama': 'Corte cabello dama'
-        };
-        const subtitles: { [k: string]: string } = {
-          'corte pelo dama': 'Corte de dama'
-        };
+        const tiendasRes = results[0];
+        const serviciosRes = results[1];
 
-        const map = new Map<string, { nombre: string; descripcion?: string; ids: number[] }>();
-        serviciosData.forEach(s => {
-          const rawName = (s.nombre_servicio || s.nombre || '').trim();
-          const lower = rawName.toLowerCase();
-          const replaced = Object.keys(replacements).includes(lower) ? replacements[lower] : rawName;
-          const key = replaced.toLowerCase().replace(/\s+/g, ' ').trim();
-          const subtitle = Object.keys(subtitles).includes(lower) ? subtitles[lower] : undefined;
-          if (!map.has(key)) {
-            map.set(key, { nombre: replaced, descripcion: s.descripcion || subtitle, ids: [Number(s.id_servicio || s.id || 0)] });
-          } else {
-            // append underlying id to preserve selection behavior
-            const entry = map.get(key)!;
-            entry.ids.push(Number(s.id_servicio || s.id || 0));
-            // ensure we have a description set (prefer existing)
-            if (!entry.descripcion && subtitle) entry.descripcion = subtitle;
-          }
-        });
+        if (tiendasRes.status === 'fulfilled') {
+          setTiendas(tiendasRes.value as Tienda[]);
+        } else {
+          console.warn('Could not load tiendas for register:', tiendasRes.reason);
+        }
 
-        const displays = Array.from(map.entries()).map(([key, v], idx) => ({ id: `ds-${idx}`, nombre: v.nombre, descripcion: v.descripcion, ids: v.ids }));
-        setDisplayServicios(displays);
+        if (serviciosRes.status === 'fulfilled') {
+          const serviciosData = serviciosRes.value as Servicio[];
+          setServiciosDisponibles(serviciosData);
+
+          // Normalize, rename and deduplicate servicios for display
+          const replacements: { [k: string]: string } = {
+            'corte pelo dama': 'Corte cabello dama'
+          };
+          const subtitles: { [k: string]: string } = {
+            'corte pelo dama': 'Corte de dama'
+          };
+
+          const map = new Map<string, { nombre: string; descripcion?: string; ids: number[] }>();
+          serviciosData.forEach(s => {
+            const rawName = (s.nombre_servicio || s.nombre || '').trim();
+            const lower = rawName.toLowerCase();
+            const replaced = Object.keys(replacements).includes(lower) ? replacements[lower] : rawName;
+            const key = replaced.toLowerCase().replace(/\s+/g, ' ').trim();
+            const subtitle = Object.keys(subtitles).includes(lower) ? subtitles[lower] : undefined;
+            if (!map.has(key)) {
+              map.set(key, { nombre: replaced, descripcion: s.descripcion || subtitle, ids: [Number(s.id_servicio || s.id || 0)] });
+            } else {
+              // append underlying id to preserve selection behavior
+              const entry = map.get(key)!;
+              entry.ids.push(Number(s.id_servicio || s.id || 0));
+              // ensure we have a description set (prefer existing)
+              if (!entry.descripcion && subtitle) entry.descripcion = subtitle;
+            }
+          });
+
+          const displays = Array.from(map.entries()).map(([key, v], idx) => ({ id: `ds-${idx}`, nombre: v.nombre, descripcion: v.descripcion, ids: v.ids }));
+          setDisplayServicios(displays);
+        } else {
+          console.warn('Could not load servicios for register:', serviciosRes.reason);
+          setServiciosDisponibles([]);
+          setDisplayServicios([]);
+        }
       } catch (error) {
         console.error('Error fetching data for registration:', error);
+        setServiciosDisponibles([]);
+        setDisplayServicios([]);
       }
     };
     fetchData();
+    // load regions for tienda registration selects
+    locationService.listRegions()
+      .then(rs => setRegions(rs))
+      .catch(err => console.warn('Could not load regions for register', err))
   }, []);
 
   const handleServiceToggle = (id: number) => {
@@ -416,19 +442,41 @@ const RegisterPage: React.FC = () => {
                       maxLength={150}
                     />
                   </div>
+                  {/* Ciudad removed to avoid DB schema mismatch; we rely on Región/Comuna */}
                   <div className="input-container mb-3">
-                    <input 
-                      {...register('tienda_nueva.ciudad', { required: isRegisteringTienda ? 'La ciudad es obligatoria' : false })} 
-                      placeholder="Ciudad" 
-                      className="input-field" 
-                    />
+                    <label className="block text-sm font-bold mb-2">Región</label>
+                    <select
+                      {...register('tienda_nueva.region', { required: isRegisteringTienda ? 'La región es obligatoria' : false })}
+                      className="input-field"
+                      onChange={(e) => {
+                        const val = e.target.value
+                        setValue('tienda_nueva.region', val)
+                        // load comunas for selected region
+                        locationService.listComunas(val)
+                          .then(cs => setComunas(cs))
+                          .catch(() => setComunas([]))
+                      }}
+                    >
+                      <option value="">Selecciona Región</option>
+                      {regions.map(r => (
+                        <option key={r.id} value={r.id}>{r.name}</option>
+                      ))}
+                    </select>
+                    {errors.tienda_nueva?.region && <span className="error-message">{errors.tienda_nueva.region.message}</span>}
                   </div>
+
                   <div className="input-container mb-3">
-                    <input 
-                      {...register('tienda_nueva.comuna', { required: isRegisteringTienda ? 'La comuna es obligatoria' : false })} 
-                      placeholder="Comuna" 
-                      className="input-field" 
-                    />
+                    <label className="block text-sm font-bold mb-2">Comuna</label>
+                    <select
+                      {...register('tienda_nueva.comuna', { required: isRegisteringTienda ? 'La comuna es obligatoria' : false })}
+                      className="input-field"
+                    >
+                      <option value="">Selecciona Comuna</option>
+                      {comunas.map(c => (
+                        <option key={c.id} value={c.name}>{c.name}</option>
+                      ))}
+                    </select>
+                    {errors.tienda_nueva?.comuna && <span className="error-message">{errors.tienda_nueva.comuna.message}</span>}
                   </div>
                 </div>
               )}
@@ -441,25 +489,46 @@ const RegisterPage: React.FC = () => {
                 <p className="text-[11px] text-slate-400 font-bold mb-4 uppercase tracking-wider ml-1">Selecciona todos los que apliquen</p>
                 
                 <div className="services-list">
-                  {displayServicios.map(serv => {
-                    const isActive = serv.ids.some(i => selectedServices.includes(i));
-                    return (
-                      <label 
-                        key={serv.id} 
-                        className={`service-checkbox-item ${isActive ? 'active' : ''}`}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={isActive}
-                          onChange={() => handleDisplayServiceToggle(serv.ids)}
-                        />
-                        <div className="flex flex-col">
-                          <span className="service-name">{serv.nombre}</span>
-                          {serv.descripcion && <span className="service-desc">{serv.descripcion}</span>}
-                        </div>
-                      </label>
-                    );
-                  })}
+                  {displayServicios.length > 0 ? (
+                    displayServicios.map(serv => {
+                      const isActive = serv.ids.some(i => selectedServices.includes(i));
+                      return (
+                        <label 
+                          key={serv.id} 
+                          className={`service-checkbox-item ${isActive ? 'active' : ''}`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isActive}
+                            onChange={() => handleDisplayServiceToggle(serv.ids)}
+                          />
+                          <div className="flex flex-col">
+                            <span className="service-name">{serv.nombre}</span>
+                            {serv.descripcion && <span className="service-desc">{serv.descripcion}</span>}
+                          </div>
+                        </label>
+                      );
+                    })
+                  ) : (
+                    serviciosDisponibles.map(servicio => {
+                      const idNum = Number(servicio.id_servicio || servicio.id || 0);
+                      const isActive = selectedServices.includes(idNum);
+                      return (
+                        <label key={idNum} className={`service-checkbox-item ${isActive ? 'active' : ''}`}>
+                          <input type="checkbox" checked={isActive} onChange={() => handleServiceToggle(idNum)} />
+                          <div className="flex flex-col">
+                            <span className="service-name">{servicio.nombre_servicio || servicio.nombre}</span>
+                            {servicio.descripcion && <span className="service-desc">{servicio.descripcion}</span>}
+                          </div>
+                        </label>
+                      )
+                    })
+                  )}
+                  {displayServicios.length === 0 && serviciosDisponibles.length === 0 && (
+                    <div className="text-center text-slate-500 font-semibold py-3">
+                      No se pudieron cargar servicios. Recarga la página para reintentar.
+                    </div>
+                  )}
                 </div>
                 {(rol === 'Barbero' || rol === 'Dueño' || isRegisteringTienda) && selectedServices.length === 0 && (
                   <div className="flex items-center gap-2 mt-3 text-rose-500 font-bold text-xs animate-shake">

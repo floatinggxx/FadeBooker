@@ -40,10 +40,10 @@ class UsuarioService {
       const TiendaRepository = require('../../infraestructure/database/TiendaRepositoryImpl');
       const tiendaRepo = new TiendaRepository();
 
+      // `ciudad` column may not exist in all DB schemas; do not send it to avoid SQL errors
       final_id_tienda = await tiendaRepo.create({
         nombre_tienda: tienda_nueva.nombre_tienda,
         direccion: tienda_nueva.direccion,
-        ciudad: tienda_nueva.ciudad,
         comuna: tienda_nueva.comuna || null,
         id_dueño: id_usuario,
         este_activa: 1

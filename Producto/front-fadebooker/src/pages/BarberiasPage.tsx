@@ -1,11 +1,11 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { tiendaService } from '@/lib/api/tiendaService';
+import { locationService } from '@/lib/api/locationService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import TiendaCard from '@/components/ui/TiendaCard';
 import { Tienda } from '@/types';
 import { MapPin, ChevronDown, Search, Navigation, X } from 'lucide-react';
-import { regionesChile } from '@/lib/utils/chileData';
 
 interface SearchableSelectProps {
   options: { label: string; value: string | number }[];
@@ -124,19 +124,67 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({ options, value, onC
 
 const BarberiasPage: React.FC = () => {
   const { user } = useAuth();
-  const [selectedRegionId, setSelectedRegionId] = useState<number | ''>('');
+  const [selectedRegionId, setSelectedRegionId] = useState<any>('');
   const [selectedComuna, setSelectedComuna] = useState('');
+  const [regions, setRegions] = useState<Array<{ id: any; name: string }>>([]);
+  const [comunas, setComunas] = useState<Array<{ id: any; name: string }>>([]);
   const [search, setSearch] = useState('');
 
   const selectedRegion = useMemo(() => {
-    return regionesChile.find(r => r.id === selectedRegionId);
-  }, [selectedRegionId]);
+    return regions.find(r => String(r.id) === String(selectedRegionId));
+  }, [selectedRegionId, regions]);
 
-  const isRegionMetropolitana = selectedRegion?.nombre === 'Región Metropolitana de Santiago';
+  const normalizeText = (value: any) => String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+
+  const isRegionMetropolitana = normalizeText(selectedRegion?.name).includes('metropolitana');
+
+  useEffect(() => {
+    locationService.listRegions()
+      .then(rs => {
+        // dedupe by normalized name
+        const seen = new Set<string>()
+        const uniq: Array<{ id: any; name: string }> = []
+        rs.forEach(r => {
+          const n = normalizeText(r.name)
+          if (!seen.has(n)) {
+            seen.add(n)
+            uniq.push(r)
+          }
+        })
+        setRegions(uniq)
+      })
+      .catch(err => console.warn('Regions load failed', err))
+  }, [])
+
+  useEffect(() => {
+    if (selectedRegionId) {
+      locationService.listComunas(selectedRegionId)
+        .then(cs => {
+          const seen = new Set<string>()
+          const uniq: Array<{ id: any; name: string }> = []
+          cs.forEach(c => {
+            const n = normalizeText(c.name)
+            if (!seen.has(n)) {
+              seen.add(n)
+              uniq.push(c)
+            }
+          })
+          setComunas(uniq)
+        })
+        .catch(() => setComunas([]))
+    } else {
+      setComunas([])
+    }
+  }, [selectedRegionId])
 
   const { data: tiendas, isLoading, error } = useQuery({
-    queryKey: ['tiendas', selectedComuna],
-    queryFn: () => tiendaService.listTiendas(selectedComuna),
+    queryKey: ['tiendas', selectedComuna, selectedRegionId],
+    // Query backend by comuna only; region filtering is applied client-side robustly.
+    queryFn: () => tiendaService.listTiendas({ comuna: selectedComuna || undefined }),
     enabled: true, // Siempre cargamos desde la base de datos
   });
 
@@ -147,8 +195,21 @@ const BarberiasPage: React.FC = () => {
   const filteredTiendas = useMemo(() => {
     let result = tiendasData;
 
+    if (selectedRegion) {
+      const selectedRegionNorm = normalizeText(selectedRegion.name);
+      result = result.filter(t => {
+        const tiendaRegionNorm = normalizeText((t as any).region);
+        return tiendaRegionNorm.includes(selectedRegionNorm) || selectedRegionNorm.includes(tiendaRegionNorm);
+      });
+    }
+
     if (selectedComuna) {
-      result = result.filter(t => t.ciudad === selectedComuna);
+      const selectedComunaNorm = normalizeText(selectedComuna);
+      result = result.filter(t => {
+        const comuna = normalizeText((t as any).comuna);
+        const ciudad = normalizeText((t as any).ciudad);
+        return comuna === selectedComunaNorm || ciudad === selectedComunaNorm;
+      });
     }
 
     if (user?.rol === 'Barbero' && user.id_tienda) {
@@ -203,7 +264,7 @@ const BarberiasPage: React.FC = () => {
                 setSelectedRegionId(val);
                 setSelectedComuna('');
               }}
-              options={regionesChile.map(r => ({ label: r.nombre, value: r.id }))}
+              options={regions.map(r => ({ label: r.name, value: r.id }))}
             />
 
             <SearchableSelect 
@@ -212,7 +273,7 @@ const BarberiasPage: React.FC = () => {
               value={selectedComuna}
               onChange={(val) => setSelectedComuna(val)}
               disabled={!selectedRegionId}
-              options={selectedRegion?.comunas.map(c => ({ label: c, value: c })) || []}
+              options={comunas.map(c => ({ label: c.name, value: c.name }))}
             />
           </div>
         </div>
