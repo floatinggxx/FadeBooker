@@ -112,21 +112,12 @@ const AppHeader = () => {
                     {user?.rol === 'Dueño' ? 'Panel Dueño' : 'Panel Barbero'}
                   </Link>
                 )}
-                {user?.rol === 'Dueño' && (
-                  <>
-                    <Link to="/subscriptions" className="link-button text-[#3366FF] font-black">
-                      Suscripciones
-                    </Link>
-                    <Link to="/promociones" className="link-button text-[#3366FF] font-black">
-                      Promociones
-                    </Link>
-                  </>
-                )}
+                {/* Suscripciones y Promociones removidos del header */}
                 {(user?.rol === 'Cliente' || user?.rol === 'Barbero') && (
                   <Link to="/bookings" className="link-button">Mis citas</Link>
                 )}
                 <Link to="/profile" className="link-button">Mi perfil</Link>
-                <button onClick={logout} className="button button-secondary w-full md:w-auto">Cerrar sesión</button>
+                <button onClick={logout} className="button button-secondary md:ml-2">Cerrar sesión</button>
               </>
             ) : (
               <>
