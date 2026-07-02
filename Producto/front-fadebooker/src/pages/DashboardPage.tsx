@@ -82,20 +82,7 @@ const DashboardPage: React.FC = () => {
       link: '/profile',
       color: 'bg-blue-50'
     },
-    {
-      title: 'Suscripción',
-      description: 'Administra tu plan de visibilidad y beneficios.',
-      icon: <Ticket className="text-emerald-500" size={24} />,
-      link: '/subscriptions',
-      color: 'bg-emerald-50'
-    },
-    {
-      title: 'Promociones',
-      description: 'Publica anuncios y ofertas para tus servicios.',
-      icon: <Ticket className="text-amber-500" size={24} />,
-      link: '/promociones',
-      color: 'bg-amber-50'
-    }
+    // Suscripción y Promociones removidos del dashboard según solicitud
   ];
 
   const cards = user?.rol === 'Dueño'
@@ -234,16 +221,7 @@ const DashboardPage: React.FC = () => {
                 </Link>
               </div>
             </section>
-          ) : (
-            <section className="card-surface p-6">
-              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                <Ticket className="text-[#3366FF]" size={20} />
-                Suscripciones y ventajas
-              </h2>
-              <p className="text-slate-600 mb-4">Gestiona tu plan de suscripción para mejorar visibilidad, promociones y prioridad en la plataforma.</p>
-              <Link to="/subscriptions" className="inline-flex items-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-xl font-bold">Ir a suscripciones</Link>
-            </section>
-          )}
+          ) : null }
 
           {/* Estado de Cuenta removed as requested */}
         </div>
