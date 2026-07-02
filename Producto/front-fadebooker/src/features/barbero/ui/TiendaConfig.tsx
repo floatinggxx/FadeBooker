@@ -277,8 +277,8 @@ const TiendaConfig: React.FC = () => {
                         <div className="space-y-6">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 {/* Entrada */}
-                                <div className="bg-white p-6 rounded-[2.5rem] border-2 border-slate-100 shadow-sm flex items-center justify-between group hover:border-[#3366FF] hover:shadow-xl transition-all duration-300">
-                                    <div className="flex items-center gap-5">
+                                <div className="bg-white p-6 rounded-[2.5rem] border-2 border-slate-100 shadow-sm flex items-center justify-between group hover:border-[#3366FF] hover:shadow-xl transition-all duration-300 min-w-0">
+                                    <div className="flex items-center gap-5 min-w-0">
                                         <div className="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center text-green-500 shadow-inner">
                                             <Clock size={28} />
                                         </div>
@@ -289,15 +289,16 @@ const TiendaConfig: React.FC = () => {
                                                 type="time"
                                                 step="600"
                                                 {...register('horario_apertura')}
-                                                className="bg-transparent font-black text-slate-800 text-3xl outline-none focus:text-[#3366FF] transition-colors w-28 md:w-36 text-right font-mono"
+                                                className="bg-transparent font-black text-slate-800 text-2xl md:text-3xl outline-none focus:text-[#3366FF] transition-colors w-20 md:w-28 text-right font-mono max-w-full"
+                                                style={{appearance: 'textfield'}}
                                             />
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Salida */}
-                                <div className="bg-white p-6 rounded-[2.5rem] border-2 border-slate-100 shadow-sm flex items-center justify-between group hover:border-[#3366FF] hover:shadow-xl transition-all duration-300">
-                                    <div className="flex items-center gap-5">
+                                <div className="bg-white p-6 rounded-[2.5rem] border-2 border-slate-100 shadow-sm flex items-center justify-between group hover:border-[#3366FF] hover:shadow-xl transition-all duration-300 min-w-0">
+                                    <div className="flex items-center gap-5 min-w-0">
                                         <div className="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center text-red-500 shadow-inner">
                                             <Clock size={28} />
                                         </div>
@@ -308,7 +309,8 @@ const TiendaConfig: React.FC = () => {
                                                 type="time"
                                                 step="600"
                                                 {...register('horario_cierre')}
-                                                className="bg-transparent font-black text-slate-800 text-3xl outline-none focus:text-[#3366FF] transition-colors w-28 md:w-36 text-right font-mono"
+                                                className="bg-transparent font-black text-slate-800 text-2xl md:text-3xl outline-none focus:text-[#3366FF] transition-colors w-20 md:w-28 text-right font-mono max-w-full"
+                                                style={{appearance: 'textfield'}}
                                             />
                                         </div>
                                     </div>
