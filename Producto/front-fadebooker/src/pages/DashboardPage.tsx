@@ -33,9 +33,11 @@ const DashboardPage: React.FC = () => {
       .filter((b: any) => {
         if (!b._datetime) return false;
         const estado = (b.estado || '').toLowerCase();
-        // only confirmed (confirmada) bookings should be shown here
+        // only confirmed bookings should be shown here
         if (estado !== 'confirmada') return false;
-        return b._datetime >= ahora;
+        // allow a timezone tolerance of up to 3 hours (in ms) to avoid UTC/local shift hiding future slots
+        const toleranceMs = 3 * 60 * 60 * 1000;
+        return (b._datetime.getTime() - ahora.getTime()) >= -toleranceMs;
       })
       .sort((a: any, b: any) => a._datetime.getTime() - b._datetime.getTime());
 

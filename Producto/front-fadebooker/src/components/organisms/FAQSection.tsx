@@ -56,7 +56,7 @@ const FAQSection: React.FC = () => {
 
       <div className="card-surface help-contact-card">
         <h2>¿Aún no encuentras tu respuesta?</h2>
-        <p>Escríbenos a <a href="mailto:soporte@fadebooker.com" className="text-accent underline">soporte@fadebooker.com</a> y te ayudaremos de manera personalizada.</p>
+        <p>Escríbenos a <a href="mailto:fadebooker@gmail.com" className="text-accent underline">fadebooker@gmail.com</a> y te ayudaremos de manera personalizada.</p>
       </div>
     </section>
   );
