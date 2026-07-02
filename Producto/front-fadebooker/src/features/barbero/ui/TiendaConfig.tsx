@@ -266,8 +266,8 @@ const TiendaConfig: React.FC = () => {
                     </div>
 
                     <div className="bg-[#F8FAFC] p-8 rounded-[3rem] border-4 border-white shadow-xl relative overflow-hidden" aria-labelledby="hours-heading">
-                        <div className="absolute top-0 right-0 p-4 opacity-5">
-                            <Clock size={80} className="text-[#3366FF]" />
+                        <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none" aria-hidden="true">
+                            <Clock size={80} className="text-[#3366FF]" aria-hidden="true" />
                         </div>
                         
                         <h3 id="hours-heading" className="font-black text-slate-900 text-sm uppercase mb-6 flex items-center gap-2">
