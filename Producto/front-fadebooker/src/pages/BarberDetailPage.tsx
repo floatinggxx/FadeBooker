@@ -343,7 +343,7 @@ const BarberDetailPage: React.FC = () => {
                       {new Intl.DateTimeFormat('es-CL', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(selectedDate))}
                     </p>
                     <p className="text-[#3366FF] font-black text-2xl">{selectedTime.substring(0, 5)} hrs</p>
-                    <p className="text-slate-400 font-medium">{tienda?.nombre_tienda} - {tienda?.ciudad}</p>
+                    <p className="text-slate-400 font-medium">{tienda?.nombre_tienda} - {tienda?.comuna || (tienda as any).ciudad}</p>
                   </div>
                 </div>
 

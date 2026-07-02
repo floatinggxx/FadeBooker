@@ -2,8 +2,15 @@ import api from '../api';
 import { Tienda } from '@/types';
 
 export const tiendaService = {
-  listTiendas: async (ciudad?: string): Promise<Tienda[]> => {
-    const params = ciudad ? { ciudad } : {};
+  listTiendas: async (comunaOrFilters?: string | { comuna?: string; region?: string; ciudad?: string }): Promise<Tienda[]> => {
+    const params: any = {};
+    if (typeof comunaOrFilters === 'string') {
+      params.comuna = comunaOrFilters;
+    } else if (comunaOrFilters) {
+      if (comunaOrFilters.comuna) params.comuna = comunaOrFilters.comuna;
+      if (comunaOrFilters.region) params.region = comunaOrFilters.region;
+      if (comunaOrFilters.ciudad) params.comuna = comunaOrFilters.ciudad;
+    }
     const response = await api.get('/tiendas', { params });
     return response.data;
   },
@@ -23,12 +30,25 @@ export const tiendaService = {
     return response.data;
   },
 
-  listCiudades: async (): Promise<string[]> => {
-    // Podríamos tener un endpoint específico o deducirlo de las tiendas
+  listComunas: async (): Promise<string[]> => {
     const response = await api.get('/tiendas');
     const tiendas: Tienda[] = response.data;
-    const ciudades = Array.from(new Set(tiendas.map(t => t.ciudad)));
-    return ciudades.sort();
+    const comunas = Array.from(new Set(tiendas.map(t => t.comuna).filter(Boolean)));
+    return comunas.sort();
+  },
+
+  listRegiones: async (): Promise<string[]> => {
+    const response = await api.get('/tiendas');
+    const tiendas: Tienda[] = response.data;
+    const regiones = Array.from(new Set(tiendas.map(t => t.region).filter(Boolean)));
+    return regiones.sort();
+  },
+
+  listCiudades: async (): Promise<string[]> => {
+    const response = await api.get('/tiendas');
+    const tiendas: Tienda[] = response.data;
+    const comunas = Array.from(new Set(tiendas.map(t => t.comuna || (t as any).ciudad).filter(Boolean)));
+    return comunas.sort();
   },
 
   updateTienda: async (id: string | number, data: Partial<Tienda>): Promise<Tienda> => {

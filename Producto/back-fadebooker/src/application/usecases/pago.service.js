@@ -49,6 +49,10 @@ class PagoService {
         throw new Error('La cita ya está completamente pagada o el monto solicitado es inválido');
       }
 
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`[PagoService] crearPreferenciaPago - id_cita=${id_cita} tipo_pago=${tipo_pago} montoPendiente=${montoPendiente} montoAPagar=${montoAPagar} comision=${comisionAplicada}`);
+      }
+
       // Regla de Negocio: No permitir generar pagos para citas que ya excedieron el tiempo límite (3.2 min)
       const creationTime = new Date(cita.createdAt).getTime();
       const minutesSinceCreation = (Date.now() - creationTime) / 1000 / 60;
@@ -136,7 +140,8 @@ class PagoService {
               montoConComision: pagoPendiente.monto_pagado || (montoAPagar + comisionAplicada),
               totalNeto: pagoPendiente.monto_pagado || (montoAPagar + comisionAplicada),
               moneda: 'CLP',
-              existing: true
+              existing: true,
+              tipo_pago: pagoPendiente.tipo_pago || tipo_pago
             };
           }
         } catch (eDed) {
@@ -175,6 +180,7 @@ class PagoService {
         id_cita: id_cita,
         monto_pagado: unitPriceToSend,
         monto_base: montoAPagar,
+        tipo_pago: tipo_pago,
         metodo_pago: 'mercadopago',
         estado_pago: 'pendiente',
         referencia_transaccion: preferenceResult.id,
@@ -182,6 +188,10 @@ class PagoService {
       };
 
       await this.pagoRepository.create(pagoData);
+
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('[PagoService] Preferencia creada:', { id_cita, preferenceId: preferenceResult.id, unitPriceToSend, pagoData });
+      }
 
       const totalNeto = Number(unitPriceToSend.toFixed(2));
       return {
@@ -191,7 +201,8 @@ class PagoService {
         comision: comisionAplicada,
         montoConComision: unitPriceToSend,
         totalNeto: totalNeto,
-        moneda: 'CLP'
+        moneda: 'CLP',
+        tipo_pago: tipo_pago
       };
 
     } catch (error) {
@@ -283,7 +294,7 @@ class PagoService {
         return;
       }
 
-      // Actualizar estado del pago
+      // Actualizar estado del pago y monto si tenemos detalle desde la API de Mercado Pago
       let nuevoEstado = 'pendiente';
       if (status === 'approved') {
         nuevoEstado = 'completado';
@@ -291,9 +302,20 @@ class PagoService {
         nuevoEstado = 'fallido';
       }
 
+      // Si obtuvimos detalles desde la API, preferir el monto real reportado
+      let montoReportado = pago.monto_pagado;
+      try {
+        if (typeof paymentDetails !== 'undefined' && paymentDetails && paymentDetails.transaction_amount) {
+          montoReportado = Number(paymentDetails.transaction_amount);
+        }
+      } catch (mErr) {
+        // ignorar y usar pago.monto_pagado
+      }
+
       await this.pagoRepository.update(pago.id_pago, {
         estado_pago: nuevoEstado,
-        fecha_pago: new Date()
+        fecha_pago: new Date(),
+        monto_pagado: montoReportado
       });
 
       // Si el pago fue aprobado, actualizar la cita (con regla de negocio estricta de expiración)
@@ -329,12 +351,22 @@ class PagoService {
             return;
           }
 
-          const nuevoAbono = (cita.pago_abono || 0) + pago.monto_pagado;
+          const montoPagoAplicar = pago.monto_pagado || montoReportado || 0;
+          // Aplicar cap para no exceder monto_total y respetar CHECK constraint CHK_AbonoPagado
+          const montoTotalCita = Number(cita.monto_total || 0);
+          const pagoAnterior = Number(cita.pago_abono || 0);
+          const calculoNuevoAbono = pagoAnterior + Number(montoPagoAplicar || 0);
+          const nuevoAbono = Math.min(montoTotalCita, calculoNuevoAbono);
           const citaUpdate = {
             pago_abono: nuevoAbono,
             metodo_pago: 'mercadopago',
             estado: 'confirmada' // Pasar de pendiente a confirmada al pagar a tiempo
           };
+
+          if (process.env.NODE_ENV !== 'production') {
+            console.log('[PagoService] webhook actualizar cita - id_cita=', id_cita, 'pago_local=', pago, 'montoReportado=', montoReportado, 'cita_before=', cita);
+            console.log('[PagoService] webhook actualizar cita - aplicando citaUpdate=', citaUpdate);
+          }
 
           // Guard defensivo: nunca permitir que el webhook marque la cita como 'completada' directamente.
           try {

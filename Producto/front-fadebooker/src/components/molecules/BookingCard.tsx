@@ -56,6 +56,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
   const [isReviewed, setIsReviewed] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [paymentType, setPaymentType] = useState<'total' | 'abono'>('abono');
+  const [modalPaymentType, setModalPaymentType] = useState<'total' | 'abono' | null>(null);
   
   // Estados para el modal de espera del pago
   const [showWaitingModal, setShowWaitingModal] = useState(false);
@@ -80,6 +81,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
     try {
       showNotification("Generando pasarela de pago...", "info");
       const outcomeType = (paymentType === 'abono' && abonoFaltante > 0) ? 'abono' : 'total';
+      console.debug('[BookingCard] handlePayNow', { id, paymentType, outcomeType, montoTotal, pagoAbono, abonoFaltante });
       const resultado = await pagoService.crearPago({ 
         id_cita: id,
         tipo_pago: outcomeType
@@ -91,6 +93,11 @@ const BookingCard: React.FC<BookingCardProps> = ({
         comision: resultado.comision ?? resultado.comision_calculada ?? resultado.comision_total ?? null,
         montoConComision: resultado.montoConComision ?? resultado.monto_con_comision ?? null
       });
+      // Store the actual payment type used to create the preference so modal shows correct legend
+      const tipoFromResp = (resultado && (resultado as any).tipo_pago) ? (resultado as any).tipo_pago as 'total' | 'abono' : outcomeType as 'total' | 'abono';
+      setModalPaymentType(tipoFromResp);
+      console.debug('[BookingCard] modalPaymentType set to', tipoFromResp, 'backendResponseTipo:', (resultado as any).tipo_pago);
+      console.debug('[BookingCard] modalPaymentType set to', outcomeType);
       if (paymentWindow) {
         if (resultado && resultado.url) {
           paymentWindow.location.href = resultado.url;
@@ -416,7 +423,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
           onSuccess={handlePaymentSuccess}
           bookingId={id}
           paymentUrl={paymentUrl}
-          paymentType={paymentType}
+          paymentType={modalPaymentType ?? paymentType}
           initialPref={initialPref ?? undefined}
         />
       )}

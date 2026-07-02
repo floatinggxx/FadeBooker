@@ -125,6 +125,18 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
       .where('Barbero.id_barbero', id_barbero)
       .select('Tienda.horario_apertura', 'Tienda.horario_cierre')
       .first();
+    // Debug: log raw DB row to trace unexpected values/types
+    try {
+      console.log('[HorariosTienda][DEBUG] raw tienda row for barbero', id_barbero, tienda);
+      if (tienda) {
+        console.log('[HorariosTienda][DEBUG] apertura type:', typeof tienda.horario_apertura, 'instanceof Date:', tienda.horario_apertura instanceof Date);
+        console.log('[HorariosTienda][DEBUG] cierre type   :', typeof tienda.horario_cierre, 'instanceof Date:', tienda.horario_cierre instanceof Date);
+        if (tienda.horario_apertura instanceof Date) console.log('[HorariosTienda][DEBUG] apertura getHours/getUTCHours:', tienda.horario_apertura.getHours(), tienda.horario_apertura.getUTCHours());
+        if (tienda.horario_cierre instanceof Date) console.log('[HorariosTienda][DEBUG] cierre getHours/getUTCHours   :', tienda.horario_cierre.getHours(), tienda.horario_cierre.getUTCHours());
+      }
+    } catch (e) {
+      console.log('[HorariosTienda][DEBUG] error logging tienda row', e);
+    }
     
     // Valores por defecto si no se encuentran
     if (!tienda) {
@@ -135,8 +147,17 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
     let apertura = tienda.horario_apertura;
     let cierre = tienda.horario_cierre;
 
-    if (apertura instanceof Date) apertura = apertura.toTimeString().split(' ')[0];
-    if (cierre instanceof Date) cierre = cierre.toTimeString().split(' ')[0];
+    // Prefer extracting UTC time portion from the Date object because SQL/Tedious
+    // may return a Date in UTC where the stored "time" is represented in UTC.
+    // Using UTC keeps the original hour as stored in the DB row (avoid local shift).
+    if (apertura instanceof Date) {
+      const m = apertura.toISOString().match(/T(\d{2}:\d{2}:\d{2})/);
+      apertura = m ? m[1] : apertura.toTimeString().split(' ')[0];
+    }
+    if (cierre instanceof Date) {
+      const m2 = cierre.toISOString().match(/T(\d{2}:\d{2}:\d{2})/);
+      cierre = m2 ? m2[1] : cierre.toTimeString().split(' ')[0];
+    }
 
     return { horario_apertura: apertura, horario_cierre: cierre };
   }

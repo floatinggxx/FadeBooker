@@ -51,16 +51,12 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
     setIsSimulating(true);
     setSimulationStatus(null);
     try {
-      // Simular el webhook de Mercado Pago en nuestro backend (es compatible de igual forma tanto en local como en Azure)
-      await api.post('/pagos/webhook', {
-        action: 'payment.created',
-        data: {
-          id: '1327318202', // ID de pago simulado
-          status: 'approved',
-          external_reference: `cita_${bookingId}`
-        },
-        type: 'payment',
-        external_reference: `cita_${bookingId}`
+      // Llamar al endpoint de simulación en backend (solo en entornos de test)
+      const montoEnviar = totalNeto || montoAPagar || 0;
+      await api.post('/pagos/simular', {
+        id_cita: bookingId,
+        monto: montoEnviar,
+        referencia: `sim_ui_${Date.now()}`
       });
       setSimulationStatus('success');
       // Después de simular, esperar 2 segundos y entonces disparar onSuccess para que el polling detecte el cambio
@@ -110,7 +106,7 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
 
     // Obtener preferencia y desglose de comisión al abrir el modal
     (async () => {
-      try {
+        try {
         let pref: any = null;
         // If parent already provided initial preference (from BookingCard), use it
         if ((initialPref && (initialPref.montoBase || initialPref.comision || initialPref.montoConComision))) {
@@ -137,6 +133,7 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
         if ((pref as any).url) {
           setLocalPaymentUrl((pref as any).url);
         }
+        console.debug('[PaymentWaitingModal] opened', { bookingId, paymentType, initialPref: pref, montoAPagar: subtotal, comision: comm, totalNeto: net });
       } catch (err) {
         // No bloquear: solo mostramos si está disponible
         console.warn('No se pudo recuperar preferencia/desglose:', err);
@@ -260,24 +257,40 @@ const PaymentWaitingModal: React.FC<PaymentWaitingModalProps> = ({
               </button>
             </div>
 
-            {/* Desglose de pago: Pago completo, Pago abono (50%), Comisión (5% del total), Total a pagar = Abono + Comisión */}
+            {/* Desglose de pago: indicar si es Pago Total o Pago Abono, y mostrar montos correctos */}
+            <div className="mb-2 text-sm font-bold text-slate-700">{paymentType === 'total' ? 'Pago Total' : 'Pago Abono'}</div>
             <div className="mt-4 text-left text-sm">
-              <div className="flex justify-between text-slate-600 mb-1">
-                <span>Pago completo</span>
-                <span className="font-mono">{montoAPagar ? `${montoAPagar.toFixed(2)} pesos chilenos (CLP)` : '-'}</span>
-              </div>
-              <div className="flex justify-between text-slate-600 mb-1">
-                <span>Pago abono (50%)</span>
-                <span className="font-mono">{montoAPagar ? `${Math.round(montoAPagar * 0.5).toFixed(2)} pesos chilenos (CLP)` : '-'}</span>
-              </div>
-              <div className="flex justify-between text-slate-600 mb-1">
-                <span>Comisión</span>
-                <span className="font-mono text-rose-600">{comision ? `+${comision.toFixed(2)} pesos chilenos (CLP)` : '0.00 pesos chilenos (CLP)'}</span>
-              </div>
-              <div className="flex justify-between text-slate-900 font-black mt-2 pt-2 border-t">
-                <span>Total a pagar</span>
-                <span className="font-mono">{montoAPagar ? `${(Math.round(montoAPagar * 0.5) + (comision || 0)).toFixed(2)} pesos chilenos (CLP)` : '-'}</span>
-              </div>
+              {/* Calculations: when paymentType is 'abono', montoAPagar represents the abono amount (50%).
+                  When paymentType is 'total', montoAPagar represents the full amount (without commission)
+              */}
+              {(() => {
+                const isAbono = paymentType === 'abono';
+                const abonoAmount = montoAPagar ? Number(montoAPagar) : null;
+                const totalCita = abonoAmount !== null ? (isAbono ? abonoAmount * 2 : abonoAmount) : null;
+                const com = comision || 0;
+                const totalAPagar = abonoAmount !== null ? (isAbono ? (abonoAmount + com) : (abonoAmount + com)) : null;
+
+                return (
+                  <>
+                    <div className="flex justify-between text-slate-600 mb-1">
+                      <span>Monto total (cita)</span>
+                      <span className="font-mono">{totalCita !== null ? `${totalCita.toFixed(2)} pesos chilenos (CLP)` : '-'}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-600 mb-1">
+                      <span>Pago abono (50%)</span>
+                      <span className="font-mono">{abonoAmount !== null ? `${abonoAmount.toFixed(2)} pesos chilenos (CLP)` : '-'}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-600 mb-1">
+                      <span>Comisión</span>
+                      <span className="font-mono text-rose-600">{com ? `+${com.toFixed(2)} pesos chilenos (CLP)` : '0.00 pesos chilenos (CLP)'}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-900 font-black mt-2 pt-2 border-t">
+                      <span>Total a pagar</span>
+                      <span className="font-mono">{totalAPagar !== null ? `${totalAPagar.toFixed(2)} pesos chilenos (CLP)` : '-'}</span>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
 
             {/* Helper de desarrollo para simular el pago */}

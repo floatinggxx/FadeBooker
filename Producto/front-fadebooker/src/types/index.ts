@@ -53,8 +53,8 @@ export interface RegisterRequest {
   tienda_nueva?: {
     nombre_tienda: string;
     direccion: string;
-    ciudad: string;
-    comuna?: string;
+    comuna: string;
+    region?: string;
   };
 }
 
@@ -64,7 +64,8 @@ export interface Tienda {
   id_dueño?: string | number;
   nombre_tienda: string;
   direccion: string;
-  ciudad: string;
+  comuna: string;
+  region?: string;
   codigo_postal?: string;
   telefono_tienda?: string;
   email_tienda?: string;

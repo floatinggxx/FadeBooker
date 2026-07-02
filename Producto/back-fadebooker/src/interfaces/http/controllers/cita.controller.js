@@ -105,6 +105,7 @@ class CitaController {
       } else if (tiendaId !== undefined) {
         const id = parseInt(tiendaId, 10)
         citas = await this.citaService.obtenerCitasPorTienda(id, fecha, period)
+        console.log(`[CitaController.listar] request tiendaId=${tiendaId} -> ${citas.length} citas returned`);
       } else if (req.user) {
         // Si el usuario está autenticado pero no hay parámetros de query,
         // devolver solo sus citas (como cliente o barbero)
@@ -114,7 +115,7 @@ class CitaController {
         
         if (!userId) {
           citas = [];
-        } else if (normalizedRol === 'cliente' || normalizedRol === 'proveedor' || normalizedRol === 'dueño') {
+        } else if (normalizedRol === 'cliente' || normalizedRol === 'dueño') {
           citas = await this.citaService.obtenerCitasPorCliente(userId);
         } else if (normalizedRol === 'barbero') {
           citas = await this.citaService.obtenerCitasPorBarbero(userId);

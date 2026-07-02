@@ -219,7 +219,7 @@ const BarberiasPage: React.FC = () => {
     return result.filter(t => 
       t.nombre_tienda.toLowerCase().includes(search.toLowerCase())
     );
-  }, [tiendasData, selectedComuna, search, user]);
+  }, [tiendasData, selectedComuna, selectedRegion, search, user]);
 
   const sugerencias = useMemo(() => {
     if (filteredTiendas.length > 0) return [];

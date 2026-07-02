@@ -15,13 +15,14 @@ class TiendaRepositoryImpl extends TiendaRepository {
     let query = db('Tienda as t')
       .leftJoin('Reseña as r', 't.id_tienda', '=', 'r.id_tienda')
       .where('t.este_activa', true)
-      .groupBy('t.id_tienda', 't.id_dueño', 't.nombre_tienda', 't.direccion', 't.ciudad', 't.codigo_postal', 't.telefono_tienda', 't.email_tienda', 't.horario_apertura', 't.horario_cierre', 't.dias_laborales', 't.foto_portada_url', 't.este_activa', 't.createdAt', 't.updatedAt')
+      .groupBy('t.id_tienda', 't.id_dueño', 't.nombre_tienda', 't.direccion', 't.comuna', 't.region', 't.codigo_postal', 't.telefono_tienda', 't.email_tienda', 't.horario_apertura', 't.horario_cierre', 't.dias_laborales', 't.foto_portada_url', 't.este_activa', 't.createdAt', 't.updatedAt')
       .select(
         't.id_tienda',
         't.id_dueño',
         't.nombre_tienda',
         't.direccion',
-        't.ciudad',
+        't.comuna',
+        't.region',
         't.codigo_postal',
         't.telefono_tienda',
         't.email_tienda',
@@ -35,8 +36,11 @@ class TiendaRepositoryImpl extends TiendaRepository {
         db.raw('ISNULL(AVG(CAST(r.puntuacion AS FLOAT)), 0) as calificacion_promedio')
       );
 
-    if (filtros.ciudad) {
-      query = query.where('t.ciudad', 'LIKE', `%${filtros.ciudad}%`)
+    if (filtros.comuna) {
+      query = query.where('t.comuna', 'LIKE', `%${filtros.comuna}%`)
+    }
+    if (filtros.region) {
+      query = query.where('t.region', 'LIKE', `%${filtros.region}%`)
     }
 
     return query.orderBy('t.nombre_tienda')
@@ -51,13 +55,14 @@ class TiendaRepositoryImpl extends TiendaRepository {
     return db('Tienda as t')
       .leftJoin('Reseña as r', 't.id_tienda', '=', 'r.id_tienda')
       .where({ 't.id_tienda': id_tienda })
-      .groupBy('t.id_tienda', 't.id_dueño', 't.nombre_tienda', 't.direccion', 't.ciudad', 't.codigo_postal', 't.telefono_tienda', 't.email_tienda', 't.horario_apertura', 't.horario_cierre', 't.dias_laborales', 't.foto_portada_url', 't.este_activa', 't.createdAt', 't.updatedAt')
+      .groupBy('t.id_tienda', 't.id_dueño', 't.nombre_tienda', 't.direccion', 't.comuna', 't.region', 't.codigo_postal', 't.telefono_tienda', 't.email_tienda', 't.horario_apertura', 't.horario_cierre', 't.dias_laborales', 't.foto_portada_url', 't.este_activa', 't.createdAt', 't.updatedAt')
       .select(
         't.id_tienda',
         't.id_dueño',
         't.nombre_tienda',
         't.direccion',
-        't.ciudad',
+        't.comuna',
+        't.region',
         't.codigo_postal',
         't.telefono_tienda',
         't.email_tienda',
@@ -74,22 +79,55 @@ class TiendaRepositoryImpl extends TiendaRepository {
   }
 
   /**
-   * Busca tiendas por ciudad
-   * @param {string} ciudad - Ciudad a buscar
-   * @returns {Promise<Array>} Lista de tiendas en esa ciudad
+   * Busca tiendas por comuna
+   * @param {string} comuna - Comuna a buscar
+   * @returns {Promise<Array>} Lista de tiendas en esa comuna
    */
-  async findByCiudad(ciudad) {
+  async findByComuna(comuna) {
     return db('Tienda as t')
       .leftJoin('Reseña as r', 't.id_tienda', '=', 'r.id_tienda')
-      .where({ 't.ciudad': ciudad, 't.este_activa': true })
-      .groupBy('t.id_tienda', 't.id_dueño', 't.nombre_tienda', 't.direccion', 't.ciudad', 't.codigo_postal', 't.telefono_tienda', 't.email_tienda', 't.horario_apertura', 't.horario_cierre', 't.dias_laborales', 't.foto_portada_url', 't.este_activa', 't.createdAt', 't.updatedAt')
+      .where({ 't.comuna': comuna, 't.este_activa': true })
+      .groupBy('t.id_tienda', 't.id_dueño', 't.nombre_tienda', 't.direccion', 't.comuna', 't.region', 't.codigo_postal', 't.telefono_tienda', 't.email_tienda', 't.horario_apertura', 't.horario_cierre', 't.dias_laborales', 't.foto_portada_url', 't.este_activa', 't.createdAt', 't.updatedAt')
       .orderBy('t.nombre_tienda')
       .select(
         't.id_tienda',
         't.id_dueño',
         't.nombre_tienda',
         't.direccion',
-        't.ciudad',
+        't.comuna',
+        't.region',
+        't.codigo_postal',
+        't.telefono_tienda',
+        't.email_tienda',
+        't.horario_apertura',
+        't.horario_cierre',
+        't.dias_laborales',
+        't.foto_portada_url',
+        't.este_activa',
+        't.createdAt',
+        't.updatedAt',
+        db.raw('ISNULL(AVG(CAST(r.puntuacion AS FLOAT)), 0) as calificacion_promedio')
+      )
+  }
+
+  /**
+   * Busca tiendas por región
+   * @param {string} region - Región a buscar
+   * @returns {Promise<Array>} Lista de tiendas en esa región
+   */
+  async findByRegion(region) {
+    return db('Tienda as t')
+      .leftJoin('Reseña as r', 't.id_tienda', '=', 'r.id_tienda')
+      .where({ 't.region': region, 't.este_activa': true })
+      .groupBy('t.id_tienda', 't.id_dueño', 't.nombre_tienda', 't.direccion', 't.comuna', 't.region', 't.codigo_postal', 't.telefono_tienda', 't.email_tienda', 't.horario_apertura', 't.horario_cierre', 't.dias_laborales', 't.foto_portada_url', 't.este_activa', 't.createdAt', 't.updatedAt')
+      .orderBy('t.nombre_tienda')
+      .select(
+        't.id_tienda',
+        't.id_dueño',
+        't.nombre_tienda',
+        't.direccion',
+        't.comuna',
+        't.region',
         't.codigo_postal',
         't.telefono_tienda',
         't.email_tienda',
@@ -110,45 +148,21 @@ class TiendaRepositoryImpl extends TiendaRepository {
    * @returns {Promise<number>} ID de la tienda creada
    */
   async create(data) {
-    try {
-      const { comuna, ...safeData } = data || {};
-      const insertPayload = {
-        ...safeData,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
+    const insertPayload = {
+      ...data,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
 
-      if (comuna !== undefined && comuna !== null && comuna !== '') {
-        insertPayload.comuna = comuna;
-      }
+    const result = await db('Tienda')
+      .insert(insertPayload)
+      .returning('id_tienda')
 
-      const result = await db('Tienda')
-        .insert(insertPayload)
-        .returning('id_tienda')
-
-      if (result && Array.isArray(result) && result.length > 0) {
-        const id = result[0]
-        return typeof id === 'object' ? id.id_tienda : id
-      }
-      return result
-    } catch (error) {
-      const message = error && error.message ? String(error.message) : '';
-      if (message.includes("invalid column name 'comuna'") || message.includes("does not have a column named 'comuna'") || message.includes("unknown column 'comuna'")) {
-        const { comuna, ...safeData } = data || {};
-        const fallbackPayload = {
-          ...safeData,
-          createdAt: new Date(),
-          updatedAt: new Date()
-        };
-        const result = await db('Tienda').insert(fallbackPayload).returning('id_tienda');
-        if (result && Array.isArray(result) && result.length > 0) {
-          const id = result[0];
-          return typeof id === 'object' ? id.id_tienda : id;
-        }
-        return result;
-      }
-      throw error;
+    if (result && Array.isArray(result) && result.length > 0) {
+      const id = result[0]
+      return typeof id === 'object' ? id.id_tienda : id
     }
+    return result
   }
 
   /**

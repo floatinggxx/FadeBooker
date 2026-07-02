@@ -65,7 +65,7 @@ const TiendaCard: React.FC<TiendaCardProps> = ({ tienda, isSuggested }) => {
 
           <p className="text-slate-400 font-bold uppercase tracking-tighter text-[11px] mb-6 flex items-center gap-2">
             <MapPin size={14} className="text-rose-500 shrink-0" />
-            <span className="truncate">{tienda.direccion}, {tienda.ciudad}</span>
+            <span className="truncate">{tienda.direccion}, {tienda.comuna}</span>
           </p>
             
             <div className="flex flex-wrap gap-2 mb-8 mt-2">

@@ -8,8 +8,6 @@ import Notification from '@/components/ui/Notification';
 import HomePage from '@/pages/HomePage';
 import BarberiasPage from '@/pages/BarberiasPage';
 import TiendaDetailPage from '@/pages/TiendaDetailPage';
-import StudioDangerPage from '@/pages/StudioDangerPage';
-import StudioDangerBookingPage from '@/pages/StudioDangerBookingPage';
 import BarberDetailPage from '@/pages/BarberDetailPage';
 import UniversalBookingPage from '@/pages/UniversalBookingPage';
 import MyBookingsPage from '@/pages/MyBookingsPage';
@@ -166,8 +164,6 @@ function App() {
                   <Route path="/subscriptions" element={<OwnerRoute><SubscriptionPage /></OwnerRoute>} />
                   <Route path="/barbero/:id" element={<UniversalBookingPage />} />
                   <Route path="/tienda/:id" element={<TiendaDetailPage />} />
-                  <Route path="/studiodeanger" element={<StudioDangerPage />} />
-                  <Route path="/studiodeanger/reservar" element={<StudioDangerBookingPage />} />
                   <Route path="/booking/new" element={<PrivateRoute><BookingPage /></PrivateRoute>} />
                   <Route path="/bookings" element={<BookingsRoute><MyBookingsPage /></BookingsRoute>} />
                   <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />

@@ -10,6 +10,9 @@ router.post('/crear', validateRequest({ body: pagoCrearSchema }), PagoController
 // Webhook de Mercado Pago (no requiere auth para que MP pueda acceder)
 router.post('/webhook', PagoController.webhook)
 
+// Endpoint de desarrollo para simular pagos completados (solo en no-producción)
+router.post('/simular', PagoController.simular)
+
 // Obtener pagos de una cita
 router.get('/cita/:id_cita', validateRequest({ params: pagoCitaParamsSchema }), PagoController.obtenerPagosCita)
 
