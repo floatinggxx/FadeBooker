@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, User, Scissors, Info, CheckCircle2, XCircle, Clock, CreditCard, Star, Trash2 } from 'lucide-react';
+import { Calendar, User, Scissors, Info, CheckCircle2, XCircle, Clock, CreditCard, Star, Trash2, MapPin } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useQueryClient } from '@tanstack/react-query';
 import { pagoService } from '@/lib/api/pagoService';
@@ -18,6 +18,7 @@ interface BookingCardProps {
   barberoId?: number;
   tiendaName?: string;
   tiendaDireccion?: string;
+  tiendaId?: number;
   serviceName: string;
   serviceDescription?: string;
   status: string;
@@ -40,6 +41,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
   barberoId,
   tiendaName,
   tiendaDireccion,
+  tiendaId,
   serviceName,
   serviceDescription,
   status = 'pendiente', 
@@ -219,7 +221,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
   const statusConfig = getStatusConfig(status);
 
   return (
-    <article className="group relative bg-white border-2 border-slate-100 p-8 rounded-[2.5rem] shadow-xl hover:shadow-2xl transition-all duration-300 hover:border-blue-100">
+    <article className="group relative bg-white border-2 border-slate-100 p-8 rounded-[2.5rem] shadow-xl hover:shadow-2xl transition-all duration-300 hover:border-blue-100 hover:-translate-y-1">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-6 flex-1">
           {/* Header con Fecha */}
@@ -254,13 +256,29 @@ const BookingCard: React.FC<BookingCardProps> = ({
                 </p>
                 <p className="font-black text-slate-800">{isBarberoView ? clienteName : barberName}</p>
                 {/* Reservar siempre espacio visual para la tienda (placeholder si falta) */}
-                <div className="mt-1">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Tienda</p>
-                  <p className="text-sm text-slate-700 font-medium">
-                    {tiendaName ? <span className="font-bold text-slate-900">{tiendaName}</span> : <span className="text-slate-400">—</span>}
-                  </p>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-2">Dirección</p>
-                  <p className="text-sm text-slate-500 mt-1 truncate max-w-full">{tiendaDireccion ? tiendaDireccion : <span className="text-slate-400">—</span>}</p>
+                <div className="mt-1 flex flex-col gap-1">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="text-slate-400" size={14} />
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Tienda</p>
+                  </div>
+                  <p className="text-sm text-slate-900 font-semibold truncate max-w-[28rem]">{tiendaName ? tiendaName : <span className="text-slate-400">—</span>}</p>
+
+                  <div className="flex items-center gap-2 mt-2">
+                    <MapPin className="text-slate-300" size={12} />
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Dirección</p>
+                  </div>
+                  <p className="text-sm text-slate-500 mt-1 truncate max-w-[28rem]">{tiendaDireccion ? tiendaDireccion : <span className="text-slate-400">—</span>}</p>
+
+                  {tiendaId && (
+                    <a
+                      href={tiendaDireccion ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(tiendaDireccion)}` : `/tiendas/${tiendaId}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-2 inline-flex items-center gap-2 text-xs text-[#3366FF] font-bold hover:underline"
+                    >
+                      <MapPin size={12} /> Ver en mapa
+                    </a>
+                  )}
                 </div>
               </div>
             </div>

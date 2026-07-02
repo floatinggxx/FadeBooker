@@ -19,6 +19,7 @@ interface BookingItem {
   createdAt?: string;
   tiendaName?: string;
   tiendaDireccion?: string;
+  tiendaId?: number;
   aiImageUrl?: string;
 }
 
@@ -41,6 +42,7 @@ const BookingsSection: React.FC<BookingsSectionProps> = ({ bookings, onRemove })
         barberoId={item.barberoId}
         tiendaName={item.tiendaName}
         tiendaDireccion={(item as any).tiendaDireccion || (item as any).direccion || ''}
+        tiendaId={item.tiendaId}
         serviceName={item.servicioName}
         status={item.estado}
         notes={item.notas}
