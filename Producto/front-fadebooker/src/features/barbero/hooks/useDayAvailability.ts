@@ -42,59 +42,61 @@ export const useDayAvailability = (idBarbero: number, fecha: string, citas: any[
       })
 
     for (let hora = 9; hora < 18; hora++) {
-      const horaFormato = `${String(hora).padStart(2, '0')}:00`
+      for (let minutos = 0; minutos < 60; minutos += 30) {
+        const horaFormato = `${String(hora).padStart(2, '0')}:${String(minutos).padStart(2, '0')}`
 
-      const citaEnHorario = citasDelBarbero.find((cita: any) => {
-        const horaInicio = cita?.fecha_hora_inicio?.substring(11, 16)
-        return horaInicio === horaFormato && cita.estado !== 'cancelada'
-      })
-
-      const bloqueEnHorario = bloques.find((bloque: any) => {
-        const horaInicioBloque = bloque?.fecha_hora_inicio?.substring(11, 16)
-        const horaFinBloque = bloque?.fecha_hora_fin?.substring(11, 16)
-        return horaInicioBloque && horaFinBloque && horaFormato >= horaInicioBloque && horaFormato < horaFinBloque
-      })
-
-      const slotDateString = `${fecha}T${horaFormato}:00`
-      const now = new Date()
-      const formatter = new Intl.DateTimeFormat('en-US', {
-        timeZone: 'America/Santiago',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-      })
-      const parts = formatter.formatToParts(now)
-      const part = (type: string) => parts.find((p) => p.type === type)?.value || '00'
-      const nowChileString = `${part('year')}-${part('month')}-${part('day')}T${part('hour')}:${part('minute')}:${part('second')}`
-      const pasado = slotDateString < nowChileString
-
-      if (citaEnHorario) {
-        horarios.push({
-          hora: horaFormato,
-          estado: 'reservado',
-          tipo: 'cita',
-          id_cita: citaEnHorario.id_cita,
-          pasado
+        const citaEnHorario = citasDelBarbero.find((cita: any) => {
+          const horaInicio = cita?.fecha_hora_inicio?.substring(11, 16)
+          return horaInicio === horaFormato && cita.estado !== 'cancelada'
         })
-      } else if (bloqueEnHorario) {
-        horarios.push({
-          hora: horaFormato,
-          estado: 'reservado',
-          tipo: 'bloque',
-          id_bloque: bloqueEnHorario.id_bloque,
-          motivo: bloqueEnHorario.motivo,
-          pasado
+
+        const bloqueEnHorario = bloques.find((bloque: any) => {
+          const horaInicioBloque = bloque?.fecha_hora_inicio?.substring(11, 16)
+          const horaFinBloque = bloque?.fecha_hora_fin?.substring(11, 16)
+          return horaInicioBloque && horaFinBloque && horaFormato >= horaInicioBloque && horaFormato < horaFinBloque
         })
-      } else {
-        horarios.push({
-          hora: horaFormato,
-          estado: 'libre',
-          pasado
+
+        const slotDateString = `${fecha}T${horaFormato}:00`
+        const now = new Date()
+        const formatter = new Intl.DateTimeFormat('en-US', {
+          timeZone: 'America/Santiago',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
         })
+        const parts = formatter.formatToParts(now)
+        const part = (type: string) => parts.find((p) => p.type === type)?.value || '00'
+        const nowChileString = `${part('year')}-${part('month')}-${part('day')}T${part('hour')}:${part('minute')}:${part('second')}`
+        const pasado = slotDateString < nowChileString
+
+        if (citaEnHorario) {
+          horarios.push({
+            hora: horaFormato,
+            estado: 'reservado',
+            tipo: 'cita',
+            id_cita: citaEnHorario.id_cita,
+            pasado
+          })
+        } else if (bloqueEnHorario) {
+          horarios.push({
+            hora: horaFormato,
+            estado: 'reservado',
+            tipo: 'bloque',
+            id_bloque: bloqueEnHorario.id_bloque,
+            motivo: bloqueEnHorario.motivo,
+            pasado
+          })
+        } else {
+          horarios.push({
+            hora: horaFormato,
+            estado: 'libre',
+            pasado
+          })
+        }
       }
     }
 
