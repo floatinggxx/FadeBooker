@@ -14,29 +14,33 @@ const DashboardPage: React.FC = () => {
     enabled: user?.rol !== 'Dueño',
   });
 
-  // Filter bookings dynamically: show future bookings except cancelled/eliminada
+  React.useEffect(() => {
+    if (bookings) console.log('[DashboardPage] bookings from service:', bookings);
+  }, [bookings]);
+
   const [showAll, setShowAll] = React.useState(false);
+
+  // Filter bookings dynamically: only confirmed future bookings for the logged user
   const upcomingBookings = React.useMemo(() => {
     if (!bookings) return [];
     const ahora = new Date();
-    const filtered = bookings
+    const datos = bookings
+      .map((b: any) => ({
+        ...b,
+        // normalize datetime field used across API versions
+        _datetime: b.fecha_hora_inicio ? new Date(b.fecha_hora_inicio) : (b.fecha && b.hora ? new Date(`${b.fecha}T${b.hora}`) : null)
+      }))
       .filter((b: any) => {
-        const estado = b.estado?.toLowerCase();
-        if (estado === 'cancelada' || estado === 'eliminada') return false;
-        // Normalizar fecha/hora: prefer fecha_hora_inicio, si no usar fecha+hora
-        const fechaHora = b.fecha_hora_inicio || (b.fecha && b.hora ? `${b.fecha}T${b.hora}` : null);
-        if (!fechaHora) return true; // si no tenemos fecha, mantener
-        const d = new Date(fechaHora);
-        return d >= ahora;
+        if (!b._datetime) return false;
+        const estado = (b.estado || '').toLowerCase();
+        // only confirmed (confirmada) bookings should be shown here
+        if (estado !== 'confirmada') return false;
+        return b._datetime >= ahora;
       })
-      .sort((a: any, b: any) => {
-        const fa = new Date(a.fecha_hora_inicio || (a.fecha && a.hora ? `${a.fecha}T${a.hora}` : 0)).getTime();
-        const fb = new Date(b.fecha_hora_inicio || (b.fecha && b.hora ? `${b.fecha}T${b.hora}` : 0)).getTime();
-        return fa - fb;
-      });
+      .sort((a: any, b: any) => a._datetime.getTime() - b._datetime.getTime());
 
-    return showAll ? filtered : filtered.slice(0, 5);
-  }, [bookings, showAll]);
+    return datos;
+  }, [bookings]);
 
   const completedBookingsCount = React.useMemo(() => {
     if (!bookings) return 0;
@@ -181,18 +185,30 @@ const DashboardPage: React.FC = () => {
               
               <div className="space-y-4">
                 {upcomingBookings && upcomingBookings.length > 0 ? (
-                  upcomingBookings.map((booking: any) => (
-                    <div key={booking.id_cita} className="p-4 border border-slate-100 rounded-xl hover:bg-slate-50 transition-colors">
+                  // show up to 5 by default, allow "Ver más" via showAll
+                  upcomingBookings.slice(0, showAll ? upcomingBookings.length : 5).map((next: any) => (
+                    <div key={next.id_cita} className="p-4 border border-slate-100 rounded-xl hover:bg-slate-50 transition-colors">
                       <div className="flex justify-between items-start mb-2">
                         <span className="text-xs font-black uppercase tracking-tighter text-[#3366FF] bg-blue-50 px-2 py-1 rounded">
-                          {new Date(booking.fecha_hora_inicio).toLocaleDateString()}
+                          {next._datetime.toLocaleDateString()}
                         </span>
                         <span className="text-xs text-slate-400">
-                          {new Date(booking.fecha_hora_inicio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          {next._datetime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
-                      <p className="font-bold text-slate-800">{booking.nombre_servicio || 'Servicio de Barbería'}</p>
-                      <p className="text-sm text-slate-500">{booking.nombre_barberia || 'Barbería'}</p>
+                        <p className="font-bold text-slate-800">{next.nombre_servicio || next.servicio?.nombre || next.servicio_nombre || 'Servicio de Barbería'}</p>
+                        {/* Normalize tienda name/address from multiple possible response shapes */}
+                        {(() => {
+                          const tiendaObj = next.tienda || {};
+                          const displayName = next.tiendaName || next.tienda_nombre || tiendaObj.nombre || tiendaObj.nombre_tienda || tiendaObj.name || next.tienda || 'Barbería';
+                          const displayDir = next.tiendaDireccion || next.direccion || tiendaObj.direccion || tiendaObj.address || tiendaObj.direccion_tienda || null;
+                          return (
+                            <>
+                              <p className="text-sm text-slate-500">{displayName}</p>
+                              {displayDir ? <p className="text-sm text-slate-400">{displayDir}</p> : <p className="text-sm text-slate-400">—</p>}
+                            </>
+                          )
+                        })()}
                     </div>
                   ))
                 ) : (
@@ -205,13 +221,7 @@ const DashboardPage: React.FC = () => {
                   </div>
                 )}
                 
-                {(!showAll && bookings && bookings.filter((b: any) => {
-                    const estado = b.estado?.toLowerCase();
-                    if (estado === 'cancelada' || estado === 'eliminada') return false;
-                    const fechaHora = b.fecha_hora_inicio || (b.fecha && b.hora ? `${b.fecha}T${b.hora}` : null);
-                    if (!fechaHora) return true;
-                    return new Date(fechaHora) >= new Date();
-                  }).length > 5) && (
+                {(!showAll && upcomingBookings && upcomingBookings.length > 5) && (
                   <div className="text-center mt-4">
                     <button onClick={() => setShowAll(true)} className="text-sm font-bold text-[#3366FF]">Ver más</button>
                   </div>
@@ -233,16 +243,7 @@ const DashboardPage: React.FC = () => {
             </section>
           )}
 
-          <section className="card-surface p-6 bg-gradient-to-br from-white to-blue-50/30">
-            <div className="flex items-center gap-3 mb-4">
-              <CheckCircle className="text-emerald-500" size={20} />
-              <h2 className="text-lg font-bold">Estado de Cuenta</h2>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-slate-100 shadow-sm">
-              <span className="text-sm text-slate-500 font-medium">Citas Realizadas</span>
-              <span className="text-xl font-black text-slate-900">{completedBookingsCount}</span>
-            </div>
-          </section>
+          {/* Estado de Cuenta removed as requested */}
         </div>
       </div>
     </div>

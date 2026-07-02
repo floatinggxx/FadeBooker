@@ -180,6 +180,8 @@ const MyBookingsPage: React.FC = () => {
               clienteEmail: c.cliente_email || c.cliente?.email || '',
               clienteTelefono: c.cliente_telefono || c.cliente?.telefono || '',
               barberoId: c.id_barbero,
+              tiendaName: c.tienda_nombre || c.tienda?.nombre_tienda || '',
+              tiendaDireccion: c.tienda_direccion || c.tienda?.direccion || '',
               servicioName: c.servicio_nombre || c.nombre_servicio || (c.servicio?.servicio?.nombre || c.servicio?.nombre || 'Sin datos'),
               estado: c.estado,
               notas: c.notas,

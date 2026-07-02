@@ -19,10 +19,12 @@ export const bookingService = {
     const params = clienteId ? { clienteId } : {};
     const response = await api.get<Cita[]>('/citas', { params });
     // Mapear nombres de tienda desde la API (compatibilidad con backend)
-    return (response.data || []).map(c => ({
-      ...c,
-      tiendaName: c.tienda_nombre || c.tiendaName || c.tienda || null
-    }));
+    return (response.data || []).map(c => {
+      const tiendaObj = c.tienda || {};
+      const tiendaName = c.tienda_nombre || c.tiendaName || tiendaObj.nombre || tiendaObj.name || (typeof c.tienda === 'string' ? c.tienda : null) || null;
+      const tiendaDireccion = c.tienda_direccion || c.direccion || tiendaObj.direccion || tiendaObj.address || null;
+      return { ...c, tiendaName, tiendaDireccion };
+    });
   },
 
   // Listar citas de un cliente específico
@@ -30,10 +32,12 @@ export const bookingService = {
     const response = await api.get<Cita[]>('/citas', {
       params: { clienteId }
     });
-    return (response.data || []).map(c => ({
-      ...c,
-      tiendaName: c.tienda_nombre || c.tiendaName || c.tienda || null
-    }));
+    return (response.data || []).map(c => {
+      const tiendaObj = c.tienda || {};
+      const tiendaName = c.tienda_nombre || c.tiendaName || tiendaObj.nombre || tiendaObj.name || (typeof c.tienda === 'string' ? c.tienda : null) || null;
+      const tiendaDireccion = c.tienda_direccion || c.direccion || tiendaObj.direccion || tiendaObj.address || null;
+      return { ...c, tiendaName, tiendaDireccion };
+    });
   },
 
   // Listar citas de un barbero específico
@@ -41,10 +45,12 @@ export const bookingService = {
     const response = await api.get<Cita[]>('/citas', {
       params: { barberoId }
     });
-    return (response.data || []).map(c => ({
-      ...c,
-      tiendaName: c.tienda_nombre || c.tiendaName || c.tienda || null
-    }));
+    return (response.data || []).map(c => {
+      const tiendaObj = c.tienda || {};
+      const tiendaName = c.tienda_nombre || c.tiendaName || tiendaObj.nombre || tiendaObj.name || (typeof c.tienda === 'string' ? c.tienda : null) || null;
+      const tiendaDireccion = c.tienda_direccion || c.direccion || tiendaObj.direccion || tiendaObj.address || null;
+      return { ...c, tiendaName, tiendaDireccion };
+    });
   },
 
   // Actualizar estado de una cita
@@ -96,10 +102,39 @@ export const bookingService = {
   // Obtener mis citas (alias para listCitas sin parámetros, el backend filtra por JWT)
   async getMyBookings(): Promise<Cita[]> {
     const response = await api.get<Cita[]>('/citas');
-    return (response.data || []).map(c => ({
-      ...c,
-      tiendaName: c.tienda_nombre || c.tiendaName || c.tienda || null
-    }));
+    console.log('[bookingService] GET /citas raw response:', response.data);
+    const raw = (response.data || []).map(c => {
+      const tiendaObj = c.tienda || {};
+      const tiendaName = c.tienda_nombre || c.tiendaName || tiendaObj.nombre || tiendaObj.name || (typeof c.tienda === 'string' ? c.tienda : null) || null;
+      const tiendaDireccion = c.tienda_direccion || c.direccion || tiendaObj.direccion || tiendaObj.address || null;
+      return { ...c, tiendaName, tiendaDireccion };
+    });
+    console.log('[bookingService] mapped bookings:', raw);
+
+    // For any booking missing tiendaDireccion or tiendaName but having id_tienda, fetch tienda details in parallel.
+    const needFetch = raw.filter((r: any) => (!r.tiendaDireccion || !r.tiendaName) && (r.id_tienda || r.tienda_id || r.tienda));
+    if (needFetch.length === 0) return raw;
+
+    // Build unique ids
+    const tiendaIds = Array.from(new Set(needFetch.map((r: any) => r.id_tienda || r.tienda_id || (typeof r.tienda === 'number' ? r.tienda : null)).filter(Boolean)));
+    try {
+      const promises = tiendaIds.map((id: number) => api.get(`/tiendas/${id}`).then(res => ({ id, data: res.data })).catch(() => ({ id, data: null })));
+      const results = await Promise.all(promises);
+      const tiendaMap: Record<number, any> = {};
+      results.forEach((r: any) => { if (r && r.id) tiendaMap[r.id] = r.data; });
+
+      return raw.map((r: any) => {
+        const tiendaId = r.id_tienda || r.tienda_id || (typeof r.tienda === 'number' ? r.tienda : null);
+        if (!tiendaId) return r;
+        const info = tiendaMap[tiendaId];
+        if (!info) return r;
+        const tiendaName = r.tiendaName || info.nombre || info.name || info.nombre_tienda || info.tienda_nombre || null;
+        const tiendaDireccion = r.tiendaDireccion || info.direccion || info.address || info.direccion_tienda || info.direccion || null;
+        return { ...r, tiendaName, tiendaDireccion };
+      });
+    } catch (err) {
+      return raw; // on error return what we have
+    }
   },
 
   // Dejar una reseña

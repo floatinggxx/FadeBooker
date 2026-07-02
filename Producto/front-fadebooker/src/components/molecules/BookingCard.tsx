@@ -17,6 +17,7 @@ interface BookingCardProps {
   clienteTelefono?: string;
   barberoId?: number;
   tiendaName?: string;
+  tiendaDireccion?: string;
   serviceName: string;
   serviceDescription?: string;
   status: string;
@@ -38,6 +39,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
   clienteTelefono,
   barberoId,
   tiendaName,
+  tiendaDireccion,
   serviceName,
   serviceDescription,
   status = 'pendiente', 
@@ -252,13 +254,14 @@ const BookingCard: React.FC<BookingCardProps> = ({
                 </p>
                 <p className="font-black text-slate-800">{isBarberoView ? clienteName : barberName}</p>
                 {/* Reservar siempre espacio visual para la tienda (placeholder si falta) */}
-                <p className="text-xs text-slate-400 font-medium mt-1 h-4">
-                  {tiendaName ? (
-                    <>En: {tiendaName}</>
-                  ) : (
-                    <span className="inline-block w-36 h-3 bg-slate-100 rounded-md" aria-hidden="true" />
-                  )}
-                </p>
+                <div className="mt-1">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Tienda</p>
+                  <p className="text-sm text-slate-700 font-medium">
+                    {tiendaName ? <span className="font-bold text-slate-900">{tiendaName}</span> : <span className="text-slate-400">—</span>}
+                  </p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mt-2">Dirección</p>
+                  <p className="text-sm text-slate-500 mt-1 truncate max-w-full">{tiendaDireccion ? tiendaDireccion : <span className="text-slate-400">—</span>}</p>
+                </div>
               </div>
             </div>
 

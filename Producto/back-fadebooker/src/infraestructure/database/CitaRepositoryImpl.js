@@ -166,7 +166,8 @@ class CitaRepositoryImpl {
         'u.nombre as barbero_nombre',
         'u.apellido as barbero_apellido',
         's.nombre_servicio as servicio_nombre',
-        't.nombre_tienda as tienda_nombre'
+        't.nombre_tienda as tienda_nombre',
+        't.direccion as tienda_direccion'
       )
       .orderBy('c.fecha_hora_inicio', 'desc')
   }

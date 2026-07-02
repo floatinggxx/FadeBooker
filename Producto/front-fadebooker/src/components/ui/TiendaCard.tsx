@@ -50,13 +50,13 @@ const TiendaCard: React.FC<TiendaCardProps> = ({ tienda, isSuggested }) => {
       {/* Content */}
       <div className="p-8 flex flex-col flex-1">
         <div className="flex-1">
-          <div className="flex items-start justify-between mb-2">
-            <Link to={`/tienda/${tienda.id_tienda}`} className="flex-1">
-              <h3 className="text-3xl font-black text-slate-900 leading-tight group-hover:text-[#3366FF] transition-colors">
+          <div className="flex flex-col sm:flex-row items-start justify-between mb-2">
+            <Link to={`/tienda/${tienda.id_tienda}`} className="flex-1 min-w-0">
+              <h3 className="text-2xl sm:text-3xl font-black text-slate-900 leading-tight group-hover:text-[#3366FF] transition-colors truncate">
                 {tienda.nombre_tienda}
               </h3>
             </Link>
-            <div className="ml-4 shrink-0 self-start">
+            <div className="ml-0 sm:ml-4 mt-2 sm:mt-0 flex-shrink-0 self-start">
               <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-black ${openState.open ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-slate-100 text-slate-600 border border-slate-200'}`}>
               {openState.open ? 'Abierto' : 'Cerrado'}
               </span>
