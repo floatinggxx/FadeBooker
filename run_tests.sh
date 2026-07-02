@@ -11,11 +11,16 @@ NC='\033[0m'
 
 echo -e "${BLUE}🧪 Iniciando ejecución de pruebas unitarias - FadeBooker${NC}"
 
-# 1. Pruebas de Backend
-echo -e "\n${YELLOW}📦 [BACKEND] Ejecutando pruebas unitarias...${NC}"
+# 1. Pruebas de Backend (todas: unit + integration)
+echo -e "\n${YELLOW}📦 [BACKEND] Ejecutando todas las pruebas (unit + integration)...${NC}"
 cd Producto/back-fadebooker
-npm run test:unit -- --colors
-BACKEND_EXIT=$?
+if [ -d "node_modules" ]; then
+    npm run test -- --colors
+    BACKEND_EXIT=$?
+else
+    echo -e "${RED}⚠️  node_modules no encontrado en backend. Ejecute 'npm install' en Producto/back-fadebooker primero.${NC}"
+    BACKEND_EXIT=1
+fi
 
 if [ $BACKEND_EXIT -eq 0 ]; then
     echo -e "${GREEN}✅ Backend: Pruebas exitosas.${NC}"
