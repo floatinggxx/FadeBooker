@@ -19,21 +19,26 @@ class PagoRepositoryImpl extends PagoRepository {
     const columnsSql = fields.map(f => `[${f}]`).join(', ');
     const placeholders = values.map(() => '?').join(', ');
 
-    const sql = `\n      DECLARE @InsertedTable TABLE (id_pago INT);\n      INSERT INTO [dbo].[Pago] (${columnsSql})\n      OUTPUT INSERTED.id_pago INTO @InsertedTable\n      VALUES (${placeholders});\n      SELECT id_pago FROM @InsertedTable;\n    `;
-
-    let result;
+    // Use DB-specific insert: for sqlite (tests) use knex insert and return id, for mssql keep the T-SQL with OUTPUT
+    const clientName = (this.db.client && this.db.client.config && this.db.client.config.client) || '';
     try {
-      result = await this.db.raw(sql, values);
+      if (clientName && clientName.includes('sqlite')) {
+        const insertData = {};
+        fields.forEach((f, i) => { insertData[f] = values[i]; });
+        const [id] = await this.db('Pago').insert(insertData);
+        // sqlite returns last inserted id
+        return id;
+      } else {
+        const sql = `\n      DECLARE @InsertedTable TABLE (id_pago INT);\n      INSERT INTO [dbo].[Pago] (${columnsSql})\n      OUTPUT INSERTED.id_pago INTO @InsertedTable\n      VALUES (${placeholders});\n      SELECT id_pago FROM @InsertedTable;\n    `;
+        const result = await this.db.raw(sql, values);
+        const id_pago = result[0].id_pago || (result[0][0] ? result[0][0].id_pago : null);
+        return id_pago;
+      }
     } catch (error) {
-      console.error('--- ERROR en insert Pago - SQL:', sql);
-      console.error('--- ERROR en insert Pago - values:', JSON.stringify(values));
+      console.error('--- ERROR en insert Pago - SQL (or knex insert) - values:', JSON.stringify(values));
       console.error('--- ERROR en insert Pago - error:', error && (error.message || error));
-      // Re-lanzar para que el handler superior registre también la traza
       throw error;
     }
-
-    const id_pago = result[0].id_pago || (result[0][0] ? result[0][0].id_pago : null);
-    return id_pago;
   }
 
   async findById(id) {

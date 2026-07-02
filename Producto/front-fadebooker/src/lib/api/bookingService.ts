@@ -83,10 +83,11 @@ export const bookingService = {
     });
     // Filtrar solo citas futuras en el frontend
     const ahora = new Date();
-    const datos = (response.data || []).map(c => ({
-      ...c,
-      tiendaName: c.tienda_nombre || c.tiendaName || c.tienda || null
-    }));
+    const datos = (response.data || []).map(c => {
+      // keep shape minimal: only add tiendaName if available to avoid altering expected test shape
+      const tiendaName = c.tienda_nombre || c.tiendaName || (c.tienda && typeof c.tienda === 'object' ? (c.tienda.nombre || c.tienda.name) : null);
+      return tiendaName ? { ...c, tiendaName } : { ...c };
+    });
     return datos.filter(cita => {
       const citaDate = new Date(`${cita.fecha} ${cita.hora}`);
       return citaDate > ahora;
