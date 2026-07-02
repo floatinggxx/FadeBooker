@@ -106,17 +106,17 @@ export const barberService = {
         precio: sb.precio || sb.precio_barbero || sb.precio_base,
         duracion: sb.duracion || sb.tiempo_servicio_minutos || sb.duracion_minutos,
         disponible: typeof sb.disponible === 'undefined' ? true : sb.disponible,
-        servicio: sb.servicio ? {
-          id: sb.servicio.id || sb.servicio.id_servicio,
-          id_servicio: sb.servicio.id_servicio,
-          nombre: sb.servicio.nombre || sb.servicio.nombre_servicio || 'Servicio',
-          descripcion: sb.servicio.descripcion,
-          duracion: sb.servicio.duracion || sb.servicio.duracion_minutos,
-          duracion_minutos: sb.servicio.duracion_minutos || sb.servicio.duracion || null,
-          precioBase: sb.servicio.precioBase || sb.servicio.precio_base || null,
-          precio_base: sb.servicio.precio_base || sb.servicio.precioBase || null,
-          activo: typeof sb.servicio.activo === 'undefined' ? true : sb.servicio.activo
-        } : undefined
+        servicio: {
+          id: (sb.servicio && (sb.servicio.id || sb.servicio.id_servicio)) || sb.id_servicio,
+          id_servicio: sb.id_servicio,
+          nombre: (sb.servicio && (sb.servicio.nombre || sb.servicio.nombre_servicio)) || sb.nombre_servicio || 'Servicio',
+          descripcion: (sb.servicio && sb.servicio.descripcion) || sb.descripcion || null,
+          duracion: (sb.servicio && (sb.servicio.duracion || sb.servicio.duracion_minutos)) || sb.duracion_minutos || null,
+          duracion_minutos: (sb.servicio && (sb.servicio.duracion_minutos || sb.servicio.duracion)) || sb.duracion_minutos || null,
+          precioBase: (sb.servicio && (sb.servicio.precioBase || sb.servicio.precio_base)) || sb.precio_base || null,
+          precio_base: (sb.servicio && (sb.servicio.precio_base || sb.servicio.precioBase)) || sb.precio_base || null,
+          activo: typeof (sb.servicio && sb.servicio.activo) === 'undefined' ? true : sb.servicio.activo
+        }
     }));
   },
 

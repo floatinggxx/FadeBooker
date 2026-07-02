@@ -18,6 +18,7 @@ interface BookingCardProps {
   barberoId?: number;
   tiendaName?: string;
   serviceName: string;
+  serviceDescription?: string;
   status: string;
   notes?: string;
   isBarberoView?: boolean;
@@ -37,7 +38,8 @@ const BookingCard: React.FC<BookingCardProps> = ({
   clienteTelefono,
   barberoId,
   tiendaName,
-  serviceName, 
+  serviceName,
+  serviceDescription,
   status = 'pendiente', 
   notes,
   isBarberoView,
@@ -265,6 +267,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
               <div>
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Servicio</p>
                 <p className="font-black text-slate-800">{serviceName}</p>
+                {serviceDescription ? <p className="text-sm text-slate-500 mt-1">{serviceDescription}</p> : null}
               </div>
             </div>
           </div>
