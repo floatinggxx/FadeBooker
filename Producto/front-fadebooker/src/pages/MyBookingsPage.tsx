@@ -14,6 +14,7 @@ const MyBookingsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [appointments, setAppointments] = useState<any[]>([]);
+  const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['my-bookings', userId, user?.rol],
@@ -139,7 +140,7 @@ const MyBookingsPage: React.FC = () => {
 
             <button
               type="button"
-              onClick={handleRemoveAllAppointments}
+              onClick={() => { if (appointments.length) setShowDeleteAllModal(true); }}
               className="flex items-center gap-2 rounded-2xl border-2 border-rose-100 bg-white px-4 py-3 text-sm font-black uppercase tracking-widest text-rose-500 transition-all hover:bg-rose-50"
             >
               <Trash2 size={16} />
@@ -208,6 +209,19 @@ const MyBookingsPage: React.FC = () => {
           </div>
         )}
       </section>
+      {/* Modal de confirmación para borrar todo */}
+      {showDeleteAllModal && (
+        <div className="fixed inset-0 z-[110] bg-slate-900/80 flex items-center justify-center p-4">
+          <div className="bg-white rounded-[2.5rem] shadow-2xl p-8 sm:p-10 max-w-lg w-full text-center border border-slate-100 relative">
+            <h3 className="text-2xl font-black text-slate-900 mb-4">¿Eliminar todas tus citas?</h3>
+            <p className="text-slate-500 mb-6">Esta acción eliminará permanentemente todas las citas listadas en tu cuenta. ¿Deseas continuar?</p>
+            <div className="grid grid-cols-2 gap-4">
+              <button onClick={() => setShowDeleteAllModal(false)} className="py-3 rounded-2xl bg-slate-50 text-slate-500 font-black">Volver</button>
+              <button onClick={async () => { setShowDeleteAllModal(false); await handleRemoveAllAppointments(); }} className="py-3 rounded-2xl bg-rose-600 text-white font-black">Sí, eliminar todo</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

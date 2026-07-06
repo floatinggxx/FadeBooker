@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, User, Scissors, Info, CheckCircle2, XCircle, Clock, CreditCard, Star, Trash2, MapPin } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useQueryClient } from '@tanstack/react-query';
@@ -75,7 +75,19 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
   // Estado para modal de confirmación de cancelación
   const [showCancelConfirmModal, setShowCancelConfirmModal] = useState(false);
+  const [showDeleteConfirmModal, setShowDeleteConfirmModal] = useState(false);
   const [showBarberoCancelModal, setShowBarberoCancelModal] = useState(false);
+
+  // bloquear scroll del body cuando cualquier modal de este componente esté abierto
+  useEffect(() => {
+    const anyOpen = showCancelConfirmModal || showBarberoCancelModal || showDeleteConfirmModal || showWaitingModal || showReviewModal;
+    if (anyOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => { document.body.style.overflow = prev; };
+    }
+    return;
+  }, [showCancelConfirmModal, showBarberoCancelModal, showDeleteConfirmModal, showWaitingModal, showReviewModal]);
 
   const montoPendiente = (montoTotal || 0) - (pagoAbono || 0);
   const abonoFaltante = Math.max(0, (montoTotal || 0) * 0.5 - (pagoAbono || 0));
@@ -132,6 +144,8 @@ const BookingCard: React.FC<BookingCardProps> = ({
       setShowBarberoCancelModal(true);
       return;
     }
+    // ensure other modals are closed
+    setShowDeleteConfirmModal(false);
     setShowCancelConfirmModal(true);
   };
 
@@ -144,6 +158,13 @@ const BookingCard: React.FC<BookingCardProps> = ({
     } finally {
       setIsRemoving(false);
     }
+  };
+
+  const handleDeleteConfirm = async () => {
+    // close other modals just in case
+    setShowCancelConfirmModal(false);
+    setShowDeleteConfirmModal(false);
+    await handleRemoveClick();
   };
 
   const handleConfirmCancel = async () => {
@@ -375,9 +396,13 @@ const BookingCard: React.FC<BookingCardProps> = ({
             </button>
           )}
 
-          <button
+            <button
             type="button"
-            onClick={handleRemoveClick}
+            onClick={() => {
+              // open delete confirm and ensure cancel modal closed
+              setShowCancelConfirmModal(false);
+              setShowDeleteConfirmModal(true);
+            }}
             disabled={isRemoving}
             className="w-full flex items-center justify-center gap-2 border-2 border-rose-100 text-rose-500 hover:bg-rose-50 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all disabled:opacity-50"
             aria-label="Eliminar cita"
@@ -454,12 +479,11 @@ const BookingCard: React.FC<BookingCardProps> = ({
 
       {/* Modal de confirmación de cancelación premium */}
       {showCancelConfirmModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4 animate-fade-in animate-duration-200">
+        <div className="fixed inset-0 z-[100] bg-slate-900/80 flex items-center justify-center p-4 animate-fade-in animate-duration-200">
           <div className="bg-white rounded-[2.5rem] shadow-2xl p-8 sm:p-10 max-w-md w-full text-center border border-slate-100 relative overflow-hidden animate-scale-up animate-duration-250">
             <div className="absolute top-0 left-0 right-0 h-2 bg-rose-500"></div>
             
             <div className="flex justify-center mb-6 relative">
-              <div className="absolute inset-0 bg-rose-100 rounded-full blur-xl scale-75 animate-pulse"></div>
               <div className="relative bg-rose-50 text-rose-600 p-5 rounded-full border border-rose-100">
                 <XCircle size={44} className="animate-bounce" />
               </div>
@@ -512,6 +536,20 @@ const BookingCard: React.FC<BookingCardProps> = ({
           onClose={() => setShowBarberoCancelModal(false)}
           onSuccess={handleBarberoCancelSuccess}
         />
+      )}
+
+      {/* Modal de confirmación de eliminación */}
+      {showDeleteConfirmModal && (
+        <div className="fixed inset-0 z-[120] bg-slate-900/80 flex items-center justify-center p-4">
+          <div className="bg-white rounded-[2.5rem] shadow-2xl p-8 sm:p-10 max-w-md w-full text-center border border-slate-100 relative">
+            <h3 className="text-2xl font-black text-slate-900 mb-4">¿Eliminar esta cita?</h3>
+            <p className="text-slate-500 mb-6">Esta acción eliminará permanentemente la cita seleccionada. ¿Deseas continuar?</p>
+            <div className="grid grid-cols-2 gap-4">
+              <button onClick={() => setShowDeleteConfirmModal(false)} className="py-3 rounded-2xl bg-slate-50 text-slate-500 font-black">Volver</button>
+              <button onClick={handleDeleteConfirm} className="py-3 rounded-2xl bg-rose-600 text-white font-black">Sí, eliminar</button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Indicador lateral sutil */}
