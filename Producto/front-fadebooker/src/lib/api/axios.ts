@@ -17,7 +17,7 @@ api.interceptors.request.use((config) => {
 // Global error handling
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     if (!error.response) {
       // Error de red o servidor caído
       console.error('Network Error: El backend no responde');
@@ -27,15 +27,51 @@ api.interceptors.response.use(
         isNetworkError: true
       });
     }
-    
-    // Manejar token expirado (401)
-    if (error.response?.status === 401) {
-      console.warn('Token expirado o inválido. Limpiando localStorage y recargando...');
+
+    const originalRequest = error.config;
+
+    // If 401, try refresh token flow once
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const refreshToken = localStorage.getItem('refresh_token');
+
+      const refreshEndpoints = [
+        '/auth/refresh',
+        '/usuarios/refresh',
+        '/auth/token/refresh',
+        '/refresh'
+      ];
+
+      for (const ep of refreshEndpoints) {
+        try {
+          const url = (api.defaults.baseURL || '') + ep;
+          const payload = refreshToken ? { refreshToken } : {};
+          const resp = await axios.post(url, payload, { headers: { 'Content-Type': 'application/json' }, withCredentials: true });
+          if (resp && (resp.status === 200 || resp.status === 201)) {
+            const newToken = resp.data?.token || resp.data?.accessToken || resp.data?.access_token;
+            const newRefresh = resp.data?.refreshToken || resp.data?.refresh_token;
+            if (newToken) {
+              localStorage.setItem('token', newToken);
+              if (newRefresh) localStorage.setItem('refresh_token', newRefresh);
+              // update Authorization header and retry original request
+              originalRequest.headers = originalRequest.headers || {};
+              originalRequest.headers.Authorization = `Bearer ${newToken}`;
+              return api(originalRequest);
+            }
+          }
+        } catch (e) {
+          // try next endpoint
+        }
+      }
+
+      // If refresh failed, fall back to logout flow
+      console.warn('Token expirado o inválido y refresh falló. Limpiando localStorage y redirigiendo...');
+      try { localStorage.setItem('logout_reason', 'Tu sesión expiró o es inválida. Por favor inicia sesión nuevamente.'); } catch {}
       localStorage.removeItem('token');
-      localStorage.removeItem('usuario');
+      localStorage.removeItem('user');
       window.location.href = '/login';
     }
-    
+
     return Promise.reject(error);
   }
 );

@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from '@/features/auth/hooks/useAuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { NotificationProvider } from '@/context/NotificationContext';
 import Notification from '@/components/ui/Notification';
+import SessionExpiredModal from '@/components/ui/SessionExpiredModal';
 
 import HomePage from '@/pages/HomePage';
 import BarberiasPage from '@/pages/BarberiasPage';
@@ -165,6 +166,7 @@ function App() {
                 </Routes>
               </main>
               <Notification />
+              <SessionExpiredModal />
             </div>
           </BrowserRouter>
         </AuthProvider>

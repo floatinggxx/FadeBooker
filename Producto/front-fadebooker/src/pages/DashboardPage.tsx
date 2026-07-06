@@ -14,8 +14,18 @@ const DashboardPage: React.FC = () => {
     enabled: user?.rol !== 'Dueño',
   });
 
+  const [bookingsOwnershipWarning, setBookingsOwnershipWarning] = React.useState<string | null>(null);
+
   React.useEffect(() => {
-    if (bookings) console.log('[DashboardPage] bookings from service:', bookings);
+    if (bookings) {
+      console.log('[DashboardPage] bookings from service:', bookings);
+      if (user && bookings.some((b: any) => b.id_cliente && Number(b.id_cliente) !== Number(user.id_usuario))) {
+        console.warn('[DashboardPage] some bookings do not belong to current user', bookings.filter((b:any)=>b.id_cliente && Number(b.id_cliente) !== Number(user.id_usuario)));
+        setBookingsOwnershipWarning('Se detectaron citas que no parecen pertenecer a tu cuenta. Contacta soporte si persiste.');
+      } else {
+        setBookingsOwnershipWarning(null);
+      }
+    }
   }, [bookings]);
 
   const [showAll, setShowAll] = React.useState(false);
@@ -167,6 +177,11 @@ const DashboardPage: React.FC = () => {
         <div className="space-y-8">
           {user?.rol !== 'Dueño' ? (
             <section className="card-surface p-6">
+              {bookingsOwnershipWarning && (
+                <div className="mb-4 p-3 rounded-md bg-yellow-50 border border-yellow-100 text-yellow-800 text-sm">
+                  {bookingsOwnershipWarning}
+                </div>
+              )}
               <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <Clock className="text-[#3366FF]" size={20} />
                 Próximas Citas

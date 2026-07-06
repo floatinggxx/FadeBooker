@@ -123,8 +123,9 @@ class CitaController {
           citas = [];
         }
       } else {
-        // Sin autenticación y sin parámetros, devolver vacío en lugar de todas las citas
-        citas = [];
+        // Sin autenticación y sin parámetros => solicitar autenticación explícita.
+        // Evita que llamadas anónimas reciban un conjunto inesperado.
+        return res.status(401).json({ error: 'Autenticación requerida para listar sus citas sin parámetros' });
       }
 
       res.status(200).json(citas)
