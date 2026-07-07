@@ -22,7 +22,7 @@ const BlockTimeModal: React.FC<BlockTimeModalProps> = ({
 }) => {
   const { showNotification } = useNotification()
   const [motivo, setMotivo] = useState('')
-  const [duracion, setDuracion] = useState('30') // minutos
+  const [duracion, setDuracion] = useState('60') // minutos
   const [isCreating, setIsCreating] = useState(false)
 
   const getChileNowString = () => {
@@ -87,7 +87,7 @@ const BlockTimeModal: React.FC<BlockTimeModalProps> = ({
 
       showNotification('Horario bloqueado exitosamente', 'success')
       setMotivo('')
-      setDuracion('30')
+      setDuracion('60')
       onSuccess()
     } catch (error: any) {
       console.error('Error al bloquear horario:', error)
@@ -141,7 +141,7 @@ const BlockTimeModal: React.FC<BlockTimeModalProps> = ({
                 Duración del Bloqueo
               </label>
               <div className="flex gap-3">
-                {['30', '60', '90', '120'].map((min) => (
+                {['60', '120'].map((min) => (
                   <button
                     key={min}
                     onClick={() => setDuracion(min)}

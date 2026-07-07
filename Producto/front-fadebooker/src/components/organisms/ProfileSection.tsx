@@ -140,9 +140,14 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
             </div>
             
             <h2 className="text-2xl font-black text-slate-900">{name}</h2>
-            <span className="px-4 py-1 bg-blue-100 text-[#3366FF] rounded-full text-xs font-black uppercase tracking-widest mt-2">
-              {role}
-            </span>
+            <div className="mt-2">
+              <span className="px-4 py-1 bg-blue-100 text-[#3366FF] rounded-full text-xs font-black uppercase tracking-widest">
+                {role}
+              </span>
+              {tiendaName && (role?.toLowerCase() === 'barbero' || role?.toLowerCase() === 'dueño') && (
+                <div className="text-sm text-slate-500 mt-2">{tiendaName}</div>
+              )}
+            </div>
           </div>
         </div>
 
