@@ -13,18 +13,12 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
+        // Keep a small manual split for very large, isolated libs to improve caching,
+        // but let Rollup/Vite decide the rest to avoid circular chunk dependencies.
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('lucide-react')) {
-              return 'vendor-lucide';
-            }
-            if (id.includes('@tanstack') || id.includes('react-query')) {
-              return 'vendor-query';
-            }
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
-              return 'vendor-react';
-            }
-            return 'vendor';
+            if (id.includes('lucide-react')) return 'vendor-lucide';
+            if (id.includes('@tanstack') || id.includes('react-query')) return 'vendor-query';
           }
         }
       }

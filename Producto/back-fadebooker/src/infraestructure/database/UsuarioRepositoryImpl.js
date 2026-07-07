@@ -51,18 +51,46 @@ class UsuarioRepositoryImpl {
 
     if (payload.telefono !== undefined) payload.telefono = normalizePhone(payload.telefono)
 
-    // Manejo robusto para Azure SQL (MSSQL/Tedious) y otros adaptadores
-    const result = await this.db('Usuario')
-      .insert(payload)
-      .returning('id_usuario')
+    // Intentar insertar y obtener id usando returning (Postgres, SQLite)
+    try {
+      const result = await this.db('Usuario')
+        .insert(payload)
+        .returning('id_usuario')
 
-    // Knex puede devolver diferentes formatos según el cliente (array o objeto)
-    if (Array.isArray(result) && result.length > 0) {
-      const idPayload = result[0]
-      return (idPayload && typeof idPayload === 'object') ? idPayload.id_usuario : idPayload
+      // Knex puede devolver diferentes formatos según el cliente (array o objeto)
+      if (Array.isArray(result) && result.length > 0) {
+        const idPayload = result[0]
+        return (idPayload && typeof idPayload === 'object') ? idPayload.id_usuario : idPayload
+      }
+
+      if (result && typeof result === 'number') return result
+      if (result && typeof result === 'object' && result.id_usuario) return result.id_usuario
+    } catch (err) {
+      // Si falla (por ejemplo MSSQL con triggers y OUTPUT), caeremos al fallback
+      // console.warn('[UsuarioRepositoryImpl] returning() failed, usando fallback SCOPE_IDENTITY()', err && err.message)
     }
 
-    return result
+    // Fallback para MSSQL o adaptadores que no soportan returning(): insertar y leer SCOPE_IDENTITY()
+    // Usamos raw para asegurar compatibilidad con SQL Server
+    const trx = await this.db.transaction()
+    try {
+      await trx('Usuario').insert(payload)
+      const rows = await trx.raw('SELECT SCOPE_IDENTITY() AS id')
+      await trx.commit()
+
+      // rows puede variar según driver: en tedious, rows.recordset[0].id
+      if (rows && rows.recordset && rows.recordset[0] && rows.recordset[0].id) {
+        return rows.recordset[0].id
+      }
+      if (Array.isArray(rows) && rows.length > 0 && rows[0].id) return rows[0].id
+      if (rows && rows.id) return rows.id
+
+      // último recurso: retornar null y dejar que quien llama maneje el caso
+      return null
+    } catch (err) {
+      await trx.rollback()
+      throw err
+    }
   }
 
   async findById(id) {

@@ -16,12 +16,12 @@ echo -e "${BLUE}🚀 Iniciando proceso de despliegue de FadeBooker Backend...${N
 
 # 1. Solicitar/Verificar variables
 # Valores sugeridos: 
-# ACR_NAME="fadebookeracr"
+# ACR_NAME="fadebookerregistrypro"
 # FUNCTION_APP_NAME="fadebooker-api"
 
 if [[ -z "$ACR_NAME" ]]; then
-    read -p "Introduce el nombre de tu Azure Container Registry (ACR) [fadebookeracr]: " ACR_NAME
-    ACR_NAME=${ACR_NAME:-fadebookeracr}
+    read -p "Introduce el nombre de tu Azure Container Registry (ACR) [fadebookerregistrypro]: " ACR_NAME
+    ACR_NAME=${ACR_NAME:-fadebookerregistrypro}
 fi
 
 if [[ -z "$ACR_NAME" ]]; then

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { Button as BButton, Spinner } from 'react-bootstrap';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -7,7 +7,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean;
 }
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary-fade', size, isLoading, children, ...props }, ref) => {
     const isCustom = variant === 'primary-fade' || variant === 'accent-fade';
     const bsVariant = isCustom ? undefined : variant;

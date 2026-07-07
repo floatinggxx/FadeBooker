@@ -22,6 +22,8 @@ import LoginPage from '@/features/auth/ui/LoginPage';
 import RegisterPage from '@/features/auth/ui/RegisterPage';
 import ForgotPasswordPage from '@/features/auth/ui/ForgotPasswordPage';
 import ResetPasswordPage from '@/features/auth/ui/ResetPasswordPage';
+import ConfirmEmailNotice from '@/features/auth/ui/ConfirmEmailNotice';
+import ConfirmSuccess from '@/features/auth/ui/ConfirmSuccess';
 import TermsAndPrivacyPage from '@/features/legal/ui/TermsAndPrivacyPage';
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -147,6 +149,8 @@ function App() {
                   <Route path="/register" element={<RegisterPage />} />
                   <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                   <Route path="/reset-password" element={<ResetPasswordPage />} />
+                  <Route path="/confirm-email" element={<ConfirmEmailNotice />} />
+                  <Route path="/confirm-email/success" element={<ConfirmSuccess />} />
                   <Route path="/terms-and-privacy" element={<TermsAndPrivacyPage />} />
                   <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
                   <Route path="/barber-dashboard" element={<BarberoRoute><BarberDashboardPage /></BarberoRoute>} />

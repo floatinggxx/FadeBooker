@@ -12,15 +12,14 @@ const UsuarioController = {
   async register(req, res) {
     try {
       console.log(`[DEBUG] Intentando registrar usuario: ${req.body.email}`)
-      const user = await usuarioService.registrar(req.body)
-      console.log(`[DEBUG] Usuario registrado exitosamente: ${req.body.email}`)
-      const token = tokenManager.sign({ id: user.id_usuario, email: user.email, rol: user.rol })
+      // Nueva lógica: crear registro pendiente y enviar correo de confirmación
+      const pending = await usuarioService.createPendingRegistration(req.body)
+      console.log(`[DEBUG] Registro pendiente creado para: ${req.body.email}`)
 
       return res.status(201).json({
         status: 'success',
-        message: 'Usuario registrado correctamente',
-        data: user,
-        token
+        message: 'Registro creado. Revisa tu correo y confirma para activar tu cuenta',
+        data: { email: req.body.email }
       })
     } catch (error) {
       if (error && error.name === 'ZodError') {
@@ -113,6 +112,34 @@ const UsuarioController = {
       return res.json(result)
     } catch (error) {
       return res.status(400).json({ status: 'error', message: error && error.message ? error.message : 'Error' })
+    }
+  }
+
+  ,
+
+  async confirmEmail(req, res) {
+    try {
+      const { token } = req.query;
+      if (!token) return res.status(400).json({ status: 'error', message: 'Token es requerido' });
+
+      const user = await usuarioService.confirmPendingRegistration(token);
+      return res.json({ status: 'success', message: 'Correo confirmado. Cuenta activada.', data: user });
+    } catch (error) {
+      return res.status(400).json({ status: 'error', message: error && error.message ? error.message : 'Error' });
+    }
+  }
+
+  ,
+
+  async resendConfirmation(req, res) {
+    try {
+      const { email } = req.body;
+      if (!email) return res.status(400).json({ status: 'error', message: 'El correo es requerido' });
+
+      const result = await usuarioService.resendConfirmation(email);
+      return res.json({ status: 'success', message: result.mensaje });
+    } catch (error) {
+      return res.status(400).json({ status: 'error', message: error && error.message ? error.message : 'Error' });
     }
   }
 }

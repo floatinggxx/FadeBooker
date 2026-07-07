@@ -22,22 +22,43 @@ export const authService = {
 
   async register(data: RegisterRequest): Promise<any> {
     const response = await api.post<any>('/usuarios/register', data);
-    if (response.data?.status === 'success' && response.data?.data) {
-      const user = response.data.data;
-      return {
-        user: {
-          ...user,
-          id: (user.id_usuario || user.id)?.toString() || ''
-        },
-        token: response.data.token
-      };
+    // Backend may return either the created user or a pending registration message
+    if (response.status === 201 && response.data?.status === 'success' && response.data?.data) {
+      const maybe = response.data.data;
+      // Si el backend devolvió datos del usuario
+      if (maybe.id_usuario || maybe.id) {
+        const user = maybe;
+        return {
+          user: {
+            ...user,
+            id: (user.id_usuario || user.id)?.toString() || ''
+          },
+          token: response.data.token
+        };
+      }
+
+      // Si el backend devolvió un objeto con email (registro pendiente)
+      if (maybe.email) {
+        return { pending: true, email: maybe.email };
+      }
     }
+
     return response.data;
   },
 
   async logout(): Promise<void> {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+  },
+
+  async confirmEmail(token: string): Promise<any> {
+    const response = await api.get<any>(`/usuarios/confirm-email?token=${encodeURIComponent(token)}`);
+    return response.data;
+  },
+
+  async resendConfirmation(email: string): Promise<any> {
+    const response = await api.post<any>('/usuarios/resend-confirmation', { email });
+    return response.data;
   },
 
   getStoredToken(): string | null {

@@ -64,6 +64,47 @@ class EmailService {
       return true;
     }
   }
+
+  async sendConfirmationEmail(email, token) {
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const confirmUrl = `${frontendUrl}/confirm-email?token=${token}`;
+
+    const mailOptions = {
+      from: `"FadeBooker" <${process.env.EMAIL_USER || 'no-reply@fadebooker.com'}>` ,
+      to: email,
+      subject: 'Confirma tu correo - FadeBooker',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+          <h2 style="color: #3366FF; text-align: center;">Confirma tu correo</h2>
+          <p>Hola,</p>
+          <p>Gracias por registrarte en <strong>FadeBooker</strong>. Para completar tu registro, confirma que este correo te pertenece haciendo clic en el siguiente botón:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${confirmUrl}" style="background-color: #3366FF; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Confirmar correo</a>
+          </div>
+          <p>Si no puedes hacer clic en el botón, copia y pega el siguiente enlace en tu navegador:</p>
+          <p style="word-break: break-all; color: #666;">${confirmUrl}</p>
+          <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+          <p style="font-size: 12px; color: #999;">Si no solicitaste este registro, puedes ignorar este correo.</p>
+        </div>
+      `,
+    };
+
+    if (this.transporter) {
+      try {
+        console.log(`[EmailService] Enviando confirmación a ${email}`);
+        await this.transporter.sendMail(mailOptions);
+        console.log(`[EmailService] Correo de confirmación enviado a ${email}`);
+        return true;
+      } catch (error) {
+        console.error('[EmailService] Error enviando correo de confirmación:', error && error.message ? error.message : error);
+        throw new Error('No se pudo enviar el correo de confirmación');
+      }
+    } else {
+      console.warn(`[EmailService] SMTP no configurado. Token para ${email}: ${token}`);
+      console.log(`URL de confirmación: ${confirmUrl}`);
+      return true;
+    }
+  }
 }
 
 module.exports = new EmailService();

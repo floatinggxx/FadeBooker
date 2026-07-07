@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { Form } from 'react-bootstrap';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -6,7 +6,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   error?: string;
 }
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ className, label, error, type, maxLength, ...props }, ref) => {
     // Establecer un maxLength por defecto si no se proporciona
     const safeMaxLength = maxLength !== undefined ? maxLength : 100;

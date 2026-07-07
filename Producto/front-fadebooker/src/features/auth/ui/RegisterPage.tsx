@@ -258,6 +258,13 @@ const RegisterPage: React.FC = () => {
           return;
         }
 
+        // Registro pendiente: redirigir a página de confirmación
+        if (result && result.pending && result.email) {
+          showNotification('Hemos enviado un correo para confirmar tu cuenta', 'info');
+          navigate(`/confirm-email?email=${encodeURIComponent(result.email)}`);
+          return;
+        }
+
         if (result && result.user) {
           showNotification('Registro completado. Por favor inicia sesión.', 'success');
           navigate('/login');
