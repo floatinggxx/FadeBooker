@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import BookingCard from '../components/molecules/BookingCard';
 import { NotificationProvider } from '../context/NotificationContext';
@@ -63,16 +64,27 @@ describe('BookingCard Component', () => {
     render(<BookingCard {...defaultProps} />, { wrapper: TestWrapper });
 
     const btn = screen.getByText(/Valorar Servicio/i);
-    fireEvent.click(btn);
+    await act(async () => {
+      fireEvent.click(btn);
+    });
 
     expect(screen.getByText(/Tu Opinión/i)).toBeDefined();
   });
 
-  it('debe llamar onRemove al pulsar el botón de eliminar', () => {
+  it('debe llamar onRemove al pulsar el botón de eliminar', async () => {
     const onRemove = vi.fn();
     render(<BookingCard {...defaultProps} onRemove={onRemove} />, { wrapper: TestWrapper });
 
-    fireEvent.click(screen.getByRole('button', { name: /eliminar cita/i }));
+    // Abrir modal de confirmación de eliminación
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: /eliminar cita/i }));
+    });
+
+    // Confirmar eliminación en el modal
+    const confirmBtn = screen.getByRole('button', { name: /Sí, eliminar/i });
+    await act(async () => {
+      fireEvent.click(confirmBtn);
+    });
 
     expect(onRemove).toHaveBeenCalledWith(1);
   });

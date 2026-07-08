@@ -17,8 +17,18 @@ process.env.DATABASE_URL = 'test'
 afterAll(async () => {
   // Cerrar conexiones de base de datos si existen
   try {
-    // Dar tiempo para que se resuelvan las conexiones pendientes
-    await new Promise(resolve => setTimeout(resolve, 100))
+    // Intentar cerrar knex si está inicializado para evitar open handles
+    try {
+      const db = require('../src/db/knex')
+      if (db && typeof db.destroy === 'function') {
+        await db.destroy()
+        console.log('✅ Knex destroyed in test teardown')
+      }
+    } catch (e) {
+      // Si no existe knex o falla el destroy, al menos esperar breve
+      // para dar tiempo a handles asíncronos a cerrarse.
+      await new Promise(resolve => setTimeout(resolve, 100))
+    }
   } catch (error) {
     console.error('Error durante teardown:', error)
   }

@@ -1,5 +1,8 @@
 {
   "dependencies": {
-    "bcrypt": "^6.0.0"
+    "bcrypt": "^6.0.0",
+    "knex": "^3.3.0",
+    "minimist": "^1.2.8",
+    "mssql": "^12.7.0"
   }
 }

@@ -3,9 +3,10 @@ module.exports = {
     client: 'mssql',
     connection: {
       server: process.env.DB_SERVER || process.env.DB_HOST || 'fadebooker-server.database.windows.net',
-      user: process.env.DB_USER || process.env.DB_USER || 'adminuser',
+      port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : undefined,
+      user: process.env.DB_USER || 'adminuser',
       password: process.env.DB_PASSWORD || process.env.DB_PASS || '',
-      database: process.env.DB_NAME || process.env.DB_DATABASE || 'FadeBooker_DB',
+      database: process.env.DB_DATABASE || process.env.DB_NAME || 'FadeBooker_DB',
       options: {
         encrypt: true,
         trustServerCertificate: false,
@@ -18,9 +19,10 @@ module.exports = {
     client: 'mssql',
     connection: {
       server: process.env.DB_SERVER || process.env.DB_HOST,
+      port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : undefined,
       user: process.env.DB_USER || process.env.DB_USER,
       password: process.env.DB_PASSWORD || process.env.DB_PASS,
-      database: process.env.DB_NAME || process.env.DB_DATABASE || 'FadeBooker_DB',
+      database: process.env.DB_DATABASE || process.env.DB_NAME || 'FadeBooker_DB',
       options: {
         encrypt: true,
         trustServerCertificate: false,

@@ -19,6 +19,11 @@ class EmailService {
   }
 
   async sendResetPasswordEmail(email, token) {
+    // Skip real email sending in test or when explicitly disabled
+    if (process.env.SKIP_EMAILS === 'true' || process.env.NODE_ENV === 'test') {
+      console.warn(`[EmailService] Envío de correos deshabilitado en este entorno. Token para ${email}: ${token}`);
+      return true;
+    }
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
     const resetUrl = `${frontendUrl}/reset-password?token=${token}`;
 
@@ -66,6 +71,11 @@ class EmailService {
   }
 
   async sendConfirmationEmail(email, token) {
+    // Skip real email sending in test or when explicitly disabled
+    if (process.env.SKIP_EMAILS === 'true' || process.env.NODE_ENV === 'test') {
+      console.warn(`[EmailService] Envío de correos deshabilitado en este entorno. Token para ${email}: ${token}`);
+      return true;
+    }
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
     const confirmUrl = `${frontendUrl}/confirm-email?token=${token}`;
 
