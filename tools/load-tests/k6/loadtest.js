@@ -39,9 +39,9 @@ export default function () {
     return;
   }
 
-  // 2) Public read: barberias listing
-  const res2 = http.get(`${BASE_URL}/api/barberias`);
-  check(res2, { 'barberias 200': (r) => r.status === 200 });
+  // 2) Public read: barberos listing (correct backend route)
+  const res2 = http.get(`${BASE_URL}/api/barberos`);
+  check(res2, { 'barberos 200': (r) => r.status === 200 });
   if (res2.status !== 200) errorRate.add(1);
   sleep(Math.random() * 1.5);
 

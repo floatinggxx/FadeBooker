@@ -64,7 +64,9 @@ async function run() {
     const end = Math.min(start + batchSize - 1, count);
     const batch = [];
     for (let i = start; i <= end; i++) {
-      const email = `loadtest+user${i}@example.com`;
+      // Use a unique suffix to avoid duplicates on repeated runs (timestamp + index)
+      const uniqueSuffix = `${Date.now()}_${i}`;
+      const email = `loadtest+user${i}+${uniqueSuffix}@example.com`;
       const password = 'Secreto123';
       const hash = await bcrypt.hash(password, 10);
       batch.push({
