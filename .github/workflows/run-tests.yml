@@ -1,0 +1,67 @@
+name: Run tests (orquestado por run_tests.sh)
+
+on:
+  push:
+    branches: [ main, 'main-backup' ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        env:
+          ACCEPT_EULA: "Y"
+          SA_PASSWORD: "Your_password123"
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'Your_password123' -Q 'SELECT 1' || exit 1"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Docker Compose (for convenience)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Make run_tests.sh executable
+        run: chmod +x ./run_tests.sh
+
+      - name: Install project dependencies (backend)
+        working-directory: Producto/back-fadebooker
+        run: |
+          npm ci
+
+      - name: Install frontend deps
+        working-directory: Producto/front-fadebooker
+        run: |
+          npm ci
+
+      - name: Run orchestrated tests (includes security + load)
+        env:
+          DOCKER_TEST_DB: true
+          TEST_DB_SA_PASSWORD: Your_password123
+          TEST_DB_CONTAINER_NAME: github-sqlserver-test
+          LOAD_SEED_COUNT: 100
+          RUN_LOAD_TESTS: true
+          SECURITY_TESTS: true
+          SKIP_EMAILS: true
+        run: |
+          ./run_tests.sh
+
+      - name: Upload k6 logs (if exist)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-logs
+          path: tools/load-tests/logs/**
