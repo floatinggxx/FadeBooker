@@ -8,6 +8,7 @@ import { pagoService } from '@/lib/api/pagoService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import { ServicioBarbero, Barbero } from '@/types';
 import { PLACEHOLDERS, FALLBACK_URLS } from '@/lib/utils/placeholders';
+import { getChileTodayString } from '@/lib/utils/time';
 import { 
   Calendar, 
   Clock, 
@@ -216,7 +217,7 @@ const BarberDetailPage: React.FC = () => {
                       setSelectedDate(e.target.value);
                       nextStep();
                     }}
-                    min={new Date().toISOString().split('T')[0]}
+                    min={getChileTodayString()}
                     className="w-full text-2xl font-black text-slate-800 p-6 bg-slate-50 border-4 border-slate-100 rounded-[2rem] focus:border-rose-500 outline-none transition-all cursor-pointer"
                   />
                   <div className="mt-8 text-center text-slate-400 font-bold uppercase tracking-widest text-xs">

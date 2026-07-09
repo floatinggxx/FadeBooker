@@ -4,6 +4,7 @@ import { barberService } from '@/lib/api/barberService';
 import { bookingService } from '@/lib/api/bookingService';
 import { pagoService } from '@/lib/api/pagoService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
+import { getChileDateTimeLocalInputString } from '@/lib/utils/time';
 import { Barbero, ServicioBarbero } from '@/types';
 
 type FormData = {
@@ -147,7 +148,7 @@ const BookingForm: React.FC<{ onSuccess?: () => void }> = ({ onSuccess }) => {
           })}
           type="datetime-local"
           className="w-full border p-2 rounded"
-          min={new Date().toISOString().slice(0,16)}
+          min={getChileDateTimeLocalInputString()}
         />
         {errors.fechaHora && <p className="text-sm text-red-600 mt-2">{errors.fechaHora.message as any}</p>}
       </div>

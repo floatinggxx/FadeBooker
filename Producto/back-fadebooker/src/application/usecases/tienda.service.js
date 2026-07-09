@@ -34,6 +34,27 @@ class TiendaService {
     if (!tienda) {
       throw new Error('La tienda no existe')
     }
+
+    // Asegurar que el dueño de la tienda también esté registrado como barbero
+    if (tienda.id_dueño) {
+      try {
+        const ownerBarbero = await this.barberoRepository.findByUsuarioId(tienda.id_dueño)
+        if (!ownerBarbero) {
+          await this.barberoRepository.create({
+            id_usuario: tienda.id_dueño,
+            id_tienda: id_tienda,
+            especialidad: 'Dueño de Tienda',
+            activo: 1,
+            tarifa_base: 0
+          })
+        } else if (!ownerBarbero.id_tienda || Number(ownerBarbero.id_tienda) !== Number(id_tienda)) {
+          await this.barberoRepository.update(ownerBarbero.id_barbero, { id_tienda: id_tienda })
+        }
+      } catch (err) {
+        console.error('[TiendaService] Error asegurando barbero dueño disponible:', err)
+      }
+    }
+
     return await this.barberoRepository.findByTienda(id_tienda)
   }
 

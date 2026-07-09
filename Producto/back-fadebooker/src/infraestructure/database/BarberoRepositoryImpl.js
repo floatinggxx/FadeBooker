@@ -32,8 +32,9 @@ class BarberoRepositoryImpl extends UsuarioRepositoryImpl {
         const existingUser = await trx('Usuario').where({ email: data.email }).first()
         if (existingUser) {
           id_usuario = existingUser.id_usuario
-          // Opcionalmente actualizar el rol si era cliente
-          await trx('Usuario').where({ id_usuario }).update({ rol: 'Barbero' })
+          // Si el usuario ya es dueño, conservar ese rol; de lo contrario, promoverlo a Barbero.
+          const newRole = existingUser.rol === 'Dueño' ? existingUser.rol : 'Barbero'
+          await trx('Usuario').where({ id_usuario }).update({ rol: newRole })
         } else {
           const result = await trx('Usuario').insert(usuarioData).returning('id_usuario')
           if (result && Array.isArray(result) && result.length > 0) {

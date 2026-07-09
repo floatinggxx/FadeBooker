@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { availabilityService } from '@/lib/api/availabilityService'
+import { getChileNowString } from '@/lib/utils/time'
 
 interface BloqueHorario {
   id_bloque: number | string
@@ -57,21 +58,7 @@ export const useDayAvailability = (idBarbero: number, fecha: string, citas: any[
         })
 
         const slotDateString = `${fecha}T${horaFormato}:00`
-        const now = new Date()
-        const formatter = new Intl.DateTimeFormat('en-US', {
-          timeZone: 'America/Santiago',
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: false
-        })
-        const parts = formatter.formatToParts(now)
-        const part = (type: string) => parts.find((p) => p.type === type)?.value || '00'
-        const nowChileString = `${part('year')}-${part('month')}-${part('day')}T${part('hour')}:${part('minute')}:${part('second')}`
-        const pasado = slotDateString < nowChileString
+        const pasado = slotDateString < getChileNowString()
 
         if (citaEnHorario) {
           horarios.push({

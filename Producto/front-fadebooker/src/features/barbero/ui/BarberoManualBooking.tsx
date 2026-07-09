@@ -3,6 +3,7 @@ import api from '@/lib/api';
 import { barberoService } from '../services/barberoService';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import { Calendar, Clock, User, Scissors, Check, X, Search, Phone, Mail } from 'lucide-react';
+import { getChileNowString, getChileTodayString } from '@/lib/utils/time';
 
 interface ManualBookingProps {
     onClose: () => void;
@@ -48,7 +49,7 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
             cliente_nombre: '',
             cliente_email: '',
             cliente_telefono: '',
-            fecha: new Date().toISOString().split('T')[0],
+            fecha: getChileTodayString(),
             hora: '',
             notas: '',
             metodo_pago: 'efectivo'
@@ -192,16 +193,11 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
             }
 
         // Verificar si la fecha es hoy
-        const today = new Date().toISOString().split('T')[0];
-        if (formData.fecha === today) {
-            // Si es hoy, verificar que la hora no haya pasado
-            const now = new Date();
-            const [hours, minutes] = slot.hora.substring(0, 5).split(':');
-            const slotTime = new Date();
-            slotTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-
-            // Bloquear si la hora es menor o igual a la hora actual
-            if (slotTime <= now) {
+const today = getChileTodayString();
+            if (formData.fecha === today) {
+                const ahoraChile = getChileNowString();
+                const slotDateTime = `${today}T${slot.hora.substring(0, 5)}:00`;
+                if (slotDateTime <= ahoraChile) {
                 return false;
             }
         }
@@ -397,7 +393,7 @@ const BarberoManualBooking: React.FC<ManualBookingProps> = ({ onClose, onSuccess
                                             id="fecha"
                                             type="date" 
                                             required
-                                            min={new Date().toISOString().split('T')[0]}
+                                            min={getChileTodayString()}
                                             className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-12 pr-4 font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 outline-none"
                                             value={formData.fecha}
                                             onChange={e => setFormData({...formData, fecha: e.target.value})}

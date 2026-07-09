@@ -249,19 +249,36 @@ class UsuarioService {
     // Quitar contraseña de la respuesta
     const { contrasena: _, ...usuarioSinPassword } = usuario
 
-    // Si es barbero o dueño, incluir id_tienda
+    // Si es barbero o dueño, incluir id_tienda e id_barbero
     if (usuario.rol === 'Barbero' || usuario.rol === 'Dueño') {
       const BarberoRepository = require('../../infraestructure/database/BarberoRepositoryImpl');
       const barberoRepo = new BarberoRepository();
-      const barbero = await barberoRepo.findByUsuarioId(usuario.id_usuario);
+      let barbero = await barberoRepo.findByUsuarioId(usuario.id_usuario);
+      if (!barbero && usuario.rol === 'Dueño') {
+        // Asegurar que el dueño también tenga un registro de barbero asociado.
+        try {
+          const TiendaRepository = require('../../infraestructure/database/TiendaRepositoryImpl');
+          const tiendaRepo = new TiendaRepository();
+          const misTiendas = await tiendaRepo.findAll({ id_dueño: usuario.id_usuario });
+          const tienda = misTiendas && misTiendas[0];
+          if (tienda) {
+            const barberoId = await barberoRepo.create({
+              id_usuario: usuario.id_usuario,
+              id_tienda: tienda.id_tienda,
+              especialidad: 'Dueño de Tienda',
+              activo: 1,
+              tarifa_base: 0
+            });
+            barbero = await barberoRepo.findByUsuarioId(usuario.id_usuario);
+          }
+        } catch (err) {
+          console.error('[UsuarioService] Error asegurando barbero para dueño:', err);
+        }
+      }
       if (barbero) {
         usuarioSinPassword.id_tienda = barbero.id_tienda;
         usuarioSinPassword.id_barbero = barbero.id_barbero;
       } else if (usuario.rol === 'Dueño') {
-        const TiendaRepository = require('../../infraestructure/database/TiendaRepositoryImpl');
-        const tiendaRepo = new TiendaRepository();
-        const tiendas = await tiendaRepo.findAll({ id_dueño: usuario.id_usuario });
-        // Por ahora, asumimos que el dueño gestiona su primera tienda si tiene varias
         const misTiendas = await require('../../db/knex')('Tienda').where({ id_dueño: usuario.id_usuario, este_activa: true }).first();
         if (misTiendas) {
           usuarioSinPassword.id_tienda = misTiendas.id_tienda;

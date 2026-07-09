@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useBarberoDashboard } from '../hooks/useBarberoDashboard';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import { useNotification } from '@/context/NotificationContext';
+import { getChileTodayString } from '@/lib/utils/time';
 import { TrendingUp, Calendar, Scissors, DollarSign, Clock, Plus, LayoutDashboard, Store, Users, Search, Filter, X, CheckCircle, XCircle, Info, Phone } from 'lucide-react';
 import BarberoManualBooking from './BarberoManualBooking';
 import BarbieroCancelBookingModal from './BarbieroCancelBookingModal';
@@ -21,7 +22,7 @@ const BarberoDashboard: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'dashboard' | 'tienda' | 'equipo' | 'servicios'>('dashboard');
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
-    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+    const [selectedDate, setSelectedDate] = useState(getChileTodayString());
     const [isUpdating, setIsUpdating] = useState(false);
     // Obtenemos el ID del barbero desde el objeto de usuario (inyectado en login/perfil)
     const idBarbero = user?.id_barbero; 
@@ -191,7 +192,7 @@ const BarberoDashboard: React.FC = () => {
                                                 key={p}
                                                 onClick={() => {
                                                     setPeriod(p as any);
-                                                    if (p === 'day') setSelectedDate(new Date().toISOString().split('T')[0]);
+                                                    if (p === 'day') setSelectedDate(getChileTodayString());
                                                 }}
                                                 aria-pressed={period === p}
                                                 className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${period === p ? 'bg-[#3366FF] text-white' : 'bg-slate-100 text-slate-400 hover:bg-slate-200'}`}

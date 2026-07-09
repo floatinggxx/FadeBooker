@@ -9,6 +9,7 @@ import { useAuth } from '@/features/auth/hooks/useAuthContext';
 import { ServicioBarbero, Barbero, Tienda } from '@/types';
 import { PLACEHOLDERS, FALLBACK_URLS } from '@/lib/utils/placeholders';
 import { useNotification } from '@/context/NotificationContext';
+import { getChileTodayString, getChileNowString } from '@/lib/utils/time';
 import { parseError } from '@/lib/utils/errorParser';
 import HaircutSimulator from '@/components/booking/HaircutSimulator';
 import PaymentWaitingModal from '@/components/molecules/PaymentWaitingModal';
@@ -44,7 +45,7 @@ const UniversalBookingPage: React.FC = () => {
   
   const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState<ServicioBarbero | null>(null);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(getChileTodayString());
   const [selectedTime, setSelectedTime] = useState('');
   const [paymentType, setPaymentType] = useState<'abono' | 'total'>('abono');
   const [isBooking, setIsBooking] = useState(false);
@@ -121,16 +122,13 @@ const UniversalBookingPage: React.FC = () => {
     if (!availability) return [];
     
     // Si la fecha seleccionada es hoy, filtramos los horarios pasados
-    const today = new Date().toISOString().split('T')[0];
+    const today = getChileTodayString();
     if (selectedDate === today) {
-      const now = new Date();
-      const currentHour = now.getHours();
-      const currentMinute = now.getMinutes();
-
+      const ahoraChile = getChileNowString();
       return availability.map(slot => {
+        const slotDateTime = `${selectedDate}T${slot.hora}:00`;
         const [hour, minute] = slot.hora.split(':').map(Number);
-        // Deshabilitar si ya pasó la hora o si faltan menos de 15 minutos para la cita
-        const isPast = hour < currentHour || (hour === currentHour && minute <= currentMinute + 15);
+        const isPast = slotDateTime <= ahoraChile || (hour === Number(ahoraChile.substring(11, 13)) && minute <= Number(ahoraChile.substring(14, 16)) + 15);
         return {
           ...slot,
           disponible: slot.disponible && !isPast
@@ -569,7 +567,7 @@ const UniversalBookingPage: React.FC = () => {
                   type="date"
                   className="w-full rounded-[2rem] border-4 border-slate-50 bg-slate-50 p-8 text-3xl font-black text-slate-900 outline-none transition focus:border-[#3366FF] hover:bg-slate-100"
                   value={selectedDate}
-                  min={new Date().toISOString().split('T')[0]}
+                  min={getChileTodayString()}
                   onChange={(e) => {
                     const newDate = e.target.value;
                     setSelectedDate(newDate);

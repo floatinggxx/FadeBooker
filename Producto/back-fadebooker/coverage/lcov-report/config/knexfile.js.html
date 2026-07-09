@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">57.14% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>12/24</span>
+                <span class='fraction'>16/28</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -127,7 +127,31 @@
 <a name='L62'></a><a href='#L62'>62</a>
 <a name='L63'></a><a href='#L63'>63</a>
 <a name='L64'></a><a href='#L64'>64</a>
-<a name='L65'></a><a href='#L65'>65</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">14x</span>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -192,22 +216,34 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module.exports = {
-  development: {
-    client: 'mssql',
-    connection: {
-      server: process.env.DB_SERVER || process.env.DB_HOST || <span class="branch-2 cbranch-no" title="branch not covered" >'fadebooker-server.database.windows.net',</span>
-      port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : <span class="branch-1 cbranch-no" title="branch not covered" >undefined,</span>
-      user: process.env.DB_USER || <span class="branch-1 cbranch-no" title="branch not covered" >'adminuser',</span>
-      password: process.env.DB_PASSWORD || <span class="branch-1 cbranch-no" title="branch not covered" >process.env.DB_PASS </span>|| <span class="branch-2 cbranch-no" title="branch not covered" >'',</span>
-      database: process.env.DB_DATABASE || <span class="branch-1 cbranch-no" title="branch not covered" >process.env.DB_NAME </span>|| <span class="branch-2 cbranch-no" title="branch not covered" >'FadeBooker_DB',</span>
-      options: {
-        encrypt: true,
-        trustServerCertificate: false,
-        connectionTimeout: 30000,
-        requestTimeout: 30000
+  development: (function() {
+    // Default dev connection values
+    const server = process.env.DB_SERVER || process.env.DB_HOST || <span class="branch-2 cbranch-no" title="branch not covered" >'fadebooker-server.database.windows.net';</span>
+    const port = process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : <span class="branch-1 cbranch-no" title="branch not covered" >undefined;</span>
+    const user = process.env.DB_USER || <span class="branch-1 cbranch-no" title="branch not covered" >'adminuser';</span>
+    const password = process.env.DB_PASSWORD || <span class="branch-1 cbranch-no" title="branch not covered" >process.env.DB_PASS </span>|| <span class="branch-2 cbranch-no" title="branch not covered" >'';</span>
+    const database = process.env.DB_DATABASE || <span class="branch-1 cbranch-no" title="branch not covered" >process.env.DB_NAME </span>|| <span class="branch-2 cbranch-no" title="branch not covered" >'FadeBooker_DB';</span>
+&nbsp;
+    // If connecting to localhost or 127.0.0.1 for local testing, disable encrypt and trust server cert
+    const isLocal = server === '127.0.0.1' || server === 'localhost' || server.startsWith('127.') || process.env.FORCE_LOCAL_DB === 'true';
+&nbsp;
+    return {
+      client: 'mssql',
+      connection: {
+        server,
+        port,
+        user,
+        password,
+        database,
+        options: {
+          encrypt: !isLocal,
+          trustServerCertificate: !!isLocal,
+          connectionTimeout: 30000,
+          requestTimeout: 30000
+        }
       }
-    }
-  },
+    };
+  })(),
   production: {
     client: 'mssql',
     connection: {
@@ -262,7 +298,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-08T18:02:55.481Z
+                at 2026-07-09T17:48:53.482Z
             </div>
         <script src="../prettify.js"></script>
         <script>

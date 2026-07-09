@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { X, Lock } from 'lucide-react'
 import { availabilityService } from '@/lib/api/availabilityService'
 import { useNotification } from '@/context/NotificationContext'
+import { getChileNowString } from '@/lib/utils/time'
 
 interface BlockTimeModalProps {
   fecha: string
@@ -24,25 +25,6 @@ const BlockTimeModal: React.FC<BlockTimeModalProps> = ({
   const [motivo, setMotivo] = useState('')
   const [duracion, setDuracion] = useState('60') // minutos
   const [isCreating, setIsCreating] = useState(false)
-
-  const getChileNowString = () => {
-    const now = new Date()
-    const formatter = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'America/Santiago',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    })
-
-    const parts = formatter.formatToParts(now)
-    const part = (type: string) => parts.find((p) => p.type === type)?.value || '00'
-
-    return `${part('year')}-${part('month')}-${part('day')}T${part('hour')}:${part('minute')}:${part('second')}`
-  }
 
   const addMinutesToChileDateTime = (fecha: string, hora: string, minutos: number) => {
     const [year, month, day] = fecha.split('-').map(Number)

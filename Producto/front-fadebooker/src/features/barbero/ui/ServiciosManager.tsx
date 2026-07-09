@@ -3,6 +3,17 @@ import { servicioService } from '@/lib/api/servicioService';
 import { Scissors, Plus, Trash2, Save, Clock, DollarSign, X, Check, RefreshCw } from 'lucide-react';
 import { Servicio } from '@/types';
 
+const AVAILABLE_SERVICES = [
+    { id_servicio: 1, nombre_servicio: 'Corte Clásico', descripcion: 'Corte clásico', precio_base: 11000 },
+    { id_servicio: 2, nombre_servicio: 'Afeitado y Perfilado', descripcion: 'Afeitado', precio_base: 9000 },
+    { id_servicio: 3, nombre_servicio: 'Combo Corte + Barba', descripcion: 'Combo', precio_base: 18000 },
+    { id_servicio: 4, nombre_servicio: 'Diseño y Coloración de Barba', descripcion: 'Diseño', precio_base: 10000 },
+    { id_servicio: 5, nombre_servicio: 'Tratamiento Hidratante', descripcion: 'Hidratación', precio_base: 12000 },
+    { id_servicio: 6, nombre_servicio: 'Cejas y Patillas', descripcion: 'Delineado', precio_base: 6500 },
+    { id_servicio: 7, nombre_servicio: 'Combo Premium', descripcion: 'Completo', precio_base: 35000 },
+    { id_servicio: 40, nombre_servicio: 'Otro', descripcion: '', precio_base: 0 }
+];
+
 const ServiciosManager: React.FC = () => {
     const [servicios, setServicios] = useState<Servicio[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -13,12 +24,11 @@ const ServiciosManager: React.FC = () => {
     const [formData, setFormData] = useState<Partial<Servicio>>({
         nombre_servicio: '',
         descripcion: '',
-        duracion_minutos: 30,
+        duracion_minutos: 60,
         precio_base: 10000,
         activo: true
     });
-
-    const [editingId, setEditingId] = useState<number | null>(null);
+    const [selectedServiceId, setSelectedServiceId] = useState<number | null>(null);
 
     const fetchServicios = async () => {
         try {
@@ -37,11 +47,23 @@ const ServiciosManager: React.FC = () => {
 
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (selectedServiceId === null) {
+            alert('Selecciona un servicio disponible antes de guardar.');
+            return;
+        }
+
         setIsSaving(true);
         try {
-            await servicioService.create(formData);
+            await servicioService.create({
+                nombre_servicio: formData.nombre_servicio,
+                descripcion: formData.descripcion,
+                duracion_minutos: 60,
+                precio_base: formData.precio_base,
+                activo: true
+            });
             setShowAddModal(false);
-            setFormData({ nombre_servicio: '', descripcion: '', duracion_minutos: 30, precio_base: 10000, activo: true });
+            setSelectedServiceId(null);
+            setFormData({ nombre_servicio: '', descripcion: '', duracion_minutos: 60, precio_base: 10000, activo: true });
             fetchServicios();
         } catch (error: any) {
             console.error('Error al crear el servicio:', error);
@@ -56,7 +78,6 @@ const ServiciosManager: React.FC = () => {
     const handleUpdate = async (id: number, data: Partial<Servicio>) => {
         try {
             await servicioService.update(id, data);
-            setEditingId(null);
             fetchServicios();
         } catch (error) {
             alert('Error al actualizar el servicio');
@@ -83,7 +104,7 @@ const ServiciosManager: React.FC = () => {
                     <div className="w-1.5 h-10 bg-rose-500 rounded-full"></div>
                     <div>
                         <h2 className="text-3xl font-black text-slate-900">Servicios</h2>
-                        <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1">Configura duración y precios base</p>
+                        <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1">Solo el precio es editable; duración fija de 60 minutos por compatibilidad con la app</p>
                     </div>
                 </div>
                 <button 
@@ -103,36 +124,24 @@ const ServiciosManager: React.FC = () => {
                                 <Scissors size={24} />
                             </div>
                             <div>
-                                {editingId === servicio.id_servicio ? (
-                                    <input 
-                                        className="text-xl font-black text-slate-900 bg-white border-2 border-slate-100 rounded-xl px-4 py-1 mb-2"
-                                        defaultValue={servicio.nombre_servicio || servicio.nombre}
-                                        onBlur={(e) => handleUpdate(servicio.id_servicio, { nombre_servicio: e.target.value })}
-                                        autoFocus
-                                    />
-                                ) : (
-                                    <h3 
-                                        className="text-xl font-black text-slate-900 mb-1 cursor-pointer hover:text-[#3366FF]"
-                                        onClick={() => setEditingId(servicio.id_servicio)}
-                                    >
-                                        {servicio.nombre_servicio || servicio.nombre}
-                                    </h3>
-                                )}
+                                <h3 className="text-xl font-black text-slate-900 mb-1">
+                                    {servicio.nombre_servicio || servicio.nombre}
+                                </h3>
                                 <p className="text-slate-500 font-medium text-sm">{servicio.descripcion || 'Sin descripción'}</p>
                             </div>
                         </div>
 
                         <div className="flex flex-wrap items-center gap-6">
-                            <div className="flex items-center gap-3 px-6 py-3 bg-white rounded-2xl shadow-sm">
-                                <Clock size={16} className="text-slate-400" />
-                                <span className="text-slate-400 font-black text-[10px] uppercase tracking-widest">Duración</span>
-                                <input 
-                                    type="number" 
-                                    className="w-16 font-black text-slate-900 border-none p-0 focus:ring-0"
-                                    defaultValue={servicio.duracion_minutos}
-                                    onBlur={(e) => handleUpdate(servicio.id_servicio, { duracion_minutos: Number(e.target.value) })}
-                                />
-                                <span className="font-bold text-slate-400 text-xs">min</span>
+                            <div className="flex flex-col gap-2 px-6 py-3 bg-white rounded-2xl shadow-sm">
+                                <div className="flex items-center gap-3">
+                                    <Clock size={16} className="text-slate-400" />
+                                    <span className="text-slate-400 font-black text-[10px] uppercase tracking-widest">Duración</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="w-16 font-black text-slate-900">60</span>
+                                    <span className="font-bold text-slate-400 text-xs">min</span>
+                                </div>
+                                <p className="text-[10px] text-slate-500">Duración fija de 60 minutos por compatibilidad con la app.</p>
                             </div>
 
                             <div className="flex items-center gap-3 px-6 py-3 bg-white rounded-2xl shadow-sm">
@@ -140,7 +149,7 @@ const ServiciosManager: React.FC = () => {
                                 <span className="text-slate-400 font-black text-[10px] uppercase tracking-widest">Precio</span>
                                 <input 
                                     type="number" 
-                                    className="w-20 font-black text-slate-900 border-none p-0 focus:ring-0"
+                                    className="w-24 font-black text-slate-900 border-none p-0 focus:ring-0"
                                     defaultValue={servicio.precio_base}
                                     onBlur={(e) => handleUpdate(servicio.id_servicio, { precio_base: Number(e.target.value) })}
                                 />
@@ -169,13 +178,47 @@ const ServiciosManager: React.FC = () => {
                             
                             <div className="space-y-6">
                                 <div>
-                                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Nombre</label>
-                                    <input 
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Servicio disponible</label>
+                                    <select
                                         required
-                                        className="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 font-bold"
-                                        value={formData.nombre_servicio}
-                                        onChange={e => setFormData({...formData, nombre_servicio: e.target.value})}
-                                    />
+                                        className="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 font-bold text-slate-900 focus:ring-4 focus:ring-blue-100 outline-none"
+                                        value={selectedServiceId ?? ''}
+                                        onChange={e => {
+                                            const selectedId = Number(e.target.value);
+                                            const selectedService = AVAILABLE_SERVICES.find(s => s.id_servicio === selectedId);
+                                            setSelectedServiceId(selectedId || null);
+                                            if (selectedService) {
+                                                setFormData({
+                                                    nombre_servicio: selectedService.nombre_servicio,
+                                                    descripcion: selectedService.descripcion || '',
+                                                    duracion_minutos: 60,
+                                                    precio_base: selectedService.precio_base,
+                                                    activo: true
+                                                });
+                                            } else {
+                                                setFormData({
+                                                    nombre_servicio: '',
+                                                    descripcion: '',
+                                                    duracion_minutos: 60,
+                                                    precio_base: 10000,
+                                                    activo: true
+                                                });
+                                            }
+                                        }}
+                                    >
+                                        <option value="">Selecciona un servicio</option>
+                                        {AVAILABLE_SERVICES.map((service) => (
+                                            <option key={service.id_servicio} value={service.id_servicio}>
+                                                {service.nombre_servicio} — ${service.precio_base}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Nombre del servicio</label>
+                                    <div className="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 font-bold text-slate-900">
+                                        {formData.nombre_servicio || 'Selecciona un servicio'}
+                                    </div>
                                 </div>
                                 <div>
                                     <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Descripción</label>
@@ -183,17 +226,21 @@ const ServiciosManager: React.FC = () => {
                                         className="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 font-bold"
                                         value={formData.descripcion}
                                         onChange={e => setFormData({...formData, descripcion: e.target.value})}
+                                        placeholder={selectedServiceId === 40 ? 'Describe el servicio Otro para identificarlo en ServicioBarbero' : ''}
+                                        disabled={selectedServiceId !== 40}
+                                        required={selectedServiceId === 40}
                                     />
+                                    {selectedServiceId === 40 ? (
+                                        <p className="text-[10px] text-slate-500 mt-2">La descripción será usada para identificar el servicio "Otro" en la tabla ServicioBarbero.</p>
+                                    ) : (
+                                        <p className="text-[10px] text-slate-500 mt-2">Solo los servicios predefinidos se pueden agregar.</p>
+                                    )}
                                 </div>
                                 <div className="grid grid-cols-2 gap-6">
                                     <div>
                                         <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Duración (min)</label>
-                                        <input 
-                                            type="number"
-                                            className="w-full bg-slate-50 border-none rounded-2xl py-4 px-6 font-bold"
-                                            value={formData.duracion_minutos}
-                                            onChange={e => setFormData({...formData, duracion_minutos: Number(e.target.value)})}
-                                        />
+                                        <div className="w-full bg-slate-50 rounded-2xl py-4 px-6 font-black text-slate-900">60</div>
+                                        <p className="text-[10px] text-slate-500 mt-2">Duración fija de 60 minutos por compatibilidad con la app.</p>
                                     </div>
                                     <div>
                                         <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Precio Base</label>
